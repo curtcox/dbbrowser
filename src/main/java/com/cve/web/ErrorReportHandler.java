@@ -1,0 +1,33 @@
+package com.cve.web;
+
+import java.io.IOException;
+
+import static com.cve.util.Check.notNull;
+
+/**
+ * A wrapper for other requests to give debug-style error handling.
+ */
+public final class ErrorReportHandler implements RequestHandler {
+
+    /**
+     * The thing that handles the requests that go OK.
+     */
+    private final RequestHandler handler;
+
+    private ErrorReportHandler(RequestHandler handler) {
+        this.handler = notNull(handler);
+    }
+
+    public static RequestHandler of(RequestHandler handler) {
+        return new ErrorReportHandler(handler);
+    }
+
+    public PageResponse produce(PageRequest request) throws IOException {
+        try {
+            return handler.produce(request);
+        } catch (Throwable t) {
+            return PageResponse.of(t);
+        }
+    }
+
+}

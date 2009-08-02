@@ -1,0 +1,58 @@
+package com.cve.web.alt;
+
+import com.cve.db.Hints;
+import com.cve.db.Select;
+import com.cve.db.SelectResults;
+import com.cve.db.Server;
+import com.cve.db.dbio.DBConnection;
+import com.cve.db.select.SelectRunner;
+import com.cve.stores.HintsStore;
+import com.cve.stores.ServersStore;
+import com.cve.util.URIParser;
+import com.cve.util.URIs;
+import com.cve.web.CompositeRequestHandler;
+import com.cve.web.RequestHandler;
+import java.net.URI;
+import java.sql.SQLException;
+
+/**
+ * The {@link RequestHandler} for alternate views of a select result.
+ */
+public class AlternateViewHandler {
+
+    private static final RequestHandler handler = CompositeRequestHandler.of(
+        // handler            // for URLs of the form
+        new CSVHandler(),     // /view/CSV/
+        new SQLHandler(),     // /view/SQL/
+        new XLSHandler(),     // /view/XLS/
+        new PDFHandler(),     // /view/PDF/
+        new JSONHandler(),    // /view/JSON/
+        new XMLHandler());    // /view/XML/
+
+    public static RequestHandler newInstance() {
+        return handler;
+    }
+
+    /**
+     * Return the results of the select that corresponds to the given URI.
+     */
+    static SelectResults getResultsFromDB(final String uri) throws SQLException {
+
+        // /view/CSV/foo
+        //          ^ start here
+        URI tail = URIs.startingAtSlash(uri,3);
+
+        // The server out of the URL
+        Server         server = URIParser.getServer(tail.toString());
+
+        // Setup the select
+        Select           select = URIParser.getSelect(tail.toString());
+        DBConnection connection = ServersStore.getConnection(server);
+        Hints hints = HintsStore.getHints(select.getColumns());
+
+        // run the select
+        SelectResults results = SelectRunner.run(
+            select, server, connection, hints);
+        return results;
+    }
+}

@@ -1,0 +1,30 @@
+package com.cve.web.db;
+
+import com.cve.web.*;
+import java.io.IOException;
+import java.sql.SQLException;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author curt
+ */
+public class ServersHandlerTest {
+
+    @Test
+    public void handlesServersOnlyRequest() throws IOException, SQLException {
+        ServersHandler handler = new ServersHandler();
+        PageRequest   request = PageRequest.path("/");
+        assertNotNull(handler.produce(request));
+    }
+
+    @Test
+    public void skipsNonServersOnlyRequest() throws IOException, SQLException {
+        ServersHandler handler = new ServersHandler();
+        PageRequest   request = PageRequest.path("/server/");
+        assertNull(handler.produce(request));
+    }
+
+}
