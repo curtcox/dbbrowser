@@ -13,8 +13,20 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class SelectResults implements Model {
 
+    /**
+     * The type of results these are -- either normal data, or a column value
+     * distribution.
+     */
     public enum Type {
+
+        /**
+         * Columns from tables -- perhaps joined, filtered, and sorted.
+         */
         NORMAL_DATA,
+
+        /**
+         * Column value distribution data.
+         */
         COLUMN_VALUE_DISTRIBUTION
     }
 

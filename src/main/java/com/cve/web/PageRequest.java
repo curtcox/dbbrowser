@@ -17,6 +17,9 @@ import javax.servlet.http.Cookie;
 @Immutable
 public final class PageRequest {
 
+    /**
+     * How a page is being requested -- GET or POST.
+     */
     public enum Method {
         GET, POST;
     }

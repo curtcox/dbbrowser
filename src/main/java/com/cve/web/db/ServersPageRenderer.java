@@ -5,6 +5,9 @@ import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.html.CSS;
 
+import com.cve.html.Label;
+import com.cve.html.Link;
+import com.cve.util.URIs;
 import static com.cve.html.HTML.*;
 /**
  * For picking a database server.
@@ -17,12 +20,42 @@ public final class ServersPageRenderer implements ModelRenderer {
     }
 
     public String render(ServersPage page, ClientInfo client) {
-        return 
+        String actions = addServer() + removeServer() + 
+               (loggedIn() ? logout() : login());
+        return
+            actions +
             h1("Available Servers") +
             tableOfServers(page)
         ;
     }
 
+    String addServer() {
+        return Link.textTarget(Label.of("+"), URIs.of("add")).toString();
+    }
+
+    String removeServer() {
+        return Link.textTarget(Label.of("-"), URIs.of("remove")).toString();
+    }
+
+    String login() {
+        return Link.textTarget(Label.of("login"), URIs.of("login")).toString();
+    }
+
+    String logout() {
+        return Link.textTarget(Label.of("logout"), URIs.of("logout")).toString();
+    }
+    
+    /**
+     * Return true if the user is currently logged in.
+     * @return
+     */
+    boolean loggedIn() {
+        return false;
+    }
+
+    /**
+     * Return a table of all the available servers.
+     */
     static String tableOfServers(ServersPage page) {
         StringBuilder out = new StringBuilder();
         out.append(tr(th("Database Server") + th("Databases")));
@@ -37,7 +70,11 @@ public final class ServersPageRenderer implements ModelRenderer {
         
         return table(out.toString());
     }
-    
+
+    /**
+     * Return a list of all (or at least the first several) databases
+     * available on the given server.
+     */
     static String databasesOn(ServersPage page, Server server) {
         StringBuilder out = new StringBuilder();
         int i = 0;
@@ -48,11 +85,8 @@ public final class ServersPageRenderer implements ModelRenderer {
                 out.append("...");
                 return out.toString();
             }
-
         }
         return out.toString();
     }
-
-
 
 }

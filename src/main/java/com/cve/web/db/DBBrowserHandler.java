@@ -12,7 +12,11 @@ public final class DBBrowserHandler {
         // handler                         // for URLs of the form
         new RedirectsHandler(),            // action?args
         new ServersHandler(),              // /
-        DatabaseMetaHandler.newInstance(), // /server/meta/
+        new AddServerHandler(),            // /add
+        new RemoveServerHandler(),         // /remove
+        new UserLoginHandler(),            // /login
+        new UserLogoutHandler(),           // /logout
+        DatabaseMetaHandler.newInstance(), // /meta/server/
         new DatabasesHandler(),            // /server/
         new TablesHandler(),               // /server/databases/
         new ColumnValueDistributionHandler(), // server/database/table/column

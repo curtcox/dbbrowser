@@ -4,7 +4,7 @@ package com.cve.html;
 import com.cve.util.Replace;
 
 /**
- *
+ * Gateway class for any CSS stuff we do.
  * @author curt
  */
 public enum CSS {
