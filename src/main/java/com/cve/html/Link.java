@@ -53,6 +53,8 @@ public final class Link {
         return new Link(text,target,tip);
     }
 
+    public URI getTarget() { return target; }
+
     /**
      * Create the Javascript that shows the tooltip
      */
@@ -71,6 +73,9 @@ public final class Link {
     @Override
     public String toString() { return html; }
 
+    /**
+     * Return a new link with the given text.
+     */
     public Link with(Label text) {
         return textTargetTip(text,target,tip);
     }

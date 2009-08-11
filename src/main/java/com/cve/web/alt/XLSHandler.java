@@ -13,7 +13,7 @@ final class XLSHandler extends AbstractRequestHandler {
 
     XLSHandler() { super("^/view/csv/"); }
 
-    public PageResponse doProduce(PageRequest request) throws IOException {
+    public PageResponse get(PageRequest request) throws IOException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

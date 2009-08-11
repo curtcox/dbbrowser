@@ -23,7 +23,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
         return HANDLER;
     }
 
-    public PageResponse doProduce(PageRequest request) throws IOException {
+    public PageResponse get(PageRequest request) throws IOException {
         return serveResource(request);
     }
 

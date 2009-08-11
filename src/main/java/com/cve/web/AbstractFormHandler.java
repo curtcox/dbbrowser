@@ -5,24 +5,22 @@ import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 /**
- * Something that handles {@link PageRequest}S and produces
- * {@link URIResponse}S.
+ * For handling pages with a form.
  * @author Curt
  */
-public abstract class AbstractRequestHandler
+public abstract class AbstractFormHandler
     implements RequestHandler
 {
-
     /**
      * The stuff we handle.
      */
     private final Pattern pattern;
 
-    public AbstractRequestHandler(String regexp) {
+    public AbstractFormHandler(String regexp) {
         pattern = Pattern.compile(regexp);
     }
 
-    public AbstractRequestHandler() {
+    public AbstractFormHandler() {
         pattern = Pattern.compile("");
     }
 
@@ -32,16 +30,24 @@ public abstract class AbstractRequestHandler
      */
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         String uri = request.getRequestURI();
-        if (handles(uri)) {
+        if (!handles(uri)) {
+            return null;
+        }
+        PageRequest.Method method = request.getMethod();
+        if (method==PageRequest.Method.GET) {
             return get(request);
         }
-        return null;
+        if (method==PageRequest.Method.POST) {
+            return post(request);
+        }
+        throw new IllegalArgumentException("" + method);
     }
 
     public boolean handles(String uri) {
         return pattern.matcher(uri).find();
     }
 
-    public abstract PageResponse get(PageRequest request) throws IOException, SQLException;
-    
+    public abstract PageResponse get(PageRequest request);
+    public abstract PageResponse post(PageRequest request);
+
 }

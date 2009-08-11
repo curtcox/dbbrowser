@@ -27,7 +27,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         return isTablesOnlyRequest(uri);
     }
 
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         String uri = request.getRequestURI();
         Server                 server = URIParser.getServer(uri);
         Database             database = URIParser.getDatabase(uri);

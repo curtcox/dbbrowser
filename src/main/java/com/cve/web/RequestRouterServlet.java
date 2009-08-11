@@ -2,6 +2,7 @@ package com.cve.web;
 
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.alt.AlternateViewHandler;
+import com.cve.web.db.DatabaseModelRenderers;
 import java.sql.SQLException;
 import javax.servlet.http.*;
 import java.io.*;
@@ -47,7 +48,8 @@ public final class RequestRouterServlet extends HttpServlet {
     /**
      * Renders models into HTML, JPG, PNG, etc...
      */
-    private static final ModelRenderer RENDERER = new PageModelRenderer();
+    private static final ModelRenderer RENDERER = CompositeModelRenderer.of(
+            PageModelRenderer.RENDERERS).with(DatabaseModelRenderers.RENDERERS);
 
     /**
      * Determines the appropriate MIME type for the objects produced by

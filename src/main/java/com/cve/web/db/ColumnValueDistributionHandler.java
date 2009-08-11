@@ -30,7 +30,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
     ColumnValueDistributionHandler() {}
 
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         String uri = request.getRequestURI();
         SelectResults results = getResultsFromDB(uri);
         return PageResponse.of(results);

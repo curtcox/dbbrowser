@@ -137,7 +137,8 @@
 
         <!-- Database Drivers -->
         <!-- This page rocks http://docs.codehaus.org/display/TRAILS/DatabaseConfigurations -->
-        <!-- Needed : Teiid, Derby, Sybase, MS SQL, DB 2, Access, SQL Anywhere, etc... -->
+        <!-- Needed : Teiid, Derby, Sybase, MS SQL, DB 2, Access, SQL Anywhere,
+             Oracle, Excel, ODBC-JDBC etc... -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

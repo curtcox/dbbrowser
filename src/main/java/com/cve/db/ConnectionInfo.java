@@ -15,7 +15,7 @@ public final class ConnectionInfo {
     private final JDBCURL         url;
     private final String         user;
     private final String     password;
-    private final DBDriver    driver;
+    private final DBDriver     driver;
 
     /**
      * Use the factory.

@@ -19,7 +19,7 @@ final class CSVHandler extends AbstractRequestHandler {
 
     CSVHandler() { super("^/view/CSV/"); }
 
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         return csv(AlternateViewHandler.getResultsFromDB(request.getRequestURI()));
     }
 

@@ -36,7 +36,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return new DatabaseMetaHandler();
     }
 
-    public PageResponse doProduce(PageRequest request) throws IOException {
+    public PageResponse get(PageRequest request) throws IOException {
         String uri = request.getRequestURI();
 
         String suffix = uri.substring(PREFIX.length() - 1);

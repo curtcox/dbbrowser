@@ -1,16 +1,21 @@
 package com.cve.web.db;
 
-import com.cve.web.AbstractRequestHandler;
+import com.cve.db.ConnectionInfo;
+import com.cve.db.JDBCURL;
+import com.cve.db.Server;
+import com.cve.stores.ServersStore;
+import com.cve.util.URIs;
+import com.cve.web.AbstractFormHandler;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
-import java.io.IOException;
-import java.sql.SQLException;
+import com.google.common.collect.ImmutableMap;
+import java.net.URI;
 
 /**
  * For adding a server.
  * @author Curt
  */
-final class AddServerHandler extends AbstractRequestHandler {
+final class AddServerHandler extends AbstractFormHandler {
 
     AddServerHandler() {}
 
@@ -20,8 +25,35 @@ final class AddServerHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public PageResponse get(PageRequest request) {
+        return PageResponse.of(AddServerPage.SAMPLE);
+    }
+
+    @Override
+    public PageResponse post(PageRequest request) {
+        ImmutableMap<String,String> params = request.getParameterMap();
+        String         user = params.get(AddServerPage.USER);
+        String     password = params.get(AddServerPage.PASSWORD);
+        String          url = params.get(AddServerPage.URL);
+        URI             uri = URIs.of(url);
+        JDBCURL     jdbcurl = JDBCURL.uri(uri);
+        Server       server = Server.uri(uri);
+        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
+        if (ServersStore.getServers().contains(server)) {
+            String message = "There is already a server for " + url;
+            return PageResponse.of(
+                AddServerPage.messageServerInfo(message, server, info)
+            );
+        }
+        try {
+            ServersStore.addServer(server, info);
+            return PageResponse.newRedirect(server.linkTo().getTarget());
+        } catch (RuntimeException e) {
+            String message = e.getMessage();
+            return PageResponse.of(
+                AddServerPage.messageServerInfo(message, server, info)
+            );
+        }
     }
 
 }

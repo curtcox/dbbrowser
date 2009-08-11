@@ -5,7 +5,6 @@ import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.html.CSS;
-import com.cve.html.HTML;
 import com.cve.util.Replace;
 
 import static com.cve.html.HTML.*;

@@ -28,7 +28,7 @@ final class SQLHandler extends AbstractRequestHandler {
 
     SQLHandler() { super("^/view/SQL/");}
 
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         return rows(AlternateViewHandler.getResultsFromDB(request.getRequestURI()));
     }
 

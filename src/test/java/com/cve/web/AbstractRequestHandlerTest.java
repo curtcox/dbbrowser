@@ -12,7 +12,7 @@ public class AbstractRequestHandlerTest {
 
     static class TestHandler extends AbstractRequestHandler {
         TestHandler(String regexp) { super(regexp); }
-        public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+        public PageResponse get(PageRequest request) throws IOException, SQLException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

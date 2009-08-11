@@ -22,7 +22,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
 
     @Override
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         String uri = request.getRequestURI();
 
         Server     server = URIParser.getServer(uri);

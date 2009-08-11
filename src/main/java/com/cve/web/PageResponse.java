@@ -15,7 +15,14 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class PageResponse {
 
+    /**
+     * Possibly null URI to redirect to.
+     */
     private final URI redirect;
+
+    /**
+     * Possibly null Model to render.
+     */
     private final Model model;
 
     private PageResponse(Model model) {

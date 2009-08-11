@@ -17,7 +17,7 @@ import java.sql.SQLException;
  */
 public final class ServersHandler extends AbstractRequestHandler {
 
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         ImmutableList<Server>                servers = ServersStore.getServers();
         ImmutableMultimap<Server,Database> databases = getDatabases(servers);
         return PageResponse.of(new ServersPage(servers,databases));

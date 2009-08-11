@@ -20,7 +20,7 @@ final class RemoveServerHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public PageResponse doProduce(PageRequest request) throws IOException, SQLException {
+    public PageResponse get(PageRequest request) throws IOException, SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
