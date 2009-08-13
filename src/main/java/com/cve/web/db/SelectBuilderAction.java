@@ -36,7 +36,7 @@ public enum SelectBuilderAction {
     NEXT("next") {
         public Select goDo(Select select, Server server, String query) {
             int   pages = Integer.parseInt(query);
-            Limit limit = select.getLimit();
+            Limit limit = select.limit;
             select = select.with(limit.next(pages));
             return select;
         }
@@ -48,7 +48,7 @@ public enum SelectBuilderAction {
     BACK("back") {
         public Select goDo(Select select, Server server, String query) {
             int   pages = Integer.parseInt(query);
-            Limit limit = select.getLimit();
+            Limit limit = select.limit;
             select = select.with(limit.back(pages));
             return select;
         }
@@ -60,7 +60,7 @@ public enum SelectBuilderAction {
     BIGGER("bigger") {
         public Select goDo(Select select, Server server, String query) {
             int   factor = Integer.parseInt(query);
-            Limit limit = select.getLimit();
+            Limit limit = select.limit;
             select = select.with(limit.bigger(factor));
             return select;
         }
@@ -72,7 +72,7 @@ public enum SelectBuilderAction {
     SMALLER("smaller") {
         public Select goDo(Select select, Server server, String query) {
             int   factor = Integer.parseInt(query);
-            Limit limit = select.getLimit();
+            Limit limit = select.limit;
             select = select.with(limit.smaller(factor));
             return select;
         }
@@ -83,7 +83,7 @@ public enum SelectBuilderAction {
      */
     HIDE("hide") {
         public Select goDo(Select select, Server server, String query) {
-            return select.without(DBColumn.parse(server,select.getTables(),query));
+            return select.without(DBColumn.parse(server,select.tables,query));
         }
     },
 
@@ -92,7 +92,7 @@ public enum SelectBuilderAction {
      */
     SHOW("show") {
         public Select goDo(Select select, Server server, String query) {
-             return select.with(DBColumn.parse(server,select.getTables(),query));
+             return select.with(DBColumn.parse(server,select.tables,query));
         }
     },
 
@@ -101,7 +101,7 @@ public enum SelectBuilderAction {
      */
     FILTER("filter") {
         public Select goDo(Select select, Server server, String query) {
-            return select.with(Filter.parse(server,select.getTables(),query));
+            return select.with(Filter.parse(server,select.tables,query));
         }
     },
 
@@ -110,10 +110,10 @@ public enum SelectBuilderAction {
      */
     JOIN("join") {
         public Select goDo(Select select, Server server, String query) throws SQLException {
-            Join join = Join.parse(server,select.getTables(),query);
+            Join join = Join.parse(server,select.tables,query);
             select = select.with(join);
-            DBTable table = join.getDest().getTable();
-            DBMetaData meta = DBConnection.getDbmd(table.getDatabase().getServer());
+            DBTable table = join.dest.table;
+            DBMetaData meta = DBConnection.getDbmd(table.database.server);
             for (DBColumn column : meta.getColumnsFor(table)) {
                 select = select.with(column);
             }

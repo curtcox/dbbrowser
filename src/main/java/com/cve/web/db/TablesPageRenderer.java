@@ -26,7 +26,7 @@ public final class TablesPageRenderer implements ModelRenderer {
         return 
             h1(Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
-                server.linkTo() + "/" + database.getName()
+                server.linkTo() + "/" + database.name
             )) +
             tableOfTables(page)
         ;

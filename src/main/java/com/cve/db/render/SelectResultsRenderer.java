@@ -23,7 +23,7 @@ public final class SelectResultsRenderer implements ModelRenderer {
 
     public Object render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
-        if (results.getType()==Type.COLUMN_VALUE_DISTRIBUTION) {
+        if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
             return renderColumnValueDistributionPage(results,client);
         } else {
             return renderSelectBuilderPage(results,client);

@@ -17,27 +17,27 @@ public final class DBResultSet {
     /**
      * The databases the data came from
      */
-    private final ImmutableList<Database>  databases;
+    public final ImmutableList<Database>  databases;
 
     /**
      * The tables the data came from
      */
-    private final ImmutableList<DBTable>     tables;
+    public final ImmutableList<DBTable>     tables;
 
     /**
      * The columns the data came from
      */
-    private final ImmutableList<DBColumn>    columns;
+    public final ImmutableList<DBColumn>    columns;
 
     /**
      * The rows in the results
      */
-    private final ImmutableList<DBRow>       rows;
+    public final ImmutableList<DBRow>       rows;
 
     /**
      * The values in the results
      */
-    private final ImmutableMap<Cell,Value> values;
+    public final ImmutableMap<Cell,Value> values;
 
     private DBResultSet(
         ImmutableList<Database> databases,
@@ -73,11 +73,6 @@ public final class DBResultSet {
         return new DBResultSet(databases,tables,columns,rows,values);
     }
 
-    public ImmutableList<Database>   getDatabases() { return databases; }
-    public ImmutableList<DBRow>           getRows() { return rows;      }
-    public ImmutableList<DBColumn>     getColumns() { return columns;   }
-    public ImmutableList<DBTable>       getTables() { return tables;    }
-    public ImmutableMap<Cell,Value>   getValues() { return values;    }
     public Value getValue(DBRow row, DBColumn column) {
         Value value = values.get(Cell.at(row,column));
         return notNull(value);

@@ -28,13 +28,13 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
         Check.notNull(select);
         StringBuilder out = new StringBuilder();
         out.append("SELECT ");
-        out.append(limit(select.getLimit()));
-        out.append(columns(select.getColumns(),select.getFunctions()));
+        out.append(limit(select.limit));
+        out.append(columns(select.columns,select.functions));
         out.append(FROM);
-        out.append(tables(select.getTables()));
-        out.append(where(select.getJoins(),select.getFilters()));
-        out.append(order(select.getOrders()));
-        out.append(group(select.getGroups()));
+        out.append(tables(select.tables));
+        out.append(where(select.joins,select.filters));
+        out.append(order(select.orders));
+        out.append(group(select.groups));
         return SQL.of(out.toString());
     }
     
@@ -45,7 +45,7 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
     public String limit(Limit limit) {
         // Use limit + 1, so we can see if there is more data to get,
         // without the risk of accidentally getting way too much.
-        return TOP + ( limit.getLimit() + 1 ) + " ";
+        return TOP + ( limit.limit + 1 ) + " ";
     }
 
     @Override
@@ -53,12 +53,12 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
         if (column.equals(DBColumn.ALL)) {
             return DBColumn.ALL.fullName();
         }
-        return fullName(column.getTable()) + "." + column.getName();
+        return fullName(column.table) + "." + column.name;
     }
 
     @Override
     public String fullName(DBTable table) {
-        return table.getDatabase().getName() + ".dbo." + table.getName();
+        return table.database.name + ".dbo." + table.name;
     }
 
 }

@@ -11,8 +11,8 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Order {
 
-    private final DBColumn column;
-    private final Direction direction;
+    public final DBColumn column;
+    public final Direction direction;
 
     /**
      * The direction of an order.  Ascending or descending.
@@ -43,9 +43,6 @@ public final class Order {
     public static Order ascending(DBColumn column) {
         return new Order(column,Direction.ASC);
     }
-
-    public DBColumn       getColumn() { return column; }
-    public Direction getDirection() { return direction; }
 
     @Override
     public int hashCode() { return column.hashCode() ^ direction.hashCode(); }

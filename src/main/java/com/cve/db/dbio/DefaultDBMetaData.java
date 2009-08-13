@@ -55,12 +55,12 @@ class DefaultDBMetaData implements DBMetaData {
     }
 
     private static ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
-        Database     database = table.getDatabase();
-        Server         server = database.getServer();
+        Database     database = table.database;
+        Server         server = database.server;
         DBMetaDataIO     dbmd = getDbmdIO(server);
-        String        catalog = database.getName();
+        String        catalog = database.name;
         String         schema = null;
-        String      tableName = table.getName();
+        String      tableName = table.name;
         ResultSet results = dbmd.getPrimaryKeys(catalog, schema, tableName);
         try {
             List<DBColumn> list = Lists.newArrayList();
@@ -105,7 +105,7 @@ class DefaultDBMetaData implements DBMetaData {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         for (Database database : getDatabasesOn(server)) {
-            String          catalog = database.getName();
+            String          catalog = database.name;
             String    schemaPattern = null;
             String tableNamePattern = null;
             String columnNamePattern = null;
@@ -131,12 +131,12 @@ class DefaultDBMetaData implements DBMetaData {
      * Simple cache
      */
     public ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException {
-        Database       database = table.getDatabase();
-        Server           server = database.getServer();
+        Database       database = table.database;
+        Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
-        String          catalog = database.getName();
+        String          catalog = database.name;
         String    schemaPattern = null;
-        String tableNamePattern = table.getName();
+        String tableNamePattern = table.name;
         String columnNamePattern = null;
         ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
         try {
@@ -175,9 +175,9 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
-        Server           server = database.getServer();
+        Server           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
-        String          catalog = database.getName();
+        String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = null;
         String[]          types = null;
@@ -217,12 +217,12 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public ImmutableList<Join> getImportedKeysFor(DBTable table)  throws SQLException {
-        Database       database = table.getDatabase();
-        Server           server = database.getServer();
+        Database       database = table.database;
+        Server           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
-        String   catalog = database.getName();
+        String   catalog = database.name;
         String    schema = null;
-        String tableName = table.getName();
+        String tableName = table.name;
         ResultSet results = dbmd.getImportedKeys(catalog, schema, tableName);
         try {
             List<Join> list = Lists.newArrayList();
@@ -247,12 +247,12 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public static ImmutableList<Join> getExportedKeysFor(DBTable table)  throws SQLException {
-        Database       database = table.getDatabase();
-        Server           server = database.getServer();
+        Database       database = table.database;
+        Server           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
-        String   catalog = database.getName();
+        String   catalog = database.name;
         String    schema = null;
-        String tableName = table.getName();
+        String tableName = table.name;
         ResultSet results = dbmd.getExportedKeys(catalog, schema, tableName);
         try {
             List<Join> list = Lists.newArrayList();
@@ -280,17 +280,17 @@ class DefaultDBMetaData implements DBMetaData {
      * have the same name.
      */
     private ImmutableList<Join> getReasonableJoinsFor(DBTable table)  throws SQLException {
-        Database database = table.getDatabase();
-        Server     server = database.getServer();
+        Database database = table.database;
+        Server     server = database.server;
 
         Multimap<String,DBColumn> columns = HashMultimap.create();
         for (DBColumn column : getColumnsFor(server)) {
-            columns.put(column.getName(), column);
+            columns.put(column.name, column);
         }
 
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBColumn source : getColumnsFor(table)) {
-            for (DBColumn dest : columns.get(source.getName())) {
+            for (DBColumn dest : columns.get(source.name)) {
                 joins.add(Join.of(source, dest));
             }
         }

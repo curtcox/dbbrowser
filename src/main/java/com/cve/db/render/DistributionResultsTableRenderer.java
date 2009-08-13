@@ -77,10 +77,10 @@ public final class DistributionResultsTableRenderer {
      * Cells in this row map one-to-one to columns in the result set.
      */
     ImmutableList<UIDetail> columnNameRow() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        DBColumn column = resultSet.getColumns().get(0);
-        out.add(UIDetail.of(column.getName(),tools.classOf(column)));
+        DBColumn column = resultSet.columns.get(0);
+        out.add(UIDetail.of(column.name,tools.classOf(column)));
         out.add(UIDetail.of("count"));
         return ImmutableList.copyOf(out);
     }
@@ -89,19 +89,19 @@ public final class DistributionResultsTableRenderer {
      * The rows that contain all of the result set values.
      */
     List<UIRow> valueRows() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIRow> out = Lists.newArrayList();
         CSS cssClass = CSS.ODD_ROW;
-        for (DBRow row : resultSet.getRows()) {
+        for (DBRow row : resultSet.rows) {
             List<UIDetail> details = Lists.newArrayList();
-            DBColumn column = resultSet.getColumns().get(0);
+            DBColumn column = resultSet.columns.get(0);
 
             Cell   valueCell = Cell.at(row, column);
             Value      value = resultSet.getValue(row, column);
             details.add(UIDetail.of(valueCell(valueCell,value)));
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
-            Value  countValue = resultSet.getValues().get(countCell);
+            Value  countValue = resultSet.values.get(countCell);
             details.add(UIDetail.of(countValue.getValue().toString()));
 
             out.add(UIRow.of(details, cssClass));

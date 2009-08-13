@@ -18,12 +18,12 @@ public final class PageResponse {
     /**
      * Possibly null URI to redirect to.
      */
-    private final URI redirect;
+    public final URI redirect;
 
     /**
      * Possibly null Model to render.
      */
-    private final Model model;
+    public final Model model;
 
     private PageResponse(Model model) {
         this.model = notNull(model);
@@ -50,9 +50,6 @@ public final class PageResponse {
     public static PageResponse newRedirect(URI dest) {
         return new PageResponse(dest);
     }
-
-    public URI   getRedirect() { return redirect; }
-    public Model    getModel() { return model;    }
 
 
 }

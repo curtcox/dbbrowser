@@ -18,22 +18,22 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Select {
 
-    private final ImmutableList<Database>            databases;
-    private final ImmutableList<DBTable>             tables;
+    public final ImmutableList<Database>            databases;
+    public final ImmutableList<DBTable>             tables;
     /**
      * There is a 1-to-1 map from columns to functions.
      */
-    private final ImmutableList<DBColumn>            columns;
+    public final ImmutableList<DBColumn>            columns;
 
     /**
      * There is a 1-to-1 map from columns to functions.
      */
-    private final ImmutableList<AggregateFunction>   functions;
-    private final ImmutableList<Join>                joins;
-    private final ImmutableList<Filter>              filters;
-    private final ImmutableList<Order>               orders;
-    private final ImmutableList<Group>               groups;
-    private final Limit                              limit;
+    public final ImmutableList<AggregateFunction>   functions;
+    public final ImmutableList<Join>                joins;
+    public final ImmutableList<Filter>              filters;
+    public final ImmutableList<Order>               orders;
+    public final ImmutableList<Group>               groups;
+    public final Limit                              limit;
 
     private Select(
         ImmutableList<Database> databases,
@@ -76,8 +76,8 @@ public final class Select {
         if (joins.contains(join)) {
             return this;
         }
-        ImmutableList newTables = with(join.getSource().getTable(),tables);
-                      newTables = with(join.getDest().getTable(),newTables);
+        ImmutableList newTables = with(join.source.table,tables);
+                      newTables = with(join.dest.table,newTables);
         return new Select(databases,newTables,columns,functions,with(join,joins),filters,orders,groups,limit);
     }
 
@@ -185,34 +185,25 @@ public final class Select {
         return ImmutableList.copyOf(functions);
     }
 
-    public ImmutableList<Database>   getDatabases() { return databases;  }
-    public ImmutableList<DBTable>       getTables() { return tables;  }
-    public ImmutableList<DBColumn>     getColumns() { return columns; }
-    public ImmutableList<Join>           getJoins() { return joins;   }
-    public ImmutableList<Filter>       getFilters() { return filters;   }
-    public ImmutableList<Order>         getOrders() { return orders;  }
-    public ImmutableList<Group>         getGroups() { return groups;  }
-    public Limit                         getLimit() { return limit;  }
-    public ImmutableList<AggregateFunction> getFunctions() { return functions; }
 
     /**
      * This is just a start...
      */
     public static void validate(Select select) {
-        if (select.getColumns().size()!=select.getFunctions().size()) {
+        if (select.columns.size()!=select.functions.size()) {
             throw new IllegalArgumentException("Column count!= function count");
         }
-        if (select.getDatabases().size()<1) {
+        if (select.databases.size()<1) {
             throw new IllegalArgumentException("No DB specified");
         }
-        if (select.getTables().size()<1) {
+        if (select.tables.size()<1) {
             throw new IllegalArgumentException("No tables specified");
         }
-        if (select.getColumns().size()<1) {
+        if (select.columns.size()<1) {
             throw new IllegalArgumentException("No columns specified");
         }
-        for (Join join : select.getJoins()) {
-            if (!select.getTables().contains(join.getDest().getTable())) {
+        for (Join join : select.joins) {
+            if (!select.tables.contains(join.dest.table)) {
                 throw new IllegalArgumentException("Join tables must be included in tables");
             }
         }

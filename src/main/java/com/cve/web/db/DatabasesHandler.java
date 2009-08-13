@@ -23,7 +23,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
     @Override
     public PageResponse get(PageRequest request) throws IOException, SQLException {
-        String uri = request.getRequestURI();
+        String uri = request.requestURI;
 
         Server     server = URIParser.getServer(uri);
         DBMetaData  meta = DBConnection.getDbmd(server);
@@ -49,7 +49,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
     static ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) throws SQLException {
         Multimap<Database,DBTable> tables = HashMultimap.create();
         for (Database database : databases) {
-            DBMetaData  meta = DBConnection.getDbmd(database.getServer());
+            DBMetaData  meta = DBConnection.getDbmd(database.server);
             for (DBTable table : meta.getTablesOn(database)) {
                 tables.put(database,table);
             }

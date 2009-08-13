@@ -13,8 +13,8 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Database {
 
-    private final String name;
-    private final Server server;
+    public final String name;
+    public final Server server;
 
     public static final Database NULL = new Database(Server.NULL,"");
 
@@ -26,9 +26,6 @@ public final class Database {
     public static Database serverName(Server server, String name) {
         return new Database(server,name);
     }
-
-    public String   getName() { return name; }
-    public Server getServer() { return server; }
 
     @Override
     public   int hashCode() { return name.hashCode(); }
@@ -53,7 +50,7 @@ public final class Database {
 
     public Link linkTo() {
         Label text = Label.of(name);
-        URI target = URIs.of("/" + server.getURI() + "/" + name + "/");
+        URI target = URIs.of("/" + server.uri + "/" + name + "/");
         return Link.textTarget(text, target);
     }
 }

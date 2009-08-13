@@ -30,7 +30,7 @@ public final class PageRequest {
      * http://host:port/requestURI?queryString
      * just /requestURI
      */
-    private final String requestURI;
+    public final String requestURI;
 
     /**
      * The part of the URL given to the server starting after the
@@ -38,23 +38,24 @@ public final class PageRequest {
      * http://host:port/requestURI?queryString
      * just queryString
      */
-    private final String queryString;
+    public final String queryString;
 
     /**
      * Parameters either parsed from the query string or from form post
      * contents.
+     * Often empty, but never null.
      */
-    private final ImmutableMap<String,String> parameters;
+    public final ImmutableMap<String,String> parameters;
 
     /**
      * The cookies for this request.
      */
-    private final ImmutableList<Cookie> cookies;
+    public final ImmutableList<Cookie> cookies;
 
     /**
      * The method (GET, POST) used for this request.
      */
-    private final Method method;
+    public final Method method;
 
     private PageRequest(
         Method type, String requestURI, String queryString,
@@ -96,15 +97,5 @@ public final class PageRequest {
     private static String notNull(String string) {
         return (string==null) ? "" : string;
     }
-
-    public String getRequestURI()  { return requestURI;  }
-    public String getQueryString() { return queryString; }
-    public Method getMethod()      { return method;      }
-    
-    /**
-     * Often empty, but never null.
-     */
-    public ImmutableMap<String,String> getParameterMap() { return parameters; }
-    public ImmutableList<Cookie>            getCookies() { return cookies; }
 
 }

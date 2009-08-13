@@ -32,13 +32,13 @@ class SimpleSelectRenderer implements SelectRenderer {
         notNull(select);
         StringBuilder out = new StringBuilder();
         out.append("SELECT ");
-        out.append(columns(select.getColumns(),select.getFunctions()));
+        out.append(columns(select.columns,select.functions));
         out.append(FROM);
-        out.append(tables(select.getTables()));
-        out.append(where(select.getJoins(),select.getFilters()));
-        out.append(order(select.getOrders()));
-        out.append(group(select.getGroups()));
-        out.append(limit(select.getLimit()));
+        out.append(tables(select.tables));
+        out.append(where(select.joins,select.filters));
+        out.append(order(select.orders));
+        out.append(group(select.groups));
+        out.append(limit(select.limit));
         return SQL.of(out.toString());
     }
 
@@ -83,7 +83,7 @@ class SimpleSelectRenderer implements SelectRenderer {
     public String joins(ImmutableList<Join> joins) {
         List<String> list = Lists.newArrayList();
         for (Join join : joins) {
-            list.add(fullName(join.getSource()) + "=" + fullName(join.getDest()));
+            list.add(fullName(join.source) + "=" + fullName(join.dest));
         }
         return separated(list,AND);
     }
@@ -91,7 +91,7 @@ class SimpleSelectRenderer implements SelectRenderer {
     public String filters(ImmutableList<Filter> filters) {
         List<String> list = Lists.newArrayList();
         for (Filter filter : filters) {
-            list.add(fullName(filter.getColumn()) + "=" + singleQuote(filter.getValue().toString()));
+            list.add(fullName(filter.column) + "=" + singleQuote(filter.value.toString()));
         }
         return separated(list,AND);
     }
@@ -102,7 +102,7 @@ class SimpleSelectRenderer implements SelectRenderer {
         }
         List<String> list = Lists.newArrayList();
         for (Order order : orders) {
-            list.add(fullName(order.getColumn()) + " " + order.getDirection().toString());
+            list.add(fullName(order.column) + " " + order.direction.toString());
         }
         return ORDER_BY + separated(list,AND);
     }
@@ -113,7 +113,7 @@ class SimpleSelectRenderer implements SelectRenderer {
         }
         List<String> list = Lists.newArrayList();
         for (Group group : groups) {
-            list.add(fullName(group.getColumn()) + " ");
+            list.add(fullName(group.column) + " ");
         }
         return GROUP_BY + separated(list,AND);
     }
@@ -121,7 +121,7 @@ class SimpleSelectRenderer implements SelectRenderer {
     public String limit(Limit limit) {
         // Use limit + 1, so we can see if there is more data to get,
         // without the risk of accidentally getting way too much.
-        return LIMIT + ( limit.getLimit() + 1 ) + OFFSET + limit.getOffset();
+        return LIMIT + ( limit.limit + 1 ) + OFFSET + limit.offset;
     }
 
     public String fullName(DBColumn column) {

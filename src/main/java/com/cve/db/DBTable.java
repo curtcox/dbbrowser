@@ -14,8 +14,8 @@ import static com.cve.util.Check.notNull;
 
 public final class DBTable {
 
-    private final Database database;
-    private final String name;
+    public final Database database;
+    public final String name;
 
     public static DBTable NULL = new DBTable(Database.NULL,"");
 
@@ -51,10 +51,7 @@ public final class DBTable {
         return DBColumn.tableName(this, name);
     }
 
-    public String       getName() { return name; }
-    public Database getDatabase() { return database; }
-
-    public String fullName() { return database.getName() + "." + name; }
+    public String fullName() { return database.name + "." + name; }
 
     @Override
     public String toString() { return fullName(); }
@@ -70,10 +67,10 @@ public final class DBTable {
 
     public Link linkTo() {
         Label text = Label.of(name);
-        String databaseName = database.getName();
-        Server server = database.getServer();
+        String databaseName = database.name;
+        Server server = database.server;
         URI target = URIs.of(
-            "/" + server.getURI() + "/" + databaseName + "/" + fullName() + "/"
+            "/" + server.uri + "/" + databaseName + "/" + fullName() + "/"
         );
         return Link.textTarget(text, target);
     }

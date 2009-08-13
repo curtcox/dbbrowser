@@ -31,7 +31,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     ColumnValueDistributionHandler() {}
 
     public PageResponse get(PageRequest request) throws IOException, SQLException {
-        String uri = request.getRequestURI();
+        String uri = request.requestURI;
         SelectResults results = getResultsFromDB(uri);
         return PageResponse.of(results);
     }
@@ -72,11 +72,11 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
         // Setup the select
         Select           select = URIParser.getSelect(uri);
-        DBColumn column = select.getColumns().get(0);
+        DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.getColumns());
+        Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
         SelectResults results = SelectRunner.run(select, server, connection, hints);

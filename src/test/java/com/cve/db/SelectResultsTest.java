@@ -25,7 +25,7 @@ public class SelectResultsTest {
         Select    givenSelect   = Select.from(database,table,column);
         DBResultSet givenResults  = DBResultSet.of(database,table,column);
         SelectResults results   = SelectResults.selectResultsHintsMore(givenSelect,givenResults,Hints.NONE,false);
-        Select returnSelect = results.getSelect();
+        Select returnSelect = results.select;
         assertEquals(givenSelect, returnSelect);
     }
 

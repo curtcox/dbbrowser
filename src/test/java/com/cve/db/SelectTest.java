@@ -29,13 +29,13 @@ public class SelectTest {
         ImmutableList<Group>         groups = ImmutableList.of();
 
         Select select = Select.from(databases,tables,columns,functions,joins,filters,orders,groups,Limit.DEFAULT);
-        assertEquals(tables,     select.getTables());
-        assertEquals(columns,    select.getColumns());
-        assertEquals(functions,  select.getFunctions());
-        assertEquals(joins,      select.getJoins());
-        assertEquals(filters,    select.getFilters());
-        assertEquals(orders,     select.getOrders());
-        assertEquals(groups,     select.getGroups());
+        assertEquals(tables,     select.tables);
+        assertEquals(columns,    select.columns);
+        assertEquals(functions,  select.functions);
+        assertEquals(joins,      select.joins);
+        assertEquals(filters,    select.filters);
+        assertEquals(orders,     select.orders);
+        assertEquals(groups,     select.groups);
     }
 
 

@@ -61,7 +61,7 @@ public class ColumnNameTooltipTest {
 
     @Test
     public void columnInfo() {
-        DBColumn        foo = getJoin().getSource();
+        DBColumn        foo = getJoin().source;
         String       html = ColumnNameTooltip.info(foo).toString();
         String expected = "foo";
         assertEquals(expected,html);
@@ -70,7 +70,7 @@ public class ColumnNameTooltipTest {
     @Test
     public void joinInfo() {
         Join join = getJoin();
-        String       html = ColumnNameTooltip.joinInfo(join.getSource(),join.getDest()).toString();
+        String       html = ColumnNameTooltip.joinInfo(join.source,join.dest).toString();
         String expected = "<a href=[join?db.table.foo=db.table.bar]>join with db.table.bar</a>";
         expected = Replace.bracketQuote(expected);
         assertEquals(expected,html);

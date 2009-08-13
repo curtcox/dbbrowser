@@ -16,7 +16,7 @@ public final class Server {
     /**
      * How the server is represented in URLs.
      */
-    private final URI uri;
+    public final URI uri;
 
     public static Server NULL = new Server(URIs.of(""));
 
@@ -27,11 +27,6 @@ public final class Server {
     public static Server uri(URI uri) {
         return new Server(uri);
     }
-
-    /**
-     * Get how the server is represented in URLs.
-     */
-    public URI getURI() { return uri; }
 
     @Override
     public   int hashCode() { return uri.hashCode(); }

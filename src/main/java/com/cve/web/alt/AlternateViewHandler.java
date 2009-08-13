@@ -48,7 +48,7 @@ public class AlternateViewHandler {
         // Setup the select
         Select           select = URIParser.getSelect(tail.toString());
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.getColumns());
+        Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
         SelectResults results = SelectRunner.run(

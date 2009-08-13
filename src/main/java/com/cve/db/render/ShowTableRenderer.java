@@ -64,7 +64,7 @@ public final class ShowTableRenderer {
             return "";
         }
         int tableCount = 0;
-        for (DBTable table : results.getResultSet().getTables()) {
+        for (DBTable table : results.resultSet.tables) {
             ImmutableList<DBColumn> columns = getHiddenColumnsFor(table);
             StringBuilder rowOut = new StringBuilder();
             if (tableCount==0) {
@@ -85,7 +85,7 @@ public final class ShowTableRenderer {
     public static String    tdRowspan(String s, int height) { return "<td rowspan=" + q(height) + ">" + s + "</td>"; }
 
     ImmutableList<DBTable> getTablesWithHiddenColumns() {
-        return ImmutableList.copyOf(Collections2.filter(results.getResultSet().getTables(), new Predicate() {
+        return ImmutableList.copyOf(Collections2.filter(results.resultSet.tables, new Predicate() {
             public boolean apply(Object o) {
                 DBTable t = (DBTable) o;
                 return !getHiddenColumnsFor(t).isEmpty();
@@ -97,7 +97,7 @@ public final class ShowTableRenderer {
         return ImmutableList.copyOf(Collections2.filter(getAllColumnsFor(table), new Predicate() {
             public boolean apply(Object o) {
                 DBColumn c = (DBColumn) o;
-                return !results.getResultSet().getColumns().contains(c);
+                return !results.resultSet.columns.contains(c);
             }
         }));
     }
@@ -107,8 +107,8 @@ public final class ShowTableRenderer {
      */
     ImmutableList<DBColumn> getAllColumnsFor(DBTable table) {
         List<DBColumn> list = Lists.newArrayList();
-        for (DBColumn column : results.getHints().getColumns()) {
-            if (column.getTable().equals(table)) {
+        for (DBColumn column : results.hints.columns) {
+            if (column.table.equals(table)) {
                 list.add(column);
             }
         }
@@ -117,7 +117,7 @@ public final class ShowTableRenderer {
 
 
     static String showCell(DBColumn column) {
-        Label  text = Label.of(column.getName());
+        Label  text = Label.of(column.name);
         URI  target = SelectBuilderAction.SHOW.withArgs(column.fullName());
         return Link.textTarget(text, target).toString();
     }

@@ -37,8 +37,6 @@ public final class Cell {
         return new Cell(row,column,function);
     }
 
-    public DBRow       getRow() { return row; }
-    public DBColumn getColumn() { return column; }
     @Override
     public int     hashCode() { return row.hashCode() ^ column.hashCode();  }
 

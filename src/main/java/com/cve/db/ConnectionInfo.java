@@ -17,6 +17,15 @@ public final class ConnectionInfo {
     private final String     password;
     private final DBDriver     driver;
 
+    public static final ConnectionInfo NULL = new ConnectionInfo();
+
+    private ConnectionInfo() {
+        url      = null;
+        user     = null;
+        password = null;
+        driver   = null;
+    }
+
     /**
      * Use the factory.
      */

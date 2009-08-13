@@ -40,7 +40,7 @@ public final class ColumnNameTooltip
      */
     static HTML info(DBColumn column) {
         notNull(column);
-        return HTML.of(column.getName());
+        return HTML.of(column.name);
     }
 
     static HTML joinInfo(DBColumn source, DBColumn dest) {
@@ -56,8 +56,8 @@ public final class ColumnNameTooltip
 
     static HTML info(Filter filter) {
         notNull(filter);
-        DBColumn column = filter.getColumn();
-        String value  = filter.getValue().toString();
+        DBColumn column = filter.column;
+        String value  = filter.value.toString();
         String text   = "show only " + value;
         URI    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
         String   html = Link.textTarget(Label.of(text), target).toString();

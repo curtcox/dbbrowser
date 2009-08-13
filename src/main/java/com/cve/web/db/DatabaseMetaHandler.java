@@ -37,7 +37,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     }
 
     public PageResponse get(PageRequest request) throws IOException {
-        String uri = request.getRequestURI();
+        String uri = request.requestURI;
 
         String suffix = uri.substring(PREFIX.length() - 1);
         Server server = URIParser.getServer(suffix);
@@ -152,7 +152,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     static String getColumns(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         for (Database database : DBConnection.getDbmd(server).getDatabasesOn(server)) {
-            String catalog           = database.getName();
+            String catalog           = database.name;
             String schemaPattern     = null;
             String tableNamePattern  = null;
             String columnNamePattern = null;
@@ -185,9 +185,9 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     static String getExportedKeys(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         for (DBTable table : getTablesOn(server)) {
-             String catalog = table.getDatabase().getName();
+             String catalog = table.database.name;
              String  schema = null;
-             out.append(render(metaFor(server).getExportedKeys(catalog, schema, table.getName())));
+             out.append(render(metaFor(server).getExportedKeys(catalog, schema, table.name)));
         }
         return out.toString();
     }
@@ -206,9 +206,9 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     static String getImportedKeys(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         for (DBTable table : getTablesOn(server)) {
-             String catalog = table.getDatabase().getName();
+             String catalog = table.database.name;
              String  schema = null;
-             out.append(render(metaFor(server).getImportedKeys(catalog, schema, table.getName())));
+             out.append(render(metaFor(server).getImportedKeys(catalog, schema, table.name)));
         }
         return out.toString();
     }
@@ -217,8 +217,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         StringBuilder out = new StringBuilder();
         DatabaseMetaData meta = metaFor(server);
         for (DBTable table : getTablesOn(server)) {
-             String tableName = table.getName();
-             String catalog = table.getDatabase().getName();
+             String tableName = table.name;
+             String catalog = table.database.name;
              String  schema = null;
              out.append(render(meta.getPrimaryKeys(catalog, schema, tableName)));
         }

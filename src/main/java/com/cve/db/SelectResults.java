@@ -33,34 +33,34 @@ public final class SelectResults implements Model {
     /**
      * The select used to generate the results
      */
-    private final Select select;
+    public final Select select;
 
     /**
      * The results of the select
      */
-    private final DBResultSet resultSet;
+    public final DBResultSet resultSet;
 
     /**
      * Hints about how the results should be displayed.
      */
-    private final Hints hints;
+    public final Hints hints;
 
     /**
      * The total number of rows that would be in the result set if no limit
      * were used.
      */
-    private final int count;
+    public final int count;
 
     /**
      * True if there are more rows available for the select, after the ones
      * in the result set.
      */
-    private final boolean hasMore;
+    public final boolean hasMore;
 
     /**
      * The type of results these are.
      */
-    private final Type type;
+    public final Type type;
 
 
     private SelectResults(Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
@@ -83,13 +83,6 @@ public final class SelectResults implements Model {
     {
         return new SelectResults(type,select,resultSet,hints,count,hasMore);
     }
-
-    public Select       getSelect() { return select;    }
-    public DBResultSet getResultSet() { return resultSet; }
-    public Hints         getHints() { return hints;     }
-    public Type           getType() { return type;      }
-    public int           getCount() { return count;     }
-    public boolean        hasMore() { return hasMore;   }
 
     @Override
     public int hashCode() {

@@ -35,7 +35,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             return redirect;
         }
 
-        String uri = request.getRequestURI();
+        String uri = request.requestURI;
         if (!isSelectBuilderRequest(uri)) {
             return null;
         }
@@ -52,15 +52,15 @@ public final class SelectBuilderHandler implements RequestHandler {
      * otherwise.
      */
     static PageResponse redirectedWithAddedColumns(PageRequest request) throws SQLException {
-        String    uri = request.getRequestURI();
+        String    uri = request.requestURI;
         Select select = URIParser.getSelect(uri);
-        if (select.getColumns().size()>0) {
+        if (select.columns.size()>0) {
             return null;
         }
         // We've determined this page needs redirected.
         // Now figure out where to.
-        for (DBTable table : select.getTables()) {
-            DBMetaData meta = DBConnection.getDbmd(table.getDatabase().getServer());
+        for (DBTable table : select.tables) {
+            DBMetaData meta = DBConnection.getDbmd(table.database.server);
             for (DBColumn column : meta.getColumnsFor(table)) {
                 select = select.with(column);
             }
@@ -87,7 +87,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = URIParser.getSelect(uri);
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.getColumns());
+        Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
         SelectResults results = SelectRunner.run(

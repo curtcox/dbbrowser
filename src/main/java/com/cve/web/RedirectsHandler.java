@@ -36,12 +36,12 @@ public final class RedirectsHandler implements RequestHandler {
     public PageResponse produce(PageRequest request) throws IOException {
         notNull(request);
 
-        String query = request.getQueryString();
+        String query = request.queryString;
         if (query.isEmpty()) {
             return null;
         }
         try {
-            String  path = request.getRequestURI();
+            String  path = request.requestURI;
             URI   dest = redirectsActionsTo(path, query);
             return PageResponse.newRedirect(dest);
         } catch (SQLException e) {

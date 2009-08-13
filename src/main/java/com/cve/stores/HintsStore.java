@@ -35,11 +35,11 @@ public final class HintsStore {
     private static Multimap<DBColumn,Filter> filters = HashMultimap.create();
 
     public static void putHints(Hints hints) {
-        for (Join join : hints.getJoins()) {
-            joins.put(join.getSource(), join);
+        for (Join join : hints.joins) {
+            joins.put(join.source, join);
         }
-        for (Filter filter : hints.getFilters()) {
-            filters.put(filter.getColumn(), filter);
+        for (Filter filter : hints.filters) {
+            filters.put(filter.column, filter);
         }
     }
 
@@ -52,7 +52,7 @@ public final class HintsStore {
             filterSet.addAll(filters.get(column));
         }
         ImmutableList<DBTable> tables = spanningTables(columns);
-        Server                 server = tables.get(0).getDatabase().getServer();
+        Server                 server = tables.get(0).database.server;
         DBMetaData               meta = DBConnection.getDbmd(server);
         joinSet.addAll(meta.getJoinsFor(tables));
         keySet.addAll(meta.getPrimaryKeysFor(tables));
@@ -67,7 +67,7 @@ public final class HintsStore {
     static ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
         Set<DBTable>  tables = Sets.newHashSet();
         for (DBColumn column : columns) {
-            tables.add(column.getTable());
+            tables.add(column.table);
         }
         return ImmutableList.copyOf(tables);
     }

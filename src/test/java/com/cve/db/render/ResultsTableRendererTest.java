@@ -178,7 +178,7 @@ table(
         ", STICKY, 1)] onmouseout=[UnTip()]>name</a>";
         expected = Replace.bracketQuote(expected);
         SelectResults results = onePersonResults();
-        DBColumn         column = results.getResultSet().getColumns().get(0);
+        DBColumn         column = results.resultSet.columns.get(0);
         ClientInfo     client = null;
 
         String       rendered = ResultsTableRenderingTools.results(onePersonResults(),client).nameCell(column);

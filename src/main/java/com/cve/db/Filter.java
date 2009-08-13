@@ -12,8 +12,8 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Filter {
 
-    private final DBColumn column;
-    private final Value value;
+    public final DBColumn column;
+    public final Value value;
 
     private Filter(DBColumn column, Value value) {
         this.column = notNull(column);
@@ -37,9 +37,6 @@ public final class Filter {
         Filter       filter = Filter.of(column, value);
         return filter;
     }
-
-    public DBColumn getColumn() { return column; }
-    public Value  getValue()  { return value; }
 
     @Override
     public int hashCode() { return column.hashCode() ^ value.hashCode(); }

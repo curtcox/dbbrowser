@@ -84,10 +84,10 @@ public final class SelectRunner {
      * Is the given select normal data or a column value distribution query?
      */
     static SelectResults.Type determineResultsType(Select select) {
-        if (select.getGroups().size()!=1) {
+        if (select.groups.size()!=1) {
             return SelectResults.Type.NORMAL_DATA;
         }
-        if (select.getColumns().size()!=2) {
+        if (select.columns.size()!=2) {
             return SelectResults.Type.NORMAL_DATA;
         }
         return SelectResults.Type.COLUMN_VALUE_DISTRIBUTION;
@@ -98,17 +98,17 @@ public final class SelectRunner {
      * dbmodel.DBResultSet.
      */
     static ResultsAndMore transform(Select select, ResultSet results) throws SQLException {
-        ImmutableList<Database>   databases = select.getDatabases();
-        ImmutableList<DBTable>       tables = select.getTables();
-        ImmutableList<DBColumn>     columns = select.getColumns();
+        ImmutableList<Database>   databases = select.databases;
+        ImmutableList<DBTable>       tables = select.tables;
+        ImmutableList<DBColumn>     columns = select.columns;
         List<DBRow>                    rows = Lists.newArrayList();
         Map<Cell,Value>              values = Maps.newHashMap();
         ResultSetMetaData              meta = results.getMetaData();
-        ImmutableList<AggregateFunction> functions = select.getFunctions();
+        ImmutableList<AggregateFunction> functions = select.functions;
         int cols = meta.getColumnCount();
         int    r = 0;
-        Limit limit = select.getLimit();
-        while (results.next() && r<(limit.getLimit() - 1)) {
+        Limit limit = select.limit;
+        while (results.next() && r<(limit.limit - 1)) {
             DBRow row = DBRow.number(r);
             rows.add(row);
             r++;

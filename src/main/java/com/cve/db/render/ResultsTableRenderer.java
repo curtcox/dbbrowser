@@ -61,7 +61,7 @@ public final class ResultsTableRenderer {
 
     String resultsTable() {
         // Tables with few enough rows get printed in portrait
-        if (results.getResultSet().getRows().size() < 4) {
+        if (results.resultSet.rows.size() < 4) {
             return portraitTable();
         }
         return landscapeTable();
@@ -72,7 +72,7 @@ public final class ResultsTableRenderer {
      */
     String portraitTable() {
         List<UIRow> out = Lists.newArrayList();
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         UIRow headerRow = UIRow.of(
             UIDetail.of("Database",CSS.DATABASE),
             UIDetail.of("Table",CSS.TABLE),
@@ -82,10 +82,10 @@ public final class ResultsTableRenderer {
         out.add(headerRow);
         Database lastDatabase = Database.NULL;
         DBTable     lastTable = DBTable.NULL;
-        for (DBColumn column : resultSet.getColumns()) {
+        for (DBColumn column : resultSet.columns) {
             List<UIDetail> details = Lists.newArrayList();
-            DBTable          table = column.getTable();
-            Database      database = table.getDatabase();
+            DBTable          table = column.table;
+            Database      database = table.database;
             if (database.equals(lastDatabase)) {
                 details.add(UIDetail.of("",CSS.DATABASE));
             } else {
@@ -100,7 +100,7 @@ public final class ResultsTableRenderer {
             }
             details.add(UIDetail.of(nameCell(column),tools.classOf(column)));
             details.add(UIDetail.of(hideCell(column),CSS.HIDE));
-            for (DBRow row : resultSet.getRows()) {
+            for (DBRow row : resultSet.rows) {
                 Cell cell = Cell.at(row, column);
                 Value value = resultSet.getValue(row, column);
                 details.add(UIDetail.of(valueCell(cell,value)));
@@ -140,12 +140,12 @@ public final class ResultsTableRenderer {
      * The rows that contain all of the result set values.
      */
     List<UIRow> valueRows() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIRow> out = Lists.newArrayList();
         CSS cssClass = CSS.ODD_ROW;
-        for (DBRow row : resultSet.getRows()) {
+        for (DBRow row : resultSet.rows) {
             List<UIDetail> details = Lists.newArrayList();
-            for (DBColumn column : resultSet.getColumns()) {
+            for (DBColumn column : resultSet.columns) {
                 Cell cell = Cell.at(row, column);
                 Value value = resultSet.getValue(row, column);
                 details.add(UIDetail.of(valueCell(cell,value)));

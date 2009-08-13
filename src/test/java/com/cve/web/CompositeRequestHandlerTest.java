@@ -37,7 +37,7 @@ public class CompositeRequestHandlerTest {
     public void oneHandlesOne() throws IOException, SQLException {
         String one = "/one";
         RequestHandler handler = newHandler(one);
-        StringModel model = (StringModel) handler.produce(PageRequest.path(one)).getModel();
+        StringModel model = (StringModel) handler.produce(PageRequest.path(one)).model;
         assertEquals(one,model.string);
     }
 

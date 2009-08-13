@@ -57,12 +57,12 @@ public class ResultsRenderTest {
         SelectResults  expected = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,true);
         SelectResults    actual = SelectRunner.run(select,server,connection,hints);
 
-        assertEquals(expected.getHints()                ,actual.getHints());
-        assertEquals(expected.getSelect()               ,actual.getSelect());
-        assertEquals(expected.getResultSet().getRows()  ,actual.getResultSet().getRows());
-        assertEquals(expected.getResultSet().getValues(),actual.getResultSet().getValues());
-        assertEquals(expected.getResultSet()            ,actual.getResultSet());
-        assertEquals(expected                           ,actual);
+        assertEquals(expected.hints           ,actual.hints);
+        assertEquals(expected.select          ,actual.select);
+        assertEquals(expected.resultSet.rows  ,actual.resultSet.rows);
+        assertEquals(expected.resultSet.values,actual.resultSet.values);
+        assertEquals(expected.resultSet       ,actual.resultSet);
+        assertEquals(expected                 ,actual);
     }
 
      /**

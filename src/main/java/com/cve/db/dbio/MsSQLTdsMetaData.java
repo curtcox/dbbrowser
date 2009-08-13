@@ -58,12 +58,12 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
-        Database       database = table.getDatabase();
-        Server           server = database.getServer();
+        Database       database = table.database;
+        Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
-        String          catalog = database.getName();
+        String          catalog = database.name;
         String    schemaPattern = null;
-        String tableNamePattern = table.getName();
+        String tableNamePattern = table.name;
         String columnNamePattern = null;
         ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
         try {
@@ -88,9 +88,9 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
      */
     @Override
     public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
-        Server           server = database.getServer();
+        Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
-        String          catalog = database.getName();
+        String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = null;
         String[]          types = null;
@@ -114,10 +114,10 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
     }
 
     static boolean isSystemTable(DBTable table) {
-        return table.getName().startsWith("sys");
+        return table.name.startsWith("sys");
     }
 
     static boolean isSystemColumn(DBColumn column) {
-        return column.getTable().getName().startsWith("sys");
+        return column.table.name.startsWith("sys");
     }
 }

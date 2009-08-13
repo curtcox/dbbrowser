@@ -100,8 +100,8 @@ public class URIParserTest {
         Select select = URIParser.getSelect(uri);
         Server     server = Server.uri(URIs.of("SAMPLE"));
         Database database = server.databaseName("PUBLIC");
-        assertEquals(database,select.getDatabases().get(0));
-        assertEquals(server,select.getDatabases().get(0).getServer());
+        assertEquals(database,select.databases.get(0));
+        assertEquals(server,select.databases.get(0).server);
     }
 
     private static <T> ImmutableList<T> list(T... items) { return ImmutableList.of(items); }

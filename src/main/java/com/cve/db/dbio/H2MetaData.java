@@ -56,12 +56,12 @@ final class H2MetaData extends DefaultDBMetaData {
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
-        Database       database = table.getDatabase();
-        Server           server = database.getServer();
+        Database       database = table.database;
+        Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = null;
-        String    schemaPattern = database.getName();
-        String tableNamePattern = table.getName();
+        String    schemaPattern = database.name;
+        String tableNamePattern = table.name;
         String columnNamePattern = null;
         ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
         try {
@@ -84,10 +84,10 @@ final class H2MetaData extends DefaultDBMetaData {
      */
     @Override
     public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
-        Server           server = database.getServer();
+        Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = null;
-        String    schemaPattern = database.getName();
+        String    schemaPattern = database.name;
         String tableNamePattern = null;
         String[]          types = null;
         ResultSet results = dbmd.getTables(catalog, schemaPattern, tableNamePattern, types);

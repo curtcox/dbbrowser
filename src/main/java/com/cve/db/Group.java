@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableList;
  */
 public final class Group {
 
-    private final DBColumn column;
+    public final DBColumn column;
 
     /**
      * Use the factories.
@@ -24,8 +24,6 @@ public final class Group {
     public static Group of(DBColumn column) {
         return new Group(column);
     }
-
-    public DBColumn       getColumn() { return column; }
 
     @Override
     public int hashCode() { return column.hashCode(); }

@@ -28,7 +28,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
     }
 
     static PageResponse serveResource(PageRequest request) throws IOException {
-        String       uri = request.getRequestURI();
+        String       uri = request.requestURI;
         String  resource = uri.substring("/resource".length());
         InputStream   in = notNull(ResourceHandler.class.getResourceAsStream(resource),resource);
         return PageResponse.of(copyStream(in));

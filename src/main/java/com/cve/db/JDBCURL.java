@@ -11,7 +11,10 @@ import static com.cve.util.Check.notNull;
 
 public final class JDBCURL {
 
-    private final URI uri;
+    /**
+     * Get how the server is represented in URLs.
+     */
+    public final URI uri;
 
     private JDBCURL(URI uri) {
         this.uri = notNull(uri);
@@ -21,10 +24,6 @@ public final class JDBCURL {
         return new JDBCURL(uri);
     }
 
-    /**
-     * Get how the server is represented in URLs.
-     */
-    public URI getURI() { return uri; }
 
     @Override
     public   int hashCode() { return uri.hashCode(); }

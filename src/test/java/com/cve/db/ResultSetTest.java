@@ -27,9 +27,9 @@ public class ResultSetTest {
         ImmutableList<DBRow>           rows = ImmutableList.of();
         ImmutableMap<Cell,Value>   values = ImmutableMap.of();
         DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values);
-        assertEquals(tables, resultSet.getTables());
-        assertEquals(columns,resultSet.getColumns());
-        assertEquals(rows,   resultSet.getRows());
+        assertEquals(tables, resultSet.tables);
+        assertEquals(columns,resultSet.columns);
+        assertEquals(rows,   resultSet.rows);
     }
 
     @Test

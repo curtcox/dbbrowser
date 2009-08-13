@@ -67,10 +67,10 @@ public final class ResultsTableRenderingTools {
      * Cells from this row may span multiple columns of rows below.
      */
     ImmutableList<UIDetail> databaseRow() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (Database database : resultSet.getDatabases()) {
-            int width = results.getResultSet().getColumns().size();
+        for (Database database : resultSet.databases) {
+            int width = results.resultSet.columns.size();
             out.add(UIDetail.of(nameCell(database),width));
         }
         return ImmutableList.copyOf(out);
@@ -81,12 +81,12 @@ public final class ResultsTableRenderingTools {
      * Cells from this row may span multiple columns of rows below.
      */
     ImmutableList<UIDetail> tableRow() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (DBTable table : resultSet.getTables()) {
+        for (DBTable table : resultSet.tables) {
             int width = 0;
-            for (DBColumn c: results.getResultSet().getColumns()) {
-                if (table.equals(c.getTable())) {
+            for (DBColumn c: results.resultSet.columns) {
+                if (table.equals(c.table)) {
                     width++;
                 }
             }
@@ -100,10 +100,10 @@ public final class ResultsTableRenderingTools {
      * Cells in this row map one-to-one to columns in the result set.
      */
     ImmutableList<UIDetail> columnNameRow() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        int columnCount = resultSet.getColumns().size();
-        for (DBColumn column : resultSet.getColumns()) {
+        int columnCount = resultSet.columns.size();
+        for (DBColumn column : resultSet.columns) {
             if (columnCount < 5 ) {
                 out.add(UIDetail.of(nameCell(column),classOf(column)));
             } else {
@@ -118,9 +118,9 @@ public final class ResultsTableRenderingTools {
      * Cells in this row map one-to-one to columns in the result set.
      */
     ImmutableList<UIDetail> columnHideRow() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (DBColumn column : resultSet.getColumns()) {
+        for (DBColumn column : resultSet.columns) {
             out.add(UIDetail.of(hideCell(column)));
         }
         return ImmutableList.copyOf(out);
@@ -130,12 +130,12 @@ public final class ResultsTableRenderingTools {
      * The rows that contain all of the result set values.
      */
     String valueRows() {
-        DBResultSet resultSet = results.getResultSet();
+        DBResultSet resultSet = results.resultSet;
         StringBuilder out = new StringBuilder();
         CSS cssClass = CSS.ODD_ROW;
-        for (DBRow row : resultSet.getRows()) {
+        for (DBRow row : resultSet.rows) {
             out.append("<tr class=\"" + cssClass + "\">");
-            for (DBColumn column : resultSet.getColumns()) {
+            for (DBColumn column : resultSet.columns) {
                 Cell cell = Cell.at(row, column);
                 Value value = resultSet.getValue(row, column);
                 out.append(td(valueCell(cell,value)));
@@ -154,7 +154,7 @@ public final class ResultsTableRenderingTools {
      * Return a string to go in a database name cell.
      */
     static String nameCell(Database database) {
-        Label  text = Label.of(database.getName());
+        Label  text = Label.of(database.name);
         URI  target = linkTo(database);
         return "Database : " + Link.textTarget(text,target).toString();
     }
@@ -163,7 +163,7 @@ public final class ResultsTableRenderingTools {
      * Return a string to go in a table name cell.
      */
     static String nameCell(DBTable table) {
-        Label  text = Label.of(table.getName());
+        Label  text = Label.of(table.name);
         URI  target = linkTo(table);
         return "Table : " + Link.textTarget(text,target).toString();
     }
@@ -176,14 +176,14 @@ public final class ResultsTableRenderingTools {
      */
     String nameCell(DBColumn column) {
         int                     width = maxWidth(column);
-        String             columnName = breakUp(column.getName());
+        String             columnName = breakUp(column.name);
 
         if (columnName.length() > width) {
             columnName = columnName.substring(0,width);
         }
         Label                    text = Label.of(columnName);
         URI                    target = linkTo(column);
-        Hints                   hints = results.getHints();
+        Hints                   hints = results.hints;
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<Filter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
@@ -213,8 +213,8 @@ public final class ResultsTableRenderingTools {
     ImmutableList<DBColumn> destinationColumns(DBColumn column, ImmutableList<Join> joins) {
         Set<DBColumn> set = Sets.newHashSet();
         for (Join join : joins) {
-            set.add(join.getSource());
-            set.add(join.getDest());
+            set.add(join.source);
+            set.add(join.dest);
         }
         set.remove(column);
         List<DBColumn> ordered = Lists.newArrayList(set);
@@ -223,7 +223,7 @@ public final class ResultsTableRenderingTools {
     }
 
     CSS classOf(DBColumn column) {
-        Hints                   hints = results.getHints();
+        Hints                   hints = results.hints;
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         boolean              hasJoins = joins.size() > 0;
         if (hasJoins) {
@@ -242,28 +242,28 @@ public final class ResultsTableRenderingTools {
         Object       object = value.getValue();
         String  valueString = "" + object;
         Label          text = Label.of(valueString);
-        DBColumn       column = cell.getColumn();
+        DBColumn       column = cell.column;
         String encodedValue = URLEncoder.encode(valueString);
         URI          target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + encodedValue);
         return Link.textTarget(text, target).toString();
     }
 
     static URI linkTo(DBColumn column) {
-        DBTable       table = column.getTable();
-        Database database = table.getDatabase();
-        Server     server = database.getServer();
+        DBTable       table = column.table;
+        Database database = table.database;
+        Server     server = database.server;
 
         return URIRenderer.render(server,database,table,column);
     }
 
     static URI linkTo(DBTable table) {
-        Database database = table.getDatabase();
-        Server     server = database.getServer();
+        Database database = table.database;
+        Server     server = database.server;
         return URIRenderer.render(server,database,table);
     }
 
     static URI linkTo(Database database) {
-        Server     server = database.getServer();
+        Server     server = database.server;
         return URIRenderer.render(server,database);
     }
 

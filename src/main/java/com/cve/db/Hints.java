@@ -16,23 +16,23 @@ public final class Hints {
     /**
      * Primary keys for tables in the result set.
      */
-    private final ImmutableList<DBColumn> primaryKeys;
+    public final ImmutableList<DBColumn> primaryKeys;
 
     /**
      * Joins to other tables.
      */
-    private final ImmutableList<Join>   joins;
+    public final ImmutableList<Join>   joins;
 
     /**
      * Filters that could be applied.
      */
-    private final ImmutableList<Filter> filters;
+    public final ImmutableList<Filter> filters;
 
     /**
      * Columns in the result set tables, but not necessarily in the result set.
      * These represent columns that could be added without a join.
      */
-    private final ImmutableList<DBColumn> columns;
+    public final ImmutableList<DBColumn> columns;
 
     
     public static final Hints NONE = new Hints(list(),list(),list(),list());
@@ -62,10 +62,6 @@ public final class Hints {
         return new Hints(list(),list(join),list(),list(column));
     }
 
-    public ImmutableList<Join>     getJoins() { return joins;   }
-    public ImmutableList<Filter> getFilters() { return filters; }
-    public ImmutableList<DBColumn> getColumns() { return columns; }
-
     private static ImmutableList                      list() { return ImmutableList.of(); }
     private static <T> ImmutableList<T>     list(T... items) { return ImmutableList.of(items); }
 
@@ -76,7 +72,7 @@ public final class Hints {
         notNull(column);
         List<Join> list = Lists.newArrayList();
         for (Join join : joins) {
-            if (column.equals(join.getDest()) || column.equals(join.getSource())) {
+            if (column.equals(join.dest) || column.equals(join.source)) {
                 list.add(join);
             }
         }
@@ -87,7 +83,7 @@ public final class Hints {
         notNull(column);
         List<Filter> list = Lists.newArrayList();
         for (Filter filter : filters) {
-            if (column.equals(filter.getColumn())) {
+            if (column.equals(filter.column)) {
                 list.add(filter);
             }
         }

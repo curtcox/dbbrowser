@@ -44,23 +44,23 @@ public final class PagingLinksRenderer {
 
     String pagingLinks() {
         StringBuilder out = new StringBuilder();
-        Limit limit = results.getSelect().getLimit();
-        if (limit.getOffset()>0) {
+        Limit limit = results.select.limit;
+        if (limit.offset>0) {
             Label  text = Label.of(BACK);
             URI  target = SelectBuilderAction.BACK.withArgs("1");
             out.append(Link.textTarget(text, target) + " ");
         }
-        if (results.hasMore()) {
+        if (results.hasMore) {
             Label  text = Label.of(NEXT);
             URI  target = SelectBuilderAction.NEXT.withArgs("1");
             out.append(Link.textTarget(text, target) + " ");
         }
-        if (limit.getLimit() > 20) {
+        if (limit.limit > 20) {
             Label  text = Label.of(SMALLER);
             URI  target = SelectBuilderAction.SMALLER.withArgs("10");
             out.append(Link.textTarget(text, target) + " ");
         }
-        if (results.hasMore()) {
+        if (results.hasMore) {
             Label  text = Label.of(BIGGER);
             URI  target = SelectBuilderAction.BIGGER.withArgs("10");
             out.append(Link.textTarget(text, target) + " ");

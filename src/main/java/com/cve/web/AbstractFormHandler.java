@@ -29,11 +29,11 @@ public abstract class AbstractFormHandler
      * of request we prodcuce responses for.
      */
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
-        String uri = request.getRequestURI();
+        String uri = request.requestURI;
         if (!handles(uri)) {
             return null;
         }
-        PageRequest.Method method = request.getMethod();
+        PageRequest.Method method = request.method;
         if (method==PageRequest.Method.GET) {
             return get(request);
         }

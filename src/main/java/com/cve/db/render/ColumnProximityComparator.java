@@ -19,29 +19,29 @@ public final class ColumnProximityComparator implements Comparator<DBColumn> {
 
     ColumnProximityComparator(DBColumn column) {
         notNull(column);
-        this.table    = column.getTable();
-        this.database = table.getDatabase();
+        this.table    = column.table;
+        this.database = table.database;
     }
 
     public int compare(DBColumn c1, DBColumn c2) {
-        DBTable t1 = c1.getTable();
-        DBTable t2 = c2.getTable();
+        DBTable t1 = c1.table;
+        DBTable t2 = c2.table;
         if (t1.equals(table) && !t2.equals(table)) {
             return -1;
         }
         if (!t1.equals(table) && t2.equals(table)) {
             return +1;
         }
-        Database d1 = t1.getDatabase();
-        Database d2 = t2.getDatabase();
+        Database d1 = t1.database;
+        Database d2 = t2.database;
         if (d1.equals(database) && !d2.equals(database)) {
             return -1;
         }
         if (!d1.equals(database) && d2.equals(database)) {
             return +1;
         }
-        String n1 = c1.getName();
-        String n2 = c2.getName();
+        String n1 = c1.name;
+        String n2 = c2.name;
         return n1.compareTo(n2);
     }
 }

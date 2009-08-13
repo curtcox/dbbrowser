@@ -15,8 +15,8 @@ import static com.cve.util.Check.notNull;
 
 public final class Join {
 
-    private final DBColumn source;
-    private final DBColumn dest;
+    public final DBColumn source;
+    public final DBColumn dest;
 
     private Join(DBColumn source, DBColumn dest) {
         this.source = notNull(source);
@@ -40,9 +40,6 @@ public final class Join {
         Join     join = Join.of(source, dest);
         return join;
     }
-
-    public DBColumn getSource() { return source; }
-    public DBColumn   getDest() { return dest;   }
 
     @Override
     public int hashCode() { return source.hashCode() ^ dest.hashCode(); }

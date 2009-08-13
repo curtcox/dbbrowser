@@ -10,8 +10,8 @@ import static com.cve.util.Check.notNegative;
 @Immutable
 public final class Limit {
 
-    private final int limit;
-    private final int offset;
+    public final int limit;
+    public final int offset;
 
     public static final Limit DEFAULT = limit(20);
 
@@ -55,9 +55,6 @@ public final class Limit {
     public Limit smaller(int factor) {
         return limitOffset(limit / factor,offset);
     }
-
-    public int getLimit()  { return limit; }
-    public int getOffset() { return offset; }
 
     @Override
     public int hashCode() { return limit ^ offset; }

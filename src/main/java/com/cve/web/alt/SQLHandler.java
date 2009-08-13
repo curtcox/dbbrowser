@@ -29,7 +29,7 @@ final class SQLHandler extends AbstractRequestHandler {
     SQLHandler() { super("^/view/SQL/");}
 
     public PageResponse get(PageRequest request) throws IOException, SQLException {
-        return rows(AlternateViewHandler.getResultsFromDB(request.getRequestURI()));
+        return rows(AlternateViewHandler.getResultsFromDB(request.requestURI));
     }
 
     /**
@@ -42,7 +42,7 @@ final class SQLHandler extends AbstractRequestHandler {
         // Setup the select
         Select           select = URIParser.getSelect(uri);
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.getColumns());
+        Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
         SelectResults results = SelectRunner.run(
@@ -51,12 +51,12 @@ final class SQLHandler extends AbstractRequestHandler {
     }
 
     public static PageResponse rows(SelectResults results) {
-        DBResultSet  rows = results.getResultSet();
+        DBResultSet  rows = results.resultSet;
         SQLModelBuilder builder = new SQLModelBuilder();
-        int maxColumn = rows.getColumns().size();
-        for (DBRow row : rows.getRows()) {
+        int maxColumn = rows.columns.size();
+        for (DBRow row : rows.rows) {
             for (int i=0; i<maxColumn; i++) {
-                DBColumn column = rows.getColumns().get(i);
+                DBColumn column = rows.columns.get(i);
                 Value value = rows.getValue(row, column);
                 builder.add(value);
             }

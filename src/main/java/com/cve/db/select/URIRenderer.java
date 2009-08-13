@@ -52,20 +52,20 @@ public final class URIRenderer {
 
     public static URI render(Server server, Database database, DBTable table, DBColumn column) {
         String target =
-            "/" + server.getURI() + "/" + database.getName() +
+            "/" + server.uri + "/" + database.name +
             "/" + table.fullName() + "/" + column.fullName() + "/";
         return URIs.of(target);
     }
 
     public static URI render(Server server, Database database, DBTable table) {
         String target =
-            "/" + server.getURI() + "/" + database.getName() + "/" + table.fullName() + "/";
+            "/" + server.uri + "/" + database.name + "/" + table.fullName() + "/";
         return URIs.of(target);
     }
 
     public static URI render(Server server, Database database) {
         String target =
-            "/" + server.getURI() + "/" + database.getName() + "/";
+            "/" + server.uri + "/" + database.name + "/";
         return URIs.of(target);
     }
 
@@ -76,31 +76,31 @@ public final class URIRenderer {
         notNull(select);
         validate(select);
         StringBuilder out = new StringBuilder();
-        Server server = select.getDatabases().get(0).getServer();
-        out.append("/" + server.getURI() + "/");
-        ImmutableList<DBTable> tables = select.getTables();
-        out.append(renderDatabases(select.getDatabases()) + "/");
+        Server server = select.databases.get(0).server;
+        out.append("/" + server.uri + "/");
+        ImmutableList<DBTable> tables = select.tables;
+        out.append(renderDatabases(select.databases) + "/");
         out.append(renderTables   (tables)    + "/");
-        out.append(renderColumns  (tables,select.getColumns())   + "/");
-        final boolean hasJoin   = select.getJoins().size()   > 0;
-        final boolean hasFilter = select.getFilters().size() > 0;
-        final boolean hasOrder  = select.getOrders().size()  > 0;
-        final boolean hasGroups = select.getGroups().size()  > 0;
-        final boolean hasLimit  = !select.getLimit().equals(Limit.DEFAULT);
+        out.append(renderColumns  (tables,select.columns)   + "/");
+        final boolean hasJoin   = select.joins.size()   > 0;
+        final boolean hasFilter = select.filters.size() > 0;
+        final boolean hasOrder  = select.orders.size()  > 0;
+        final boolean hasGroups = select.groups.size()  > 0;
+        final boolean hasLimit  = !select.limit.equals(Limit.DEFAULT);
         if (hasJoin || hasFilter || hasOrder || hasGroups || hasLimit) {
-            out.append(renderJoins(tables,select.getJoins())   + "/");
+            out.append(renderJoins(tables,select.joins)   + "/");
         }
         if (hasFilter || hasOrder || hasGroups || hasLimit) {
-            out.append(renderFilters(tables,select.getFilters())   + "/");
+            out.append(renderFilters(tables,select.filters)   + "/");
         }
         if (hasOrder || hasGroups || hasLimit) {
-            out.append(renderOrders(tables,select.getOrders())     + "/");
+            out.append(renderOrders(tables,select.orders)     + "/");
         }
         if (hasGroups || hasLimit) {
-            out.append(renderGroups(tables,select.getGroups())     + "/");
+            out.append(renderGroups(tables,select.groups)     + "/");
         }
         if (hasLimit) {
-            out.append(renderLimit(select.getLimit())       + "/");
+            out.append(renderLimit(select.limit)       + "/");
         }
         return URIs.of(out.toString());
     }
@@ -115,7 +115,7 @@ public final class URIRenderer {
     static String renderDatabases(ImmutableList<Database> databases) {
         List<String> list = Lists.newArrayList();
         for (Database database : databases) {
-            list.add(database.getName());
+            list.add(database.name);
         }
         return separated(list);
     }
@@ -129,12 +129,12 @@ public final class URIRenderer {
     }
 
     static String shortName(ImmutableList<DBTable> tables, DBColumn column) {
-        if (tables.get(0).equals(column.getTable())) {
-            return column.getName();
+        if (tables.get(0).equals(column.table)) {
+            return column.name;
         }
         for (int i=1; i<tables.size(); i++) {
-            if (tables.get(i).equals(column.getTable())) {
-                return (i-1) + column.getName();
+            if (tables.get(i).equals(column.table)) {
+                return (i-1) + column.name;
             }
         }
         String message = column + " not in " + tables;
@@ -152,7 +152,7 @@ public final class URIRenderer {
     static String renderJoins(ImmutableList<DBTable> tables, ImmutableList<Join> joins) {
         List<String> list = Lists.newArrayList();
         for (Join join : joins) {
-            list.add(shortName(tables,join.getSource()) + "=" + shortName(tables,join.getDest()));
+            list.add(shortName(tables,join.source) + "=" + shortName(tables,join.dest));
         }
         return separated(list);
     }
@@ -160,7 +160,7 @@ public final class URIRenderer {
     static String renderFilters(ImmutableList<DBTable> tables, ImmutableList<Filter> filters) {
         List<String> list = Lists.newArrayList();
         for (Filter filter : filters) {
-            list.add(shortName(tables,filter.getColumn()) + "=" + filter.getValue().toString());
+            list.add(shortName(tables,filter.column) + "=" + filter.value.toString());
         }
         return separated(list);
     }
@@ -168,7 +168,7 @@ public final class URIRenderer {
     static String renderOrders(ImmutableList<DBTable> tables, ImmutableList<Order> orders) {
         List<String> list = Lists.newArrayList();
         for (Order order : orders) {
-            list.add(shortName(tables,order.getColumn()) + "=" + order.getDirection().toString());
+            list.add(shortName(tables,order.column) + "=" + order.direction.toString());
         }
         return separated(list);
     }
@@ -176,13 +176,13 @@ public final class URIRenderer {
     static String renderGroups(ImmutableList<DBTable> tables, ImmutableList<Group> groups) {
         List<String> list = Lists.newArrayList();
         for (Group group : groups) {
-            list.add(shortName(tables,group.getColumn()));
+            list.add(shortName(tables,group.column));
         }
         return separated(list);
     }
 
     static String renderLimit(Limit limit) {
-        return limit.getLimit() + "+" + limit.getOffset();
+        return limit.limit + "+" + limit.offset;
     }
 
     static String separated(List<String> list) {

@@ -69,7 +69,7 @@ public final class SampleServer {
     }
 
     static void createSchema(Database database) throws SQLException {
-        String sql = "CREATE SCHEMA " + database.getName() + ";";
+        String sql = "CREATE SCHEMA " + database.name + ";";
         connection.exec(SQL.of(sql));
     }
 

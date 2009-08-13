@@ -31,7 +31,7 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse post(PageRequest request) {
-        ImmutableMap<String,String> params = request.getParameterMap();
+        ImmutableMap<String,String> params = request.parameters;
         String         user = params.get(AddServerPage.USER);
         String     password = params.get(AddServerPage.PASSWORD);
         String          url = params.get(AddServerPage.URL);

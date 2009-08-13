@@ -90,14 +90,14 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     static void write(PageResponse page, HttpServletResponse response) throws IOException {
-        URI redirect = page.getRedirect();
+        URI redirect = page.redirect;
         // Redirect, if that is the response
         if (redirect!=null) {
             response.sendRedirect(redirect.toString());
             return;
         }
         // Otherwise, get the model render it, and send the response
-        Model model = page.getModel();
+        Model model = page.model;
 
         // Byte arrays get written to an output stream
         if (model instanceof ByteArrayModel) {

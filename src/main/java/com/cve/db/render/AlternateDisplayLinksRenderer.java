@@ -21,7 +21,7 @@ public final class AlternateDisplayLinksRenderer {
     private final Select select;
 
     private AlternateDisplayLinksRenderer(SelectResults results) {
-        this.select  = notNull(results.getSelect());
+        this.select  = notNull(results.select);
     }
 
     static AlternateDisplayLinksRenderer results(SelectResults results) {

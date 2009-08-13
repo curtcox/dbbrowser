@@ -14,8 +14,8 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DBColumn {
 
-    private final DBTable  table;
-    private final String name;
+    public final DBTable  table;
+    public final String name;
 
     /**
      * What kind of thing this column holds.
@@ -75,9 +75,6 @@ public final class DBColumn {
         return c == '0' || c == '9' || (c > '0' && c < '9');
     }
 
-    public String getName() { return name; }
-    public DBTable getTable() { return table;  }
-
     /**
      * Return database.tableName.columnName.
      * So, full doesn't mean with server name.
@@ -86,7 +83,7 @@ public final class DBColumn {
         if (this==ALL) {
             return "*";
         }
-        return table.getDatabase().getName() + "." + table.getName() + "." + name;
+        return table.database.name + "." + table.name + "." + name;
     }
 
     @Override
@@ -104,10 +101,10 @@ public final class DBColumn {
     }
 
     public Link linkTo() {
-        Database database = table.getDatabase();
-        Server     server = database.getServer();
+        Database database = table.database;
+        Server     server = database.server;
         URI target = URIs.of(
-            "/" + server.getURI() + "/" + database.getName() + "/" + table.fullName() + "/" + fullName() + "/"
+            "/" + server.uri + "/" + database.name + "/" + table.fullName() + "/" + fullName() + "/"
         );
         Label text = Label.of(name);
         return Link.textTarget(text, target);

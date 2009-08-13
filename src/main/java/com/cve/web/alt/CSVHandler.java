@@ -20,16 +20,16 @@ final class CSVHandler extends AbstractRequestHandler {
     CSVHandler() { super("^/view/CSV/"); }
 
     public PageResponse get(PageRequest request) throws IOException, SQLException {
-        return csv(AlternateViewHandler.getResultsFromDB(request.getRequestURI()));
+        return csv(AlternateViewHandler.getResultsFromDB(request.requestURI));
     }
 
     public static PageResponse csv(SelectResults results) {
-        DBResultSet  rows = results.getResultSet();
+        DBResultSet  rows = results.resultSet;
         CSVModelBuilder builder = new CSVModelBuilder();
-        int maxColumn = rows.getColumns().size();
-        for (DBRow row : rows.getRows()) {
+        int maxColumn = rows.columns.size();
+        for (DBRow row : rows.rows) {
             for (int i=0; i<maxColumn; i++) {
-                DBColumn column = rows.getColumns().get(i);
+                DBColumn column = rows.columns.get(i);
                 Value value = rows.getValue(row, column);
                 builder.add(value);
             }
