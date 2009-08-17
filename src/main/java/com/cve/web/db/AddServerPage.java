@@ -1,10 +1,7 @@
 package com.cve.web.db;
 
-import com.cve.db.ConnectionInfo;
-import com.cve.db.JDBCURL;
 import com.cve.db.Server;
 import com.cve.util.Check;
-import com.cve.util.URIs;
 import com.cve.web.*;
 
 /**

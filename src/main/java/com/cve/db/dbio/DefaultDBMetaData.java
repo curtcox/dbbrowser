@@ -32,7 +32,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     private static DBMetaData getDbmd0(DBConnection connection) {
         Check.notNull(connection);
-        DBDriver driver = connection.getInfo().getDriver();
+        DBDriver driver = connection.info.driver;
         if (driver.equals(DBDriver.MySql)) {
             return new MySQLMetaData();
         }

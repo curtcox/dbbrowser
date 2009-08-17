@@ -25,7 +25,7 @@ import static com.cve.util.Check.notNull;
 public final class DBConnection {
 
     private volatile Connection connection;
-    private final ConnectionInfo info;
+    public final ConnectionInfo info;
 
     private DBConnection(ConnectionInfo info) {
         this.info = notNull(info);
@@ -35,8 +35,6 @@ public final class DBConnection {
         return new DBConnection(info);
     }
 
-    public ConnectionInfo getInfo() { return info; }
-
     synchronized private Connection getConnection() throws SQLException {
         if (connection==null) {
             return reset();
@@ -45,7 +43,8 @@ public final class DBConnection {
     }
 
     synchronized Connection reset() throws SQLException {
-        connection = DriverManager.getConnection(info.getURL().toString(), info.getUser(), info.getPassword());
+        log("resetting " + info);
+        connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         return connection;
     }
 
@@ -90,4 +89,7 @@ public final class DBConnection {
         return dbmd;
     }
 
+    static void log(String message) {
+        System.out.println(message);
+    }
 }

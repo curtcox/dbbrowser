@@ -12,10 +12,10 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class ConnectionInfo {
 
-    private final JDBCURL         url;
-    private final String         user;
-    private final String     password;
-    private final DBDriver     driver;
+    public final JDBCURL         url;
+    public final String         user;
+    public final String     password;
+    public final DBDriver     driver;
 
     public static final ConnectionInfo NULL = new ConnectionInfo();
 
@@ -43,9 +43,11 @@ public final class ConnectionInfo {
         return new ConnectionInfo(url,user,password);
     }
 
-    public JDBCURL       getURL() { return url; }
-    public String       getUser() { return user; }
-    public String   getPassword() { return password; }
-    public DBDriver   getDriver() { return driver; }
-
+    @Override
+    public String toString() {
+        return " url=" + url +
+               " user=" + user +
+               " password=" + password +
+               " driver=" + driver;
+    }
 }

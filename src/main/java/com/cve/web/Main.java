@@ -1,8 +1,10 @@
 package com.cve.web;
 
 import com.cve.db.sample.SampleServer;
+import com.cve.util.URIs;
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
+import java.awt.Desktop;
 import java.io.IOException;
 
 
@@ -12,10 +14,13 @@ import java.io.IOException;
  */
 public final class Main {
 
+    static final int PORT = 8888;
+
     public static void main(String[] args) {
         try {
             loadServers();
             startGrizzly();
+            openBrowser();
         } catch (Throwable t) {
             t.printStackTrace();
             System.out.println("Exiting");
@@ -25,13 +30,18 @@ public final class Main {
 
     static void startGrizzly() throws IOException {
         ServletAdapter adapter = new ServletAdapter(new RequestRouterServlet());
-        GrizzlyWebServer    server = new GrizzlyWebServer(8888,"/");
+        GrizzlyWebServer    server = new GrizzlyWebServer(PORT,"/");
         server.addGrizzlyAdapter(adapter,new String[] {"/"});
         server.start();
     }
 
     static void loadServers() {
         SampleServer.load();
+    }
+
+    static void openBrowser() throws IOException {
+        Desktop desktop = Desktop.getDesktop();
+        desktop.browse(URIs.of("http://localhost:" + PORT + "/"));
     }
 }
 

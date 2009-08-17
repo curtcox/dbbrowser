@@ -11,6 +11,14 @@ import com.cve.util.Check;
  */
 public final class UIDetail {
 
+    /**
+     * Either value or element is not null.
+     */
+    private final UIElement element;
+
+    /**
+     * Either value or element is not null.
+     */
     private final String value;
     private final CSS css;
     private final int width;
@@ -19,8 +27,20 @@ public final class UIDetail {
 
     private UIDetail(String value, int width, CSS css) {
         this.value = Check.notNull(value);
+        this.element = null;
         this.css   = css;
         this.width = width;
+    }
+
+    private UIDetail(UIElement element, int width, CSS css) {
+        this.element = Check.notNull(element);
+        this.value = null;
+        this.css   = css;
+        this.width = width;
+    }
+
+    public static UIDetail of(UIElement element) {
+        return new UIDetail(element,UNSET,null);
     }
 
     public static UIDetail of(String value) {
@@ -37,15 +57,17 @@ public final class UIDetail {
 
     @Override
     public String toString() {
+        String body = value == null ? element.toString() : value;
+
         if (width==UNSET && css==null) {
-            return HTML.td(value);
+            return HTML.td(body);
         }
         if (width!=UNSET) {
-            return HTML.td(value,width);
+            return HTML.td(body,width);
         }
         if (css==null) {
-            return HTML.td(value);
+            return HTML.td(body);
         }
-        return HTML.td(value,css);
+        return HTML.td(body,css);
     }
 }

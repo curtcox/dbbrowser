@@ -3,6 +3,7 @@ package com.cve.ui;
 import com.cve.html.CSS;
 import com.cve.html.HTML;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
@@ -30,6 +31,14 @@ public final class UIRow {
 
     public static UIRow of(UIDetail... details) {
         return new UIRow(ImmutableList.of(details),null);
+    }
+
+    public static UIRow of(UIElement... elements) {
+        List<UIDetail> details = Lists.newArrayList();
+        for (UIElement element : elements) {
+            details.add(UIDetail.of(element));
+        }
+        return new UIRow(ImmutableList.copyOf(details),null);
     }
 
     @Override

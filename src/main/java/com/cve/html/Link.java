@@ -35,6 +35,13 @@ public final class Link {
         this.html = "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>";
     }
 
+    private Link(Label text, URI target, Tooltip tip, URI image) {
+        notNull(text);
+        this.target = notNull(target);
+        this.tip    = notNull(tip);
+        this.html = "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text,image) +"</a>";
+    }
+
     private Link(Label text, URI target) {
         notNull(text);
         this.target = notNull(target);
@@ -44,6 +51,10 @@ public final class Link {
 
     public static Link textTarget(Label text, URI target) {
         return new Link(text,target);
+    }
+
+    public static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
+        return new Link(text,target,tip,image);
     }
 
     public static Link textTargetTip(Label text, URI target, Tooltip tip) {
@@ -68,6 +79,13 @@ public final class Link {
      */
     private static String q(String text) {
         return "\"" + text + "\"";
+    }
+
+    /**
+     * Image for the given URI
+     */
+    private static String img(Label text, URI uri) {
+        return Replace.bracketQuote("<img alt=[" + text + "] src=[" + uri + "]>");
     }
 
     @Override

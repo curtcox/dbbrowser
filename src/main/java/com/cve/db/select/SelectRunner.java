@@ -44,7 +44,7 @@ public final class SelectRunner {
         notNull(server);
         notNull(connection);
         notNull(hints);
-        DBDriver driver = connection.getInfo().getDriver();
+        DBDriver driver = connection.info.driver;
         SQL         sql = SelectRenderers.render(select,driver);
         int  count = determineRowCount(select,server,connection);
         try {
@@ -65,7 +65,7 @@ public final class SelectRunner {
      * Return the number of rows that would be returned if no limit was used.
      */
     static int determineRowCount(Select select, Server server, DBConnection connection) throws SQLException {
-        DBDriver driver = connection.getInfo().getDriver();
+        DBDriver driver = connection.info.driver;
         SQL sql = SelectRenderers.render(select.count().with(Limit.DEFAULT),driver);
         try {
             ResultSet results = connection.exec(sql);

@@ -7,7 +7,10 @@ import com.cve.html.CSS;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.html.SimpleTooltip;
+import com.cve.html.Tooltip;
 import com.cve.util.URIs;
+import java.net.URI;
 import static com.cve.html.HTML.*;
 /**
  * For picking a database server.
@@ -20,8 +23,8 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     }
 
     public String render(ServersPage page, ClientInfo client) {
-        String actions = addServer() + removeServer() + 
-               (loggedIn() ? logout() : login());
+        String actions = addServer() + removeServer();
+        //+ (loggedIn() ? logout() : login());
         return
             actions +
             h1("Available Servers") +
@@ -30,11 +33,19 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     }
 
     String addServer() {
-        return Link.textTarget(Label.of("+"), URIs.of("add")).toString();
+        Tooltip tip = SimpleTooltip.of("Add a database server");
+        Label text = Label.of("+");
+        URI target = URIs.of("add");
+        URI  image = URIs.of("/resource/icons/actions/list-add.png");
+        return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
     String removeServer() {
-        return Link.textTarget(Label.of("-"), URIs.of("remove")).toString();
+        Tooltip tip = SimpleTooltip.of("Remove a database server");
+        Label text = Label.of("-");
+        URI target = URIs.of("remove");
+        URI  image = URIs.of("/resource/icons/actions/list-remove.png");
+        return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
     String login() {

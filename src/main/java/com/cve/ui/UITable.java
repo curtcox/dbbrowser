@@ -4,6 +4,7 @@ package com.cve.ui;
 import com.cve.html.HTML;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
@@ -16,12 +17,29 @@ public final class UITable implements UIElement {
 
     private final ImmutableList<UIRow> rows;
 
-    private UITable(ImmutableList<UIRow> rows) {
-        this.rows = Check.notNull(rows);
+    private UITable(List<UIRow> rows) {
+        ImmutableList<UIRow> copy = ImmutableList.copyOf(Check.notNull(rows));
+        this.rows = copy;
+    }
+
+    public static UITable of() {
+        ImmutableList<UIRow> rows = ImmutableList.of();
+        return new UITable(rows);
     }
 
     public static UITable of(List<UIRow> rows) {
         return new UITable(ImmutableList.copyOf(rows));
+    }
+
+    public static UITable of(UIRow... rows) {
+        return new UITable(ImmutableList.of(rows));
+    }
+
+    public UITable with(UIRow row) {
+        List<UIRow> list = Lists.newArrayList();
+        list.addAll(rows);
+        list.add(row);
+        return new UITable(ImmutableList.copyOf(list));
     }
 
     @Override
