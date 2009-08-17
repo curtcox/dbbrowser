@@ -17,9 +17,9 @@ public final class AddServerPage implements Model {
      */
     final String message;
     final Server server;
+    final String jdbcurl;
     final String user;
     final String password;
-    final ConnectionInfo info;
 
     /**
      * Literals to use in the form.
@@ -31,21 +31,21 @@ public final class AddServerPage implements Model {
 
     static final AddServerPage SAMPLE = new AddServerPage(
        "Specify the server you want to connect to",
-        Server.NULL, "user", "password",
-        ConnectionInfo.NULL
+        Server.NULL, "user", "password", "jdbcurl"
     );
 
 
-    private AddServerPage(String message, Server server, String user, String password, ConnectionInfo info) {
+    private AddServerPage(String message, Server server, String user, String password, String jdbcurl) {
         this.message  = Check.notNull(message);
         this.server   = Check.notNull(server);
         this.user     = Check.notNull(user);
         this.password = Check.notNull(password);
-        this.info     = Check.notNull(info);
+        this.jdbcurl  = Check.notNull(jdbcurl);
     }
 
-    static AddServerPage messageServerInfo(String message, Server server, ConnectionInfo info)
+    static AddServerPage messageServerUserPasswordJdbcUrl(
+        String message, Server server, String user, String password, String jdbcurl)
     {
-        return new AddServerPage(message,server,info.getUser(),info.getPassword(),info);
+        return new AddServerPage(message,server,user,password,jdbcurl);
     }
 }

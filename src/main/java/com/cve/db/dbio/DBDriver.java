@@ -81,8 +81,16 @@ public enum DBDriver {
         this.driver = Check.notNull(driver);
     }
 
+    /**
+     * Return the proper JDBC URL for this driver, when the server is on
+     * the given machine name.
+     */
     abstract JDBCURL getJDBCURL(String name);
 
+    /**
+     * Return the proper connection info for this driver, given server machine
+     * name, user name and password.
+     */
     public ConnectionInfo getConnectionInfo(String name, String user, String password) {
         JDBCURL     jdbcURL = getJDBCURL(name);
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, user, password);
@@ -99,7 +107,7 @@ public enum DBDriver {
                 return driver;
             }
         }
-        throw new IllegalArgumentException(url.toString());
+        throw new IllegalArgumentException("No driver found for " + url);
     }
 
     /**

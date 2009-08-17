@@ -45,7 +45,7 @@ public final class PageRequest {
      * contents.
      * Often empty, but never null.
      */
-    public final ImmutableMap<String,String> parameters;
+    public final ImmutableMap<String,String[]> parameters;
 
     /**
      * The cookies for this request.
@@ -59,7 +59,7 @@ public final class PageRequest {
 
     private PageRequest(
         Method type, String requestURI, String queryString,
-        ImmutableMap<String,String> parameters, ImmutableList<Cookie> cookies)
+        ImmutableMap<String,String[]> parameters, ImmutableList<Cookie> cookies)
     {
         this.method      = Check.notNull(type);
         this.requestURI  = Check.notNull(requestURI);
@@ -70,7 +70,7 @@ public final class PageRequest {
 
     public static PageRequest path(String pathInfo)
     {
-        ImmutableMap<String,String> parameters = ImmutableMap.of();
+        ImmutableMap<String,String[]> parameters = ImmutableMap.of();
         ImmutableList<Cookie> cookies = ImmutableList.of();
         return new PageRequest(Method.GET,pathInfo,"",parameters,cookies);
     }
@@ -88,8 +88,8 @@ public final class PageRequest {
         return new PageRequest(method,requestURI,queryString,parameters(request),cookies);
     }
 
-    private static ImmutableMap<String,String> parameters(HttpServletRequest request) {
-        Map<String,String> map = Maps.newHashMap();
+    private static ImmutableMap<String,String[]> parameters(HttpServletRequest request) {
+        Map<String,String[]> map = Maps.newHashMap();
         map.putAll(request.getParameterMap());
         return ImmutableMap.copyOf(map);
     }

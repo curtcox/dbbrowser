@@ -4,7 +4,7 @@ import com.cve.db.SelectResults;
 import com.cve.db.SelectResults.Type;
 import com.cve.web.ClientInfo;
 import com.cve.web.Model;
-import com.cve.web.ModelRenderer;
+import com.cve.web.ModelHtmlRenderer;
 import javax.annotation.concurrent.Immutable;
 /**
  * Renders the results of a database select as HTML.
@@ -17,11 +17,11 @@ import javax.annotation.concurrent.Immutable;
  * </ol>
  */
 @Immutable
-public final class SelectResultsRenderer implements ModelRenderer {
+public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     public SelectResultsRenderer() {}
 
-    public Object render(Model model, ClientInfo client) {
+    public String render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
             return renderColumnValueDistributionPage(results,client);

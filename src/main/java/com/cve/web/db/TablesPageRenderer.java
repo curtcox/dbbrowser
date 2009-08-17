@@ -13,9 +13,9 @@ import static com.cve.html.HTML.*;
 /**
  * For picking a table.
  */
-public final class TablesPageRenderer implements ModelRenderer {
+public final class TablesPageRenderer implements ModelHtmlRenderer {
 
-    public Object render(Model model, ClientInfo client) {
+    public String render(Model model, ClientInfo client) {
         TablesPage page = (TablesPage) model;
         return render(page,client);
     }

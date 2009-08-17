@@ -11,8 +11,10 @@ import com.cve.web.PageResponse;
 import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 
+import static com.cve.web.db.AddServerPage.*;
+
 /**
- * For adding a server.
+ * For adding a database server to the ServerStore.
  * @author Curt
  */
 final class AddServerHandler extends AbstractFormHandler {
@@ -26,23 +28,24 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse get(PageRequest request) {
-        return PageResponse.of(AddServerPage.SAMPLE);
+        return PageResponse.of(SAMPLE);
     }
 
     @Override
     public PageResponse post(PageRequest request) {
-        ImmutableMap<String,String> params = request.parameters;
-        String         user = params.get(AddServerPage.USER);
-        String     password = params.get(AddServerPage.PASSWORD);
-        String          url = params.get(AddServerPage.URL);
+        ImmutableMap<String,String[]> params = request.parameters;
+        String         user = params.get(USER)[0];
+        String     password = params.get(PASSWORD)[0];
+        String          url = params.get(URL)[0];
+        String   serverName = params.get(SERVER)[0];
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
-        Server       server = Server.uri(uri);
+        Server       server = Server.uri(URIs.of(serverName));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
         if (ServersStore.getServers().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
-                AddServerPage.messageServerInfo(message, server, info)
+                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
         try {
@@ -51,7 +54,7 @@ final class AddServerHandler extends AbstractFormHandler {
         } catch (RuntimeException e) {
             String message = e.getMessage();
             return PageResponse.of(
-                AddServerPage.messageServerInfo(message, server, info)
+                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
     }

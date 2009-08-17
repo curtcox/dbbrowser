@@ -4,9 +4,9 @@ package com.cve.web;
  * For rendering strings to HTML.
  * @author curt
  */
-public final class ExitPageRenderer implements ModelRenderer {
+public final class ExitPageRenderer implements ModelHtmlRenderer {
 
-    public Object render(Model model, ClientInfo client) {
+    public String render(Model model, ClientInfo client) {
         ExitPage page = (ExitPage) model;
         return render(page);
     }

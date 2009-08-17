@@ -12,9 +12,9 @@ import static com.cve.html.HTML.*;
 /**
  * Renders a DatabasePage to a HTML string.
  */
-public final class DatabasesPageRenderer implements ModelRenderer {
+public final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
-    public Object render(Model model, ClientInfo client) {
+    public String render(Model model, ClientInfo client) {
         DatabasesPage page = (DatabasesPage) model;
         return render(page);
     }

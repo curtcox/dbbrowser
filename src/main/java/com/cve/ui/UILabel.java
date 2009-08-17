@@ -1,27 +1,26 @@
 package com.cve.ui;
 
 import com.cve.util.Check;
-import com.cve.util.Replace;
 
 /**
- * Like a HTML form submit button.
+ * Like a HTML form text.
  * By constructing an object graph, rather than a string, it will be easier
  * to render to something other than HTML later.
  */
-public final class UISubmit implements UIElement {
+public final class UILabel implements UIElement {
 
     private final String value;
 
-    private UISubmit(String value) {
+    private UILabel(String value) {
         this.value = Check.notNull(value);
     }
     
-    public static UISubmit value(String value) {
-        return new UISubmit(value);
+    public static UILabel value(String value) {
+        return new UILabel(value);
     }
 
     @Override
     public String toString() {
-        return Replace.bracketQuote("<input type=[submit] value=[" + value + "] />");
+        return value;
     }
 }

@@ -8,9 +8,9 @@ import static com.cve.html.HTML.*;
 /**
  * Adds the Javascript and CSS we need to the HTML pages we produce.
  */
-public final class PageDecorator implements ModelRenderer {
+public final class PageDecorator implements ModelHtmlRenderer {
 
-    private final ModelRenderer renderer;
+    private final ModelHtmlRenderer renderer;
 
     /**
      * Enable tooltips by including Javascript tooltip library.
@@ -19,15 +19,15 @@ public final class PageDecorator implements ModelRenderer {
     private static final String SCRIPTS = Replace.bracketQuote(
         "<script type=[text/javascript] src=[/resource/wz_tooltip/wz_tooltip.js]></script>");
 
-    private PageDecorator(ModelRenderer renderer) {
+    private PageDecorator(ModelHtmlRenderer renderer) {
         this.renderer = Check.notNull(renderer);
     }
 
-    public static PageDecorator of(ModelRenderer renderer) {
+    public static PageDecorator of(ModelHtmlRenderer renderer) {
         return new PageDecorator(renderer);
     }
 
-    public Object render(Model model, ClientInfo client) {
+    public String render(Model model, ClientInfo client) {
         String body = (String) renderer.render(model,client);
         return render(body,client);
     }
