@@ -46,7 +46,7 @@ public final class Server {
 
     public Link linkTo() {
         Label text = Label.of(toString());
-        URI target = uri;
-       return Link.textTarget(text, target);
+        URI target = URIs.of("/" + uri);
+        return Link.textTarget(text, target);
     }
 }

@@ -23,17 +23,17 @@ public class RedirectsHandlerTest {
 
     @Test
     public void joins() throws SQLException {
-        assertRedirected("/server/db/db.t/db.t.c1/join","db.t.c1=db.t2.c2","/server/db/db.t+db.t2/db.t.c1/db.t.c1=db.t2.c2/");
+        assertRedirected("/server/db/db.t/db.t.c1/join","db.t.c1=db.t2.c2","/server/db/db.t+db.t2/c1/c1=0c2/");
     }
 
     @Test
     public void filters() throws SQLException {
-        assertRedirected("/server/db/db.t/db.t.c1//filter","db.t.c1=7",    "/server/db/db.t/db.t.c1//db.t.c1=7/");
+        assertRedirected("/server/db/db.t/db.t.c1//filter","db.t.c1=7",    "/server/db/db.t/c1//c1=7/");
     }
 
     @Test
     public void hides() throws SQLException {
-        assertRedirected("/server/db/db.t/db.t.c1+db.t.c2/hide","db.t.c1", "/server/db/db.t/db.t.c2/");
+        assertRedirected("/server/db/db.t/db.t.c1+db.t.c2/hide","db.t.c1", "/server/db/db.t/c2/");
     }
 
     private void assertRedirected(String path, String query, String dest) throws SQLException {

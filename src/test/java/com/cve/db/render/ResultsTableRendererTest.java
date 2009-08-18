@@ -101,7 +101,7 @@ public class ResultsTableRendererTest {
      */
     private String renderedOnePersonTable() {
         SelectResults results = onePersonResults();
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
         String       rendered = ResultsTableRenderingTools.results(results,client).toString();
         return rendered;
     }
@@ -135,7 +135,7 @@ table(
     public void personDatabaseRow() {
         String expected = td("<a href=[/server/customer/]>customer</a>",1);
         expected = Replace.bracketQuote(expected);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
         List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).databaseRow();
         assertEquals(expected,rendered);
     }
@@ -144,7 +144,7 @@ table(
     public void personTableRow() {
         String expected = td("<a href=[/server/customer/customer.person/]>person</a>",1);
         expected = Replace.bracketQuote(expected);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
         List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).tableRow();
         assertEquals(expected,rendered);
     }
@@ -161,7 +161,7 @@ table(
         ", STICKY, 1)] onmouseout=[UnTip()]>name</a>"
         ,CSS.COLUMN_JOIN);
         expected = Replace.bracketQuote(expected);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
         List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).columnNameRow();
         assertEquals(expected,rendered);
@@ -200,7 +200,7 @@ table(
     public void personColumnHideRow() {
         String expected = Replace.bracketQuote(
             td("<a href=[hide?customer.person.name]>x</a>"));
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
         List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).columnHideRow();
         assertEquals(expected,rendered);
     }
@@ -209,7 +209,7 @@ table(
     public void personValuesRows() {
         String expected = Replace.bracketQuote(
             tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW));
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
         List rendered = ResultsTableRenderer.results(onePersonResults(),client).valueRows();
         assertEquals(expected,rendered);
     }

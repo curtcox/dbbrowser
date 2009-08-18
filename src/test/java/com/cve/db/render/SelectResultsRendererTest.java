@@ -101,7 +101,7 @@ public class SelectResultsRendererTest {
      */
     private String renderedOnePersonTable() {
         SelectResults results = onePersonResults();
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
         String       rendered = new SelectResultsRenderer().render(results,client).toString();
         return rendered;
@@ -204,7 +204,7 @@ table(
                 )
         );
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
         String         rendered = new SelectResultsRenderer().render(results,client).toString();
         return rendered;
