@@ -14,13 +14,13 @@ public enum DBDriver {
 
 
     MySql("jdbc:mysql:", com.mysql.jdbc.Driver.class) {
-    JDBCURL getJDBCURL(String name) {
+    public JDBCURL getJDBCURL(String name) {
         String url = "jdbc:mysql://" + name + ":3306";
         return JDBCURL.uri(URIs.of(url));
     }} ,
 
     MsSqlTds("jdbc:jtds:sqlserver:", net.sourceforge.jtds.jdbc.Driver.class) {
-    JDBCURL getJDBCURL(String name) {
+    public JDBCURL getJDBCURL(String name) {
     /**
      * Return a connection for this info.
      * The URL format for jTDS is:
@@ -55,20 +55,20 @@ public enum DBDriver {
 //    }} ,
 
     H2("jdbc:h2:",    org.h2.Driver.class) {
-    JDBCURL getJDBCURL(String name) {
-        String url = null;
+    public JDBCURL getJDBCURL(String name) {
+        String url = "jdbc:h2:" + name;
         return JDBCURL.uri(URIs.of(url));
     }} ,
     
     Derby("jdbc:derby:", org.apache.derby.jdbc.ClientDriver.class) {
-    JDBCURL getJDBCURL(String name) {
-        String url = null;
+    public JDBCURL getJDBCURL(String name) {
+        String url = "jdbc:derby:" + name;
         return JDBCURL.uri(URIs.of(url));
     }} ,
 
     Oracle("jdbc:oracle:thin:", org.h2.Driver.class) {
-    JDBCURL getJDBCURL(String name) {
-        String url = null;
+    public JDBCURL getJDBCURL(String name) {
+        String url = "jdbc:oracle:thin:" + name;
         return JDBCURL.uri(URIs.of(url));
     }} ,
     ;
@@ -85,7 +85,7 @@ public enum DBDriver {
      * Return the proper JDBC URL for this driver, when the server is on
      * the given machine name.
      */
-    abstract JDBCURL getJDBCURL(String name);
+    public abstract JDBCURL getJDBCURL(String name);
 
     /**
      * Return the proper connection info for this driver, given server machine
