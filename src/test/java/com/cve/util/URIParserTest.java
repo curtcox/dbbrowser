@@ -96,7 +96,7 @@ public class URIParserTest {
 
     @Test
     public void getWithEmptyGroupBy() {
-        String uri = "/SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE////20+20/";
+        String uri = "/SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE/////20+20/";
         Select select = URIParser.getSelect(uri);
         Server     server = Server.uri(URIs.of("SAMPLE"));
         Database database = server.databaseName("PUBLIC");

@@ -57,6 +57,8 @@ public final class ResultsTableRenderingTools {
     }
 
     static ResultsTableRenderingTools results(SelectResults results, ClientInfo client) {
+        notNull(results);
+        notNull(client);
         return new ResultsTableRenderingTools(results,client);
     }
 

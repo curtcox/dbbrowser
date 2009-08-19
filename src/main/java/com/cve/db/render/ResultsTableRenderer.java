@@ -48,7 +48,7 @@ public final class ResultsTableRenderer {
         tools = ResultsTableRenderingTools.results(results, client);
     }
 
-    static ResultsTableRenderer results(SelectResults results, ClientInfo client) {
+    static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {
         return new ResultsTableRenderer(results,client);
     }
 

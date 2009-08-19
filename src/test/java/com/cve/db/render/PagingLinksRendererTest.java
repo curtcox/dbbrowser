@@ -14,7 +14,7 @@ import com.cve.db.DBRow;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
-import com.cve.util.Replace;
+import static com.cve.util.Replace.bracketQuote;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -34,6 +34,7 @@ public class PagingLinksRendererTest {
 
     private static final String BACK = PagingLinksRenderer.BACK;
     private static final String NEXT = PagingLinksRenderer.NEXT;
+    private static final String BIGGER = PagingLinksRenderer.BIGGER;
 
     public SelectResults onePersonResults() {
         Server           server = Server.uri(URIs.of("server"));
@@ -68,7 +69,7 @@ public class PagingLinksRendererTest {
         DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);
         return results;
     }
 
@@ -82,8 +83,8 @@ public class PagingLinksRendererTest {
 
     @Test
     public void personPagingLinksWhenMoreForwardButNotBack() {
-        String expected = Replace.bracketQuote(
-            "<a href=[next?1]>" + NEXT + "</a>");
+        String expected = bracketQuote(
+            "<a href=[next?1]>" + NEXT + "</a> <a href=[bigger?10]>" + BIGGER + "</a> ");
         Limit limit = Limit.DEFAULT;
         String rendered = PagingLinksRenderer.results(multiPersonResults(0,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);
@@ -91,8 +92,8 @@ public class PagingLinksRendererTest {
 
     @Test
     public void personPagingLinksWhenMoreBackButNotForward() {
-        String expected = Replace.bracketQuote(
-            "<a href=[back?1]>" + BACK + "</a>");
+        String expected = bracketQuote(
+            "<a href=[back?1]>" + BACK + "</a> ");
         Limit limit = Limit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,false)).pagingLinks();
         assertEquals(expected,rendered);
@@ -100,8 +101,9 @@ public class PagingLinksRendererTest {
 
     @Test
     public void personPagingLinksWhenMoreForwardAndBack() {
-        String expected = Replace.bracketQuote(
-             "<a href=[back?1]>" + BACK + "</a><a href=[next?1]>" + NEXT + "</a>");
+        String expected = bracketQuote(
+             "<a href=[back?1]>" + BACK + "</a> <a href=[next?1]>" + NEXT +
+             "</a> <a href=[bigger?10]>" + BIGGER + "</a> ");
         Limit limit = Limit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);

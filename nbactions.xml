@@ -9,4 +9,11 @@
                 <goal>install</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-eclipse:eclipse</actionName>
+            <displayName>eclipse:eclipse</displayName>
+            <goals>
+                <goal>eclipse:eclipse</goal>
+            </goals>
+        </action>
     </actions>

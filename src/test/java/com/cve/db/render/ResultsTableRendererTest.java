@@ -18,7 +18,8 @@ import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
 import com.cve.html.CSS;
-import com.cve.util.Replace;
+import static com.cve.util.Replace.bracketQuote;
+import static com.cve.util.Replace.escapeQuotes;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.google.common.collect.ImmutableList;
@@ -102,7 +103,7 @@ public class ResultsTableRendererTest {
     private String renderedOnePersonTable() {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
-        String       rendered = ResultsTableRenderingTools.results(results,client).toString();
+        String       rendered = ResultsTableRenderer.render(results,client);
         return rendered;
     }
 
@@ -111,41 +112,44 @@ public class ResultsTableRendererTest {
         String rendered = renderedOnePersonTable();
         String expected =
 table(
-    tr(td("<a href=[/server/customer/]>customer</a>",1),CSS.DATABASE) + // databases row
-    tr(td("<a href=[/server/customer/customer.person/]>person</a>",1),CSS.TABLE) +  // tables row
+    tr(td("Database : <a href=[/server/customer/]>customer</a>",CSS.DATABASE)) + // databases row
+    tr(td("Table : <a href=[/server/customer/customer.person/]>person</a>",CSS.TABLE)) +  // tables row
     // column names row
     tr(td(
         Link.textTargetTip(
             Label.of("name"),
             URIs.of("/server/customer/customer.person/customer.person.name/"),
             SimpleTooltip.of(
-                Replace.escapeQuotes(Replace.bracketQuote(
+                escapeQuotes(bracketQuote(
                     "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
                     "join with customer.family.familyName</a></td></tr></table>"
             )))).toString()
-    ,CSS.COLUMN_JOIN)) +
-    tr(td("<a href=[hide?customer.person.name]>x</a>"),CSS.HIDE) + // column hide row
-    tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW) // values rows
+    ,CSS.COLUMN_JOIN))
+    //            +
+    //tr(td("<a href=[hide?customer.person.name]>x</a>"),CSS.HIDE) + // column hide row
+    //tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW) // values rows
 );
-        expected = Replace.bracketQuote(expected);
+        expected = bracketQuote(expected);
         assertEquals(expected,rendered);
     }
 
     @Test
     public void personDatabaseRow() {
-        String expected = td("<a href=[/server/customer/]>customer</a>",1);
-        expected = Replace.bracketQuote(expected);
+        String expected = td("Database : <a href=[/server/customer/]>customer</a>",1);
+        expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
-        List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).databaseRow();
+        List list = ResultsTableRenderingTools.results(onePersonResults(),client).databaseRow();
+        String rendered = list.get(0).toString();
         assertEquals(expected,rendered);
     }
 
     @Test
     public void personTableRow() {
-        String expected = td("<a href=[/server/customer/customer.person/]>person</a>",1);
-        expected = Replace.bracketQuote(expected);
+        String expected = td("Table : <a href=[/server/customer/customer.person/]>person</a>",1);
+        expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
-        List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).tableRow();
+        List list = ResultsTableRenderingTools.results(onePersonResults(),client).tableRow();
+        String rendered = list.get(0).toString();
         assertEquals(expected,rendered);
     }
 
@@ -155,15 +159,16 @@ table(
         td(
         "<a href=[/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
-             Replace.escapeQuotes(Replace.bracketQuote(
+             escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
                  "join with customer.family.familyName</a></td></tr></table>'")) +
         ", STICKY, 1)] onmouseout=[UnTip()]>name</a>"
         ,CSS.COLUMN_JOIN);
-        expected = Replace.bracketQuote(expected);
+        expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
 
-        List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).columnNameRow();
+        List list = ResultsTableRenderingTools.results(onePersonResults(),client).columnNameRow();
+        String rendered = list.get(0).toString();
         assertEquals(expected,rendered);
     }
 
@@ -172,16 +177,16 @@ table(
         String expected =
         "<a href=[/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
-             Replace.escapeQuotes(Replace.bracketQuote(
+             escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
                  "join with customer.family.familyName</a></td></tr></table>'")) +
         ", STICKY, 1)] onmouseout=[UnTip()]>name</a>";
-        expected = Replace.bracketQuote(expected);
+        expected = bracketQuote(expected);
         SelectResults results = onePersonResults();
         DBColumn         column = results.resultSet.columns.get(0);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
-        String       rendered = ResultsTableRenderingTools.results(onePersonResults(),client).nameCell(column);
+        String rendered = ResultsTableRenderingTools.results(onePersonResults(),client).nameCell(column);
         assertEquals(expected,rendered);
     }
 
@@ -198,19 +203,21 @@ table(
 
     @Test
     public void personColumnHideRow() {
-        String expected = Replace.bracketQuote(
+        String expected = bracketQuote(
             td("<a href=[hide?customer.person.name]>x</a>"));
         ClientInfo     client = ClientInfo.of();
-        List rendered = ResultsTableRenderingTools.results(onePersonResults(),client).columnHideRow();
+        List list = ResultsTableRenderingTools.results(onePersonResults(),client).columnHideRow();
+        String rendered = list.get(0).toString();
         assertEquals(expected,rendered);
     }
 
     @Test
     public void personValuesRows() {
-        String expected = Replace.bracketQuote(
+        String expected = bracketQuote(
             tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW));
         ClientInfo     client = ClientInfo.of();
-        List rendered = ResultsTableRenderer.results(onePersonResults(),client).valueRows();
+        List list = ResultsTableRenderer.resultsClientInfo(onePersonResults(),client).valueRows();
+        String rendered = list.get(0).toString();
         assertEquals(expected,rendered);
     }
 
@@ -245,7 +252,7 @@ table(
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
         String rendered = ResultsTableRenderingTools.results(results,client).nameCell(name);
         assertTrue(rendered,rendered.contains("familyName"));
@@ -306,7 +313,7 @@ table(
         );
 
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
-        ClientInfo     client = null;
+        ClientInfo     client = ClientInfo.of();
 
         String         rendered = ResultsTableRenderer.render(results,client);
         return rendered;
