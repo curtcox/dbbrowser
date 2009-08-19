@@ -29,7 +29,7 @@ public class DatabaseMetaHandlerTest {
     public void getCatalogs() throws SQLException {
         Server server = getStoreServer();
         String expected = table(
-             tr(th("CATALOG_NAME")) + tr(td("DB")) );
+             tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
         assertEquals(expected,DatabaseMetaHandler.getCatalogs(server));
     }
 
