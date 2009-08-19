@@ -9,7 +9,7 @@ import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.dbio.DBMetaData;
-import com.cve.db.select.SelectRunner;
+import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
@@ -90,7 +90,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
-        SelectResults results = SelectRunner.run(
+        SelectResults results = SelectExecutor.run(
             select, server, connection, hints);
         return results;
     }

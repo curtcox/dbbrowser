@@ -41,10 +41,17 @@ public final class ServersStore {
     private static String URL = "jdbcurl";
 
     /**
+     * Has the store been been initially loaded?
+     * Is startup over?
+     */
+    private static boolean loaded = false;
+
+    /**
      * When the VM starts, load the servers.
      */
     static {
         load();
+        loaded = true;
     }
 
     private static void load() {
@@ -106,7 +113,9 @@ public final class ServersStore {
      */
     public static void addServer(Server server, ConnectionInfo info) {
         INFOS.put(server, info);
-        save();
+        if (loaded) {
+            save();
+        }
     }
 
     public static ImmutableList<Server> getServers() {

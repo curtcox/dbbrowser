@@ -10,7 +10,7 @@ import com.cve.db.Select;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
-import com.cve.db.select.SelectRunner;
+import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
 import com.cve.util.URIParser;
@@ -79,7 +79,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
-        SelectResults results = SelectRunner.run(select, server, connection, hints);
+        SelectResults results = SelectExecutor.run(select, server, connection, hints);
         return results;
     }
 }
