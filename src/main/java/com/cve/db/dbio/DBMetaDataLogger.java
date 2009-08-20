@@ -28,30 +28,37 @@ final class DBMetaDataLogger implements DBMetaData {
     }
 
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+        print("getPrimaryKeysFor" + tables);
         return print(meta.getPrimaryKeysFor(tables));
     }
 
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+        print("getJoinsFor" + tables);
         return print(meta.getJoinsFor(tables));
     }
 
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
+        print("getColumnsFor" + server);
         return print(meta.getColumnsFor(server));
     }
 
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
+        print("getColumnsFor" + table);
         return print(meta.getColumnsFor(table));
     }
 
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
+        print("getDatabasesOn" + server);
         return print(meta.getDatabasesOn(server));
     }
 
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+        print("getColumnsFor" + tables);
         return print(meta.getColumnsFor(tables));
     }
 
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
+        print("getTablesOn" + database);
         return print(meta.getTablesOn(database));
     }
 

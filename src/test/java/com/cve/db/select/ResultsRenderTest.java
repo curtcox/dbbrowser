@@ -55,7 +55,7 @@ public class ResultsRenderTest {
         ImmutableMap<Cell,Value> fixedValues = ImmutableMap.copyOf(values);
         DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues);
         SelectResults  expected = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,true);
-        SelectResults    actual = SelectRunner.run(select,server,connection,hints);
+        SelectResults    actual = SelectExecutor.run(select,server,connection,hints);
 
         assertEquals(expected.hints           ,actual.hints);
         assertEquals(expected.select          ,actual.select);

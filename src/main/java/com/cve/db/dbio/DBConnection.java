@@ -24,11 +24,25 @@ import static com.cve.util.Check.notNull;
  */
 public final class DBConnection {
 
+    /**
+     * How we talk to the database.
+     * We don't expose this, because we may need to reset it.
+     */
     private volatile Connection connection;
+
+    /**
+     * How we generate connections
+     */
     public final ConnectionInfo info;
+
+    /**
+     * For getting info about the database.
+     */
+    public final DBMetaData dbMetaData;
 
     private DBConnection(ConnectionInfo info) {
         this.info = notNull(info);
+        dbMetaData = DefaultDBMetaData.getDbmd(this);
     }
 
     public static DBConnection info(ConnectionInfo info) {
@@ -46,11 +60,6 @@ public final class DBConnection {
         log("resetting " + info);
         connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         return connection;
-    }
-
-
-    public synchronized DBMetaData getMetaData() {
-        return DefaultDBMetaData.getDbmd(this);
     }
 
     public synchronized DatabaseMetaData getJDBCMetaData() {
@@ -85,7 +94,7 @@ public final class DBConnection {
 
     public static DBMetaData getDbmd(Server server) {
         DBConnection connection = ServersStore.getConnection(server);
-        DBMetaData   dbmd = connection.getMetaData();
+        DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }
 

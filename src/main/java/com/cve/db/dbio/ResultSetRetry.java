@@ -12,8 +12,14 @@ import java.sql.SQLException;
  */
 public final class ResultSetRetry {
 
-
+    /**
+     * The connection we want to try and retry on
+     */
     private final DBConnection connection;
+
+    /**
+     * This knows about the connection and will generate a result set.
+     */
     private final ResultSetGenerator generator;
 
     private ResultSetRetry(DBConnection connection, ResultSetGenerator generator) {

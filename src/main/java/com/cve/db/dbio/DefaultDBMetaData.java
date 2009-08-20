@@ -26,8 +26,11 @@ class DefaultDBMetaData implements DBMetaData {
     protected DefaultDBMetaData() {}
 
     static DBMetaData getDbmd(DBConnection connection) {
-        // return DBMetaDataLogger.of(System.out,H2MetaData.of());
-        return DBMetaDataTimer.of(DBMetaDataCache.of(getDbmd0(connection)));
+        DBMetaData meta = getDbmd0(connection);
+        meta = DBMetaDataLogger.of(System.out,meta);
+        meta = DBMetaDataCache.of(meta);
+        meta = DBMetaDataTimer.of(meta);
+        return meta;
     }
 
     private static DBMetaData getDbmd0(DBConnection connection) {
