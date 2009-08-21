@@ -4,6 +4,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
+import static com.cve.util.Check.notNull;
 import com.cve.util.Strings;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -69,12 +70,17 @@ public final class ServersStore {
      * Load the named server.
      */
     private static void loadServer(Properties props,String name) {
-        Server   server = Server.uri(URIs.of(name));
-        JDBCURL jdbcurl = JDBCURL.uri(URIs.of(props.getProperty(name + "." + URL)));
-        String     user = props.getProperty(name + "." + USER);
-        String password = props.getProperty(name + "." + PASSWORD);
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
-        addServer(server,info);
+        try {
+            Server   server = Server.uri(URIs.of(name));
+            JDBCURL jdbcurl = JDBCURL.uri(URIs.of(notNull(props.getProperty(name + "." + URL),URL)));
+            String     user = notNull(props.getProperty(name + "." + USER) , USER);
+            String password = notNull(props.getProperty(name + "." + PASSWORD) , PASSWORD);
+            ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
+            addServer(server,info);
+        } catch (RuntimeException e) {
+            String message = "Loading " + name;
+            throw new RuntimeException(message,e);
+        }
     }
 
     /**

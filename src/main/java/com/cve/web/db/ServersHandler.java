@@ -4,6 +4,7 @@ import com.cve.web.*;
 import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.log.Log;
 import com.cve.stores.ServersStore;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -17,9 +18,11 @@ import java.sql.SQLException;
  */
 public final class ServersHandler extends AbstractRequestHandler {
 
+    private static final Log log = Log.of(ServersHandler.class);
+
     public PageResponse get(PageRequest request) throws IOException, SQLException {
         ImmutableList<Server>                servers = ServersStore.getServers();
-        ImmutableMultimap<Server,Database> databases = getDatabases(servers);
+        ImmutableMultimap<Server,Object> databases = getDatabases(servers);
         return PageResponse.of(new ServersPage(servers,databases));
     }
 
@@ -28,11 +31,20 @@ public final class ServersHandler extends AbstractRequestHandler {
         return "/".equals(uri);
     }
 
-    static ImmutableMultimap<Server,Database> getDatabases(ImmutableList<Server> servers) throws SQLException {
-        Multimap<Server,Database> databases = HashMultimap.create();
+    /**
+     * Generate a list of all of the databases on all of the servers
+     * @param servers
+     * @return
+     */
+    static ImmutableMultimap<Server,Object> getDatabases(ImmutableList<Server> servers) {
+        Multimap<Server,Object> databases = HashMultimap.create();
         for (Server server : servers) {
-            for (Database database : DBConnection.getDbmd(server).getDatabasesOn(server)) {
-                databases.put(server, database);
+            try {
+                for (Database database : DBConnection.getDbmd(server).getDatabasesOn(server)) {
+                    databases.put(server, database);
+                }
+            } catch (Throwable t) {
+                log.warn(t);
             }
         }
         return ImmutableMultimap.copyOf(databases);

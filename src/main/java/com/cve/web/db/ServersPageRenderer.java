@@ -89,8 +89,16 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     static String databasesOn(ServersPage page, Server server) {
         StringBuilder out = new StringBuilder();
         int i = 0;
-        for (Database database : page.databases.get(server)) {
-            out.append(database.linkTo() + " ");
+        for (Object object : page.databases.get(server)) {
+            if (object instanceof Database) {
+                Database database = (Database) object;
+                out.append(database.linkTo() + " ");
+            } else if (object instanceof Throwable) {
+                Throwable t = (Throwable) object;
+                out.append(t.getMessage());
+            } else {
+                throw new IllegalArgumentException("" + object);
+            }
             i++;
             if (i>20) {
                 out.append("...");

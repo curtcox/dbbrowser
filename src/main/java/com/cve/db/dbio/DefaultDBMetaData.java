@@ -18,7 +18,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
+ * Skeletal implementation of DB meta data reader.
+ * This class is designed to be extended.
  * @author curt
  */
 class DefaultDBMetaData implements DBMetaData {
@@ -49,6 +50,7 @@ class DefaultDBMetaData implements DBMetaData {
     }
 
 
+    @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
@@ -84,6 +86,7 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      * Return all the potential joins from the columns in the given tables.
      */
+    @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
@@ -94,6 +97,7 @@ class DefaultDBMetaData implements DBMetaData {
         return ImmutableList.copyOf(joins);
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
@@ -104,6 +108,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     /**
      */
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server)  throws SQLException {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
@@ -133,6 +138,7 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      * Simple cache
      */
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException {
         Database       database = table.database;
         Server           server = database.server;
@@ -157,6 +163,7 @@ class DefaultDBMetaData implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException {
         DBMetaDataIO     dbmd = getDbmdIO(server);
         ResultSet results = dbmd.getCatalogs();
@@ -177,6 +184,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     /**
      */
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
         Server           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
