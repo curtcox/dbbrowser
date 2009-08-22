@@ -14,7 +14,14 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DBColumn {
 
+    /**
+     * The table this column is on.
+     */
     public final DBTable  table;
+
+    /**
+     * The name of this column.
+     */
     public final String name;
 
     /**
@@ -30,7 +37,10 @@ public final class DBColumn {
      */
     public static final DBColumn ALL = tableName(DBTable.NULL,"*");
 
-    DBColumn(DBTable table, String name, Class type) {
+    /**
+     * Use the factories.
+     */
+    private DBColumn(DBTable table, String name, Class type) {
         this.table = notNull(table);
         this.name  = notNull(name);
         this.type  = notNull(type);
@@ -42,6 +52,10 @@ public final class DBColumn {
 
     public static DBColumn tableName(DBTable table, String name) {
         return new DBColumn(table,name,Void.class);
+    }
+
+    public Filter filterValue(Value value) {
+        return Filter.of(this, value);
     }
 
     public static DBColumn parse(Server server, ImmutableList<DBTable> tables, String fullColumnName) {

@@ -10,7 +10,14 @@ import static com.cve.util.Check.notNegative;
 @Immutable
 public final class Limit {
 
+    /**
+     * Maximum number of rows to return.
+     */
     public final int limit;
+
+    /**
+     * Offset within the entire result set of the first row to return.
+     */
     public final int offset;
 
     public static final Limit DEFAULT = limit(20);

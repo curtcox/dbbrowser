@@ -160,7 +160,7 @@ public final class URIRenderer {
     static String renderFilters(ImmutableList<DBTable> tables, ImmutableList<Filter> filters) {
         List<String> list = Lists.newArrayList();
         for (Filter filter : filters) {
-            list.add(shortName(tables,filter.column) + "=" + filter.value.toString());
+            list.add(shortName(tables,filter.column) + "=" + filter.value.encode());
         }
         return separated(list);
     }

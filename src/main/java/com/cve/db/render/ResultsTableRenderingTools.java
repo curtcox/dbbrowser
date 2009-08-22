@@ -244,9 +244,9 @@ public final class ResultsTableRenderingTools {
         Object       object = value.getValue();
         String  valueString = "" + object;
         Label          text = Label.of(valueString);
-        DBColumn       column = cell.column;
-        String encodedValue = URLEncoder.encode(valueString);
-        URI          target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + encodedValue);
+        DBColumn     column = cell.column;
+        Filter       filter = Filter.of(column, value);
+        URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
         return Link.textTarget(text, target).toString();
     }
 

@@ -1,7 +1,10 @@
 package com.cve.db;
 
 import com.google.common.collect.ImmutableList;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import javax.annotation.concurrent.Immutable;
+import org.h2.table.Column;
 import static com.cve.util.Check.notNull;
 /**
  * A condition that rejects some rows based upon the value of a particular column.
@@ -12,18 +15,35 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Filter {
 
+    /**
+     * The column this filter filters.
+     */
     public final DBColumn column;
+
+    /**
+     * The value this filter passes.
+     */
     public final Value value;
 
+    /**
+     * Use the factory.
+     */
     private Filter(DBColumn column, Value value) {
         this.column = notNull(column);
         this.value  = notNull(value);
     }
-    
+
+    /**
+     * Return a filter for the given column and value.
+     */
     public static Filter of(DBColumn column, Value value) {
         return new Filter(column,value);
     }
 
+    /**
+     * Parses a filter that has previously been rendered as a URL fragment.
+     * See toURrlFragment.
+     */
     public static Filter parse(Server server, ImmutableList<DBTable> tables, String fullFilterName) {
         notNull(server);
         notNull(fullFilterName);
@@ -33,9 +53,19 @@ public final class Filter {
             throw new IllegalArgumentException(message);
         }
         DBColumn       column = DBColumn.parse(server,tables,nameParts[0]);
-        Value         value = Value.of(nameParts[1]);
+        String         string = nameParts[1];
+        Value         value = Value.decode(string);
         Filter       filter = Filter.of(column, value);
         return filter;
+    }
+
+    /**
+     * Constructs a URL fragment that will be used in a query string or in
+     * the filters section of a select URL.
+     * See parse.
+     */
+    public String toUrlFragment() {
+        return column.fullName() + "=" + value.encode();
     }
 
     @Override
@@ -45,5 +75,10 @@ public final class Filter {
     public boolean equals(Object o) {
         Filter other = (Filter) o;
         return column.equals(other.column) && value.equals(other.value);
+    }
+
+    @Override
+    public String toString() {
+        return "column=" + column + " value=" + value;
     }
 }

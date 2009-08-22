@@ -1,5 +1,7 @@
 package com.cve.db;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import javax.annotation.concurrent.Immutable;
 /**
  * The typed value of a {@link Column} {@link Cell}, {@link Join}, or {@link Filter}.
@@ -23,10 +25,24 @@ public final class Value {
         this.value = value;
     }
 
+    public static Value decode(String string) {
+        string = URLDecoder.decode(string);
+        string = string.replace("_", " ");
+        string = string.replace("%2B", "+");
+        return Value.of(string);
+    }
+
+    public String encode() {
+        String  string = "" + value;
+        string = string.replace(" ", "_");
+        string = string.replace("+", "%2B");
+        return URLEncoder.encode(string);
+    }
+
     public Object getValue() { return value;  }
 
     @Override
-    public String toString() { return value.toString(); }
+    public String toString() { return "" + value; }
 
     @Override
     public int hashCode() {
