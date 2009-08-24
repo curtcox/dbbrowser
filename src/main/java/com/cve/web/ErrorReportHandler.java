@@ -1,5 +1,6 @@
 package com.cve.web;
 
+import com.cve.web.log.AnnotatedStackTraceModel;
 import java.io.IOException;
 
 import static com.cve.util.Check.notNull;
@@ -22,11 +23,12 @@ public final class ErrorReportHandler implements RequestHandler {
         return new ErrorReportHandler(handler);
     }
 
+    @Override
     public PageResponse produce(PageRequest request) throws IOException {
         try {
             return handler.produce(request);
         } catch (Throwable t) {
-            return PageResponse.of(t);
+            return PageResponse.of(AnnotatedStackTraceModel.throwable(t));
         }
     }
 

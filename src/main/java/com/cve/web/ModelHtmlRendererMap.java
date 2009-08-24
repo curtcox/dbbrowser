@@ -16,7 +16,6 @@ final class ModelHtmlRendererMap {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(ExitPage.class,         PageDecorator.of(new ExitPageRenderer()));
         map.put(StringModel.class,      PageDecorator.of(new StringModelRenderer()));
-        map.put(ThrowableModel.class,   new ThrowableModelRenderer());
         return ImmutableMap.copyOf(map);
     }
 

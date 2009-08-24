@@ -32,6 +32,7 @@ final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
         return of(map);
     }
 
+    @Override
     public String render(Model model, ClientInfo client) {
         Check.notNull(model);
         Class toRender = model.getClass();

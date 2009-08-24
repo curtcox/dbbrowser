@@ -32,11 +32,11 @@ public final class Throwables {
         while (t!=null) {
             out.append("<b>" + t.getClass().getName() + "</b> " + t.getMessage());
             StringBuilder table = new StringBuilder();
-            String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line"));
+            String header = tr(th("class") + th("file") + th("method") + th("line"));
             table.append(header);
             for (StackTraceElement e : t.getStackTrace()) {
                 table.append(row(e));
-            }
+}
             out.append(table(table.toString()));
             t = t.getCause();
             if (t!=null) {
@@ -53,12 +53,10 @@ public final class Throwables {
     static String row(StackTraceElement e) {
         String className = e.getClassName();
         String  fileName = e.getFileName();
-        Object[] arguments = Log.getArgumentsFor(e);
         return tr(
             td(className) +
             td(linkToSource(className,fileName).toString()) +
             td(e.getMethodName()) +
-            td(Arrays.asList(arguments).toString()) +
             td("" + e.getLineNumber())
         );
 

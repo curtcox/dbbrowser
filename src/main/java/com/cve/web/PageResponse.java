@@ -1,5 +1,7 @@
 package com.cve.web;
 
+import com.cve.web.log.AnnotatedStackTraceModel;
+import com.cve.log.Log;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -36,7 +38,7 @@ public final class PageResponse {
     }
 
     public static PageResponse of(Throwable throwable) {
-        return of(new ThrowableModel(throwable));
+        return of(AnnotatedStackTraceModel.throwable(throwable));
     }
 
     public static PageResponse of(byte[] bytes) {
