@@ -1,5 +1,6 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DatabaseModelHtmlRenderers;
@@ -31,6 +32,18 @@ import java.net.URI;
  * @author Curt
  */
 public final class RequestRouterServlet extends HttpServlet {
+
+    /**
+     * Where we log to.
+     */
+    static final Log LOG = Log.of(RequestRouterServlet.class);
+
+    /**
+     * Note in the log.
+     */
+    static void note(Object... o) {
+        LOG.note(o);
+    }
 
     /**
      * This is how we find something to respond to a given request.
@@ -66,6 +79,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
+        note(request,response);
         try {
             route(request,response);
         } catch (Throwable t) {
@@ -78,6 +92,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
+        note(request,response);
         try {
             route(request,response);
         } catch (Throwable t) {
@@ -90,6 +105,7 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     static void write(PageResponse page, HttpServletResponse response) throws IOException {
+        note(page,response);
         URI redirect = page.redirect;
         // Redirect, if that is the response
         if (redirect!=null) {
@@ -128,6 +144,7 @@ public final class RequestRouterServlet extends HttpServlet {
     static void route(HttpServletRequest request, HttpServletResponse response)
         throws IOException, SQLException
     {
+        note(request,response);
         String uri = request.getRequestURI();
         // You can dump any request by sticking a ! on the beginning or end.
         if (uri.startsWith("/!") || uri.endsWith("!")) {

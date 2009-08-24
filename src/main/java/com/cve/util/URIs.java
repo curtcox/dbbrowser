@@ -30,8 +30,21 @@ public final class URIs {
         return count;
     }
 
-    public static URI startingAtSlash(String uri, int i) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    /**
+        // /view/CSV/foo
+        //          ^ start here
+     */
+    public static URI startingAtSlash(String uri, int slash) {
+        int j=0;
+        for (int i=0; i<uri.length(); i++) {
+            if (uri.charAt(i)=='/') {
+                j++;
+                if (j==slash+1) {
+                    return URIs.of(uri.substring(i));
+                }
+            }
+        }
+        throw new IllegalArgumentException(uri + " starting at slash " + slash);
     }
 
 }

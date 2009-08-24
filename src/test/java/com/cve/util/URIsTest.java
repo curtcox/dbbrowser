@@ -38,4 +38,20 @@ public class URIsTest {
         assertEquals(3,URIs.slashCount("?///?"));
         assertEquals(3,URIs.slashCount("/?/?/"));
     }
+
+    @Test
+    public void startingAtSlash1() {
+        assertEquals("/view/CSV/foo",URIs.startingAtSlash("/view/CSV/foo", 1));
+    }
+
+    @Test
+    public void startingAtSlash2() {
+        assertEquals("/CSV/foo",URIs.startingAtSlash("/view/CSV/foo", 2));
+    }
+
+    @Test
+    public void startingAtSlash3() {
+        assertEquals("/foo",URIs.startingAtSlash("/view/CSV/foo", 2));
+    }
+
 }

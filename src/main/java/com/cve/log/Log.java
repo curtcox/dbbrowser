@@ -17,8 +17,12 @@ public final class Log {
         return new Log(c);
     }
 
-    public void debug(String message) {
-        System.out.println(message);
+    public static Object[] getArgumentsFor(StackTraceElement e) {
+        return new Object[0];
+    }
+
+    public void note(Object... o) {
+        System.out.println("" + o);
     }
 
     public void info(String message) {

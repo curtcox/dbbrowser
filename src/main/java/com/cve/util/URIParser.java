@@ -12,6 +12,7 @@ import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
@@ -56,6 +57,18 @@ public final class URIParser {
             this.index = index;
         }
 
+    }
+
+    /**
+     * Where we log to.
+     */
+    static final Log LOG = Log.of(URIParser.class);
+
+    /**
+     * Note in the log.
+     */
+    static void note(Object o) {
+        LOG.note(o);
     }
 
     static String at(String uri, Position pos) {
@@ -240,6 +253,7 @@ public final class URIParser {
     }
 
     public static Select getSelect(String uri) {
+        note(uri);
         // get everything out of the URL
         ImmutableList<Database>          databases = getDatabases(uri);
         ImmutableList<DBTable>              tables = getTables(uri);
@@ -276,5 +290,6 @@ public final class URIParser {
             throw new IllegalArgumentException(message);
         }
     }
+
 
 }

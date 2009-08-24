@@ -2,11 +2,13 @@ package com.cve.util;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.web.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 import java.net.URI;
+import java.util.Arrays;
 import static com.cve.html.HTML.*;
 /**
  * For printing throwables.
@@ -30,7 +32,7 @@ public final class Throwables {
         while (t!=null) {
             out.append("<b>" + t.getClass().getName() + "</b> " + t.getMessage());
             StringBuilder table = new StringBuilder();
-            String header = tr(th("class") + th("file") + th("method") + th("line"));
+            String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line"));
             table.append(header);
             for (StackTraceElement e : t.getStackTrace()) {
                 table.append(row(e));
@@ -50,11 +52,13 @@ public final class Throwables {
      */
     static String row(StackTraceElement e) {
         String className = e.getClassName();
-        String fileName = e.getFileName();
+        String  fileName = e.getFileName();
+        Object[] arguments = Log.getArgumentsFor(e);
         return tr(
             td(className) +
             td(linkToSource(className,fileName).toString()) +
             td(e.getMethodName()) +
+            td(Arrays.asList(arguments).toString()) +
             td("" + e.getLineNumber())
         );
 
