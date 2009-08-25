@@ -1,11 +1,11 @@
 package com.cve.db;
 
 import com.google.common.collect.ImmutableList;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import javax.annotation.concurrent.Immutable;
 import org.h2.table.Column;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
+
 /**
  * A condition that rejects some rows based upon the value of a particular column.
  * A filter corresponds to a {@link SQL} where clause that only involves one
@@ -45,6 +45,7 @@ public final class Filter {
      * See toURrlFragment.
      */
     public static Filter parse(Server server, ImmutableList<DBTable> tables, String fullFilterName) {
+        args(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
         String[]  nameParts = fullFilterName.split("\\=");

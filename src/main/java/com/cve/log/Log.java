@@ -2,6 +2,8 @@ package com.cve.log;
 
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
+import com.cve.web.log.ObjectRegistry;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,11 +28,14 @@ public final class Log {
         return AnnotatedStackTrace.throwableArgs(t,map);
     }
 
-    public static void note(Object... o) {
+    public static void args(Object... objects) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         StackTraceElement element = elements[3];
-        map.put(element, o);
-        System.out.println(element + " " + o);
+        map.put(element, objects);
+        for (Object o : objects) {
+            ObjectRegistry.put(o);
+        }
+        // System.out.println(element + " " + Arrays.asList(objects));
     }
 
     public void info(String message) {

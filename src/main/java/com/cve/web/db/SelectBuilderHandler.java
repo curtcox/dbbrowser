@@ -18,6 +18,7 @@ import com.cve.util.URIs;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
+import static com.cve.log.Log.args;
 
 
 /**
@@ -29,7 +30,7 @@ import java.sql.SQLException;
 public final class SelectBuilderHandler implements RequestHandler {
 
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
-
+        args(request);
         PageResponse redirect = redirectedWithAddedColumns(request);
         if (redirect!=null) {
             return redirect;

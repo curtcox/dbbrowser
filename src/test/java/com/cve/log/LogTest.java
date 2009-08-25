@@ -14,7 +14,7 @@ public class LogTest {
     @Test
     public void annotatedStackTraceRetainsMethodArgSomewhere() {
         String ARG = "arg";
-        Log.note(ARG);
+        Log.args(ARG);
         Throwable t = new Throwable();
         AnnotatedStackTrace trace = Log.annotatedStackTrace(t);
         for (StackTraceElement element : trace.elements) {
@@ -27,13 +27,14 @@ public class LogTest {
     }
 
     @Test
-    public void annotatedStackTraceRetainsMethodArgHere() {
+    public void annotatedStackTraceRetainsMethodArgHereWithDirectNote() {
         String ARG = "arg";
-        Log.note(ARG);
+        Log.args(ARG);
         Throwable t = new Throwable();
         AnnotatedStackTrace trace = Log.annotatedStackTrace(t);
-        StackTraceElement element = trace.elements.get(0);
-        Assert.assertEquals(ARG, trace.args.get(element)[0]);
+        StackTraceElement element = trace.elements.get(1);
+        Object[] args = trace.args.get(element);
+        Assert.assertEquals(ARG, args[0]);
     }
 
 }

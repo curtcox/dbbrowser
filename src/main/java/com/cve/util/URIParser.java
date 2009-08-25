@@ -13,6 +13,7 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.log.Log;
+import static com.cve.log.Log.args;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
@@ -64,14 +65,8 @@ public final class URIParser {
      */
     static final Log LOG = Log.of(URIParser.class);
 
-    /**
-     * Note in the log.
-     */
-    static void note(Object o) {
-        LOG.note(o);
-    }
-
     static String at(String uri, Position pos) {
+        args(uri);
         return uri.split("/")[pos.index];
     }
 
@@ -81,18 +76,21 @@ public final class URIParser {
     }
 
     public static Server getServer(String uri) {
+        args(uri);
         notNull(uri);
         String name = at(uri,Position.SERVER);
         return Server.uri(URIs.of(name));
     }
 
     public static Database getDatabase(String uri) {
+        args(uri);
         Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
 
     public static String getMetaDataMethod(String uri) {
+        args(uri);
         if (!exists(uri,Position.METADATA)) {
             return "";
         }
@@ -100,6 +98,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<Database> getDatabases(String uri) {
+        args(uri);
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
@@ -112,6 +111,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<DBTable> getTables(String uri) {
+        args(uri);
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
@@ -147,21 +147,21 @@ public final class URIParser {
      * parts.
      */
     private static String[] splitFullColumnName(String full) {
-            String[] parts = full.split("\\(|\\)");
-            if (parts.length==1) {
-                return new String[] { "", parts[0] };
-            }
-            if (parts.length==2) {
-                return parts;
-            }
-            throw new IllegalArgumentException(full);
+        String[] parts = full.split("\\(|\\)");
+        if (parts.length==1) {
+            return new String[] { "", parts[0] };
+        }
+        if (parts.length==2) {
+            return parts;
+        }
+        throw new IllegalArgumentException(full);
     }
 
     public static ImmutableList<AggregateFunction> getFunctions(ImmutableList<DBTable> tables, String uri) {
+        args(tables,uri);
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
         List<AggregateFunction> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[0];
@@ -172,6 +172,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<Join> getJoins(ImmutableList<DBTable> tables,String uri) {
+        args(tables,uri);
         if (!exists(uri,Position.JOINS)) {
             return ImmutableList.of();
         }
@@ -189,6 +190,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<Filter> getFilters(ImmutableList<DBTable> tables,String uri) {
+        args(tables,uri);
         if (!exists(uri,Position.FILTERS)) {
             return ImmutableList.of();
         }
@@ -207,6 +209,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<Order> getOrders(ImmutableList<DBTable> tables,String uri) {
+        args(tables,uri);
         if (!exists(uri,Position.ORDERS)) {
             return ImmutableList.of();
         }
@@ -225,6 +228,7 @@ public final class URIParser {
     }
 
     public static ImmutableList<Group> getGroups(ImmutableList<DBTable> tables,String uri) {
+        args(tables,uri);
         if (!exists(uri,Position.GROUPS)) {
             return ImmutableList.of();
         }
@@ -253,7 +257,7 @@ public final class URIParser {
     }
 
     public static Select getSelect(String uri) {
-        note(uri);
+        args(uri);
         // get everything out of the URL
         ImmutableList<Database>          databases = getDatabases(uri);
         ImmutableList<DBTable>              tables = getTables(uri);

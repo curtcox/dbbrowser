@@ -8,11 +8,13 @@ import com.cve.db.DBTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 
+import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
 /**
  * For picking a database.
  */
+@Immutable
 public final class DatabasesPage implements Model {
 
     final Server server;

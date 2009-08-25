@@ -7,7 +7,6 @@ import static com.cve.html.HTML.*;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import java.net.URI;
-import java.util.Arrays;
 
 /**
  * For rendering throwables to HTML.
@@ -57,10 +56,19 @@ public final class AnnotatedStackTraceRenderer implements ModelHtmlRenderer {
             td(className) +
             td(linkToSource(className,fileName).toString()) +
             td(e.getMethodName()) +
-            td(Arrays.asList(args).toString()) +
+            td(argsCell(args)) +
             td("" + e.getLineNumber())
         );
+    }
 
+    static String argsCell(Object[] args) {
+        StringBuilder out = new StringBuilder();
+        for (Object arg : args) {
+            String label  = "" + arg;
+            Object target = arg;
+            out.append(ObjectLink.to(label,target));
+        }
+        return out.toString();
     }
 
     static Link linkToSource(String className, String fileName) {

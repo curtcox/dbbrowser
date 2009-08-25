@@ -177,14 +177,18 @@ public ObjectBrowser(Object target, Mask mask) {
  * Return the HTML for our target object.
  * 
  */
-private String toHTML() {
+String toHTML() {
     StringBuffer out = new StringBuffer();
     out.append(checkSpecialHandling(target));
-    out.append(h1(Link.to(target)));
+    out.append(h1(ObjectLink.to(target)));
 
     out.append(h1("toString"));
-    out.append(target.toString());
+    out.append("" + target);
 
+    if (target==null) {
+        return out.toString();
+    }
+    
     out.append(h1("Fields"));
     out.append(showFields());
 
@@ -284,7 +288,7 @@ private String showField(Field f, Object o) {
     if (value==null) {
         row.append(td(fname));
     } else {
-        row.append(td(Link.to(fname,value)));
+        row.append(td(ObjectLink.to(fname,value)));
     }
     row.append(td(valueString) + "\n");
     return tr(row.toString());
@@ -320,7 +324,7 @@ private String showExecutables(Collection<Executable> executables) {
         grouped.put(clazz,executable);
     }
     for (Class clazz : grouped.keySet()) {
-        out.append(h2(Link.to(clazz.getName(),clazz)));
+        out.append(h2(ObjectLink.to(clazz.getName(),clazz)));
         out.append(showExecutablesFromOneClass(grouped.get(clazz)));
     }
     return out.toString();
@@ -360,14 +364,14 @@ private String showExecutable(Executable method){
         r.append(td(method.getName()));
     } else {
         Method m = ((ExecutableMethod) method).getMethod();
-        r.append(td(Link.to(m.getName(),new DeferredMethod(target,m))));
+        r.append(td(ObjectLink.to(m.getName(),new DeferredMethod(target,m))));
     }
 
     // arguments
     StringBuffer args = new StringBuffer("(");
     for (int i=0; i<parameters.length; i++) {
         Class pClass = parameters[i];
-        args.append(Link.to(pClass.getName(),pClass));
+        args.append(ObjectLink.to(pClass.getName(),pClass));
         if (i + 1 < parameters.length) {
             args.append(",");
         }
@@ -380,7 +384,7 @@ private String showExecutable(Executable method){
         StringBuffer all = new StringBuffer();
         for (int i=0; i<exceptions.length; i++) {
             Class eClass = exceptions[i];
-            all.append(Link.to(eClass.getName(),eClass));
+            all.append(ObjectLink.to(eClass.getName(),eClass));
             if (i + 1 < exceptions.length) {
                 all.append(",");
             }
@@ -405,7 +409,7 @@ private String typeName(Class t) {
     if (t.isPrimitive()) {
         return name + brackets;
     } else {
-        return Link.to(name,t) + brackets;
+        return ObjectLink.to(name,t) + brackets;
     }
 } 
 

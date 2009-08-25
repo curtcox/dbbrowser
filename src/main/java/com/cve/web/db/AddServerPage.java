@@ -3,10 +3,12 @@ package com.cve.web.db;
 import com.cve.db.Server;
 import com.cve.util.Check;
 import com.cve.web.*;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * For adding a server.
  */
+@Immutable
 public final class AddServerPage implements Model {
 
     /**

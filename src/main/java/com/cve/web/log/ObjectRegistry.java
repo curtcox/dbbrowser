@@ -7,13 +7,13 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Gloabl map of registered objects.
  */
-final class ObjectRegistry {
+public final class ObjectRegistry {
 
     /**
      * We might want to replace this in the future, with something like
      * the MD5 of the serialized bytes.
      */
-    static class Key {
+    public static class Key {
 
         final int value;
 
@@ -60,6 +60,9 @@ final class ObjectRegistry {
     }
 
     static Object get(Key key) {
+        if (key==Key.NULL) {
+            return null;
+        }
         return objects.get(key);
     }
 
@@ -67,7 +70,10 @@ final class ObjectRegistry {
         return ImmutableList.copyOf(objects.values());
     }
 
-    static Key put(Object o) {
+    public static Key put(Object o) {
+        if (o==null) {
+            return Key.NULL;
+        }
         Key key = Key.of(o);
         objects.put(key, o);
         return key;

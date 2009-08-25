@@ -4,9 +4,8 @@ import com.cve.util.Check;
 import com.cve.web.log.browsers.ArrayBrowser;
 import com.cve.web.log.browsers.CollectionBrowser;
 import com.cve.web.log.browsers.MapBrowser;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ import java.util.Map;
 class CustomBrowserRegistry {
 
     // class -> browser
-    private static final Map registry = new HashMap();
+    private static final Map<Class,CustomBrowser> registry = Maps.newHashMap();
     
     private static final CustomBrowser ARRAY_BROWSER = new ArrayBrowser();
 
@@ -44,15 +43,18 @@ class CustomBrowserRegistry {
      * Return all browsers that are appropriate for this object.
      */
     static CustomBrowser[] getBrowsersFor(Object o) {
-        Check.notNull(o);
+        if (o==null) {
+            return new CustomBrowser[0];
+        }
         Class objectClass = o.getClass();
-        List choices = new ArrayList();
-        if (objectClass.isArray())
+        List<CustomBrowser> choices = Lists.newArrayList();
+        if (objectClass.isArray()) {
             choices.add(ARRAY_BROWSER);
-        for (Iterator i=registry.keySet().iterator(); i.hasNext(); ) {
-            Class browsedClass = (Class) i.next();
-            if (browsedClass.isAssignableFrom(objectClass))
+        }
+        for (Class browsedClass : registry.keySet()) {
+            if (browsedClass.isAssignableFrom(objectClass)) {
                 choices.add(registry.get(browsedClass));
+            }
         }
         return (CustomBrowser[]) choices.toArray(new CustomBrowser[0]);
     }

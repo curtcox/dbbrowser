@@ -15,6 +15,7 @@ public final class LogModelHtmlRenderers {
     public static ImmutableMap<Class,ModelHtmlRenderer> load() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(AnnotatedStackTraceModel.class, new AnnotatedStackTraceRenderer());
+        map.put(ObjectModel.class, new ObjectModelRenderer());
         return ImmutableMap.copyOf(map);
     }
 
