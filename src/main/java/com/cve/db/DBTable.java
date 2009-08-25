@@ -6,6 +6,7 @@ import com.cve.util.URIs;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * A table in a {@link Database}.
@@ -14,9 +15,19 @@ import static com.cve.util.Check.notNull;
 
 public final class DBTable {
 
+    /**
+     * The database this table is on.
+     */
     public final Database database;
+
+    /**
+     * The name of the table.
+     */
     public final String name;
 
+    /**
+     * Something to use for null tables.
+     */
     public static DBTable NULL = new DBTable(Database.NULL,"");
 
     private DBTable(Database database, String name) {
@@ -29,6 +40,7 @@ public final class DBTable {
     }
 
     public static DBTable parse(Server server, String fullTableName) {
+        args(server,fullTableName);
         notNull(server);
         notNull(fullTableName);
         String[]  nameParts = fullTableName.split("\\.");

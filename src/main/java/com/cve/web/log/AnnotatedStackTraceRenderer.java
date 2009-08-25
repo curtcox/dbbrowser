@@ -6,6 +6,7 @@ import com.cve.html.Link;
 import static com.cve.html.HTML.*;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
+import com.google.common.collect.ImmutableList;
 import java.net.URI;
 
 /**
@@ -29,8 +30,12 @@ public final class AnnotatedStackTraceRenderer implements ModelHtmlRenderer {
             StringBuilder table = new StringBuilder();
             String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line"));
             table.append(header);
-            for (StackTraceElement e : trace.elements) {
-                Object[] args = trace.args.get(e);
+
+            ImmutableList<StackTraceElement> elements = trace.elements;
+            for (int i=0; i<elements.size(); i++) {
+                StackTraceElement e     = elements.get(i);
+                StackTraceElement next  = (i < elements.size() - 1 ) ? elements.get(i + 1) : null;
+                Object[] args = trace.args.get(next);
                 table.append(row(e,args));
             }
             out.append(table(table.toString()));
@@ -66,7 +71,7 @@ public final class AnnotatedStackTraceRenderer implements ModelHtmlRenderer {
         for (Object arg : args) {
             String label  = "" + arg;
             Object target = arg;
-            out.append(ObjectLink.to(label,target));
+            out.append(ObjectLink.to(label,target) + " ");
         }
         return out.toString();
     }

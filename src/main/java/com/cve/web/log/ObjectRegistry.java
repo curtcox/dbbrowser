@@ -19,10 +19,14 @@ public final class ObjectRegistry {
 
         static final Key NULL = new Key();
 
-        Key() { value = 0; }
+        private Key() { value = 0; }
 
-        Key(Object o) {
+        private Key(Object o) {
             value = System.identityHashCode(o);
+        }
+
+        private Key(int value) {
+            this.value = value;
         }
 
         static Key of(Object o) {
@@ -51,19 +55,21 @@ public final class ObjectRegistry {
             Key key = (Key) other;
             return value == key.value;
         }
+
+        @Override
+        public String toString() {
+            return Integer.toHexString(value);
+        }
     } // Key
 
     static final Map<Key,Object> objects = new ConcurrentHashMap<Key,Object>();
-
-    static {
-        put(ObjectRegistry.class);
-    }
 
     static Object get(Key key) {
         if (key==Key.NULL) {
             return null;
         }
-        return objects.get(key);
+        Object o = objects.get(key);
+        return o;
     }
 
     static ImmutableList index() {

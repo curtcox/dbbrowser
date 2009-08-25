@@ -3,6 +3,7 @@ package com.cve.web.log;
 import com.cve.web.ClientInfo;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import static com.cve.html.HTML.*;
 
 /**
  *
@@ -20,6 +21,6 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     }
 
     String render(Object o) {
-        return new ObjectBrowser(o).toHTML();
+        return html(body(new ObjectBrowser(o).toHTML()));
     }
 }

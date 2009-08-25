@@ -39,7 +39,7 @@ public final class URIs {
         for (int i=0; i<uri.length(); i++) {
             if (uri.charAt(i)=='/') {
                 j++;
-                if (j==slash+1) {
+                if (j==slash) {
                     return URIs.of(uri.substring(i));
                 }
             }

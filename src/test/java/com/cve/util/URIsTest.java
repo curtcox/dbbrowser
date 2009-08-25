@@ -41,17 +41,17 @@ public class URIsTest {
 
     @Test
     public void startingAtSlash1() {
-        assertEquals("/view/CSV/foo",URIs.startingAtSlash("/view/CSV/foo", 1));
+        assertEquals(URIs.of("/view/CSV/foo"),URIs.startingAtSlash("/view/CSV/foo", 1));
     }
 
     @Test
     public void startingAtSlash2() {
-        assertEquals("/CSV/foo",URIs.startingAtSlash("/view/CSV/foo", 2));
+        assertEquals(URIs.of("/CSV/foo"),URIs.startingAtSlash("/view/CSV/foo", 2));
     }
 
     @Test
     public void startingAtSlash3() {
-        assertEquals("/foo",URIs.startingAtSlash("/view/CSV/foo", 2));
+        assertEquals(URIs.of("/foo"),URIs.startingAtSlash("/view/CSV/foo", 3));
     }
 
 }

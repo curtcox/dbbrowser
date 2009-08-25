@@ -14,8 +14,7 @@ public class LogTest {
     @Test
     public void annotatedStackTraceRetainsMethodArgSomewhere() {
         String ARG = "arg";
-        Log.args(ARG);
-        Throwable t = new Throwable();
+        Throwable t = methodThatTakesAn(ARG);
         AnnotatedStackTrace trace = Log.annotatedStackTrace(t);
         for (StackTraceElement element : trace.elements) {
             Object[] args = trace.args.get(element);
@@ -26,11 +25,15 @@ public class LogTest {
         Assert.fail();
     }
 
+    static Throwable methodThatTakesAn(Object arg) {
+        Log.args(arg);
+        return new Throwable();
+    }
+
     @Test
     public void annotatedStackTraceRetainsMethodArgHereWithDirectNote() {
         String ARG = "arg";
-        Log.args(ARG);
-        Throwable t = new Throwable();
+        Throwable t = methodThatTakesAn(ARG);
         AnnotatedStackTrace trace = Log.annotatedStackTrace(t);
         StackTraceElement element = trace.elements.get(1);
         Object[] args = trace.args.get(element);

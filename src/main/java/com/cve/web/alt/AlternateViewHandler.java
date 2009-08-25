@@ -15,6 +15,7 @@ import com.cve.web.CompositeRequestHandler;
 import com.cve.web.RequestHandler;
 import java.net.URI;
 import java.sql.SQLException;
+import static com.cve.log.Log.args;
 
 /**
  * The {@link RequestHandler} for alternate views of a select result.
@@ -38,7 +39,7 @@ public class AlternateViewHandler {
      * Return the results of the select that corresponds to the given URI.
      */
     static SelectResults getResultsFromDB(final String uri) throws SQLException {
-
+        args(uri);
         // /view/CSV/foo
         //          ^ start here
         URI tail = URIs.startingAtSlash(uri,3);

@@ -24,10 +24,16 @@ public final class Log {
         return new Log(c);
     }
 
+    /**
+     * Return an annotated stack trace for the given throwable.
+     */
     public static AnnotatedStackTrace annotatedStackTrace(Throwable t) {
         return AnnotatedStackTrace.throwableArgs(t,map);
     }
 
+    /**
+     * Note the given arguments for the method being executed.
+     */
     public static void args(Object... objects) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         StackTraceElement element = elements[3];
