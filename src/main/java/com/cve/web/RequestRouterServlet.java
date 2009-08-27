@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.web.alt.AltModelHtmlRenderers;
 import static com.cve.log.Log.args;
 
 import com.cve.web.db.DBBrowserHandler;
@@ -48,8 +49,7 @@ public final class RequestRouterServlet extends HttpServlet {
      */
     private static final RequestHandler ROUTER = ErrorReportHandler.of(
         CompositeRequestHandler.of(
-            ExitHandler.newInstance(),
-            ResourceHandler.newInstance(),
+            CoreServerHandler.newInstance(),
             AlternateViewHandler.newInstance(),
             LogBrowserHandler.newInstance(),
             DBBrowserHandler.newInstance()
@@ -61,8 +61,10 @@ public final class RequestRouterServlet extends HttpServlet {
      */
     private static final ModelHtmlRenderer RENDERER =
         CompositeModelHtmlRenderer.of(ModelHtmlRendererMap.RENDERERS)
-        .with(DatabaseModelHtmlRenderers.RENDERERS)
-        .with(LogModelHtmlRenderers.RENDERERS);
+            .with(DatabaseModelHtmlRenderers.RENDERERS)
+            .with(LogModelHtmlRenderers.RENDERERS)
+            .with(AltModelHtmlRenderers.RENDERERS)
+        ;
 
     /**
      * Determines the appropriate MIME type for the objects produced by

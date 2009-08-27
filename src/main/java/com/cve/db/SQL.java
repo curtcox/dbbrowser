@@ -10,6 +10,9 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class SQL {
 
+    /**
+     * The actual SQL string.
+     */
     private final String sql;
 
     private SQL(String sql) {

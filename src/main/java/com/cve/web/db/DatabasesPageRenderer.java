@@ -16,8 +16,7 @@ public final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public String render(Model model, ClientInfo client) {
-        DatabasesPage page = (DatabasesPage) model;
-        return render(page);
+        return render((DatabasesPage) model);
     }
 
     private String render(DatabasesPage page) {

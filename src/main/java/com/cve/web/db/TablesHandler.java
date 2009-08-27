@@ -22,13 +22,20 @@ import java.sql.SQLException;
  */
 public final class TablesHandler extends AbstractRequestHandler {
 
+    /**
+     * Do we handle this URI?
+     */
     @Override
     public boolean handles(String uri) {
         return isTablesOnlyRequest(uri);
     }
 
+    /**
+     * Get the response (list of tables) for this request.
+     */
+    @Override
     public PageResponse get(PageRequest request) throws IOException, SQLException {
-        String uri = request.requestURI;
+        String                    uri = request.requestURI;
         Server                 server = URIParser.getServer(uri);
         Database             database = URIParser.getDatabase(uri);
         DBMetaData               meta = DBConnection.getDbmd(server);
@@ -36,7 +43,6 @@ public final class TablesHandler extends AbstractRequestHandler {
         ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
         return PageResponse.of(new TablesPage(server,database,tables,columns));
     }
-
 
     /**
      * Return true if URL is of the form
@@ -46,6 +52,9 @@ public final class TablesHandler extends AbstractRequestHandler {
         return URIs.slashCount(uri)==3;
     }
 
+    /**
+     * Return a map from the given tables to the columns they contain.
+     */
     static ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) throws SQLException {
         Multimap<DBTable,DBColumn> columns = HashMultimap.create();
         for (DBTable table : tables) {

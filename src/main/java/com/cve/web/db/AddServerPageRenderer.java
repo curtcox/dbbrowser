@@ -19,9 +19,9 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     AddServerPageRenderer() {}
 
+    @Override
     public String render(Model model, ClientInfo client) {
-        AddServerPage page = (AddServerPage) model;
-        return render(page);
+        return render((AddServerPage) model);
     }
 
     private String render(AddServerPage page) {

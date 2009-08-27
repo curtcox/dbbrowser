@@ -1,4 +1,4 @@
-package com.cve.web;
+package com.cve.web.alt;
 
 /**
  * An alternate view of a SQL result set.

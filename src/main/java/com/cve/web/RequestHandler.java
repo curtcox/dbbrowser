@@ -5,7 +5,8 @@ import java.sql.SQLException;
 
 /**
  * Something that handles {@link PageRequest}S and produces
- * {@link URIResponse}S.
+ * {@link URIResponse}S.  Generally, new pages will require a
+ * RequestHandler, a new Model, and a Renderer, so see those too.
  * @author Curt
  */
 public interface RequestHandler {

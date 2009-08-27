@@ -7,6 +7,8 @@ package com.cve.web;
  * <p>
  * Models are turned into an actual page, or something else equivalent by
  * a renderer.
+ * <p>
+ * Generally, new pages require a RequestHandler, a new Model, and a Renderer.
  * @author curt
  */
 public interface Model {

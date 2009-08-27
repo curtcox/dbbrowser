@@ -14,10 +14,9 @@ public final class DBBrowserHandler {
         new ServersHandler(),              // /
         new AddServerHandler(),            // /add
         new RemoveServerHandler(),         // /remove
-        new UserLoginHandler(),            // /login
-        new UserLogoutHandler(),           // /logout
         DatabaseMetaHandler.newInstance(), // /meta/server/
         new DatabasesHandler(),            // /server/
+        new FreeFormQueryHandler(),        // /server/select?... & /server/database/select?...
         new TablesHandler(),               // /server/databases/
         new ColumnValueDistributionHandler(), // server/database/table/column
         new SelectBuilderHandler());       // /server/databases/tables/...

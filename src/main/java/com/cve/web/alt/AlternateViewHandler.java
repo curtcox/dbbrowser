@@ -25,7 +25,6 @@ public class AlternateViewHandler {
     private static final RequestHandler handler = CompositeRequestHandler.of(
         // handler            // for URLs of the form
         new CSVHandler(),     // /view/CSV/
-        new SQLHandler(),     // /view/SQL/
         new XLSHandler(),     // /view/XLS/
         new PDFHandler(),     // /view/PDF/
         new JSONHandler(),    // /view/JSON/
