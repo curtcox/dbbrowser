@@ -1,17 +1,22 @@
 package com.cve.db;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import com.cve.util.URLCodec;
 import javax.annotation.concurrent.Immutable;
+import org.h2.table.Column;
 /**
  * The typed value of a {@link Column} {@link Cell}, {@link Join}, or {@link Filter}.
  */
 @Immutable
-
 public final class Value {
 
-    private final Object value;
+    /**
+     * The value we hold.
+     */
+    public final Object value;
 
+    /**
+     * Use in place of a null value.
+     */
     private static final Value NULL = new Value(null);
 
     public static Value of(Object value) {
@@ -26,20 +31,14 @@ public final class Value {
     }
 
     public static Value decode(String string) {
-        string = URLDecoder.decode(string);
-        string = string.replace("_", " ");
-        string = string.replace("%2B", "+");
+        string = URLCodec.decode(string);
         return Value.of(string);
     }
 
     public String encode() {
         String  string = "" + value;
-        string = string.replace(" ", "_");
-        string = string.replace("+", "%2B");
-        return URLEncoder.encode(string);
+        return URLCodec.encode(string);
     }
-
-    public Object getValue() { return value;  }
 
     @Override
     public String toString() { return "" + value; }

@@ -102,7 +102,7 @@ public final class DistributionResultsTableRenderer {
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
             Value  countValue = resultSet.values.get(countCell);
-            details.add(UIDetail.of(countValue.getValue().toString()));
+            details.add(UIDetail.of(countValue.value.toString()));
 
             out.add(UIRow.of(details, cssClass));
             if (cssClass==CSS.EVEN_ROW) {

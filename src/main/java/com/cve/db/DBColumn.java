@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
+import static com.cve.util.URLCodec.encode;
 
 /**
  * A column in a database {@link Table}.
@@ -118,7 +119,7 @@ public final class DBColumn {
         Database database = table.database;
         Server     server = database.server;
         URI target = URIs.of(
-            "/" + server.uri + "/" + database.name + "/" + table.fullName() + "/" + fullName() + "/"
+            "/" + server.uri + "/" + encode(database.name) + "/" + encode(table.fullName()) + "/" + encode(fullName()) + "/"
         );
         Label text = Label.of(name);
         return Link.textTarget(text, target);

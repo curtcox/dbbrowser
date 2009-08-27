@@ -23,7 +23,7 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     }
 
     public String render(ServersPage page, ClientInfo client) {
-        String actions = addServer() + removeServer();
+        String actions = addServer() + removeServer() + shutdown();
         //+ (loggedIn() ? logout() : login());
         return
             actions +
@@ -45,6 +45,14 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
         Label text = Label.of("-");
         URI target = URIs.of("remove");
         URI  image = URIs.of("/resource/icons/actions/list-remove.png");
+        return Link.textTargetTipImage(text,target,tip,image).toString();
+    }
+
+    String shutdown() {
+        Tooltip tip = SimpleTooltip.of("Shutdown DBBrowser");
+        Label text = Label.of("X");
+        URI target = URIs.of("exit");
+        URI  image = URIs.of("/resource/icons/actions/system-shutdown.png");
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 

@@ -25,7 +25,7 @@ public final class CSVModelBuilder {
      * Add a value to the current row.
      */
     void add(Value value) {
-        currentRow.add("" + value.getValue());
+        currentRow.add("" + value.value);
     }
 
     /**

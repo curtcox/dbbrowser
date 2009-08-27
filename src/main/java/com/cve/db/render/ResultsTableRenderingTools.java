@@ -241,7 +241,7 @@ public final class ResultsTableRenderingTools {
     }
 
     static String valueCell(Cell cell, Value value) {
-        Object       object = value.getValue();
+        Object       object = value.value;
         String  valueString = "" + object;
         Label          text = Label.of(valueString);
         DBColumn     column = cell.column;

@@ -7,6 +7,7 @@ import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 import static com.cve.log.Log.args;
+import static com.cve.util.URLCodec.encode;
 
 /**
  * A table in a {@link Database}.
@@ -82,7 +83,7 @@ public final class DBTable {
         String databaseName = database.name;
         Server server = database.server;
         URI target = URIs.of(
-            "/" + server.uri + "/" + databaseName + "/" + fullName() + "/"
+            "/" + server.uri + "/" + encode(databaseName) + "/" + encode(fullName()) + "/"
         );
         return Link.textTarget(text, target);
     }
