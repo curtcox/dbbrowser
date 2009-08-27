@@ -17,11 +17,12 @@ public final class DatabaseModelHtmlRenderers {
 
     public static ImmutableMap<Class,ModelHtmlRenderer> load() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.put(ServersPage.class,      PageDecorator.of(new ServersPageRenderer()));
-        map.put(DatabasesPage.class,    PageDecorator.of(new DatabasesPageRenderer()));
-        map.put(TablesPage.class,       PageDecorator.of(new TablesPageRenderer()));
-        map.put(SelectResults.class,    PageDecorator.of(new SelectResultsRenderer()));
-        map.put(AddServerPage.class,    PageDecorator.of(new AddServerPageRenderer()));
+        map.put(ServersPage.class,        PageDecorator.of(new ServersPageRenderer()));
+        map.put(DatabasesPage.class,      PageDecorator.of(new DatabasesPageRenderer()));
+        map.put(TablesPage.class,         PageDecorator.of(new TablesPageRenderer()));
+        map.put(SelectResults.class,      PageDecorator.of(new SelectResultsRenderer()));
+        map.put(AddServerPage.class,      PageDecorator.of(new AddServerPageRenderer()));
+        map.put(FreeFormQueryModel.class, PageDecorator.of(new FreeFormQueryRenderer()));
         return ImmutableMap.copyOf(map);
     }
 

@@ -11,7 +11,7 @@ import javax.annotation.concurrent.Immutable;
  * @author Curt
  */
 @Immutable
-final class SQLModel implements Model {
+final class FreeFormQueryModel implements Model {
 
     /**
      * The select used to generate the results.
@@ -23,7 +23,12 @@ final class SQLModel implements Model {
      */
     public final DBResultSet results;
 
-    SQLModel(SQL sql, DBResultSet results) {
+    /**
+     * Literals to use in the form.
+     */
+    static final String Q  = "q";
+
+    FreeFormQueryModel(SQL sql, DBResultSet results) {
         this.sql = Check.notNull(sql);
         this.results = Check.notNull(results);
     }

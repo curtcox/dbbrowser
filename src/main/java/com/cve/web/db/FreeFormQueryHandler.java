@@ -42,7 +42,10 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         if (!uri.contains("/select")) {
             return false;
         }
+        if ((!uri.endsWith("/select")) && (!uri.contains("/select?"))) {
+            return false;
+        }
         int slashes = URIs.slashCount(uri);
-        return slashes > 2;
+        return slashes > 1;
     }
 }

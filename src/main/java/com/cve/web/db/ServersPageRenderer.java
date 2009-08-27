@@ -17,6 +17,7 @@ import static com.cve.html.HTML.*;
  */
 public final class ServersPageRenderer implements ModelHtmlRenderer {
 
+    @Override
     public String render(Model model, ClientInfo client) {
         ServersPage page = (ServersPage) model;
         return render(page,client);
