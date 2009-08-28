@@ -1,9 +1,6 @@
 package com.cve.db.render;
 
 import com.cve.db.Cell;
-import com.cve.html.SimpleTooltip;
-import com.cve.html.Label;
-import com.cve.html.Link;
 import com.cve.db.CellValues;
 import com.cve.db.SelectResults;
 import com.cve.db.Database;
@@ -103,7 +100,7 @@ public class ResultsTableRendererTest {
     private String renderedOnePersonTable() {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
-        String       rendered = ResultsTableRenderer.resultsClientInfo(results, client).landscapeTable();
+        String       rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints, client).landscapeTable();
         return rendered;
     }
 
@@ -133,7 +130,8 @@ public class ResultsTableRendererTest {
         String expected = td("Database : <a href=[/server/customer/]>customer</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
-        List list = ResultsTableRenderingTools.results(onePersonResults(),client).databaseRow();
+        SelectResults results = onePersonResults();
+        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints,client).databaseRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -143,7 +141,8 @@ public class ResultsTableRendererTest {
         String expected = td("Table : <a href=[/server/customer/customer.person/]>person</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
-        List list = ResultsTableRenderingTools.results(onePersonResults(),client).tableRow();
+        SelectResults results = onePersonResults();
+        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).tableRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -162,7 +161,8 @@ public class ResultsTableRendererTest {
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
 
-        List list = ResultsTableRenderingTools.results(onePersonResults(),client).columnNameRow();
+        SelectResults results = onePersonResults();
+        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).columnNameRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -181,7 +181,7 @@ public class ResultsTableRendererTest {
         DBColumn         column = results.resultSet.columns.get(0);
         ClientInfo     client = ClientInfo.of();
 
-        String rendered = ResultsTableRenderingTools.results(onePersonResults(),client).nameCell(column);
+        String rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).nameCell(column);
         equals(expected,rendered);
     }
 
@@ -191,7 +191,7 @@ public class ResultsTableRendererTest {
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
-        String              uri = ResultsTableRenderingTools.linkTo(name).toString();
+        String              uri = DBResultSetRenderer.linkTo(name).toString();
         // server / database / table / column
         equals("/server/customer/customer.person/customer.person.name/",uri);
     }
@@ -201,7 +201,8 @@ public class ResultsTableRendererTest {
         String expected = bracketQuote(
             td("<a href=[hide?customer.person.name]>x</a>"));
         ClientInfo     client = ClientInfo.of();
-        List list = ResultsTableRenderingTools.results(onePersonResults(),client).columnHideRow();
+        SelectResults results = onePersonResults();
+        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).columnHideRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -211,7 +212,8 @@ public class ResultsTableRendererTest {
         String expected = bracketQuote(
             tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW));
         ClientInfo     client = ClientInfo.of();
-        List list = ResultsTableRenderer.resultsClientInfo(onePersonResults(),client).valueRows();
+        SelectResults results = onePersonResults();
+        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).valueRowsList();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -249,7 +251,7 @@ public class ResultsTableRendererTest {
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         ClientInfo     client = ClientInfo.of();
 
-        String rendered = ResultsTableRenderingTools.results(results,client).nameCell(name);
+        String rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).nameCell(name);
         assertTrue(rendered,rendered.contains("familyName"));
     }
 

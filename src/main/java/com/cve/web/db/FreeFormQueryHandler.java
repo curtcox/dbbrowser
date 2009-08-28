@@ -12,6 +12,7 @@ import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.stores.ServersStore;
 import com.cve.util.URIParser;
 import com.cve.util.URIs;
@@ -55,8 +56,8 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
 
     @Override
     public PageResponse get(PageRequest request) throws IOException {
-        ImmutableMap<String,String[]> params = request.parameters;
-        String        query = params.get(Q)[0];
+        ImmutableMap<String,String> params = request.parameters;
+        String        query = params.get(Q);
         if (query==null) {
             query = "";
         }
@@ -71,7 +72,7 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         if (isServerOnlyQuery(uri)) {
             try {
                 DBConnection connection = ServersStore.getConnection(server);
-                ResultsAndMore results = exec(sql,connection);
+                ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
                 return page(sql,results.resultSet,message);
             } catch (SQLException e) {
@@ -81,7 +82,7 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         Database database = URIParser.getDatabase(uri);
         try {
             DBConnection connection = ServersStore.getConnection(server,database);
-            ResultsAndMore results = exec(sql,connection);
+            ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
             return page(sql,results.resultSet,message);
         } catch (SQLException e) {
@@ -93,16 +94,16 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         return PageResponse.of(new FreeFormQueryModel(sql,results,message));
     }
 
-    static ResultsAndMore exec(SQL sql, DBConnection connection) throws SQLException {
-        ResultSet results = connection.exec(sql);
-        ResultSetMetaData              meta = results.getMetaData();
-        ImmutableList<Database>   databases = databases(meta);
-        ImmutableList<DBTable>       tables = tables(meta);
-        ImmutableList<DBColumn>     columns = columns(meta);
+    static ResultsAndMore exec(Server server, SQL sql, DBConnection connection) throws SQLException {
+        ResultSet                   results = connection.select(sql);
+        DBResultSetMetaData            meta = connection.getMetaData(server,results);
+        ImmutableList<Database>   databases = meta.databases;
+        ImmutableList<DBTable>       tables = meta.tables;
+        ImmutableList<DBColumn>     columns = meta.columns;
         List<DBRow>                    rows = Lists.newArrayList();
         Map<Cell,Value>              values = Maps.newHashMap();
-        ImmutableList<AggregateFunction> functions = functions(meta);
-        int cols = meta.getColumnCount();
+        ImmutableList<AggregateFunction> functions = meta.functions;
+        int cols = columns.size();
         int    r = 0;
         Limit limit = Limit.DEFAULT;
         while (results.next() && r<(limit.limit - 1)) {
@@ -147,22 +148,6 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
             String       className = meta.getColumnClassName(c);
             return "Error converting " + typeName + "/" + className;
         }
-    }
-
-    static ImmutableList<Database> databases(ResultSetMetaData meta) {
-        throw new UnsupportedOperationException();
-    }
-
-    static ImmutableList<DBTable> tables(ResultSetMetaData meta) {
-        throw new UnsupportedOperationException();
-    }
-
-    static ImmutableList<DBColumn> columns(ResultSetMetaData meta) {
-        throw new UnsupportedOperationException();
-    }
-
-    static ImmutableList<AggregateFunction> functions(ResultSetMetaData meta) {
-        throw new UnsupportedOperationException();
     }
 
     /**

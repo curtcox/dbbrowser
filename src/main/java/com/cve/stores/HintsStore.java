@@ -15,6 +15,7 @@ import com.google.common.collect.Sets;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
+import static com.cve.log.Log.args;
 
 /**
  * The {@link Hints} we know about.
@@ -31,7 +32,14 @@ import java.util.Set;
  */
 public final class HintsStore {
 
+    /**
+     * Columns -> joins they participate in.
+     */
     private static Multimap<DBColumn,Join>     joins = HashMultimap.create();
+
+    /**
+     * Columns -> useful filters for that column.
+     */
     private static Multimap<DBColumn,Filter> filters = HashMultimap.create();
 
     public static void putHints(Hints hints) {
@@ -44,7 +52,8 @@ public final class HintsStore {
     }
 
     public static Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
-        Set<DBColumn>    keySet = Sets.newHashSet();
+        args(columns);
+        Set<DBColumn>   keySet = Sets.newHashSet();
         Set<Join>      joinSet = Sets.newHashSet();
         Set<Filter>  filterSet = Sets.newHashSet();
         for (DBColumn column : columns) {
@@ -65,6 +74,7 @@ public final class HintsStore {
     }
 
     static ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
+        args(columns);
         Set<DBTable>  tables = Sets.newHashSet();
         for (DBColumn column : columns) {
             tables.add(column.table);

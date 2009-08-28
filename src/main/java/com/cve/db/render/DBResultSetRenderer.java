@@ -13,18 +13,18 @@ import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
-import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Value;
 import com.cve.db.select.URIRenderer;
 import com.cve.html.CSS;
+import com.cve.ui.UIRow;
+import com.cve.ui.UITable;
 import com.cve.web.ClientInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -37,12 +37,17 @@ import static com.cve.util.Check.notNull;
  * Renders the results of a database select as a single HTML table.
  */
 @Immutable
-public final class ResultsTableRenderingTools {
+public final class DBResultSetRenderer {
+
+    /**
+     * 
+     */
+    private final Hints hints;
 
     /**
      * The results we render
      */
-    private final SelectResults results;
+    private final DBResultSet results;
 
     /**
      * Information about what we are rendering to.
@@ -51,28 +56,64 @@ public final class ResultsTableRenderingTools {
 
     public static final String HIDE = "x";
 
-    private ResultsTableRenderingTools(SelectResults results, ClientInfo client) {
+    private DBResultSetRenderer(DBResultSet results, Hints hints, ClientInfo client) {
         this.results = notNull(results);
+        this.hints   = notNull(hints);
         this.client  = notNull(client);
     }
 
-    static ResultsTableRenderingTools results(SelectResults results, ClientInfo client) {
+    public static DBResultSetRenderer resultsHintsClient(DBResultSet results, Hints hints, ClientInfo client) {
         notNull(results);
         notNull(client);
-        return new ResultsTableRenderingTools(results,client);
+        return new DBResultSetRenderer(results,hints,client);
     }
 
     public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
+
+    /**
+     * Return a landscape table where every result set row maps to a table row.
+     */
+    String landscapeTable() {
+        List<UIRow> rows = Lists.newArrayList();
+        rows.add(UIRow.of(databaseRow(),   CSS.DATABASE));
+        rows.add(UIRow.of(tableRow(),      CSS.TABLE));
+        rows.add(UIRow.of(columnNameRow()));
+        rows.add(UIRow.of(columnHideRow(), CSS.HIDE));
+        rows.addAll(valueRowsList());
+        return UITable.of(rows).toString();
+    }
+
+    /**
+     * The rows that contain all of the result set values.
+     */
+    List<UIRow> valueRowsList() {
+        List<UIRow> out = Lists.newArrayList();
+        CSS cssClass = CSS.ODD_ROW;
+        for (DBRow row : results.rows) {
+            List<UIDetail> details = Lists.newArrayList();
+            for (DBColumn column : results.columns) {
+                Cell cell = Cell.at(row, column);
+                Value value = results.getValue(row, column);
+                details.add(UIDetail.of(valueCell(cell,value)));
+            }
+            out.add(UIRow.of(details, cssClass));
+            if (cssClass==CSS.EVEN_ROW) {
+                cssClass = CSS.ODD_ROW;
+            } else {
+                cssClass = CSS.EVEN_ROW;
+            }
+        }
+        return out;
+    }
 
     /**
      * A table row where each cell represents a different database.
      * Cells from this row may span multiple columns of rows below.
      */
     ImmutableList<UIDetail> databaseRow() {
-        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (Database database : resultSet.databases) {
-            int width = results.resultSet.columns.size();
+        for (Database database : results.databases) {
+            int width = results.columns.size();
             out.add(UIDetail.of(nameCell(database),width));
         }
         return ImmutableList.copyOf(out);
@@ -83,11 +124,10 @@ public final class ResultsTableRenderingTools {
      * Cells from this row may span multiple columns of rows below.
      */
     ImmutableList<UIDetail> tableRow() {
-        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (DBTable table : resultSet.tables) {
+        for (DBTable table : results.tables) {
             int width = 0;
-            for (DBColumn c: results.resultSet.columns) {
+            for (DBColumn c: results.columns) {
                 if (table.equals(c.table)) {
                     width++;
                 }
@@ -102,10 +142,9 @@ public final class ResultsTableRenderingTools {
      * Cells in this row map one-to-one to columns in the result set.
      */
     ImmutableList<UIDetail> columnNameRow() {
-        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        int columnCount = resultSet.columns.size();
-        for (DBColumn column : resultSet.columns) {
+        int columnCount = results.columns.size();
+        for (DBColumn column : results.columns) {
             if (columnCount < 5 ) {
                 out.add(UIDetail.of(nameCell(column),classOf(column)));
             } else {
@@ -120,9 +159,8 @@ public final class ResultsTableRenderingTools {
      * Cells in this row map one-to-one to columns in the result set.
      */
     ImmutableList<UIDetail> columnHideRow() {
-        DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
-        for (DBColumn column : resultSet.columns) {
+        for (DBColumn column : results.columns) {
             out.add(UIDetail.of(hideCell(column)));
         }
         return ImmutableList.copyOf(out);
@@ -132,14 +170,13 @@ public final class ResultsTableRenderingTools {
      * The rows that contain all of the result set values.
      */
     String valueRows() {
-        DBResultSet resultSet = results.resultSet;
         StringBuilder out = new StringBuilder();
         CSS cssClass = CSS.ODD_ROW;
-        for (DBRow row : resultSet.rows) {
+        for (DBRow row : results.rows) {
             out.append("<tr class=\"" + cssClass + "\">");
-            for (DBColumn column : resultSet.columns) {
+            for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
-                Value value = resultSet.getValue(row, column);
+                Value value = results.getValue(row, column);
                 out.append(td(valueCell(cell,value)));
             }
             out.append("</tr>\r");
@@ -185,7 +222,6 @@ public final class ResultsTableRenderingTools {
         }
         Label                    text = Label.of(columnName);
         URI                    target = linkTo(column);
-        Hints                   hints = results.hints;
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<Filter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
@@ -225,7 +261,6 @@ public final class ResultsTableRenderingTools {
     }
 
     CSS classOf(DBColumn column) {
-        Hints                   hints = results.hints;
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         boolean              hasJoins = joins.size() > 0;
         if (hasJoins) {

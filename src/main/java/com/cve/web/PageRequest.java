@@ -47,7 +47,7 @@ public final class PageRequest {
      * TODO Exactly why is this a map to an array, rather than a single string.
      * This needs to be documented or simplified -- probably both.
      */
-    public final ImmutableMap<String,String[]> parameters;
+    public final ImmutableMap<String,String> parameters;
 
     /**
      * The cookies for this request.
@@ -61,7 +61,7 @@ public final class PageRequest {
 
     private PageRequest(
         Method type, String requestURI, String queryString,
-        ImmutableMap<String,String[]> parameters, ImmutableList<Cookie> cookies)
+        ImmutableMap<String,String> parameters, ImmutableList<Cookie> cookies)
     {
         this.method      = Check.notNull(type);
         this.requestURI  = Check.notNull(requestURI);
@@ -72,7 +72,7 @@ public final class PageRequest {
 
     public static PageRequest path(String pathInfo)
     {
-        ImmutableMap<String,String[]> parameters = ImmutableMap.of();
+        ImmutableMap<String,String> parameters = ImmutableMap.of();
         ImmutableList<Cookie> cookies = ImmutableList.of();
         return new PageRequest(Method.GET,pathInfo,"",parameters,cookies);
     }
@@ -90,9 +90,15 @@ public final class PageRequest {
         return new PageRequest(method,requestURI,queryString,parameters(request),cookies);
     }
 
-    private static ImmutableMap<String,String[]> parameters(HttpServletRequest request) {
-        Map<String,String[]> map = Maps.newHashMap();
-        map.putAll(request.getParameterMap());
+    private static ImmutableMap<String,String> parameters(HttpServletRequest request) {
+        Map<String,String> map = Maps.newHashMap();
+        Map<String,String[]> oldMap = request.getParameterMap();
+        for (String key : oldMap.keySet()) {
+            String[] values = oldMap.get(key);
+            if (values!=null && values.length > 0 && values[0]!=null) {
+                map.put(key, values[0]);
+            }
+        }
         return ImmutableMap.copyOf(map);
     }
 

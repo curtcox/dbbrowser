@@ -33,11 +33,11 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse post(PageRequest request) {
-        ImmutableMap<String,String[]> params = request.parameters;
-        String         user = params.get(USER)[0];
-        String     password = params.get(PASSWORD)[0];
-        String          url = params.get(URL)[0];
-        String   serverName = params.get(SERVER)[0];
+        ImmutableMap<String,String> params = request.parameters;
+        String         user = params.get(USER);
+        String     password = params.get(PASSWORD);
+        String          url = params.get(URL);
+        String   serverName = params.get(SERVER);
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         Server       server = Server.uri(URIs.of(serverName));

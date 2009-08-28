@@ -52,7 +52,7 @@ final class SimpleSelectRunner implements SelectRunner {
         SQL         sql = SelectRenderers.render(select,driver);
         int       count = determineRowCount(select,server,connection);
         try {
-            ResultSet results = connection.exec(sql);
+            ResultSet results = connection.select(sql);
             try {
                 SelectResults.Type  type = determineResultsType(select);
                 ResultsAndMore immutable = transform(select,results);
@@ -72,7 +72,7 @@ final class SimpleSelectRunner implements SelectRunner {
         DBDriver driver = connection.info.driver;
         SQL sql = SelectRenderers.render(select.count().with(Limit.DEFAULT),driver);
         try {
-            ResultSet results = connection.exec(sql);
+            ResultSet results = connection.select(sql);
             try {
                 results.next();
                 return results.getInt(1);

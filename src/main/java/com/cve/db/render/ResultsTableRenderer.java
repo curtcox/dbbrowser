@@ -18,7 +18,7 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
-import static com.cve.db.render.ResultsTableRenderingTools.*;
+import static com.cve.db.render.DBResultSetRenderer.*;
 
 /**
  * Renders the results of a database select as a single HTML table.
@@ -40,12 +40,12 @@ public final class ResultsTableRenderer {
     /**
      * Utility methods for rendering select results.
      */
-    private final ResultsTableRenderingTools tools;
+    private final DBResultSetRenderer tools;
 
     private ResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = ResultsTableRenderingTools.results(results, client);
+        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints, client);
     }
 
     static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {
@@ -64,7 +64,7 @@ public final class ResultsTableRenderer {
         if (results.resultSet.rows.size() < 4) {
             return portraitTable();
         }
-        return landscapeTable();
+        return tools.landscapeTable();
     }
 
     /**
@@ -116,48 +116,11 @@ public final class ResultsTableRenderer {
     }
   
     String nameCell(Database database) {
-        return ResultsTableRenderingTools.nameCell(database);
+        return DBResultSetRenderer.nameCell(database);
     }
 
     String nameCell(DBTable table) {
-        return ResultsTableRenderingTools.nameCell(table);
-    }
-
-    /**
-     * Return a landscape table where every result set row maps to a table row.
-     */
-    String landscapeTable() {
-        List<UIRow> rows = Lists.newArrayList();
-        rows.add(UIRow.of(tools.databaseRow(),   CSS.DATABASE));
-        rows.add(UIRow.of(tools.tableRow(),      CSS.TABLE));
-        rows.add(UIRow.of(tools.columnNameRow()));
-        rows.add(UIRow.of(tools.columnHideRow(), CSS.HIDE));
-        rows.addAll(valueRows());
-        return UITable.of(rows).toString();
-    }
-
-    /**
-     * The rows that contain all of the result set values.
-     */
-    List<UIRow> valueRows() {
-        DBResultSet resultSet = results.resultSet;
-        List<UIRow> out = Lists.newArrayList();
-        CSS cssClass = CSS.ODD_ROW;
-        for (DBRow row : resultSet.rows) {
-            List<UIDetail> details = Lists.newArrayList();
-            for (DBColumn column : resultSet.columns) {
-                Cell cell = Cell.at(row, column);
-                Value value = resultSet.getValue(row, column);
-                details.add(UIDetail.of(valueCell(cell,value)));
-            }
-            out.add(UIRow.of(details, cssClass));
-            if (cssClass==CSS.EVEN_ROW) {
-                cssClass = CSS.ODD_ROW;
-            } else {
-                cssClass = CSS.EVEN_ROW;
-            }
-        }
-        return out;
+        return DBResultSetRenderer.nameCell(table);
     }
 
 }

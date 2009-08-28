@@ -1,5 +1,6 @@
 package com.cve.db.sample;
 
+import com.cve.db.ConnectionInfo;
 import com.cve.db.Database;
 import com.cve.db.SQL;
 import com.cve.db.dbio.DBConnection;
@@ -9,7 +10,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -50,7 +54,7 @@ public final class SakilaDB {
         SQL[] sqls = resource("/h2-sakila/h2-sakila-schema.sql");
         for (SQL sql : sqls) {
             //System.out.print(sql);
-            connection.exec(sql);
+            update(sql);
         }
     }
 
@@ -58,7 +62,7 @@ public final class SakilaDB {
         SQL[] sqls = resource("/h2-sakila/h2-sakila-data.sql");
         for (SQL sql : sqls) {
             //System.out.print(sql);
-            connection.exec(sql);
+            update(sql);
         }
     }
 
@@ -81,6 +85,13 @@ public final class SakilaDB {
         }
 
         return sqls.toArray(new SQL[0]);
+    }
+
+    static void update(SQL sql) throws SQLException {
+        ConnectionInfo info = connection.info;
+        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
+        Statement statement = connection.createStatement();
+        statement.execute(sql.toString());
     }
 
     public static void main(String[] args) {

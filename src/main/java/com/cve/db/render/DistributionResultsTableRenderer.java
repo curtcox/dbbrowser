@@ -18,7 +18,7 @@ import java.util.List;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
-import static com.cve.db.render.ResultsTableRenderingTools.*;
+import static com.cve.db.render.DBResultSetRenderer.*;
 
 /**
  * Renders the results of a database select as a single HTML table.
@@ -40,12 +40,12 @@ public final class DistributionResultsTableRenderer {
     /**
      * Utility methods for rendering select results.
      */
-    private final ResultsTableRenderingTools tools;
+    private final DBResultSetRenderer tools;
 
     private DistributionResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = ResultsTableRenderingTools.results(results, client);
+        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints, client);
     }
 
     static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client) {

@@ -56,6 +56,10 @@ public final class DBConnection {
         return connection;
     }
 
+    public synchronized DBResultSetMetaData getMetaData(Server server, ResultSet results) throws SQLException {
+        return DefaultDBResultSetMetaDataFactory.of(server,this,results);
+    }
+
     synchronized Connection reset() throws SQLException {
         log("resetting " + info);
         connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
@@ -76,19 +80,19 @@ public final class DBConnection {
     }
 
     private DatabaseMetaData getJDBCMetaData0() throws SQLException {
-        return getConnection().getMetaData();
+        return DatabaseMetaDataWrapper.of(getConnection().getMetaData());
     }
 
     /**
      * Execute the given SQL.
      */
-    public synchronized ResultSet exec(final SQL sql) throws SQLException {
+    public synchronized ResultSet select(final SQL sql) throws SQLException {
         return ResultSetRetry.run(this,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
                 Statement statement = getConnection().createStatement();
                 statement.execute(sql.toString());
-                return statement.getResultSet();
+                return ResultSetWrapper.of(statement.getResultSet());
             }
         });
     }

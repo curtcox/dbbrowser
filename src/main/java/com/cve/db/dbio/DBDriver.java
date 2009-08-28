@@ -14,12 +14,14 @@ public enum DBDriver {
 
 
     MySql("jdbc:mysql:", com.mysql.jdbc.Driver.class) {
+    @Override
     public JDBCURL getJDBCURL(String name) {
         String url = "jdbc:mysql://" + name + ":3306";
         return JDBCURL.uri(URIs.of(url));
     }} ,
 
     MsSqlTds("jdbc:jtds:sqlserver:", net.sourceforge.jtds.jdbc.Driver.class) {
+    @Override
     public JDBCURL getJDBCURL(String name) {
     /**
      * Return a connection for this info.
@@ -55,18 +57,21 @@ public enum DBDriver {
 //    }} ,
 
     H2("jdbc:h2:",    org.h2.Driver.class) {
+    @Override
     public JDBCURL getJDBCURL(String name) {
         String url = "jdbc:h2:" + name;
         return JDBCURL.uri(URIs.of(url));
     }} ,
     
     Derby("jdbc:derby:", org.apache.derby.jdbc.ClientDriver.class) {
+    @Override
     public JDBCURL getJDBCURL(String name) {
         String url = "jdbc:derby:" + name;
         return JDBCURL.uri(URIs.of(url));
     }} ,
 
     Oracle("jdbc:oracle:thin:", org.h2.Driver.class) {
+    @Override
     public JDBCURL getJDBCURL(String name) {
         String url = "jdbc:oracle:thin:" + name;
         return JDBCURL.uri(URIs.of(url));

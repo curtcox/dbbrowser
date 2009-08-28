@@ -20,6 +20,9 @@ import java.util.Set;
 /**
  * Skeletal implementation of DB meta data reader.
  * This class is designed to be extended.
+ * Ideally, this would be a value class like DBResultSetMetaData.
+ * Unfortunately, it takes a long time for most DBMSs to generate all of their
+ * meta data and give it to us.
  * @author curt
  */
 class DefaultDBMetaData implements DBMetaData {

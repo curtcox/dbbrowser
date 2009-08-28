@@ -9,7 +9,10 @@ import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Creates and loads a sample H2 server.
@@ -70,7 +73,7 @@ public final class SampleServer {
 
     static void createSchema(Database database) throws SQLException {
         String sql = "CREATE SCHEMA " + database.name + ";";
-        connection.exec(SQL.of(sql));
+        update(SQL.of(sql));
     }
 
     /**
@@ -92,7 +95,7 @@ public final class SampleServer {
          */
         Inserter add(Object... values) throws SQLException {
             String sql = "INSERT INTO " + table.fullName() + " VALUES(" + commaSeperated(values) + ")";
-            connection.exec(SQL.of(sql));
+            update(SQL.of(sql));
             return this;
         }
     }
@@ -133,9 +136,15 @@ public final class SampleServer {
         throws SQLException
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";
-        connection.exec(SQL.of(sql));
-        connection.exec(SQL.of("SELECT COUNT(*) FROM " + table)).close();
-        connection.exec(SQL.of("SELECT * FROM " + table)).close();
+        update(SQL.of(sql));
+        connection.select(SQL.of("SELECT COUNT(*) FROM " + table)).close();
+        connection.select(SQL.of("SELECT * FROM " + table)).close();
     }
 
+    static void update(SQL sql) throws SQLException {
+        final ConnectionInfo info = getConnectionInfo();
+        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
+        Statement statement = connection.createStatement();
+        statement.execute(sql.toString());
+    }
 }
