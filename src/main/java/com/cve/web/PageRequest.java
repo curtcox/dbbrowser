@@ -44,6 +44,8 @@ public final class PageRequest {
      * Parameters either parsed from the query string or from form post
      * contents.
      * Often empty, but never null.
+     * TODO Exactly why is this a map to an array, rather than a single string.
+     * This needs to be documented or simplified -- probably both.
      */
     public final ImmutableMap<String,String[]> parameters;
 

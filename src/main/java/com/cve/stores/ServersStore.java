@@ -2,6 +2,7 @@ package com.cve.stores;
 
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.ConnectionInfo;
+import com.cve.db.Database;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
 import static com.cve.util.Check.notNull;
@@ -124,10 +125,16 @@ public final class ServersStore {
         }
     }
 
+    /**
+     * Get a list of all servers in the store.
+     */
     public static ImmutableList<Server> getServers() {
         return ImmutableList.copyOf(INFOS.keySet());
     }
 
+    /**
+     * Get a connection to the given server.
+     */
     public static DBConnection getConnection(Server server) {
         if (CONNECTIONS.containsKey(server)) {
             return CONNECTIONS.get(server);
@@ -139,6 +146,13 @@ public final class ServersStore {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Get a connection to the given server and database.
+     */
+    public static DBConnection getConnection(Server server, Database database) {
+        throw new UnsupportedOperationException();
     }
 
     private static DBConnection tryGetConnection(Server server) throws SQLException {

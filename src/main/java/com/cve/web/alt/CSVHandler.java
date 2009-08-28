@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import static com.cve.log.Log.args;
 
 /**
- *
+ * For handling requests to view a result set as CSV.
  * @author curt
  */
 final class CSVHandler extends AbstractRequestHandler {

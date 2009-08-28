@@ -6,6 +6,7 @@ import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.util.Stopwatch;
+import static com.cve.log.Log.args;
 
 /**
  * How everyone outside of this package executes selects.
@@ -14,6 +15,7 @@ import com.cve.util.Stopwatch;
 public final class SelectExecutor {
 
     public static SelectResults run(Select select, Server server, DBConnection connection, Hints hints) {
+        args(select,server,connection,hints);
         Stopwatch watch = Stopwatch.start(select);
         SelectRunner runner = new SimpleSelectRunner();
         SelectResults results = runner.run(select, server, connection, hints);

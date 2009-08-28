@@ -8,7 +8,7 @@ import static com.cve.util.Check.notNull;
  * That's because result sets can contain both c and f(c), for a given
  * aggregate function like count, min, max, etc...
  * Usually, the function is just the identity function, so it's mostly a
- * pair.
+ * pair rather than a triple.
  * <p>
  * This is kind of ugly, but the only alternative I see is creating some sort
  * of object that could either be a column, or a column plus a function.
@@ -19,8 +19,20 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Cell {
 
+    /**
+     * The row this cell is in.
+     */
     public final DBRow row;
+
+    /**
+     * The column this cell is derived from.
+     */
     public final DBColumn column;
+
+    /**
+     * The function that was applied to get this cell value.
+     * This is usually just the identity function, but you never know.
+     */
     public final AggregateFunction function;
 
     private Cell(DBRow row, DBColumn column, AggregateFunction function) {

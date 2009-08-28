@@ -24,12 +24,18 @@ final class FreeFormQueryModel implements Model {
     public final DBResultSet results;
 
     /**
+     * Feedback to the user like an error message.
+     */
+    public final String message;
+
+    /**
      * Literals to use in the form.
      */
     static final String Q  = "q";
 
-    FreeFormQueryModel(SQL sql, DBResultSet results) {
+    FreeFormQueryModel(SQL sql, DBResultSet results, String message) {
         this.sql = Check.notNull(sql);
         this.results = Check.notNull(results);
+        this.message = Check.notNull(message);
     }
 }

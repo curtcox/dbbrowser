@@ -39,6 +39,11 @@ public final class DBResultSet {
      */
     public final ImmutableMap<Cell,Value> values;
 
+    /**
+     * Use this for a null result set.
+     */
+    public static final DBResultSet NULL = new DBResultSet(list(),list(),list(),list(),map());
+
     private DBResultSet(
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,

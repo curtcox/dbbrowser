@@ -84,6 +84,7 @@ public final class DBConnection {
      */
     public synchronized ResultSet exec(final SQL sql) throws SQLException {
         return ResultSetRetry.run(this,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 Statement statement = getConnection().createStatement();
                 statement.execute(sql.toString());

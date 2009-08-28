@@ -1,11 +1,35 @@
 package com.cve.web.db;
 
+import com.cve.db.AggregateFunction;
+import com.cve.db.Cell;
+import com.cve.db.DBColumn;
+import com.cve.db.DBResultSet;
+import com.cve.db.DBRow;
+import com.cve.db.DBTable;
+import com.cve.db.Database;
+import com.cve.db.Limit;
+import com.cve.db.SQL;
+import com.cve.db.Server;
+import com.cve.db.Value;
+import com.cve.db.dbio.DBConnection;
+import com.cve.stores.ServersStore;
+import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import static com.cve.web.db.FreeFormQueryModel.*;
+import static com.cve.log.Log.args;
 
 /**
  * Handles "free-form" SQL select queries.
@@ -30,15 +54,129 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public PageResponse get(PageRequest request) throws IOException {
+        ImmutableMap<String,String[]> params = request.parameters;
+        String        query = params.get(Q)[0];
+        if (query==null) {
+            query = "";
+        }
+        SQL sql = SQL.of(query);
+        if (query.isEmpty()) {
+            DBResultSet results = DBResultSet.NULL;
+            String      message = "Type SQL select statement to be executed.";
+            return page(sql,results,message);
+        }
+        String uri = request.requestURI;
+        Server server = URIParser.getServer(uri);
+        if (isServerOnlyQuery(uri)) {
+            try {
+                DBConnection connection = ServersStore.getConnection(server);
+                ResultsAndMore results = exec(sql,connection);
+                String      message = "Type SQL select statement to be executed.";
+                return page(sql,results.resultSet,message);
+            } catch (SQLException e) {
+                return page(sql,DBResultSet.NULL,e.getMessage());
+            }
+        }
+        Database database = URIParser.getDatabase(uri);
+        try {
+            DBConnection connection = ServersStore.getConnection(server,database);
+            ResultsAndMore results = exec(sql,connection);
+            String      message = "Type SQL select statement to be executed.";
+            return page(sql,results.resultSet,message);
+        } catch (SQLException e) {
+            return page(sql,DBResultSet.NULL,e.getMessage());
+        }
+    }
+
+    static PageResponse page(SQL sql, DBResultSet results, String message) {
+        return PageResponse.of(new FreeFormQueryModel(sql,results,message));
+    }
+
+    static ResultsAndMore exec(SQL sql, DBConnection connection) throws SQLException {
+        ResultSet results = connection.exec(sql);
+        ResultSetMetaData              meta = results.getMetaData();
+        ImmutableList<Database>   databases = databases(meta);
+        ImmutableList<DBTable>       tables = tables(meta);
+        ImmutableList<DBColumn>     columns = columns(meta);
+        List<DBRow>                    rows = Lists.newArrayList();
+        Map<Cell,Value>              values = Maps.newHashMap();
+        ImmutableList<AggregateFunction> functions = functions(meta);
+        int cols = meta.getColumnCount();
+        int    r = 0;
+        Limit limit = Limit.DEFAULT;
+        while (results.next() && r<(limit.limit - 1)) {
+            DBRow row = DBRow.number(r);
+            rows.add(row);
+            r++;
+            for (int c=1; c<=cols; c++) {
+                Object v = getObject(results,c);
+                Value value = Value.of(v);
+                values.put(Cell.at(row, columns.get(c-1),functions.get(c-1)), value);
+            }
+        }
+        boolean more = results.next();
+        ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
+        ImmutableMap<Cell,Value>   fixedValues = ImmutableMap.copyOf(values);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
+    }
+
+    /**
+     * A result set, plus a flag to indicate if more data is available
+     */
+    private static class ResultsAndMore {
+        final com.cve.db.DBResultSet resultSet;
+        final boolean more;
+        ResultsAndMore(DBResultSet resultSet, boolean more) {
+            this.resultSet = resultSet;
+            this.more      = more;
+        }
+    }
+
+    /**
+     * Get the object from the speciifed column.
+     * Return a string describing the conversion error if one is encountered.
+     */
+    static Object getObject(ResultSet results, int c) throws SQLException {
+        args(results,c);
+        try {
+            return results.getObject(c);
+        } catch (SQLException e) {
+            ResultSetMetaData meta = results.getMetaData();
+            String        typeName = meta.getColumnTypeName(c);
+            String       className = meta.getColumnClassName(c);
+            return "Error converting " + typeName + "/" + className;
+        }
+    }
+
+    static ImmutableList<Database> databases(ResultSetMetaData meta) {
+        throw new UnsupportedOperationException();
+    }
+
+    static ImmutableList<DBTable> tables(ResultSetMetaData meta) {
+        throw new UnsupportedOperationException();
+    }
+
+    static ImmutableList<DBColumn> columns(ResultSetMetaData meta) {
+        throw new UnsupportedOperationException();
+    }
+
+    static ImmutableList<AggregateFunction> functions(ResultSetMetaData meta) {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Is this a query where only the server is specified in the URL?
+     */
+    static boolean isServerOnlyQuery(String uri) {
+        return true;
     }
 
     /**
      * Return true if URL is of the form
      * /server/db/
      */
-    public static boolean isFreeFormQueryRequest(String uri) {
+    static boolean isFreeFormQueryRequest(String uri) {
         if (!uri.contains("/select")) {
             return false;
         }

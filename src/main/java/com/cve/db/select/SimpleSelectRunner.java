@@ -26,12 +26,16 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
+
 /**
  * Runs {@link Select}S against database connections to produce {@link SelectResults}.
  */
 final class SimpleSelectRunner implements SelectRunner {
 
+    @Override
     public SelectResults run(Select select, Server server, DBConnection connection, Hints hints) {
+        args(select,server,connection,hints);
         try {
             return tryRun(select,server,connection,hints);
         } catch (SQLException e) {
@@ -46,7 +50,7 @@ final class SimpleSelectRunner implements SelectRunner {
         notNull(hints);
         DBDriver driver = connection.info.driver;
         SQL         sql = SelectRenderers.render(select,driver);
-        int  count = determineRowCount(select,server,connection);
+        int       count = determineRowCount(select,server,connection);
         try {
             ResultSet results = connection.exec(sql);
             try {
@@ -84,6 +88,7 @@ final class SimpleSelectRunner implements SelectRunner {
      * Is the given select normal data or a column value distribution query?
      */
     static SelectResults.Type determineResultsType(Select select) {
+        args(select);
         if (select.groups.size()!=1) {
             return SelectResults.Type.NORMAL_DATA;
         }
@@ -98,6 +103,7 @@ final class SimpleSelectRunner implements SelectRunner {
      * dbmodel.DBResultSet.
      */
     static ResultsAndMore transform(Select select, ResultSet results) throws SQLException {
+        args(select,results);
         ImmutableList<Database>   databases = select.databases;
         ImmutableList<DBTable>       tables = select.tables;
         ImmutableList<DBColumn>     columns = select.columns;
@@ -124,6 +130,9 @@ final class SimpleSelectRunner implements SelectRunner {
         return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
     }
 
+    /**
+     * A result set, plus a flag to indicate if more data is available
+     */
     private static class ResultsAndMore {
         final com.cve.db.DBResultSet resultSet;
         final boolean more;
@@ -133,7 +142,12 @@ final class SimpleSelectRunner implements SelectRunner {
         }
     }
 
+    /**
+     * Get the object from the speciifed column.
+     * Return a string describing the conversion error if one is encountered.
+     */
     static Object getObject(ResultSet results, int c) throws SQLException {
+        args(results,c);
         try {
             return results.getObject(c);
         } catch (SQLException e) {
