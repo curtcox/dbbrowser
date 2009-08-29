@@ -6,10 +6,10 @@ import com.cve.util.URIs;
 import java.net.URI;
 
 /**
- *
+ * For providing hyperlinks to expose objects in the JVM.
  * @author Curt
  */
-final class ObjectLink {
+public final class ObjectLink {
 
     /**
      * Return the label for the URL, or an empty string if there is none.
@@ -28,7 +28,7 @@ final class ObjectLink {
     /**
      * Return a labeled link to the given object.
      */
-    static String to(Object object) {
+    public static String to(Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(getLabel(object) + "/" + hash);
         URI target = URIs.of("/object/" + hash);
@@ -38,7 +38,7 @@ final class ObjectLink {
     /**
      * Return a labeled link to the given object.
      */
-    static String to(String labelText, Object object) {
+    public static String to(String labelText, Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(labelText);
         URI target = URIs.of("/object/" + hash);

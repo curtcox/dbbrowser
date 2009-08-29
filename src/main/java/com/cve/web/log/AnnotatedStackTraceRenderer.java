@@ -13,7 +13,8 @@ import java.net.URI;
  * For rendering throwables to HTML.
  * @author curt
  */
-public final class AnnotatedStackTraceRenderer implements ModelHtmlRenderer {
+public final class AnnotatedStackTraceRenderer
+    implements ModelHtmlRenderer {
 
     @Override
     public String render(Model model, ClientInfo client) {

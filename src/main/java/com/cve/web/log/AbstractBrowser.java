@@ -10,8 +10,15 @@ public abstract class AbstractBrowser
     implements CustomBrowser
 {
 
+    /**
+     * The kind of thing we provide special support for.
+     */
     private final Class type;
 
+    /**
+     * Create a custom browser for the following type of thing.
+     * @param type
+     */
     public AbstractBrowser(Class type) {
         Check.notNull(type);
         this.type = type;

@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.db.DBResultSet;
 import com.cve.db.SQL;
+import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
 import com.cve.web.Model;
 import javax.annotation.concurrent.Immutable;
@@ -29,13 +30,19 @@ final class FreeFormQueryModel implements Model {
     public final String message;
 
     /**
+     * All that we know about what went wrong, or null if everything is OK.
+     */
+    public final AnnotatedStackTrace trace;
+
+    /**
      * Literals to use in the form.
      */
     static final String Q  = "q";
 
-    FreeFormQueryModel(SQL sql, DBResultSet results, String message) {
-        this.sql = Check.notNull(sql);
+    FreeFormQueryModel(SQL sql, DBResultSet results, String message, AnnotatedStackTrace trace) {
+        this.sql     = Check.notNull(sql);
         this.results = Check.notNull(results);
         this.message = Check.notNull(message);
+        this.trace   = trace;
     }
 }

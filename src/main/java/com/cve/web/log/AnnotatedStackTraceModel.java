@@ -16,6 +16,11 @@ public final class AnnotatedStackTraceModel implements Model {
         this.trace = Check.notNull(t);
     }
 
+    public static AnnotatedStackTraceModel trace(AnnotatedStackTrace trace) {
+        Check.notNull(trace);
+        return new AnnotatedStackTraceModel(trace);
+    }
+
     public static AnnotatedStackTraceModel throwable(Throwable t) {
         Check.notNull(t);
         return new AnnotatedStackTraceModel(Log.annotatedStackTrace(t));

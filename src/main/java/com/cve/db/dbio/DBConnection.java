@@ -11,7 +11,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.ResultSet;
-
+import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -57,6 +57,7 @@ public final class DBConnection {
     }
 
     public synchronized DBResultSetMetaData getMetaData(Server server, ResultSet results) throws SQLException {
+        args(server,results);
         return DefaultDBResultSetMetaDataFactory.of(server,this,results);
     }
 

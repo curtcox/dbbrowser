@@ -30,6 +30,17 @@ public final class AnnotatedStackTrace {
      */
     public final Map<StackTraceElement,Object[]> args;
 
+    /**
+     * Use in place of null
+     */
+    public static final AnnotatedStackTrace NULL = Null();
+
+    private static AnnotatedStackTrace Null() {
+        Throwable t = new Throwable();
+        Map<StackTraceElement,Object[]> args = ImmutableMap.of();
+        return new AnnotatedStackTrace(t,args);
+    }
+
     private AnnotatedStackTrace(Throwable t, Map<StackTraceElement,Object[]> args) {
         Check.notNull(t);
         Check.notNull(args);

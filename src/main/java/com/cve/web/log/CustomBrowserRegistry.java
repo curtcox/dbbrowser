@@ -1,6 +1,6 @@
 package com.cve.web.log;
 
-import com.cve.util.Check;
+import com.cve.web.log.browsers.AnnotatedStackTraceBrowser;
 import com.cve.web.log.browsers.ArrayBrowser;
 import com.cve.web.log.browsers.CollectionBrowser;
 import com.cve.web.log.browsers.MapBrowser;
@@ -19,7 +19,7 @@ import java.util.Map;
  * would return both browsers.
  * @author ccox
  */
-class CustomBrowserRegistry {
+final class CustomBrowserRegistry {
 
     // class -> browser
     private static final Map<Class,CustomBrowser> registry = Maps.newHashMap();
@@ -32,6 +32,7 @@ class CustomBrowserRegistry {
     static {
         register(new CollectionBrowser());
         register(new MapBrowser());
+        register(new AnnotatedStackTraceBrowser());
         // add new custom browsers here
     }
 

@@ -27,42 +27,49 @@ final class DBMetaDataLogger implements DBMetaData {
         return new DBMetaDataLogger(out,meta);
     }
 
+    @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         print("getPrimaryKeysFor" + tables);
         return print(meta.getPrimaryKeysFor(tables));
     }
 
+    @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
         print("getJoinsFor" + tables);
         return print(meta.getJoinsFor(tables));
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
         print("getColumnsFor" + server);
         return print(meta.getColumnsFor(server));
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         print("getColumnsFor" + table);
         return print(meta.getColumnsFor(table));
     }
 
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         print("getDatabasesOn" + server);
         return print(meta.getDatabasesOn(server));
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
         print("getColumnsFor" + tables);
         return print(meta.getColumnsFor(tables));
     }
 
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         print("getTablesOn" + database);
         return print(meta.getTablesOn(database));
     }
 
-    public <T> T print(T t) {
+    <T> T print(T t) {
         out.println(t);
         return t;
     }

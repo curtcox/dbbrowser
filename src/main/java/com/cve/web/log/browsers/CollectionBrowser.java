@@ -16,7 +16,6 @@ public final class CollectionBrowser
     }
 
     /* (non-Javadoc)
-     * @see com.tripos.hts.gui.debug.CustomBrowser#getComponentFor(java.lang.Object)
      */
     @Override
     public String getComponentFor(Object o) {

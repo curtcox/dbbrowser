@@ -9,7 +9,7 @@ import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
-
+import static com.cve.log.Log.args;
 import static com.cve.web.db.AddServerPage.*;
 /**
  * For adding servers.
@@ -21,6 +21,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public String render(Model model, ClientInfo client) {
+        args(model,client);
         return render((AddServerPage) model);
     }
 

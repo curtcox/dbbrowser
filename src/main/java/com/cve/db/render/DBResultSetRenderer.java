@@ -73,7 +73,7 @@ public final class DBResultSetRenderer {
     /**
      * Return a landscape table where every result set row maps to a table row.
      */
-    String landscapeTable() {
+    public String landscapeTable() {
         List<UIRow> rows = Lists.newArrayList();
         rows.add(UIRow.of(databaseRow(),   CSS.DATABASE));
         rows.add(UIRow.of(tableRow(),      CSS.TABLE));

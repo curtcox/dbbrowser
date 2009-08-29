@@ -13,7 +13,9 @@ import com.cve.db.Server;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBResultSetMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ServersStore;
+import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
@@ -51,11 +53,13 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
      */
     @Override
     public boolean handles(String uri) {
+        args(uri);
         return isFreeFormQueryRequest(uri);
     }
 
     @Override
     public PageResponse get(PageRequest request) throws IOException {
+        args(request);
         ImmutableMap<String,String> params = request.parameters;
         String        query = params.get(Q);
         if (query==null) {
@@ -65,7 +69,7 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         if (query.isEmpty()) {
             DBResultSet results = DBResultSet.NULL;
             String      message = "Type SQL select statement to be executed.";
-            return page(sql,results,message);
+            return page(sql,results,message,null);
         }
         String uri = request.requestURI;
         Server server = URIParser.getServer(uri);
@@ -74,9 +78,9 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
                 DBConnection connection = ServersStore.getConnection(server);
                 ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
-                return page(sql,results.resultSet,message);
+                return page(sql,results.resultSet,message,null);
             } catch (SQLException e) {
-                return page(sql,DBResultSet.NULL,e.getMessage());
+                return page(sql,DBResultSet.NULL,e.getMessage(),e);
             }
         }
         Database database = URIParser.getDatabase(uri);
@@ -84,17 +88,22 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
             DBConnection connection = ServersStore.getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
-            return page(sql,results.resultSet,message);
+            return page(sql,results.resultSet,message,null);
         } catch (SQLException e) {
-            return page(sql,DBResultSet.NULL,e.getMessage());
+            return page(sql,DBResultSet.NULL,e.getMessage(),e);
         }
     }
 
-    static PageResponse page(SQL sql, DBResultSet results, String message) {
-        return PageResponse.of(new FreeFormQueryModel(sql,results,message));
+    static PageResponse page(SQL sql, DBResultSet results, String message, SQLException e) {
+        args(sql,results,message,e);
+        AnnotatedStackTrace trace = (e==null)
+            ? AnnotatedStackTrace.NULL
+            : Log.annotatedStackTrace(e);
+        return PageResponse.of(new FreeFormQueryModel(sql,results,message,trace));
     }
 
     static ResultsAndMore exec(Server server, SQL sql, DBConnection connection) throws SQLException {
+        args(server,sql,connection);
         ResultSet                   results = connection.select(sql);
         DBResultSetMetaData            meta = connection.getMetaData(server,results);
         ImmutableList<Database>   databases = meta.databases;

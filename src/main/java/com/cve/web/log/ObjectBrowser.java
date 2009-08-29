@@ -165,7 +165,7 @@ private static class DeferredMethod {
 } // Deferred Method
 
 public ObjectBrowser(Object o) {
-    this(o,Mask.PUBLIC);
+    this(o,Mask.PRIVATE);
 }
 
 public ObjectBrowser(Object target, Mask mask) {
