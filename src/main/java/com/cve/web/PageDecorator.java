@@ -51,8 +51,8 @@ public final class PageDecorator implements ModelHtmlRenderer {
         if (!body.startsWith("<head>")) {
             return html(body(SCRIPTS + CSS.SHEET + body));
         }
-        int end = body.indexOf("</head>");
-        String head = body.substring(1,end);
+        int end = body.indexOf("</head>") + "</head>".length();
+        String head = body.substring(0,end);
         String newBody = body.substring(end);
         return html(head + body(SCRIPTS + CSS.SHEET + newBody));
     }

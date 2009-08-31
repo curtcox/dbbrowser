@@ -36,6 +36,11 @@ final class ResultSetMetaDataLogger extends NoResultSetMetaData {
     }
 
     @Override
+    public String getCatalogName(int column) throws SQLException {
+        return print(meta.getCatalogName(column));
+    }
+
+    @Override
     public String getSchemaName(int column) throws SQLException {
         return print(meta.getSchemaName(column));
     }

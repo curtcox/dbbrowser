@@ -33,6 +33,11 @@ final class ResultSetMetaDataWrapper extends NoResultSetMetaData {
     }
 
     @Override
+    public String getCatalogName(int column) throws SQLException {
+        return meta.getCatalogName(column);
+    }
+
+    @Override
     public String getSchemaName(int column) throws SQLException {
         return meta.getSchemaName(column);
     }

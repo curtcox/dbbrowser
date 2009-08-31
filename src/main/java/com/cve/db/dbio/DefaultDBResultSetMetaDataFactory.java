@@ -23,9 +23,9 @@ import static com.cve.log.Log.args;
  */
 class DefaultDBResultSetMetaDataFactory {
 
-    private final Server server;
+    final Server server;
 
-    private final ResultSetMetaData meta;
+    final ResultSetMetaData meta;
 
     DefaultDBResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
         this.server = Check.notNull(server);
