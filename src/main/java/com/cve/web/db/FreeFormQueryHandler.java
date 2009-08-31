@@ -9,10 +9,13 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Limit;
 import com.cve.db.SQL;
+import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBDriver;
 import com.cve.db.dbio.DBResultSetMetaData;
+import com.cve.db.select.SelectRenderers;
 import com.cve.log.Log;
 import com.cve.stores.ServersStore;
 import com.cve.util.AnnotatedStackTrace;
@@ -26,6 +29,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -44,7 +49,7 @@ import static com.cve.log.Log.args;
  * /server/database/select?q=...
  * @author Curt
  */
-final class FreeFormQueryHandler extends AbstractRequestHandler {
+public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
     FreeFormQueryHandler() {}
 
@@ -68,8 +73,9 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         SQL sql = SQL.of(query);
         if (query.isEmpty()) {
             DBResultSet results = DBResultSet.NULL;
+            DBResultSetMetaData meta = DBResultSetMetaData.NULL;
             String      message = "Type SQL select statement to be executed.";
-            return page(sql,results,message,null);
+            return page(sql,results,meta,message,null);
         }
         String uri = request.requestURI;
         Server server = URIParser.getServer(uri);
@@ -78,9 +84,9 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
                 DBConnection connection = ServersStore.getConnection(server);
                 ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
-                return page(sql,results.resultSet,message,null);
+                return page(sql,results.resultSet,results.meta,message,null);
             } catch (SQLException e) {
-                return page(sql,DBResultSet.NULL,e.getMessage(),e);
+                return page(sql,DBResultSet.NULL,DBResultSetMetaData.NULL,e.getMessage(),e);
             }
         }
         Database database = URIParser.getDatabase(uri);
@@ -88,18 +94,18 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
             DBConnection connection = ServersStore.getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
-            return page(sql,results.resultSet,message,null);
+            return page(sql,results.resultSet,results.meta,message,null);
         } catch (SQLException e) {
-            return page(sql,DBResultSet.NULL,e.getMessage(),e);
+            return page(sql,DBResultSet.NULL,DBResultSetMetaData.NULL,e.getMessage(),e);
         }
     }
 
-    static PageResponse page(SQL sql, DBResultSet results, String message, SQLException e) {
+    static PageResponse page(SQL sql, DBResultSet results, DBResultSetMetaData meta, String message, SQLException e) {
         args(sql,results,message,e);
         AnnotatedStackTrace trace = (e==null)
             ? AnnotatedStackTrace.NULL
             : Log.annotatedStackTrace(e);
-        return PageResponse.of(new FreeFormQueryModel(sql,results,message,trace));
+        return PageResponse.of(new FreeFormQueryModel(sql,results,meta,message,trace));
     }
 
     static ResultsAndMore exec(Server server, SQL sql, DBConnection connection) throws SQLException {
@@ -128,17 +134,19 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         boolean more = results.next();
         ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,Value>   fixedValues = ImmutableMap.copyOf(values);
-        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),meta,more);
     }
 
     /**
      * A result set, plus a flag to indicate if more data is available
      */
     private static class ResultsAndMore {
-        final com.cve.db.DBResultSet resultSet;
+        final DBResultSet resultSet;
+        final DBResultSetMetaData meta;
         final boolean more;
-        ResultsAndMore(DBResultSet resultSet, boolean more) {
+        ResultsAndMore(DBResultSet resultSet, DBResultSetMetaData meta, boolean more) {
             this.resultSet = resultSet;
+            this.meta      = meta;
             this.more      = more;
         }
     }
@@ -179,5 +187,19 @@ final class FreeFormQueryHandler extends AbstractRequestHandler {
         }
         int slashes = URIs.slashCount(uri);
         return slashes > 1;
+    }
+
+    /**
+     * Return a URI that links to a free-form query page loaded with the
+     * given select statement.
+     */
+    public static URI linkTo(Select select) {
+        args(select);
+        Server server = select.databases.get(0).server;
+        DBConnection connection = ServersStore.getConnection(server);
+        DBDriver driver = connection.info.driver;
+        SQL sql = SelectRenderers.render(select, driver);
+        URI  target = URIs.of("/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
+        return target;
     }
 }

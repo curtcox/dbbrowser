@@ -26,6 +26,10 @@ public final class UIBuilder {
         return UIText.nameValue(name,value);
     }
 
+    public static UITextArea textArea(String name, String value, int rows, int columns) {
+        return UITextArea.nameValueRowsColumns(name,value,rows,columns);
+    }
+
     public static UILabel label(String value) {
         return UILabel.value(value);
     }

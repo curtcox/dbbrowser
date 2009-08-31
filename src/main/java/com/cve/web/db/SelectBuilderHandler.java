@@ -29,6 +29,7 @@ import static com.cve.log.Log.args;
  */
 public final class SelectBuilderHandler implements RequestHandler {
 
+    @Override
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         args(request);
         PageResponse redirect = redirectedWithAddedColumns(request);

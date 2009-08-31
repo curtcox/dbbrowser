@@ -6,6 +6,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
+import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -23,6 +24,16 @@ public final class DBResultSetMetaData {
 
     public final ImmutableList<AggregateFunction> functions;
 
+    public static final DBResultSetMetaData NULL = Null();
+    
+    private static DBResultSetMetaData Null() {
+        ImmutableList<Database>          databases = ImmutableList.of();
+        ImmutableList<DBTable>              tables = ImmutableList.of();
+        ImmutableList<DBColumn>            columns = ImmutableList.of();
+        ImmutableList<AggregateFunction> functions = ImmutableList.of();
+        return new DBResultSetMetaData(databases,tables,columns,functions);
+    }
+
     private DBResultSetMetaData(ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<AggregateFunction> functions)
@@ -33,11 +44,15 @@ public final class DBResultSetMetaData {
         this.functions = Check.notNull(functions);
     }
 
-    static DBResultSetMetaData of(ImmutableList<Database> databases,
-        ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
-        ImmutableList<AggregateFunction> functions)
+    public static DBResultSetMetaData of(List<Database> databases,
+        List<DBTable> tables, List<DBColumn> columns,
+        List<AggregateFunction> functions)
     {
-        return new DBResultSetMetaData(databases,tables,columns,functions);
+        ImmutableList<Database>          iDatabases = ImmutableList.copyOf(databases);
+        ImmutableList<DBTable>              iTables = ImmutableList.copyOf(tables);
+        ImmutableList<DBColumn>            iColumns = ImmutableList.copyOf(columns);
+        ImmutableList<AggregateFunction> iFunctions = ImmutableList.copyOf(functions);
+        return new DBResultSetMetaData(iDatabases,iTables,iColumns,iFunctions);
     }
 
 }

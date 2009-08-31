@@ -8,10 +8,9 @@ import com.cve.db.dbio.DBDriver;
  * For rendering a select statement a database-specific SQL.
  * @author curt
  */
-final class SelectRenderers {
+public final class SelectRenderers {
 
-
-    static SQL render(Select select, DBDriver driver) {
+    public static SQL render(Select select, DBDriver driver) {
         if (driver.equals(DBDriver.MySql)) {
             return MySQLSelectRenderer.of().render(select);
         }

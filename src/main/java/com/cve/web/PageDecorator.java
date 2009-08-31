@@ -10,6 +10,9 @@ import static com.cve.html.HTML.*;
  */
 public final class PageDecorator implements ModelHtmlRenderer {
 
+    /**
+     * For rendering the model into a page body.
+     */
     private final ModelHtmlRenderer renderer;
 
     /**
@@ -27,12 +30,30 @@ public final class PageDecorator implements ModelHtmlRenderer {
         return new PageDecorator(renderer);
     }
 
+    @Override
     public String render(Model model, ClientInfo client) {
         String body = (String) renderer.render(model,client);
         return render(body,client);
     }
 
+    /**
+     * Return the body with CSS and Javascript added.
+     * In what feels like a very clumsy hack, a HTML head can be added to the
+     * page by prepending it (including surrounding tags unlike the bare body we
+     * take) to the body.
+     * <p>
+     * This is done to accomodate renderers like the one for free form queries,
+     * which need to be able to specify a base page in the head.
+     * It seemed like a better solution than complicating the interface for
+     * this one edge case.
+     */
     String render(String body, ClientInfo client) {
-        return html(body(SCRIPTS + CSS.SHEET + body));
+        if (!body.startsWith("<head>")) {
+            return html(body(SCRIPTS + CSS.SHEET + body));
+        }
+        int end = body.indexOf("</head>");
+        String head = body.substring(1,end);
+        String newBody = body.substring(end);
+        return html(head + body(SCRIPTS + CSS.SHEET + newBody));
     }
 }

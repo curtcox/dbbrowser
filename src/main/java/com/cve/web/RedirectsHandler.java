@@ -5,12 +5,13 @@ import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.select.URIRenderer;
 import com.cve.util.URIParser;
-import com.google.common.collect.ImmutableMap;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
 
 import static com.cve.util.Check.*;
+import static com.cve.log.Log.args;
+
 /**
  * For handling HTTP redirects.
  * The main source of redirects we encounter is actions tacked onto the end
@@ -33,7 +34,9 @@ import static com.cve.util.Check.*;
  */
 public final class RedirectsHandler implements RequestHandler {
 
+    @Override
     public PageResponse produce(PageRequest request) throws IOException {
+        args(request);
         notNull(request);
 
         String query = request.queryString;
@@ -50,6 +53,7 @@ public final class RedirectsHandler implements RequestHandler {
     }
 
     static URI redirectsActionsTo(String path, String query) throws SQLException {
+        args(path,query);
         notNull(path);
         int lastSlash = path.lastIndexOf("/");
         notNegative(lastSlash);

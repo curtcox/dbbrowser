@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.db.DBResultSet;
 import com.cve.db.SQL;
+import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
 import com.cve.web.Model;
@@ -25,6 +26,11 @@ final class FreeFormQueryModel implements Model {
     public final DBResultSet results;
 
     /**
+     * Meta data for the result set.
+     */
+    public final DBResultSetMetaData meta;
+
+    /**
      * Feedback to the user like an error message.
      */
     public final String message;
@@ -39,9 +45,10 @@ final class FreeFormQueryModel implements Model {
      */
     static final String Q  = "q";
 
-    FreeFormQueryModel(SQL sql, DBResultSet results, String message, AnnotatedStackTrace trace) {
+    FreeFormQueryModel(SQL sql, DBResultSet results, DBResultSetMetaData meta, String message, AnnotatedStackTrace trace) {
         this.sql     = Check.notNull(sql);
         this.results = Check.notNull(results);
+        this.meta    = Check.notNull(meta);
         this.message = Check.notNull(message);
         this.trace   = trace;
     }

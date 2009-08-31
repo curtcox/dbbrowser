@@ -21,6 +21,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     public SelectResultsRenderer() {}
 
+    @Override
     public String render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {

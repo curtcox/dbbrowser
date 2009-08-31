@@ -1,6 +1,7 @@
 package com.cve.html;
 
 import com.cve.web.PageRequest;
+import java.net.URI;
 import static com.cve.util.Check.notNull;
 /**
  * A typesafe string for HMTL, plus some string-based static methods to make
@@ -23,6 +24,8 @@ public final class HTML {
     public String toString() { return html; }
 
     public static String  html(String s) { return "<html>" + s + "</html>"; }
+    public static String  head(String s) { return "<head>" + s + "</head>"; }
+    public static String  base(URI href) { return "<base href=" + q(href) + "/>"; }
     public static String  body(String s) { return "<body>" + s + "</body>"; }
     public static String    li(String s) { return debug("<li>",s,"</li>"); }
     public static String    ol(String s) { return debug("<ol>",s ,"</ol>"); }

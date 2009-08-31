@@ -7,6 +7,7 @@ import com.cve.db.SelectResults;
 import com.cve.db.select.URIRenderer;
 import com.cve.util.URIs;
 import com.cve.web.alt.AlternateView;
+import com.cve.web.db.FreeFormQueryHandler;
 import static com.cve.web.alt.AlternateView.*;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -18,6 +19,9 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class AlternateDisplayLinksRenderer {
 
+    /**
+     * What we provide links to alternate views for.
+     */
     private final Select select;
 
     private AlternateDisplayLinksRenderer(SelectResults results) {
@@ -34,7 +38,7 @@ public final class AlternateDisplayLinksRenderer {
    }
 
     String viewLinks() {
-        return viewLink(SQL) + " " +
+        return viewSQLLink() + " " +
                viewLink(CSV) + " " +
                viewLink(XLS) + " " +
                viewLink(XML) + " " +
@@ -50,4 +54,14 @@ public final class AlternateDisplayLinksRenderer {
         URI  target = URIs.of( "/view/" + view + URIRenderer.render(select));
         return Link.textTarget(text, target).toString();
     }
+
+    /**
+     * Create a link to the given view.
+     */
+    String viewSQLLink() {
+        Label  text = Label.of("SQL");
+        URI target = FreeFormQueryHandler.linkTo(select);
+        return Link.textTarget(text, target).toString();
+    }
+
 }
