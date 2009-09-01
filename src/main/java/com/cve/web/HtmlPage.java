@@ -98,7 +98,7 @@ public final class HtmlPage {
         URI base = EMPTY;
         URI help = EMPTY;
         String head = "";
-        String body = body(guts,navigation,help);
+        String body = body(title,guts,navigation,help);
         return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
@@ -107,14 +107,14 @@ public final class HtmlPage {
         String[] navigation = new String[] {};
         URI base = EMPTY;
         String head = "";
-        String body = body(guts,navigation,help);
+        String body = body(title,guts,navigation,help);
         return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
     public static HtmlPage gutsTitleNavHelp(String guts, String title, String[] nav, URI help) {
         URI base = EMPTY;
         String head = "";
-        String body = body(guts,nav,help);
+        String body = body(title,guts,nav,help);
         return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
@@ -124,18 +124,18 @@ public final class HtmlPage {
         return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
-    static String body(String guts, String nav[], URI help) {
+    static String body(String title, String guts, String nav[], URI help) {
         StringBuilder out = new StringBuilder();
         out.append(td(HOME));
         out.append(td(help(help)));
         for (String n : nav) {
             out.append(td(n));
         }
-        return table(tr(out.toString())) + guts;
+        return title(title) + table(tr(out.toString())) + guts;
     }
 
     public HtmlPage withGuts(String guts) {
-        String body = body(guts,navigation,help);
+        String body = body(title,guts,navigation,help);
         return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 

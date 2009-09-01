@@ -12,10 +12,10 @@ public enum CSS {
 
     NONE("",""),
     HIDE("hide","880000"),
-    SERVER("server","AAAAAA"),
-    DATABASE("database","FF6666"),
-    TABLE("table","66FF66"),
-    COLUMN("column","8888FF"),
+    SERVER("server","BBBBBB"),
+    DATABASE("database","FF8888"),
+    TABLE("table","88FF88"),
+    COLUMN("column","BBBBFF"),
     /**
      * Used to indicate that a column name cell is for a column with
      * potential joins

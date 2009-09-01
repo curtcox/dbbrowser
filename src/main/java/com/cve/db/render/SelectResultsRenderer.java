@@ -39,11 +39,10 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         } else {
             String guts = renderSelectBuilderPage(results,client);
             Server server = results.server;
-            String title = Replace.bracketQuote(
-                "Available Tables on <a href=[/]>server</a> /" +
-                server.linkTo()
-            );
-            String[] nav = new String[] {};
+            String title = "Data from server " + server.toString();
+            String[] nav = new String[] {
+                Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo())
+            };
             return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
     }

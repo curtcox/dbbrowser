@@ -25,6 +25,7 @@ public final class HTML {
 
     public static String  html(String s) { return "<html>" + s + "</html>"; }
     public static String  head(String s) { return "<head>" + s + "</head>"; }
+    public static String title(String s) { return "<title>" + s + "</title>"; }
     public static String  base(URI href) { return "<base href=" + q(href) + "/>"; }
     public static String  body(String s) { return "<body>" + s + "</body>"; }
     public static String    li(String s) { return debug("<li>",s,"</li>"); }
