@@ -40,8 +40,8 @@ public final class PageResponse {
         return of(AnnotatedStackTraceModel.throwable(throwable));
     }
 
-    public static PageResponse of(byte[] bytes) {
-        return of(new ByteArrayModel(bytes));
+    public static PageResponse of(byte[] bytes,ContentType type) {
+        return of(ByteArrayModel.bytesType(bytes,type));
     }
 
     public static PageResponse of(Model model) {

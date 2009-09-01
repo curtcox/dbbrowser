@@ -30,7 +30,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
         args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(serveResource(request));
+            return PageResponse.of(serveResource(request),ContentType.guessByExtension(uri));
         }
         return null;
     }

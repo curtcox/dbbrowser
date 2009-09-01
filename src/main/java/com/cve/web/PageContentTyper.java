@@ -18,6 +18,7 @@ final class PageContentTyper implements ContentTyper {
             this.typer = typer;
         }
 
+        @Override
         public ContentType type(Model model, Object rendered) {
             ContentType type = typer.type(model,rendered);
             return type;
@@ -28,6 +29,7 @@ final class PageContentTyper implements ContentTyper {
         return new LoggedTyper(new PageContentTyper());
     }
 
+    @Override
     public ContentType type(Model model, Object rendered) {
         if (isPng(rendered)) {
             return ContentType.PNG;

@@ -15,7 +15,6 @@ public final class AltModelHtmlRenderers {
 
     public static ImmutableMap<Class,ModelHtmlRenderer> load() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.put(CSVModel.class, new CSVModelRenderer());
         return ImmutableMap.copyOf(map);
     }
 }

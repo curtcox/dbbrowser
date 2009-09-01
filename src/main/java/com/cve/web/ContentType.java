@@ -20,6 +20,14 @@ public enum ContentType {
         return TEXT;
     }
 
+    public static ContentType guessByExtension(String path) {
+        if (path.endsWith("html")) { return HTML; }
+        if (path.endsWith("png"))  { return PNG; }
+        if (path.endsWith("jpg"))  { return JPEG; }
+        if (path.endsWith("txt"))  { return TEXT; }
+        return TEXT;
+    }
+
     @Override
     public String toString() {
         return value;

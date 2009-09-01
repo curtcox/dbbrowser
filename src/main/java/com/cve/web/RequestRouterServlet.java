@@ -67,12 +67,6 @@ public final class RequestRouterServlet extends HttpServlet {
         ;
 
     /**
-     * Determines the appropriate MIME type for the objects produced by
-     * renderers.
-     */
-    private static final ContentTyper  TYPER    = PageContentTyper.of();
-
-    /**
      * Dumps servlet requests for diagnostic purposes.
      */
     private static final RequestDumpServlet DUMPER = RequestDumpServlet.newInstance();
@@ -120,8 +114,9 @@ public final class RequestRouterServlet extends HttpServlet {
         // Byte arrays get written to an output stream
         if (model instanceof ByteArrayModel) {
             OutputStream out = response.getOutputStream();
-            byte[] bytes = ((ByteArrayModel) model).getBytes();
-            ContentType type = TYPER.type(model,bytes);
+            ByteArrayModel byteModel = (ByteArrayModel) model;
+            byte[]     bytes = byteModel.getBytes();
+            ContentType type = byteModel.type;
             response.setContentType(type.toString());
             response.setContentLength(bytes.length);
             out.write(bytes);
@@ -131,9 +126,8 @@ public final class RequestRouterServlet extends HttpServlet {
 
         // Everything else gets rendered, typed, and written to a writer
         ClientInfo client = ClientInfo.of();
-        Object  rendered = RENDERER.render(model,client);
-        ContentType type = TYPER.type(model,rendered);
-        response.setContentType(type.toString());
+        HtmlPage rendered = RENDERER.render(model,client);
+        response.setContentType(ContentType.HTML.toString());
         PrintWriter pw = response.getWriter();
         pw.print(rendered);
         pw.close();
