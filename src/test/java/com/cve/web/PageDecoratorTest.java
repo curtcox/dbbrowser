@@ -14,18 +14,8 @@ public class PageDecoratorTest {
 
     @Test
     public void renderedContainsHtml() {
-        HtmlPage body = HtmlPage.body("");
+        HtmlPage body = HtmlPage.guts("");
         String rendered = decorator.render(body, client).toString();
-        assertTrue(rendered.contains("<html>"));
-        assertTrue(rendered.contains("</html>"));
-    }
-
-    @Test
-    public void whenSuppliedHeader() {
-        HtmlPage body = HtmlPage.headBody("<head></head>","");
-        String rendered = decorator.render(body, client).toString();
-        assertTrue(rendered.contains("<head>"));
-        assertTrue(rendered.contains("</head>"));
         assertTrue(rendered.contains("<html>"));
         assertTrue(rendered.contains("</html>"));
     }

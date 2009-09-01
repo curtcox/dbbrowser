@@ -17,20 +17,15 @@ import static com.cve.html.HTML.*;
  */
 public final class ServersPageRenderer implements ModelHtmlRenderer {
 
+    private static URI HELP = URIs.of("/resources/help/Exit.html");
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         ServersPage page = (ServersPage) model;
-        return HtmlPage.body(render(page,client));
-    }
-
-    public String render(ServersPage page, ClientInfo client) {
-        String actions = addServer() + removeServer() + shutdown();
-        //+ (loggedIn() ? logout() : login());
-        return
-            actions +
-            h1("Available Servers") +
-            tableOfServers(page)
-        ;
+        String title = "Available Servers";
+        String[] navigation = new String[] { addServer(), removeServer() , shutdown() , title };
+        String guts  = tableOfServers(page);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
 
     String addServer() {

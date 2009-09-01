@@ -21,7 +21,7 @@ import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
 import java.sql.SQLException;
 import static com.cve.log.Log.args;
-import static com.cve.html.HTML.*;
+
 
 /**
  * For rendering the free-form query page.
@@ -29,38 +29,50 @@ import static com.cve.html.HTML.*;
  */
 final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
+    private static URI HELP = URIs.of("/resources/help/FreeFormQuery.html");
+
     FreeFormQueryRenderer() {}
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
         try {
-            return HtmlPage.body(render((FreeFormQueryModel) model, client));
+            return render((FreeFormQueryModel) model,client);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private String render(FreeFormQueryModel page, ClientInfo client) throws SQLException {
+    private URI base(FreeFormQueryModel page) {
+        SQL sql = page.sql;
+        Select select = SelectParser.parse(sql,page.meta);
+        URI uri = URIRenderer.render(select);
+        return uri;
+    }
+
+    private HtmlPage render(FreeFormQueryModel page, ClientInfo client) throws SQLException {
         SQL sql = page.sql;
         DBResultSet results = page.results;
+        String[] nav = new String[] {};
+        String title = "Select...";
         UIForm form = UIForm.postAction(URIs.of("select"))
             .with(textArea(Q,sql.toString(),8,120))
             .with(label("<p>"))
             .with(submit("Execute"))
         ;
         if (sql.toString().isEmpty()) {
-            return page.message + form.toString();
+            String guts = page.message + form.toString();
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         AnnotatedStackTrace trace = page.trace;
         if (trace!=AnnotatedStackTrace.NULL) {
-            return page.message + form.toString() + ObjectLink.to("details",trace);
+            String guts = page.message + form.toString() + ObjectLink.to("details",trace);
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         Hints hints = HintsStore.getHints(results.columns);
         DBResultSetRenderer renderer = DBResultSetRenderer.resultsHintsClient(results, hints, client);
-        Select select = SelectParser.parse(sql,page.meta);
-        URI uri = URIRenderer.render(select);
-        String head = head(base(uri));
-        return head + page.message + form.toString() + renderer.landscapeTable();
+        String guts = page.message + form.toString() + renderer.landscapeTable();
+        URI base = base(page);
+        return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);
     }
 }

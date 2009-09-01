@@ -18,7 +18,7 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         ObjectModel objectModel = (ObjectModel) model;
         Object o = objectModel.object;
-        return HtmlPage.body(render(o));
+        return HtmlPage.guts(render(o));
     }
 
     String render(Object o) {

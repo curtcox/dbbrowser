@@ -10,6 +10,7 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import java.net.URI;
 import static com.cve.log.Log.args;
 import static com.cve.web.db.AddServerPage.*;
 /**
@@ -18,12 +19,17 @@ import static com.cve.web.db.AddServerPage.*;
  */
 final class AddServerPageRenderer implements ModelHtmlRenderer {
 
+    private static URI HELP = URIs.of("/resources/help/AddServer.html");
+
     AddServerPageRenderer() {}
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
-        return HtmlPage.body(render((AddServerPage) model));
+        String title = "Add a Server";
+        String guts = render((AddServerPage) model);
+        String[] nav = new String[0];
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     private String render(AddServerPage page) {

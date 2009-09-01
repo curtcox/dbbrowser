@@ -66,7 +66,7 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
             }
             rendered = renderer.render(model,client);
             if (rendered instanceof String) {
-                return HtmlPage.body((String) rendered);
+                return HtmlPage.guts((String) rendered);
             }
             toRender = rendered;
         }

@@ -10,7 +10,7 @@ public final class StringModelRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         StringModel objectModel = (StringModel) model;
         String s = objectModel.string;
-        return HtmlPage.body(s);
+        return HtmlPage.guts(s);
     }
 
 }

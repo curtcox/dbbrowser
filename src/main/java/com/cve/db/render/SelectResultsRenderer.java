@@ -2,10 +2,12 @@ package com.cve.db.render;
 
 import com.cve.db.SelectResults;
 import com.cve.db.SelectResults.Type;
+import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 /**
  * Renders the results of a database select as HTML.
@@ -20,15 +22,17 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
+    private static URI HELP = URIs.of("/resources/help/SelectResults.html");
+
     public SelectResultsRenderer() {}
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
-            return HtmlPage.body(renderColumnValueDistributionPage(results,client));
+            return HtmlPage.gutsHelp(renderColumnValueDistributionPage(results,client),HELP);
         } else {
-            return HtmlPage.body(renderSelectBuilderPage(results,client));
+            return HtmlPage.gutsHelp(renderSelectBuilderPage(results,client),HELP);
         }
     }
 

@@ -20,7 +20,7 @@ public final class AnnotatedStackTraceRenderer
     public HtmlPage render(Model model, ClientInfo client) {
         AnnotatedStackTraceModel objectModel = (AnnotatedStackTraceModel) model;
         AnnotatedStackTrace t = objectModel.trace;
-        return HtmlPage.body(render(t));
+        return HtmlPage.guts(render(t));
     }
 
     String render(AnnotatedStackTrace trace) {

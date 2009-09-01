@@ -8,6 +8,8 @@ import com.cve.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.util.Replace;
 
+import com.cve.util.URIs;
+import java.net.URI;
 import static com.cve.html.HTML.*;
 
 /**
@@ -15,22 +17,21 @@ import static com.cve.html.HTML.*;
  */
 public final class TablesPageRenderer implements ModelHtmlRenderer {
 
+    private static URI HELP = URIs.of("/resources/help/Tables.html");
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         TablesPage page = (TablesPage) model;
-        return HtmlPage.body(render(page,client));
-    }
-
-    public String render(TablesPage page, ClientInfo client) {
         Server     server = page.server;
         Database database = page.database;
-        return 
-            h1(Replace.bracketQuote(
+        String guts = tableOfTables(page);
+        String title = "Tables on " + server.uri + "/" + database.name;
+        String[] nav = new String[] {
+            Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.name
-            )) +
-            tableOfTables(page)
-        ;
+            )};
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     static String tableOfTables(TablesPage page) {
