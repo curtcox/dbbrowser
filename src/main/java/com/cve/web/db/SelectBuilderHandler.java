@@ -13,7 +13,6 @@ import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
-import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.net.URI;
@@ -55,7 +54,7 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     static PageResponse redirectedWithAddedColumns(PageRequest request) throws SQLException {
         String    uri = request.requestURI;
-        Select select = URIParser.getSelect(uri);
+        Select select = DBURIParser.getSelect(uri);
         if (select.columns.size()>0) {
             return null;
         }
@@ -84,10 +83,10 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     static SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = URIParser.getServer(uri);
+        Server         server = DBURIParser.getServer(uri);
 
         // Setup the select
-        Select           select = URIParser.getSelect(uri);
+        Select           select = DBURIParser.getSelect(uri);
         DBConnection connection = ServersStore.getConnection(server);
         Hints hints = HintsStore.getHints(select.columns);
 

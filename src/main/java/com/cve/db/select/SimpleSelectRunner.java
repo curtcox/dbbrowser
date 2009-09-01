@@ -49,7 +49,7 @@ final class SimpleSelectRunner implements SelectRunner {
         notNull(connection);
         notNull(hints);
         DBDriver driver = connection.info.driver;
-        SQL         sql = SelectRenderers.render(select,driver);
+        SQL         sql = driver.render(select);
         int       count = determineRowCount(select,server,connection);
         try {
             ResultSet results = connection.select(sql);
@@ -70,7 +70,7 @@ final class SimpleSelectRunner implements SelectRunner {
      */
     static int determineRowCount(Select select, Server server, DBConnection connection) throws SQLException {
         DBDriver driver = connection.info.driver;
-        SQL sql = SelectRenderers.render(select.count().with(Limit.DEFAULT),driver);
+        SQL sql = driver.render(select.count().with(Limit.DEFAULT));
         try {
             ResultSet results = connection.select(sql);
             try {

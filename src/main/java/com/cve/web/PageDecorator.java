@@ -31,8 +31,8 @@ public final class PageDecorator implements ModelHtmlRenderer {
     }
 
     @Override
-    public String render(Model model, ClientInfo client) {
-        String body = (String) renderer.render(model,client);
+    public HtmlPage render(Model model, ClientInfo client) {
+        HtmlPage body = renderer.render(model,client);
         return render(body,client);
     }
 
@@ -47,13 +47,12 @@ public final class PageDecorator implements ModelHtmlRenderer {
      * It seemed like a better solution than complicating the interface for
      * this one edge case.
      */
-    String render(String body, ClientInfo client) {
-        if (!body.startsWith("<head>")) {
-            return html(body(SCRIPTS + CSS.SHEET + body));
+    HtmlPage render(HtmlPage page, ClientInfo client) {
+        String body = page.body;
+        String head = page.head;
+        if (head.isEmpty()) {
+            return HtmlPage.body(SCRIPTS + CSS.SHEET + body);
         }
-        int end = body.indexOf("</head>") + "</head>".length();
-        String head = body.substring(0,end);
-        String newBody = body.substring(end);
-        return html(head + body(SCRIPTS + CSS.SHEET + newBody));
+        return HtmlPage.headBody(head(head),body(SCRIPTS + CSS.SHEET + body));
     }
 }

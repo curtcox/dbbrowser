@@ -12,7 +12,8 @@ public class AbstractRequestHandlerTest {
 
     static class TestHandler extends AbstractRequestHandler {
         TestHandler(String regexp) { super(regexp); }
-        public PageResponse get(PageRequest request) throws IOException, SQLException {
+        @Override
+        public Model get(PageRequest request) throws IOException, SQLException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

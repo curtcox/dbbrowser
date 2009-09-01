@@ -15,8 +15,8 @@ import static com.cve.html.HTML.*;
 public final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
     @Override
-    public String render(Model model, ClientInfo client) {
-        return render((DatabasesPage) model);
+    public HtmlPage render(Model model, ClientInfo client) {
+        return HtmlPage.body(render((DatabasesPage) model));
     }
 
     private String render(DatabasesPage page) {

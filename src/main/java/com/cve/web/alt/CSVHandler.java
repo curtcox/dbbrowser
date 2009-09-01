@@ -7,7 +7,6 @@ import com.cve.db.SelectResults;
 import com.cve.db.Value;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import static com.cve.log.Log.args;
@@ -21,12 +20,12 @@ final class CSVHandler extends AbstractRequestHandler {
     CSVHandler() { super("^/view/CSV/"); }
 
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    public CSVModel get(PageRequest request) throws IOException, SQLException {
         args(request);
         return csv(AlternateViewHandler.getResultsFromDB(request.requestURI));
     }
 
-    public static PageResponse csv(SelectResults results) {
+    public static CSVModel csv(SelectResults results) {
         args(results);
         DBResultSet  rows = results.resultSet;
         CSVModelBuilder builder = new CSVModelBuilder();
@@ -39,6 +38,6 @@ final class CSVHandler extends AbstractRequestHandler {
             }
             builder.next();
         }
-        return PageResponse.of(builder.build());
+        return builder.build();
     }
 }

@@ -1,6 +1,7 @@
 package com.cve.web.log;
 
 import com.cve.web.ClientInfo;
+import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import static com.cve.html.HTML.*;
@@ -14,10 +15,10 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     ObjectModelRenderer() {}
 
     @Override
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         ObjectModel objectModel = (ObjectModel) model;
         Object o = objectModel.object;
-        return render(o);
+        return HtmlPage.body(render(o));
     }
 
     String render(Object o) {

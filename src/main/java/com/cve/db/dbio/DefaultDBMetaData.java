@@ -40,16 +40,8 @@ class DefaultDBMetaData implements DBMetaData {
     private static DBMetaData getDbmd0(DBConnection connection) {
         Check.notNull(connection);
         DBDriver driver = connection.info.driver;
-        if (driver.equals(DBDriver.MySql)) {
-            return new MySQLMetaData();
-        }
-        if (driver.equals(DBDriver.MsSqlTds)) {
-            return DBMetaDataExceptionEater.of(MsSQLTdsMetaData.of());
-        }
-        if (driver.equals(DBDriver.H2)) {
-            return H2MetaData.of();
-        }
-        throw new IllegalArgumentException(driver.toString());
+        DBMetaData meta = driver.getDBMetaData();
+        return meta;
     }
 
 

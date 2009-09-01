@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.sql.SQLException;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * A {@link RequestHandler} for serving resource files.
@@ -23,15 +25,26 @@ public final class ResourceHandler extends AbstractRequestHandler {
         return HANDLER;
     }
 
-    public PageResponse get(PageRequest request) throws IOException {
-        return serveResource(request);
+    @Override
+    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+        args(request);
+        String uri = request.requestURI;
+        if (handles(uri)) {
+            return PageResponse.of(serveResource(request));
+        }
+        return null;
     }
 
-    static PageResponse serveResource(PageRequest request) throws IOException {
+    @Override
+    public Model get(PageRequest request) throws IOException {
+        throw new UnsupportedOperationException("We overrode produce, so this should never happen.");
+    }
+
+    static byte[] serveResource(PageRequest request) throws IOException {
         String       uri = request.requestURI;
         String  resource = uri.substring("/resource".length());
         InputStream   in = notNull(ResourceHandler.class.getResourceAsStream(resource),resource);
-        return PageResponse.of(copyStream(in));
+        return copyStream(in);
     }
 
     static byte[] copyStream(InputStream in) throws IOException {

@@ -1,8 +1,5 @@
 package com.cve.web;
 
-import com.cve.web.AbstractRequestHandler;
-import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -20,7 +17,7 @@ final class UserLoginHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) throws IOException, SQLException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -1,7 +1,6 @@
 package com.cve.web;
 
 import com.cve.web.log.AnnotatedStackTraceModel;
-import com.cve.log.Log;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;

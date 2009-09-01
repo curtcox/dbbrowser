@@ -12,6 +12,7 @@ import com.cve.ui.UIForm;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
+import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.log.ObjectLink;
@@ -31,10 +32,10 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
     FreeFormQueryRenderer() {}
 
     @Override
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
         try {
-            return render((FreeFormQueryModel) model, client);
+            return HtmlPage.body(render((FreeFormQueryModel) model, client));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

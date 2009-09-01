@@ -7,7 +7,6 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
-import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -34,14 +33,14 @@ public final class TablesHandler extends AbstractRequestHandler {
      * Get the response (list of tables) for this request.
      */
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    public TablesPage get(PageRequest request) throws IOException, SQLException {
         String                    uri = request.requestURI;
-        Server                 server = URIParser.getServer(uri);
-        Database             database = URIParser.getDatabase(uri);
+        Server                 server = DBURIParser.getServer(uri);
+        Database             database = DBURIParser.getDatabase(uri);
         DBMetaData               meta = DBConnection.getDbmd(server);
         ImmutableList<DBTable> tables = meta.getTablesOn(database);
         ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
-        return PageResponse.of(new TablesPage(server,database,tables,columns));
+        return new TablesPage(server,database,tables,columns);
     }
 
     /**

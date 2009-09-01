@@ -17,10 +17,10 @@ public final class AnnotatedStackTraceRenderer
     implements ModelHtmlRenderer {
 
     @Override
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         AnnotatedStackTraceModel objectModel = (AnnotatedStackTraceModel) model;
         AnnotatedStackTrace t = objectModel.trace;
-        return render(t);
+        return HtmlPage.body(render(t));
     }
 
     String render(AnnotatedStackTrace trace) {

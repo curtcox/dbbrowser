@@ -1,6 +1,7 @@
 
-package com.cve.util;
+package com.cve.web.db;
 
+import com.cve.util.*;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
@@ -21,11 +22,24 @@ import java.util.List;
 import static com.cve.util.Check.notNull;
 
 /**
- * Tools for working with {@link URI}S.
+ * Tools for parsing the specially formatted database {@link URI}S we work with.
+ * <p>
+ * What is the special format?
+ * The URL space hierarcy is mapped onto URLs like:
+ * http://webserver/dbserver/databases/tables/columns/joins/filters/orders/groups/limit
+ * Empty parts are preserved as an empty path element like filters, orders, and
+ * groups in the following:
+ * http://webserver/dbserver/databases/tables/columns/joins////limit
+ *
  */
-public final class URIParser {
+public final class DBURIParser {
 
+    /**
+     * The position within the URI where the given information is specified.
+     * Most of these map very directly to clauses in SQL select statements.
+     */
     enum Position {
+
         /**
          * The database server.
          */
@@ -34,26 +48,58 @@ public final class URIParser {
          * The databases.
          */
         DBS(2),
+
         /**
          * The metadata method name.
+         * This isn't used in normal operations.
+         * It is for low-level JDBC debugging and experiments.
          */
         METADATA(2),
+
         /**
          * The database tables.
          */
         TABLES(3),
+
         /**
          * The table columns.
          */
         COLUMNS(4),
+
+        /**
+         * Joins between tables.
+         */
         JOINS(5),
+
+        /**
+         * Filters on column values
+         */
         FILTERS(6),
+
+        /**
+         * Column sort orders
+         */
         ORDERS(7),
+
+        /**
+         * Group by clauses
+         */
         GROUPS(8),
+
+        /**
+         * Limits on what rows should be returned.
+         */
         LIMIT(9),
     ;
 
+        /**
+         * Number of slashes before this position in the URL.
+         * For example:
+         *                     1        2        3
+         * http://webserver/dbserver/databases/tables
+         */
         private final int index;
+
         Position(int index) {
             this.index = index;
         }
@@ -63,7 +109,7 @@ public final class URIParser {
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(URIParser.class);
+    static final Log LOG = Log.of(DBURIParser.class);
 
     static String at(String uri, Position pos) {
         args(uri);

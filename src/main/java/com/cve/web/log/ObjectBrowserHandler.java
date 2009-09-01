@@ -16,12 +16,12 @@ final class ObjectBrowserHandler extends AbstractRequestHandler {
     public ObjectBrowserHandler() {  super("^/object/"); }
 
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    public ObjectModel get(PageRequest request) throws IOException, SQLException {
         String uri = request.requestURI;
         String idString = uri.substring(uri.lastIndexOf("/") + 1);
         Key key = ObjectRegistry.Key.parse(idString);
         Object object = ObjectRegistry.get(key);
-        return PageResponse.of(new ObjectModel(object));
+        return new ObjectModel(object);
     }
 
 }

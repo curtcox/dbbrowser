@@ -33,7 +33,7 @@ final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         Check.notNull(model);
         Class toRender = model.getClass();
         ModelHtmlRenderer renderer = renderers.get(model.getClass());

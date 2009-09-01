@@ -14,16 +14,16 @@ public class PageDecoratorTest {
 
     @Test
     public void renderedContainsHtml() {
-        String body = "";
-        String rendered = decorator.render(body, client);
+        HtmlPage body = HtmlPage.body("");
+        String rendered = decorator.render(body, client).toString();
         assertTrue(rendered.contains("<html>"));
         assertTrue(rendered.contains("</html>"));
     }
 
     @Test
     public void whenSuppliedHeader() {
-        String body = "<head></head>";
-        String rendered = decorator.render(body, client);
+        HtmlPage body = HtmlPage.headBody("<head></head>","");
+        String rendered = decorator.render(body, client).toString();
         assertTrue(rendered.contains("<head>"));
         assertTrue(rendered.contains("</head>"));
         assertTrue(rendered.contains("<html>"));

@@ -1,5 +1,6 @@
 package com.cve.util;
 
+import com.cve.web.db.DBURIParser;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
@@ -35,17 +36,17 @@ public class URIParserTest {
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);
-        assertEquals(server,          URIParser.getServer(uri));
-        assertEquals(database,        URIParser.getDatabase(uri));
-        assertEquals(list(database),  URIParser.getDatabases(uri));
-        assertEquals(tables,          URIParser.getTables(uri));
-        assertEquals(list(c1,c2,c1),  URIParser.getColumns(tables,uri));
-        assertEquals(list(join),      URIParser.getJoins(tables,uri));
-        assertEquals(list(filter),    URIParser.getFilters(tables,uri));
-        assertEquals(list(order),     URIParser.getOrders(tables,uri));
-        assertEquals(list(group),     URIParser.getGroups(tables,uri));
+        assertEquals(server,          DBURIParser.getServer(uri));
+        assertEquals(database,        DBURIParser.getDatabase(uri));
+        assertEquals(list(database),  DBURIParser.getDatabases(uri));
+        assertEquals(tables,          DBURIParser.getTables(uri));
+        assertEquals(list(c1,c2,c1),  DBURIParser.getColumns(tables,uri));
+        assertEquals(list(join),      DBURIParser.getJoins(tables,uri));
+        assertEquals(list(filter),    DBURIParser.getFilters(tables,uri));
+        assertEquals(list(order),     DBURIParser.getOrders(tables,uri));
+        assertEquals(list(group),     DBURIParser.getGroups(tables,uri));
         assertEquals(list(AggregateFunction.IDENTITY,AggregateFunction.IDENTITY,AggregateFunction.COUNT),
-                     URIParser.getFunctions(tables,uri));
+                     DBURIParser.getFunctions(tables,uri));
     }
 
     @Test
@@ -62,42 +63,42 @@ public class URIParserTest {
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);
-        assertEquals(server,         URIParser.getServer(uri));
-        assertEquals(database,       URIParser.getDatabase(uri));
-        assertEquals(list(database), URIParser.getDatabases(uri));
-        assertEquals(tables,         URIParser.getTables(uri));
-        assertEquals(list(c1,c2,c1), URIParser.getColumns(tables,uri));
-        assertEquals(list(join),     URIParser.getJoins(tables,uri));
-        assertEquals(list(filter),   URIParser.getFilters(tables,uri));
-        assertEquals(list(order),    URIParser.getOrders(tables,uri));
-        assertEquals(list(group),    URIParser.getGroups(tables,uri));
+        assertEquals(server,         DBURIParser.getServer(uri));
+        assertEquals(database,       DBURIParser.getDatabase(uri));
+        assertEquals(list(database), DBURIParser.getDatabases(uri));
+        assertEquals(tables,         DBURIParser.getTables(uri));
+        assertEquals(list(c1,c2,c1), DBURIParser.getColumns(tables,uri));
+        assertEquals(list(join),     DBURIParser.getJoins(tables,uri));
+        assertEquals(list(filter),   DBURIParser.getFilters(tables,uri));
+        assertEquals(list(order),    DBURIParser.getOrders(tables,uri));
+        assertEquals(list(group),    DBURIParser.getGroups(tables,uri));
         assertEquals(list(AggregateFunction.IDENTITY,AggregateFunction.IDENTITY,AggregateFunction.COUNT),
-                     URIParser.getFunctions(tables,uri));
+                     DBURIParser.getFunctions(tables,uri));
     }
 
     @Test
     public void getServerWhenOnlyServer() {
         String uri = "/server/";
         Server     server = Server.uri(URIs.of("server"));
-        assertEquals(server,  URIParser.getServer(uri));
+        assertEquals(server,  DBURIParser.getServer(uri));
     }
 
     @Test
     public void getDBsWhenOnlyServerWithSlash() {
         String uri = "/server/";
-        assertEquals(list(),  URIParser.getDatabases(uri));
+        assertEquals(list(),  DBURIParser.getDatabases(uri));
     }
 
     @Test
     public void getDBsWhenOnlyServerWithNoSlash() {
         String uri = "/server";
-        assertEquals(list(),  URIParser.getDatabases(uri));
+        assertEquals(list(),  DBURIParser.getDatabases(uri));
     }
 
     @Test
     public void getWithEmptyGroupBy() {
         String uri = "/SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE/////20+20/";
-        Select select = URIParser.getSelect(uri);
+        Select select = DBURIParser.getSelect(uri);
         Server     server = Server.uri(URIs.of("SAMPLE"));
         Database database = server.databaseName("PUBLIC");
         assertEquals(database,select.databases.get(0));

@@ -21,10 +21,10 @@ public final class ServersHandler extends AbstractRequestHandler {
     private static final Log log = Log.of(ServersHandler.class);
 
     @Override
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    public ServersPage get(PageRequest request) throws IOException, SQLException {
         ImmutableList<Server>                servers = ServersStore.getServers();
         ImmutableMultimap<Server,Object> databases = getDatabases(servers);
-        return PageResponse.of(new ServersPage(servers,databases));
+        return new ServersPage(servers,databases);
     }
 
     @Override

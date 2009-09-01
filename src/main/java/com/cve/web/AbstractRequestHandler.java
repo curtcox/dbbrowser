@@ -36,13 +36,16 @@ public abstract class AbstractRequestHandler
     /**
      * Return a response for this request, or null if this isn't the sort
      * of request we prodcuce responses for.
+     * <p>
+     * While it is sometimes necessary to override this method, generally
+     * overriding get is the right thing to do instead.
      */
     @Override
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return get(request);
+            return PageResponse.of(get(request));
         }
         return null;
     }
@@ -52,6 +55,9 @@ public abstract class AbstractRequestHandler
         return pattern.matcher(uri).find();
     }
 
-    public abstract PageResponse get(PageRequest request) throws IOException, SQLException;
+    /**
+     * Usually, implementors will just provide this method, plus constructor args.
+     */
+    public abstract Model get(PageRequest request) throws IOException, SQLException;
     
 }

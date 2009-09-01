@@ -6,9 +6,9 @@ package com.cve.web;
  */
 public final class ExitPageRenderer implements ModelHtmlRenderer {
 
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         ExitPage page = (ExitPage) model;
-        return render(page);
+        return HtmlPage.body(render(page));
     }
 
     private String render(ExitPage page) {

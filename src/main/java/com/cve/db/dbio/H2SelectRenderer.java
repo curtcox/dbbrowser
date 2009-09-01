@@ -1,4 +1,4 @@
-package com.cve.db.select;
+package com.cve.db.dbio;
 
 /**
  *

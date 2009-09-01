@@ -1,4 +1,4 @@
-package com.cve.db.select;
+package com.cve.db.dbio;
 
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;

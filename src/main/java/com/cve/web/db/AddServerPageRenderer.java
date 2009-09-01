@@ -7,6 +7,7 @@ import com.cve.ui.UITable;
 import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
+import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import static com.cve.log.Log.args;
@@ -20,9 +21,9 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     AddServerPageRenderer() {}
 
     @Override
-    public String render(Model model, ClientInfo client) {
+    public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
-        return render((AddServerPage) model);
+        return HtmlPage.body(render((AddServerPage) model));
     }
 
     private String render(AddServerPage page) {

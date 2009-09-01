@@ -15,5 +15,5 @@ public interface ModelHtmlRenderer {
      * The string returned may be the entire page, just the body, or the body
      * contents with a head prepended.  See PageDecorator.
      */
-    String render(Model model, ClientInfo client);
+    HtmlPage render(Model model, ClientInfo client);
 }

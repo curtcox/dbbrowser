@@ -15,9 +15,10 @@ import static com.cve.html.HTML.*;
  */
 public final class TablesPageRenderer implements ModelHtmlRenderer {
 
-    public String render(Model model, ClientInfo client) {
+    @Override
+    public HtmlPage render(Model model, ClientInfo client) {
         TablesPage page = (TablesPage) model;
-        return render(page,client);
+        return HtmlPage.body(render(page,client));
     }
 
     public String render(TablesPage page, ClientInfo client) {

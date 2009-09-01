@@ -1,4 +1,4 @@
-package com.cve.db.select;
+package com.cve.db.dbio;
 
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
@@ -15,7 +15,7 @@ import com.google.common.collect.ImmutableList;
  * Renders a {@link Select} as {@link SQL}.
  * @author curt
  */
-interface SelectRenderer {
+public interface SelectRenderer {
 
     SQL render(Select select);
 

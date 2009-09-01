@@ -53,7 +53,8 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
         return of(list);
     }
 
-    public String render(Model model, ClientInfo client) {
+    @Override
+    public HtmlPage render(Model model, ClientInfo client) {
         Check.notNull(model);
         Object toRender = model;
         Object rendered = null;
@@ -65,7 +66,7 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
             }
             rendered = renderer.render(model,client);
             if (rendered instanceof String) {
-                return (String) rendered;
+                return HtmlPage.body((String) rendered);
             }
             toRender = rendered;
         }

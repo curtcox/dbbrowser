@@ -13,7 +13,6 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
-import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
@@ -30,10 +29,10 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
     ColumnValueDistributionHandler() {}
 
-    public PageResponse get(PageRequest request) throws IOException, SQLException {
+    @Override
+    public SelectResults get(PageRequest request) throws IOException, SQLException {
         String uri = request.requestURI;
-        SelectResults results = getResultsFromDB(uri);
-        return PageResponse.of(results);
+        return  getResultsFromDB(uri);
     }
 
     @Override
@@ -50,14 +49,14 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         if (URIs.slashCount(uri)!=4 && URIs.slashCount(uri)!=5) {
             return false;
         }
-        if (URIParser.getDatabases(uri).size() !=1){
+        if (DBURIParser.getDatabases(uri).size() !=1){
             return false;
         }
-        ImmutableList<DBTable> tables = URIParser.getTables(uri);
+        ImmutableList<DBTable> tables = DBURIParser.getTables(uri);
         if (tables.size()!=1){
             return false;
         }
-        if (URIParser.getColumns(tables, uri).size()!=1) {
+        if (DBURIParser.getColumns(tables, uri).size()!=1) {
             return false;
         }
         return true;
@@ -68,10 +67,10 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     static SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = URIParser.getServer(uri);
+        Server         server = DBURIParser.getServer(uri);
 
         // Setup the select
-        Select           select = URIParser.getSelect(uri);
+        Select           select = DBURIParser.getSelect(uri);
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));

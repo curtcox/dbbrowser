@@ -6,10 +6,11 @@ package com.cve.web;
  */
 public final class StringModelRenderer implements ModelHtmlRenderer {
 
-    public String render(Model model, ClientInfo client) {
+    @Override
+    public HtmlPage render(Model model, ClientInfo client) {
         StringModel objectModel = (StringModel) model;
         String s = objectModel.string;
-        return s;
+        return HtmlPage.body(s);
     }
 
 }

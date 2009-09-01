@@ -10,7 +10,6 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.stores.ServersStore;
 import com.cve.util.Throwables;
-import com.cve.util.URIParser;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -36,18 +35,18 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return new DatabaseMetaHandler();
     }
 
-    public PageResponse get(PageRequest request) throws IOException {
+    @Override
+    public StringModel get(PageRequest request) throws IOException {
         String uri = request.requestURI;
 
         String suffix = uri.substring(PREFIX.length() - 1);
-        Server server = URIParser.getServer(suffix);
-        String method = URIParser.getMetaDataMethod(suffix);
+        Server server = DBURIParser.getServer(suffix);
+        String method = DBURIParser.getMetaDataMethod(suffix);
         return
-            PageResponse.of(
-                new StringModel(
-                    h1("Available Metadata for " + server) +
-                    page(server,method)))
-        ;
+            new StringModel(
+                h1("Available Metadata for " + server) +
+                page(server,method))
+            ;
     }
 
     /**

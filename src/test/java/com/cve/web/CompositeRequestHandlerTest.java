@@ -28,8 +28,9 @@ public class CompositeRequestHandlerTest {
             super(regexp);
             this.regexp = regexp;
         }
-        public PageResponse get(PageRequest request) throws IOException, SQLException {
-            return PageResponse.of(new StringModel(regexp));
+        @Override
+        public StringModel get(PageRequest request) throws IOException, SQLException {
+            return new StringModel(regexp);
         }
     }
 
