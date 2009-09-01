@@ -28,6 +28,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys = Maps.newHashMap();
+    @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         if (primaryKeys.containsKey(tables)) {
             return primaryKeys.get(tables);
@@ -38,6 +39,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<ImmutableList<DBTable>,ImmutableList<Join>> joins = Maps.newHashMap();
+    @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (joins.containsKey(tables)) {
             return joins.get(tables);
@@ -48,6 +50,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<Server,ImmutableList<DBColumn>> columnsForServer = Maps.newHashMap();
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
         if (columnsForServer.containsKey(server)) {
             return columnsForServer.get(server);
@@ -58,6 +61,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<DBTable,ImmutableList<DBColumn>> columnsForTable = Maps.newHashMap();
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         if (columnsForTable.containsKey(table)) {
             return columnsForTable.get(table);
@@ -68,6 +72,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<Server,ImmutableList<Database>> databases = Maps.newHashMap();
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         if (databases.containsKey(server)) {
             return databases.get(server);
@@ -78,6 +83,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables = Maps.newHashMap();
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (columnsForTables.containsKey(tables)) {
             return columnsForTables.get(tables);
@@ -88,6 +94,7 @@ final class DBMetaDataCache implements DBMetaData {
     }
 
     private final Map<Database,ImmutableList<DBTable>> tables = Maps.newHashMap();
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         if (tables.containsKey(database)) {
             return tables.get(database);

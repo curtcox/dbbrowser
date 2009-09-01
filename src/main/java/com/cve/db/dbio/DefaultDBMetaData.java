@@ -34,6 +34,7 @@ class DefaultDBMetaData implements DBMetaData {
         meta = DBMetaDataLogger.of(System.out,meta);
         meta = DBMetaDataCache.of(meta);
         meta = DBMetaDataTimer.of(meta);
+        meta = DBMetaDataLocked.of(meta);
         return meta;
     }
 
