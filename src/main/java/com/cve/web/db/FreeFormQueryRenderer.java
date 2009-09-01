@@ -29,7 +29,7 @@ import static com.cve.log.Log.args;
  */
 final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/FreeFormQuery.html");
+    private static URI HELP = URIs.of("/resource/help/Select.html");
 
     FreeFormQueryRenderer() {}
 

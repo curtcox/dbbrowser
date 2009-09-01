@@ -192,7 +192,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      */
     public static URI linkTo(Select select) {
         args(select);
-        Server server = select.databases.get(0).server;
+        Server server = select.server;
         DBConnection connection = ServersStore.getConnection(server);
         DBDriver driver = connection.info.driver;
         SQL sql = driver.render(select);

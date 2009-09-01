@@ -19,7 +19,7 @@ import static com.cve.web.db.AddServerPage.*;
  */
 final class AddServerPageRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/AddServer.html");
+    private static URI HELP = URIs.of("/resource/help/AddServer.html");
 
     AddServerPageRenderer() {}
 

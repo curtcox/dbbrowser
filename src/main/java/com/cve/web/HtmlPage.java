@@ -126,7 +126,7 @@ public final class HtmlPage {
 
     static String body(String guts, String nav[], URI help) {
         StringBuilder out = new StringBuilder();
-        out.append(td(home()));
+        out.append(td(HOME));
         out.append(td(help(help)));
         for (String n : nav) {
             out.append(td(n));

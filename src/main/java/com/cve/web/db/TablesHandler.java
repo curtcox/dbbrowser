@@ -15,7 +15,7 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 import java.sql.SQLException;
 
-
+import static com.cve.log.Log.args;
 /**
  * For picking a table.
  */
@@ -34,6 +34,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      */
     @Override
     public TablesPage get(PageRequest request) throws IOException, SQLException {
+        args(request);
         String                    uri = request.requestURI;
         Server                 server = DBURIParser.getServer(uri);
         Database             database = DBURIParser.getDatabase(uri);

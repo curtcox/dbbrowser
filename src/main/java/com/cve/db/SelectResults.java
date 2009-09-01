@@ -31,6 +31,11 @@ public final class SelectResults implements Model {
     }
 
     /**
+     * The server these results are from.
+     */
+    public final Server server;
+
+    /**
      * The select used to generate the results
      */
     public final Select select;
@@ -63,7 +68,8 @@ public final class SelectResults implements Model {
     public final Type type;
 
 
-    private SelectResults(Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
+    private SelectResults(Server server,Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
+        this.server    = notNull(server);
         this.type      = notNull(type);
         this.select    = notNull(select);
         this.resultSet = notNull(resultSet);
@@ -72,16 +78,27 @@ public final class SelectResults implements Model {
         this.hasMore   = hasMore;
     }
 
+    static Server check(Select select, DBResultSet resultSet) {
+        Server a = select.databases.get(0).server;
+        Server b = resultSet.databases.get(0).server;
+        if (a.equals(b)) {
+            return a;
+        }
+        throw new IllegalArgumentException(a + "!=" + b);
+    }
+
     public static SelectResults selectResultsHintsMore(
         Select select, DBResultSet resultSet, Hints hints, boolean hasMore)
     {
-        return new SelectResults(Type.NORMAL_DATA,select,resultSet,hints,100,hasMore);
+        Server server = check(select,resultSet);
+        return new SelectResults(server,Type.NORMAL_DATA,select,resultSet,hints,100,hasMore);
     }
 
     public static SelectResults typeSelectResultsHintsCountMore(
         Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
     {
-        return new SelectResults(type,select,resultSet,hints,count,hasMore);
+        Server server = check(select,resultSet);
+        return new SelectResults(server,type,select,resultSet,hints,count,hasMore);
     }
 
     @Override

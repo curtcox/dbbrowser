@@ -16,7 +16,7 @@ import static com.cve.html.HTML.*;
  */
 public final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/Databases.html");
+    private static URI HELP = URIs.of("/resource/help/Databases.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {

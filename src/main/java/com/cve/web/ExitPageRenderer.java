@@ -9,7 +9,7 @@ import java.net.URI;
  */
 public final class ExitPageRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/Exit.html");
+    private static URI HELP = URIs.of("/resource/help/Exit.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {

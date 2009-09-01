@@ -76,7 +76,7 @@ public final class URIRenderer {
         notNull(select);
         validate(select);
         StringBuilder out = new StringBuilder();
-        Server server = select.databases.get(0).server;
+        Server server = select.server;
         out.append("/" + server.uri + "/");
         ImmutableList<DBTable> tables = select.tables;
         out.append(renderDatabases(select.databases) + "/");

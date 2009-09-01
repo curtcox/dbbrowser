@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import static com.cve.log.Log.args;
 
 /**
  * The datbase {@link Server}S we know about.
@@ -136,6 +137,7 @@ public final class ServersStore {
      * Get a connection to the given server.
      */
     public static DBConnection getConnection(Server server) {
+        args(server);
         if (CONNECTIONS.containsKey(server)) {
             return CONNECTIONS.get(server);
         }

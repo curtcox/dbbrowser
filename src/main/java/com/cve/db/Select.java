@@ -18,7 +18,19 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Select {
 
+    /**
+     * The server this select will execute on.
+     */
+    public final Server server;
+
+    /**
+     * The databases this select uses.
+     */
     public final ImmutableList<Database>            databases;
+
+    /**
+     * The tables this select uses.
+     */
     public final ImmutableList<DBTable>             tables;
     /**
      * There is a 1-to-1 map from columns to functions.
@@ -36,6 +48,7 @@ public final class Select {
     public final Limit                              limit;
 
     private Select(
+        Server server,
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<AggregateFunction> functions,
@@ -43,6 +56,7 @@ public final class Select {
         ImmutableList<Order> orders, ImmutableList<Group> groups,
         Limit limit)
     {
+        this.server    = notNull(server);
         this.databases = notNull(databases);
         this.tables    = notNull(tables);
         this.columns   = notNull(columns);
@@ -65,7 +79,8 @@ public final class Select {
         ImmutableList<Order> orders,  ImmutableList<Group> groups,
         Limit limit)
     {
-        return new Select(databases,tables,columns,functions,joins,filters,orders,groups,limit);
+        Server server = databases.get(0).server;
+        return new Select(server,databases,tables,columns,functions,joins,filters,orders,groups,limit);
     }
 
     /**
@@ -78,7 +93,7 @@ public final class Select {
         }
         ImmutableList newTables = with(join.source.table,tables);
                       newTables = with(join.dest.table,newTables);
-        return new Select(databases,newTables,columns,functions,with(join,joins),filters,orders,groups,limit);
+        return new Select(server,databases,newTables,columns,functions,with(join,joins),filters,orders,groups,limit);
     }
 
     /**
@@ -89,7 +104,7 @@ public final class Select {
         if (filters.contains(filter)) {
             return this;
         }
-        return new Select(databases,tables,columns,functions,joins,with(filter,filters),orders,groups,limit);
+        return new Select(server,databases,tables,columns,functions,joins,with(filter,filters),orders,groups,limit);
     }
 
     /**
@@ -100,7 +115,7 @@ public final class Select {
         if (orders.contains(order)) {
             return this;
         }
-        return new Select(databases,tables,columns,functions,joins,filters,with(order,orders),groups,limit);
+        return new Select(server,databases,tables,columns,functions,joins,filters,with(order,orders),groups,limit);
     }
 
     /**
@@ -111,7 +126,7 @@ public final class Select {
         if (groups.contains(group)) {
             return this;
         }
-        return new Select(databases,tables,columns,functions,joins,filters,orders,with(group,groups),limit);
+        return new Select(server,databases,tables,columns,functions,joins,filters,orders,with(group,groups),limit);
     }
 
     /**
@@ -129,7 +144,7 @@ public final class Select {
         if (columns.contains(column) && functions.get(columns.indexOf(column)).equals(function)) {
             return this;
         }
-        return new Select(databases,tables,append(column,columns),append(function,functions),joins,filters,orders,groups,limit);
+        return new Select(server,databases,tables,append(column,columns),append(function,functions),joins,filters,orders,groups,limit);
     }
 
     /**
@@ -137,14 +152,14 @@ public final class Select {
      */
     public Select count() {
         AggregateFunction count = AggregateFunction.COUNT;
-        return new Select(databases,tables,list(DBColumn.ALL),list(count),joins,filters,orders,groups,limit);
+        return new Select(server,databases,tables,list(DBColumn.ALL),list(count),joins,filters,orders,groups,limit);
     }
 
     /**
      * Return a similar select, but with the given limit.
      */
     public Select with(Limit limit) {
-        return new Select(databases,tables,columns,functions,joins,filters,orders,groups,limit);
+        return new Select(server,databases,tables,columns,functions,joins,filters,orders,groups,limit);
     }
 
     /**
@@ -158,23 +173,27 @@ public final class Select {
         List<AggregateFunction> list = Lists.newArrayList();
         list.addAll(functions);
         list.remove(columns.indexOf(column));
-        return new Select(databases,tables,without(columns,column),ImmutableList.copyOf(list),joins,filters,orders,groups,limit);
+        return new Select(server,databases,tables,without(columns,column),ImmutableList.copyOf(list),joins,filters,orders,groups,limit);
     }
 
     public static Select from(Database database, DBTable table, DBColumn column) {
-        return new Select(list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),Limit.DEFAULT);
+        Server server = database.server;
+        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable table, DBColumn column, Filter filter) {
-        return new Select(list(database),list(table),list(column),identityFunctions(1),list(),list(filter),list(),list(),Limit.DEFAULT);
+        Server server = database.server;
+        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(filter),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBColumn... columns) {
-        return new Select(list(database),list(t1),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
+        Server server = database.server;
+        return new Select(server,list(database),list(t1),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBTable t2, DBColumn... columns) {
-        return new Select(list(database),list(t1,t2),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
+        Server server = database.server;
+        return new Select(server,list(database),list(t1,t2),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
     }
 
     private static ImmutableList<AggregateFunction> identityFunctions(int count) {

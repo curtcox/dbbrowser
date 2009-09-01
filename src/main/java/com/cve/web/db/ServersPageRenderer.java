@@ -17,7 +17,7 @@ import static com.cve.html.HTML.*;
  */
 public final class ServersPageRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/Exit.html");
+    private static URI HELP = URIs.of("/resource/help/Servers.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {

@@ -2,6 +2,8 @@ package com.cve.db.render;
 
 import com.cve.db.SelectResults;
 import com.cve.db.SelectResults.Type;
+import com.cve.db.Server;
+import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
@@ -22,7 +24,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resources/help/SelectResults.html");
+    private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
     public SelectResultsRenderer() {}
 
@@ -30,9 +32,19 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
-            return HtmlPage.gutsHelp(renderColumnValueDistributionPage(results,client),HELP);
+            String guts = renderColumnValueDistributionPage(results,client);
+            String title = "Values in " + results.select.columns.get(0);
+            String[] nav = new String[] {};
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         } else {
-            return HtmlPage.gutsHelp(renderSelectBuilderPage(results,client),HELP);
+            String guts = renderSelectBuilderPage(results,client);
+            Server server = results.server;
+            String title = Replace.bracketQuote(
+                "Available Tables on <a href=[/]>server</a> /" +
+                server.linkTo()
+            );
+            String[] nav = new String[] {};
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
     }
 
