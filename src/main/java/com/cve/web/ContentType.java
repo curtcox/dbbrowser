@@ -8,6 +8,9 @@ public enum ContentType {
     TEXT("text/plain"),
     JPEG("image/jpg"),
     PNG("image/png"),
+    PDF("application/pdf"),
+    XLS("application/vnd.ms-excel"),
+    XML("text/xml"),
     HTML("text/html");
 
     private final String value;

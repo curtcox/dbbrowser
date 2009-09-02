@@ -51,30 +51,30 @@ public final class PagingLinksRenderer {
         if (limit.offset>0) {
             Label  text = Label.of(BACK);
             URI  target = SelectBuilderAction.BACK.withArgs("1");
-            Tooltip tip = SimpleTooltip.of("Previous rows");
+            String  tip = "Previous rows";
             URI   image = Icons.BACK;
-            out.append(Link.textTargetTipImage(text, target,tip,image) + " ");
+            out.append(Link.textTargetImageAlt(text, target,image,tip) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(NEXT);
             URI  target = SelectBuilderAction.NEXT.withArgs("1");
-            Tooltip tip = SimpleTooltip.of("Next rows");
+            String  tip = "Next rows";
             URI   image = Icons.NEXT;
-            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
+            out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (limit.limit > 20) {
             Label  text = Label.of(SMALLER);
             URI  target = SelectBuilderAction.SMALLER.withArgs("10");
-            Tooltip tip = SimpleTooltip.of("Fewer rows");
+            String  tip = "Fewer rows";
             URI   image = Icons.MINUS;
-            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
+            out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(BIGGER);
             URI  target = SelectBuilderAction.BIGGER.withArgs("10");
-            Tooltip tip = SimpleTooltip.of("More rows");
+            String  tip = "More rows";
             URI   image = Icons.PLUS;
-            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
+            out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         return out.toString();
     }

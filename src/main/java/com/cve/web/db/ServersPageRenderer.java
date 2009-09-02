@@ -7,8 +7,6 @@ import com.cve.html.CSS;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.html.SimpleTooltip;
-import com.cve.html.Tooltip;
 import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
@@ -29,27 +27,27 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     }
 
     String addServer() {
-        Tooltip tip = SimpleTooltip.of("Add a database server");
+        String tip = "Add a database server";
         Label text = Label.of("+");
         URI target = URIs.of("add");
         URI  image = Icons.PLUS;
-        return Link.textTargetTipImage(text,target,tip,image).toString();
+        return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     String removeServer() {
-        Tooltip tip = SimpleTooltip.of("Remove a database server");
+        String tip = "Remove a database server";
         Label text = Label.of("-");
         URI target = URIs.of("remove");
         URI  image = Icons.MINUS;
-        return Link.textTargetTipImage(text,target,tip,image).toString();
+        return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     String shutdown() {
-        Tooltip tip = SimpleTooltip.of("Shutdown DBBrowser");
+        String tip = "Shutdown DBBrowser";
         Label text = Label.of("X");
         URI target = URIs.of("exit");
         URI  image = Icons.OFF;
-        return Link.textTargetTipImage(text,target,tip,image).toString();
+        return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     String login() {

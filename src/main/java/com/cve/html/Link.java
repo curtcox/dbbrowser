@@ -39,7 +39,7 @@ public final class Link {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
-        this.html = "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text,image) +"</a>";
+        this.html = "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text.toString(),image) +"</a>";
     }
 
     private Link(Label text, URI target) {
@@ -49,11 +49,22 @@ public final class Link {
         this.html = "<a href=" + q(target.toString()) + ">" + text +"</a>";
     }
 
+    private Link(Label text, URI target, URI image, String alt) {
+        notNull(text);
+        this.target = notNull(target);
+        this.tip    = null;
+        this.html = "<a href=" + q(target.toString()) + ">" + img(alt,image) +"</a>";
+    }
+
     public static Link textTarget(Label text, URI target) {
         return new Link(text,target);
     }
 
-    public static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
+    public static Link textTargetImageAlt(Label text, URI target, URI image, String alt) {
+        return new Link(text,target,image,alt);
+    }
+
+    static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
         return new Link(text,target,tip,image);
     }
 
@@ -82,10 +93,12 @@ public final class Link {
     }
 
     /**
-     * Image for the given URI
+     * Image for the given URI.
+     * "Alt text is an alternative, not a tooltip"
+     * See http://www.456bereastreet.com/archive/200604/alt_text_is_an_alternative_not_a_tooltip/
      */
-    private static String img(Label text, URI uri) {
-        return Replace.bracketQuote("<img alt=[" + text + "] src=[" + uri + "]>");
+    private static String img(String title, URI uri) {
+        return Replace.bracketQuote("<img alt=[" + title + "] title=[" + title + "] src=[" + uri + "]>");
     }
 
     @Override

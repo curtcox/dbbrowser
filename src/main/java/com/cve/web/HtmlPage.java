@@ -67,19 +67,19 @@ public final class HtmlPage {
     private static final String HOME = home();
 
     static String home() {
-        Tooltip tip = SimpleTooltip.of("Home");
+        String tip = "Home";
         Label text = Label.of("Home");
         URI target = URIs.of("/");
         URI  image = Icons.HOME;
-        return Link.textTargetTipImage(text,target,tip,image).toString();
+        return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     static String help(URI uri) {
-        Tooltip tip = SimpleTooltip.of("Help");
+        String tip = "Help";
         Label text = Label.of("Help");
         URI target = uri;
         URI  image = Icons.HELP;
-        return Link.textTargetTipImage(text,target,tip,image).toString();
+        return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     private HtmlPage(String title, String guts, String[] navigation, URI base, URI help, String head, String body) {

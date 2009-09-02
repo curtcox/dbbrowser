@@ -47,6 +47,9 @@ public enum CSS {
         return "td {" + value + " }";
     }
 
+    /**
+     * Return the given string in brackets.
+     */
     private static String b(String value) {
         return "{" + value + " }";
     }
@@ -54,6 +57,7 @@ public enum CSS {
     public static final String SHEET =
 Replace.bracketQuote(
 "<style type=[text/css]>" +
+"img"          + b("border: medium none;") + // don't outline images
 "tr.server   " + td(background(SERVER)) +
 "tr.database " + td(background(DATABASE)) +
 "tr.table    " + td(background(TABLE)) +
@@ -70,5 +74,4 @@ Replace.bracketQuote(
 "td.hide     " + b(background(HIDE)) +
 "</style>"
 );
- 
 }

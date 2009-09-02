@@ -55,9 +55,9 @@ public final class AlternateDisplayLinksRenderer {
     String viewLink(AlternateView view) {
         Label  text = Label.of(view.toString());
         URI  target = URIs.of( "/view/" + view + URIRenderer.render(select));
-        Tooltip tip = SimpleTooltip.of(view.name());
+        String tip = view.name();
         URI   image = view.icon;
-        return Link.textTargetTipImage(text, target, tip, image).toString();
+        return Link.textTargetImageAlt(text, target, image,tip).toString();
     }
 
     /**
@@ -66,9 +66,9 @@ public final class AlternateDisplayLinksRenderer {
     String viewSQLLink() {
         Label  text = Label.of("SQL");
         URI target = FreeFormQueryHandler.linkTo(select);
-        Tooltip tip = SimpleTooltip.of(SQL.name());
+        String tip = SQL.name();
         URI   image = SQL.icon;
-        return Link.textTargetTipImage(text, target, tip, image).toString();
+        return Link.textTargetImageAlt(text, target, image, tip).toString();
     }
 
 }
