@@ -70,7 +70,7 @@ public final class HtmlPage {
         Tooltip tip = SimpleTooltip.of("Home");
         Label text = Label.of("Home");
         URI target = URIs.of("/");
-        URI  image = URIs.of("/resource/icons/actions/go-home.png");
+        URI  image = Icons.HOME;
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
@@ -78,7 +78,7 @@ public final class HtmlPage {
         Tooltip tip = SimpleTooltip.of("Help");
         Label text = Label.of("Help");
         URI target = uri;
-        URI  image = URIs.of("/resource/icons/apps/help-browser.png");
+        URI  image = Icons.HELP;
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 

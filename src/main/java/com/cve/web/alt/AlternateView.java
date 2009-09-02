@@ -1,5 +1,8 @@
 package com.cve.web.alt;
 
+import com.cve.web.Icons;
+import java.net.URI;
+
 /**
  * An alternate view of a SQL result set.
  * The application puts a lot of effort into producing a series of HTML
@@ -9,10 +12,18 @@ package com.cve.web.alt;
  */
 public enum AlternateView {
 
-    SQL,
-    CSV,
-    XLS,
-    PDF,
-    XML,
-    JSON;
+
+    SQL(Icons.SQL),
+    CSV(Icons.CSV),
+    XLS(Icons.XLS),
+    PDF(Icons.PDF),
+    XML(Icons.XML),
+    JSON(Icons.JSON)
+    ;
+
+    public final URI icon;
+
+    AlternateView(URI icon) {
+        this.icon = icon;
+    }
 }

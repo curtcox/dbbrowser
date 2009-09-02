@@ -5,6 +5,9 @@ import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.db.SelectResults;
+import com.cve.html.SimpleTooltip;
+import com.cve.html.Tooltip;
+import com.cve.web.Icons;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -48,22 +51,30 @@ public final class PagingLinksRenderer {
         if (limit.offset>0) {
             Label  text = Label.of(BACK);
             URI  target = SelectBuilderAction.BACK.withArgs("1");
-            out.append(Link.textTarget(text, target) + " ");
+            Tooltip tip = SimpleTooltip.of("Previous rows");
+            URI   image = Icons.BACK;
+            out.append(Link.textTargetTipImage(text, target,tip,image) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(NEXT);
             URI  target = SelectBuilderAction.NEXT.withArgs("1");
-            out.append(Link.textTarget(text, target) + " ");
+            Tooltip tip = SimpleTooltip.of("Next rows");
+            URI   image = Icons.NEXT;
+            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
         }
         if (limit.limit > 20) {
             Label  text = Label.of(SMALLER);
             URI  target = SelectBuilderAction.SMALLER.withArgs("10");
-            out.append(Link.textTarget(text, target) + " ");
+            Tooltip tip = SimpleTooltip.of("Fewer rows");
+            URI   image = Icons.MINUS;
+            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(BIGGER);
             URI  target = SelectBuilderAction.BIGGER.withArgs("10");
-            out.append(Link.textTarget(text, target) + " ");
+            Tooltip tip = SimpleTooltip.of("More rows");
+            URI   image = Icons.PLUS;
+            out.append(Link.textTargetTipImage(text, target, tip, image) + " ");
         }
         return out.toString();
     }

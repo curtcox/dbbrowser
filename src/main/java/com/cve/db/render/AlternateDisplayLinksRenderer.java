@@ -5,7 +5,10 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.db.SelectResults;
 import com.cve.db.select.URIRenderer;
+import com.cve.html.SimpleTooltip;
+import com.cve.html.Tooltip;
 import com.cve.util.URIs;
+import com.cve.web.Icons;
 import com.cve.web.alt.AlternateView;
 import com.cve.web.db.FreeFormQueryHandler;
 import static com.cve.web.alt.AlternateView.*;
@@ -52,7 +55,9 @@ public final class AlternateDisplayLinksRenderer {
     String viewLink(AlternateView view) {
         Label  text = Label.of(view.toString());
         URI  target = URIs.of( "/view/" + view + URIRenderer.render(select));
-        return Link.textTarget(text, target).toString();
+        Tooltip tip = SimpleTooltip.of(view.name());
+        URI   image = view.icon;
+        return Link.textTargetTipImage(text, target, tip, image).toString();
     }
 
     /**
@@ -61,7 +66,9 @@ public final class AlternateDisplayLinksRenderer {
     String viewSQLLink() {
         Label  text = Label.of("SQL");
         URI target = FreeFormQueryHandler.linkTo(select);
-        return Link.textTarget(text, target).toString();
+        Tooltip tip = SimpleTooltip.of(SQL.name());
+        URI   image = SQL.icon;
+        return Link.textTargetTipImage(text, target, tip, image).toString();
     }
 
 }

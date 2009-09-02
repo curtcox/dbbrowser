@@ -32,7 +32,7 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
         Tooltip tip = SimpleTooltip.of("Add a database server");
         Label text = Label.of("+");
         URI target = URIs.of("add");
-        URI  image = URIs.of("/resource/icons/actions/list-add.png");
+        URI  image = Icons.PLUS;
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
@@ -40,7 +40,7 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
         Tooltip tip = SimpleTooltip.of("Remove a database server");
         Label text = Label.of("-");
         URI target = URIs.of("remove");
-        URI  image = URIs.of("/resource/icons/actions/list-remove.png");
+        URI  image = Icons.MINUS;
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
@@ -48,7 +48,7 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
         Tooltip tip = SimpleTooltip.of("Shutdown DBBrowser");
         Label text = Label.of("X");
         URI target = URIs.of("exit");
-        URI  image = URIs.of("/resource/icons/actions/system-shutdown.png");
+        URI  image = Icons.OFF;
         return Link.textTargetTipImage(text,target,tip,image).toString();
     }
 
