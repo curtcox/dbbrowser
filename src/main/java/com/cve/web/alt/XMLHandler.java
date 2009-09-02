@@ -1,19 +1,20 @@
 package com.cve.web.alt;
 
-import com.cve.web.AbstractRequestHandler;
-import com.cve.web.Model;
+import com.cve.web.AbstractBinaryRequestHandler;
+import com.cve.web.ContentType;
 import com.cve.web.PageRequest;
-import java.io.IOException;
-
+import static com.cve.log.Log.args;
 /**
  *
  * @author curt
  */
-final class XMLHandler extends AbstractRequestHandler {
+final class XMLHandler extends AbstractBinaryRequestHandler {
 
-    XMLHandler() {super("^/view/csv/");}
+    XMLHandler() { super("^/view/XML/", ContentType.XML); }
 
-    public Model get(PageRequest request) throws IOException {
+    @Override
+    public byte[] get(PageRequest request) {
+        args(request);
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
