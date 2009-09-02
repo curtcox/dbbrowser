@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,7 +20,8 @@ public class SelectTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        ImmutableList<Database>   databases = ImmutableList.of();
+        Server server = Server.uri(URIs.of("server"));
+        ImmutableList<Database>   databases = ImmutableList.of(server.databaseName("database"));
         ImmutableList<DBTable>       tables = ImmutableList.of();
         ImmutableList<DBColumn>     columns = ImmutableList.of();
         ImmutableList<AggregateFunction> functions = ImmutableList.of();
