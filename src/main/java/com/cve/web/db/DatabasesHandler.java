@@ -13,6 +13,7 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.cve.log.Log.args;
 
 /**
  * For picking a database.
@@ -22,6 +23,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
     @Override
     public DatabasesPage get(PageRequest request) throws IOException, SQLException {
+        args(request);
         String uri = request.requestURI;
 
         Server     server = DBURIParser.getServer(uri);

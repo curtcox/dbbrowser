@@ -7,7 +7,9 @@ import com.cve.html.CSS;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
+import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import static com.cve.html.HTML.*;
 /**
@@ -95,9 +97,10 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
             if (object instanceof Database) {
                 Database database = (Database) object;
                 out.append(database.linkTo() + " ");
-            } else if (object instanceof Throwable) {
-                Throwable t = (Throwable) object;
-                out.append(t.getMessage());
+            } else if (object instanceof AnnotatedStackTrace) {
+                AnnotatedStackTrace t = (AnnotatedStackTrace) object;
+                String message = t.throwable.getMessage();
+                out.append(ObjectLink.to(message, t));
             } else {
                 throw new IllegalArgumentException("" + object);
             }

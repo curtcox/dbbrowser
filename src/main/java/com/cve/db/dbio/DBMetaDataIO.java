@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * Low level access to database meta data.
@@ -20,12 +21,14 @@ final class DBMetaDataIO {
     }
 
     public static DBMetaDataIO connection(DBConnection connection) {
+        args(connection);
         return new DBMetaDataIO(connection);
     }
 
     // Wrappers for all of the DBMD functions we use
     ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getTables(catalog, schemaPattern, tableNamePattern, types);
             }
@@ -34,6 +37,7 @@ final class DBMetaDataIO {
 
     ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                return getMetaData().getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
             }
@@ -42,6 +46,7 @@ final class DBMetaDataIO {
 
     ResultSet getImportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getImportedKeys(catalog, schema, tableName);
             }
@@ -50,6 +55,7 @@ final class DBMetaDataIO {
 
     ResultSet getPrimaryKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getPrimaryKeys(catalog, schema, tableName);
             }
@@ -58,6 +64,7 @@ final class DBMetaDataIO {
 
     ResultSet getExportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getExportedKeys(catalog, schema, tableName);
             }
@@ -66,6 +73,7 @@ final class DBMetaDataIO {
 
     ResultSet getCatalogs() throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getCatalogs();
             }
@@ -74,6 +82,7 @@ final class DBMetaDataIO {
 
     ResultSet getSchemas() throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
+            @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getSchemas();
             }

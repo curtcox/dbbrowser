@@ -13,6 +13,8 @@ import com.google.common.collect.Multimap;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import static com.cve.log.Log.args;
+
 /**
  * For picking a database server.
  */
@@ -22,9 +24,11 @@ public final class ServersHandler extends AbstractRequestHandler {
 
     @Override
     public ServersPage get(PageRequest request) throws IOException, SQLException {
-        ImmutableList<Server>                servers = ServersStore.getServers();
+        args(request);
+        ImmutableList<Server>              servers = ServersStore.getServers();
         ImmutableMultimap<Server,Object> databases = getDatabases(servers);
-        return new ServersPage(servers,databases);
+        Search search = Search.from(request);
+        return new ServersPage(search,servers,databases);
     }
 
     @Override
@@ -45,6 +49,7 @@ public final class ServersHandler extends AbstractRequestHandler {
                     databases.put(server, database);
                 }
             } catch (Throwable t) {
+                databases.put(server, Log.annotatedStackTrace(t));
                 log.warn(t);
             }
         }

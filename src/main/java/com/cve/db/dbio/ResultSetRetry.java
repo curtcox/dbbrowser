@@ -1,9 +1,11 @@
 package com.cve.db.dbio;
 
+import com.cve.log.Log;
 import com.cve.util.Check;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static com.cve.log.Log.args;
 /**
  * For retrying result set generators.
  * Right now, use of this class allows replacing a nested try with a marginally
@@ -28,10 +30,12 @@ public final class ResultSetRetry {
     }
 
     private static ResultSetRetry of(DBConnection connection, ResultSetGenerator generator) {
+        args(connection,generator);
         return new ResultSetRetry(connection,generator);
     }
 
     static ResultSet run(DBConnection connection, ResultSetGenerator generator) throws SQLException {
+        args(connection,generator);
         return of(connection,generator).generate();
     }
 
@@ -39,8 +43,15 @@ public final class ResultSetRetry {
         try {
             return generator.generate();
         } catch (SQLException e) {
+            warn(e);
             connection.reset();
             return generator.generate();
         }
+    }
+
+    private static Log LOG = Log.of(ResultSetRetry.class);
+
+    static void warn(Throwable t) {
+        LOG.warn(t);
     }
 }

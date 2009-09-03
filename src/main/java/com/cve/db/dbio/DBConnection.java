@@ -4,6 +4,7 @@ package com.cve.db.dbio;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.SQL;
 import com.cve.db.Server;
+import com.cve.log.Log;
 import com.cve.stores.ServersStore;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -62,7 +63,7 @@ public final class DBConnection {
     }
 
     synchronized Connection reset() throws SQLException {
-        log("resetting " + info);
+        info("resetting " + info);
         connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         return connection;
     }
@@ -71,6 +72,7 @@ public final class DBConnection {
         try {
             return getJDBCMetaData0();
         } catch (SQLException e) {
+            warn(e);
             try {
                 reset();
                 return getJDBCMetaData0();
@@ -104,7 +106,15 @@ public final class DBConnection {
         return dbmd;
     }
 
-    static void log(String message) {
-        System.out.println(message);
+    
+    private static Log LOG = Log.of(DBConnection.class);
+
+    static void info(String message) {
+        LOG.info(message);
     }
+
+    static void warn(Throwable t) {
+        LOG.warn(t);
+    }
+
 }

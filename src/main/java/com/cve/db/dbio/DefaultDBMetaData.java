@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
+import static com.cve.log.Log.args;
 
 /**
  * Skeletal implementation of DB meta data reader.
@@ -30,6 +31,7 @@ class DefaultDBMetaData implements DBMetaData {
     protected DefaultDBMetaData() {}
 
     static DBMetaData getDbmd(DBConnection connection) {
+        args(connection);
         DBMetaData meta = getDbmd0(connection);
         meta = DBMetaDataLogger.of(System.out,meta);
         meta = DBMetaDataCache.of(meta);
@@ -48,6 +50,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+        args(tables);
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
             keys.addAll(getPrimaryKeysFor(table));
@@ -56,6 +59,7 @@ class DefaultDBMetaData implements DBMetaData {
     }
 
     private static ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
+        args(table);
         Database     database = table.database;
         Server         server = database.server;
         DBMetaDataIO     dbmd = getDbmdIO(server);
@@ -84,6 +88,7 @@ class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
+        args(tables);
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
             joins.addAll(getImportedKeysFor(table));
@@ -95,6 +100,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
+        args(tables);
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
             set.addAll(getColumnsFor(table));
@@ -106,6 +112,7 @@ class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server)  throws SQLException {
+        args(server);
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         for (Database database : getDatabasesOn(server)) {
@@ -136,6 +143,7 @@ class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException {
+        args(table);
         Database       database = table.database;
         Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
@@ -161,6 +169,7 @@ class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException {
+        args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
         ResultSet results = dbmd.getCatalogs();
         try {
@@ -182,6 +191,7 @@ class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
+        args(database);
         Server           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
         String          catalog = database.name;
@@ -216,6 +226,7 @@ class DefaultDBMetaData implements DBMetaData {
     }
 
     public static DBMetaDataIO getDbmdIO(Server server) {
+        args(server);
         DBConnection connection = ServersStore.getConnection(server);
         DBMetaDataIO   dbmd = DBMetaDataIO.connection(connection);
         return dbmd;
@@ -224,6 +235,7 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public ImmutableList<Join> getImportedKeysFor(DBTable table)  throws SQLException {
+        args(table);
         Database       database = table.database;
         Server           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
@@ -254,6 +266,7 @@ class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public static ImmutableList<Join> getExportedKeysFor(DBTable table)  throws SQLException {
+        args(table);
         Database       database = table.database;
         Server           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
@@ -287,6 +300,7 @@ class DefaultDBMetaData implements DBMetaData {
      * have the same name.
      */
     private ImmutableList<Join> getReasonableJoinsFor(DBTable table)  throws SQLException {
+        args(table);
         Database database = table.database;
         Server     server = database.server;
 

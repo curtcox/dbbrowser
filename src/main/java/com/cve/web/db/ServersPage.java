@@ -4,6 +4,7 @@ import com.cve.db.Database;
 import com.cve.web.*;
 import com.cve.db.Server;
 
+import com.cve.util.AnnotatedStackTrace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 
@@ -15,12 +16,17 @@ import static com.cve.util.Check.notNull;
 public final class ServersPage implements Model {
 
     /**
+     * Limits the results displayed.
+     */
+    final Search search;
+
+    /**
      * The servers on the page
      */
     final ImmutableList<Server> servers;
 
     /**
-     * Server -> { Database , Throwable }
+     * Server -> { Database , AnnotatedStackTrace }
      * This maps to both database and throwable, because we might not be able
      * to connect to any given database.  Permissions is often, but not always,
      * the reason.
@@ -29,11 +35,12 @@ public final class ServersPage implements Model {
      */
     final ImmutableMultimap<Server,Object> databases;
 
-    ServersPage(ImmutableList<Server> servers, ImmutableMultimap<Server,Object> databases) {
+    ServersPage(Search search, ImmutableList<Server> servers, ImmutableMultimap<Server,Object> databases) {
+        this.search    = notNull(search);
         this.servers   = notNull(servers);
         this.databases = notNull(databases);
         for (Object value : databases.values()) {
-            if (value instanceof Database || value instanceof Throwable) {
+            if (value instanceof Database || value instanceof AnnotatedStackTrace) {
                 // OK
             } else {
                 String message = "" + value;
