@@ -12,13 +12,23 @@ import com.google.common.collect.ImmutableMultimap;
 import static com.cve.util.Check.notNull;
 
 /**
- * For picking a database.
+ * For picking a table.
  */
 public final class TablesPage implements Model {
 
+    /**
+     * The server the tables come from.
+     */
     final Server server;
+
+    /**
+     * The database the tables come from.
+     */
     final Database database;
+
     final ImmutableList<DBTable> tables;
+
+
     final ImmutableMultimap<DBTable,DBColumn> columns;
 
     TablesPage(Server server, Database database, ImmutableList<DBTable> tables, ImmutableMultimap<DBTable,DBColumn> columns) {

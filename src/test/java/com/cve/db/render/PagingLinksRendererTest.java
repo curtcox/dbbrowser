@@ -84,7 +84,9 @@ public class PagingLinksRendererTest {
     @Test
     public void personPagingLinksWhenMoreForwardButNotBack() {
         String expected = bracketQuote(
-            "<a href=[next?1]>" + NEXT + "</a> <a href=[bigger?10]>" + BIGGER + "</a> ");
+            "<a href=[next?1]><img alt=[Next rows] title=[Next rows] src=[/resource/icons/actions/go-next.png]></a>" +
+            " <a href=[bigger?10]><img alt=[More rows] title=[More rows] src=[/resource/icons/actions/list-add.png]></a> "
+        );
         Limit limit = Limit.DEFAULT;
         String rendered = PagingLinksRenderer.results(multiPersonResults(0,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);
@@ -93,7 +95,7 @@ public class PagingLinksRendererTest {
     @Test
     public void personPagingLinksWhenMoreBackButNotForward() {
         String expected = bracketQuote(
-            "<a href=[back?1]>" + BACK + "</a> ");
+            "<a href=[back?1]><img alt=[Previous rows] title=[Previous rows] src=[/resource/icons/actions/go-previous.png]></a> ");
         Limit limit = Limit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,false)).pagingLinks();
         assertEquals(expected,rendered);
@@ -102,8 +104,10 @@ public class PagingLinksRendererTest {
     @Test
     public void personPagingLinksWhenMoreForwardAndBack() {
         String expected = bracketQuote(
-             "<a href=[back?1]>" + BACK + "</a> <a href=[next?1]>" + NEXT +
-             "</a> <a href=[bigger?10]>" + BIGGER + "</a> ");
+            "<a href=[back?1]><img alt=[Previous rows] title=[Previous rows] src=[/resource/icons/actions/go-previous.png]></a>" +
+            " <a href=[next?1]><img alt=[Next rows] title=[Next rows] src=[/resource/icons/actions/go-next.png]></a> <a href=[bigger?10]>"+
+            "<img alt=[More rows] title=[More rows] src=[/resource/icons/actions/list-add.png]></a> "
+            );
         Limit limit = Limit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);

@@ -17,8 +17,19 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DatabasesPage implements Model {
 
+    /**
+     * The server that all of the databases come from.
+     */
     final Server server;
+
+    /**
+     * The databases on the server.
+     */
     final ImmutableList<Database> databases;
+
+    /**
+     * The tables in the databases.
+     */
     final ImmutableMultimap<Database,DBTable> tables;
 
     DatabasesPage(Server server, ImmutableList<Database> databases, ImmutableMultimap<Database,DBTable> tables) {
