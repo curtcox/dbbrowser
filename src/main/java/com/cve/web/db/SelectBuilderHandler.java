@@ -8,6 +8,7 @@ import com.cve.db.Select;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
+import com.cve.db.SelectContext;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
@@ -90,9 +91,10 @@ public final class SelectBuilderHandler implements RequestHandler {
         DBConnection connection = ServersStore.getConnection(server);
         Hints hints = HintsStore.getHints(select.columns);
 
+        SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
+
         // run the select
-        SelectResults results = SelectExecutor.run(
-            select, server, connection, hints);
+        SelectResults results = SelectExecutor.run(context);
         return results;
     }
 

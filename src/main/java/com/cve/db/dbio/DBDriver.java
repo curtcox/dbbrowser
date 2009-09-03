@@ -7,6 +7,7 @@ import com.cve.db.Select;
 import com.cve.util.URIs;
 import java.sql.Driver;
 import com.cve.util.Check;
+import com.cve.web.Search;
 
 /**
  * Database drivers that we support.
@@ -55,7 +56,7 @@ public enum DBDriver {
             return DBMetaDataExceptionEater.of(MsSQLTdsMetaData.of());
         }
         @Override
-        public SelectRenderer getSelectRenderer() {
+        SelectRenderer getSelectRenderer() {
             return MsSqlSelectRenderer.of();
         }
     }
@@ -87,7 +88,7 @@ public enum DBDriver {
             return H2MetaData.of();
         }
         @Override
-        public SelectRenderer getSelectRenderer() {
+        SelectRenderer getSelectRenderer() {
             return H2SelectRenderer.of();
         }
     }
@@ -104,7 +105,7 @@ public enum DBDriver {
             return H2MetaData.of();
         }
         @Override
-        public SelectRenderer getSelectRenderer() {
+        SelectRenderer getSelectRenderer() {
             return H2SelectRenderer.of();
         }
     }
@@ -121,7 +122,7 @@ public enum DBDriver {
             return H2MetaData.of();
         }
         @Override
-        public SelectRenderer getSelectRenderer() {
+        SelectRenderer getSelectRenderer() {
             return H2SelectRenderer.of();
         }
     }
@@ -158,13 +159,13 @@ public enum DBDriver {
      * Return how to turn Selct objects to SQL.
      * @return
      */
-    public abstract SelectRenderer getSelectRenderer();
+    abstract SelectRenderer getSelectRenderer();
 
     /**
      * Return the SQL appropriate for this select.
      */
-    public SQL render(Select select) {
-        return getSelectRenderer().render(select);
+    public SQL render(Select select, Search search) {
+        return getSelectRenderer().render(select,search);
     }
 
     /**

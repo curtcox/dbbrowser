@@ -1,10 +1,7 @@
 package com.cve.db.select;
 
-import com.cve.db.Hints;
-import com.cve.db.Select;
+import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
-import com.cve.db.dbio.DBConnection;
 import com.cve.util.Stopwatch;
 import static com.cve.log.Log.args;
 
@@ -14,11 +11,11 @@ import static com.cve.log.Log.args;
  */
 public final class SelectExecutor {
 
-    public static SelectResults run(Select select, Server server, DBConnection connection, Hints hints) {
-        args(select,server,connection,hints);
-        Stopwatch watch = Stopwatch.start(select);
+    public static SelectResults run(SelectContext context) {
+        args(context);
+        Stopwatch watch = Stopwatch.start(context.select);
         SelectRunner runner = new SimpleSelectRunner();
-        SelectResults results = runner.run(select, server, connection, hints);
+        SelectResults results = runner.run(context);
         watch.stop();
         return results;
     }

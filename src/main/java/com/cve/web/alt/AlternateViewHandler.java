@@ -2,10 +2,10 @@ package com.cve.web.alt;
 
 import com.cve.db.Hints;
 import com.cve.db.Select;
+import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
-import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
@@ -13,6 +13,7 @@ import com.cve.web.db.DBURIParser;
 import com.cve.util.URIs;
 import com.cve.web.CompositeRequestHandler;
 import com.cve.web.RequestHandler;
+import com.cve.web.Search;
 import java.net.URI;
 import java.sql.SQLException;
 import static com.cve.log.Log.args;
@@ -52,8 +53,8 @@ public class AlternateViewHandler {
         Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
-        SelectResults results = SelectExecutor.run(
-            select, server, connection, hints);
+        SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
+        SelectResults results = SelectExecutor.run(context);
         return results;
     }
 }

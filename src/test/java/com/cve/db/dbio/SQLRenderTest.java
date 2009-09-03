@@ -1,6 +1,5 @@
 package com.cve.db.dbio;
 
-import com.cve.db.dbio.SimpleSelectRenderer;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
@@ -15,6 +14,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Value;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -38,7 +38,8 @@ public class SQLRenderTest {
             "SELECT customer.person.name " +
             "FROM customer.person " +
             "WHERE customer.person.name=[Smith] LIMIT 21 OFFSET 0"));
-        SQL actual = new SimpleSelectRenderer().render(select);
+        Search search = Search.EMPTY;
+        SQL actual = new SimpleSelectRenderer().render(select,search);
         assertEquals(expected,actual);
     }
 
@@ -54,7 +55,8 @@ public class SQLRenderTest {
             "SELECT COUNT(*) " +
             "FROM customer.person " +
             "WHERE customer.person.name=[Smith] LIMIT 21 OFFSET 0"));
-        SQL actual = new SimpleSelectRenderer().render(select);
+        Search search = Search.EMPTY;
+        SQL actual = new SimpleSelectRenderer().render(select,search);
         assertEquals(expected,actual);
     }
 
@@ -81,7 +83,8 @@ public class SQLRenderTest {
             "ORDER BY customer.person.name ASC " +
             "LIMIT 21 OFFSET 0"
         ));
-        SQL actual = new SimpleSelectRenderer().render(select);
+        Search search = Search.EMPTY;
+        SQL actual = new SimpleSelectRenderer().render(select,search);
         assertEquals(expected,actual);
     }
 

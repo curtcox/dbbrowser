@@ -1,6 +1,7 @@
 package com.cve.db;
 
 import com.cve.web.Model;
+import com.cve.web.Search;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -26,6 +27,10 @@ public final class SelectResults implements Model {
 
         /**
          * Column value distribution data.
+         * This indicates a result set that shows the distribution of data in
+         * a single column.  The user gets to this data by clicking on a
+         * column title.  It is worth distinguishing, because it will be
+         * displayed differently than normal data.
          */
         COLUMN_VALUE_DISTRIBUTION
     }
@@ -39,6 +44,11 @@ public final class SelectResults implements Model {
      * The select used to generate the results
      */
     public final Select select;
+
+    /**
+     * The search -- likely empty -- used to generate the results.
+     */
+    public final Search search;
 
     /**
      * The results of the select
@@ -68,10 +78,11 @@ public final class SelectResults implements Model {
     public final Type type;
 
 
-    private SelectResults(Server server,Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
+    private SelectResults(Server server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
         this.server    = notNull(server);
         this.type      = notNull(type);
         this.select    = notNull(select);
+        this.search    = notNull(search);
         this.resultSet = notNull(resultSet);
         this.hints     = notNull(hints);
         this.count     = count;
@@ -91,14 +102,15 @@ public final class SelectResults implements Model {
         Select select, DBResultSet resultSet, Hints hints, boolean hasMore)
     {
         Server server = check(select,resultSet);
-        return new SelectResults(server,Type.NORMAL_DATA,select,resultSet,hints,100,hasMore);
+        Search search = Search.EMPTY;
+        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,100,hasMore);
     }
 
-    public static SelectResults typeSelectResultsHintsCountMore(
-        Type type, Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
+    public static SelectResults typeSelectSearchResultsHintsCountMore(
+        Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
     {
         Server server = check(select,resultSet);
-        return new SelectResults(server,type,select,resultSet,hints,count,hasMore);
+        return new SelectResults(server,type,select,search,resultSet,hints,count,hasMore);
     }
 
     @Override
@@ -107,12 +119,18 @@ public final class SelectResults implements Model {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         SelectResults other = (SelectResults) o;
-        return select.equals(other.select) &&
-                hints.equals(other.hints) &&
-                resultSet.equals(other.resultSet) &&
-                hasMore == other.hasMore;
+        return
+               type    == other.type  &&
+               count   == other.count &&
+               server.equals(other.server) &&
+               select.equals(other.select) &&
+               search.equals(other.search) &&
+               hints.equals(other.hints) &&
+               resultSet.equals(other.resultSet) &&
+               hasMore == other.hasMore;
     }
 
 

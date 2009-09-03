@@ -1,21 +1,22 @@
 package com.cve.db.select;
 
 import com.cve.db.AggregateFunction;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.Cell;
 import com.cve.db.DBColumn;
 import com.cve.db.DBResultSet;
 import com.cve.db.Database;
-import com.cve.db.Hints;
 import com.cve.db.Limit;
 import com.cve.db.DBRow;
 import com.cve.db.SQL;
 import com.cve.db.Select;
-import com.cve.db.Server;
 import com.cve.db.SelectResults;
 import com.cve.db.DBTable;
+import com.cve.db.Hints;
+import com.cve.db.SelectContext;
 import com.cve.db.Value;
+import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBDriver;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -34,29 +35,30 @@ import static com.cve.log.Log.args;
 final class SimpleSelectRunner implements SelectRunner {
 
     @Override
-    public SelectResults run(Select select, Server server, DBConnection connection, Hints hints) {
-        args(select,server,connection,hints);
+    public SelectResults run(SelectContext context) {
+        args(context);
         try {
-            return tryRun(select,server,connection,hints);
+            return tryRun(context);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    static SelectResults tryRun(Select select, Server server, DBConnection connection, Hints hints) throws SQLException {
-        notNull(select);
-        notNull(server);
-        notNull(connection);
-        notNull(hints);
+    static SelectResults tryRun(SelectContext context) throws SQLException {
+        notNull(context);
+        DBConnection connection = context.connection;
+        Select select = context.select;
+        Search search = context.search;
         DBDriver driver = connection.info.driver;
-        SQL         sql = driver.render(select);
-        int       count = determineRowCount(select,server,connection);
+        SQL         sql = driver.render(select,search);
+        int       count = determineRowCount(context);
         try {
             ResultSet results = connection.select(sql);
             try {
                 SelectResults.Type  type = determineResultsType(select);
                 ResultsAndMore immutable = transform(select,results);
-                return SelectResults.typeSelectResultsHintsCountMore(type,select,immutable.resultSet,hints,count,immutable.more);
+                Hints hints = context.hints;
+                return SelectResults.typeSelectSearchResultsHintsCountMore(type,select,search,immutable.resultSet,hints,count,immutable.more);
             } finally {
                 results.close();
             }
@@ -68,9 +70,12 @@ final class SimpleSelectRunner implements SelectRunner {
     /**
      * Return the number of rows that would be returned if no limit was used.
      */
-    static int determineRowCount(Select select, Server server, DBConnection connection) throws SQLException {
+    static int determineRowCount(SelectContext context) throws SQLException {
+        DBConnection connection = context.connection;
         DBDriver driver = connection.info.driver;
-        SQL sql = driver.render(select.count().with(Limit.DEFAULT));
+        Select select = context.select;
+        Search search = context.search;
+        SQL sql = driver.render(select.count().with(Limit.DEFAULT),search);
         try {
             ResultSet results = connection.select(sql);
             try {

@@ -10,6 +10,7 @@ import com.cve.db.Filter;
 import com.cve.db.Group;
 import com.cve.db.Limit;
 import com.cve.db.Order;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -29,7 +30,7 @@ class SimpleSelectRenderer implements SelectRenderer {
     private static final String OFFSET   = " OFFSET ";
     
     @Override
-    public SQL render(Select select) {
+    public SQL render(Select select, Search search) {
         notNull(select);
         StringBuilder out = new StringBuilder();
         out.append("SELECT ");
@@ -43,7 +44,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return SQL.of(out.toString());
     }
 
-    @Override
     public String columns(ImmutableList<DBColumn> columns, ImmutableList<AggregateFunction> functions) {
         List<String> list = Lists.newArrayList();
         for (int i=0; i<columns.size(); i++) {
@@ -58,7 +58,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,",");
     }
 
-    @Override
     public String tables(ImmutableList<DBTable> tables) {
         List<String> list = Lists.newArrayList();
         for (DBTable table : tables) {
@@ -67,7 +66,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,",");
     }
 
-    @Override
     public String where(ImmutableList<Join> joins, ImmutableList<Filter> filters) {
         boolean   hasJoins =   joins.size() > 0;
         boolean hasFilters = filters.size() > 0;
@@ -84,7 +82,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return out.toString();
     }
 
-    @Override
     public String joins(ImmutableList<Join> joins) {
         List<String> list = Lists.newArrayList();
         for (Join join : joins) {
@@ -93,7 +90,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,AND);
     }
 
-    @Override
     public String filters(ImmutableList<Filter> filters) {
         List<String> list = Lists.newArrayList();
         for (Filter filter : filters) {
@@ -102,7 +98,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,AND);
     }
 
-    @Override
     public String order(ImmutableList<Order> orders) {
         if (orders.size() < 1) {
             return "";
@@ -114,7 +109,6 @@ class SimpleSelectRenderer implements SelectRenderer {
         return ORDER_BY + separated(list,AND);
     }
 
-    @Override
     public String group(ImmutableList<Group> groups) {
         if (groups.size() < 1) {
             return "";

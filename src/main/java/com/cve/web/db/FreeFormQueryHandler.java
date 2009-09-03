@@ -21,6 +21,7 @@ import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -190,12 +191,12 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      * Return a URI that links to a free-form query page loaded with the
      * given select statement.
      */
-    public static URI linkTo(Select select) {
+    public static URI linkTo(Select select, Search search) {
         args(select);
         Server server = select.server;
         DBConnection connection = ServersStore.getConnection(server);
         DBDriver driver = connection.info.driver;
-        SQL sql = driver.render(select);
+        SQL sql = driver.render(select,search);
         URI  target = URIs.of("/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
         return target;
     }

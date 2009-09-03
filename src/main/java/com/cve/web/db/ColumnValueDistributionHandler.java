@@ -7,6 +7,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.db.Hints;
 import com.cve.db.Select;
+import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
@@ -16,7 +17,7 @@ import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -78,7 +79,8 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         Hints hints = HintsStore.getHints(select.columns);
 
         // run the select
-        SelectResults results = SelectExecutor.run(select, server, connection, hints);
+        SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
+        SelectResults results = SelectExecutor.run(context);
         return results;
     }
 }

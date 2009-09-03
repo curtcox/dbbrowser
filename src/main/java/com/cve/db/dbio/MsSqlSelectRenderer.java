@@ -6,6 +6,7 @@ import com.cve.db.Limit;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.util.Check;
+import com.cve.web.Search;
 
 /**
  *
@@ -24,7 +25,7 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
     }
 
     @Override
-    public SQL render(Select select) {
+    public SQL render(Select select, Search search) {
         Check.notNull(select);
         StringBuilder out = new StringBuilder();
         out.append("SELECT ");

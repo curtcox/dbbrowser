@@ -13,8 +13,10 @@ import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.JDBCURL;
+import com.cve.db.SelectContext;
 import com.cve.db.Value;
 import com.cve.util.URIs;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -55,7 +57,8 @@ public class ResultsRenderTest {
         ImmutableMap<Cell,Value> fixedValues = ImmutableMap.copyOf(values);
         DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues);
         SelectResults  expected = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,true);
-        SelectResults    actual = SelectExecutor.run(select,server,connection,hints);
+        SelectContext   context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
+        SelectResults    actual = SelectExecutor.run(context);
 
         assertEquals(expected.hints           ,actual.hints);
         assertEquals(expected.select          ,actual.select);
