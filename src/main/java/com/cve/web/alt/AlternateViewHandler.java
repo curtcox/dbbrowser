@@ -9,7 +9,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
-import com.cve.web.db.DBURIParser;
+import com.cve.web.db.DBURICodec;
 import com.cve.util.URIs;
 import com.cve.web.CompositeRequestHandler;
 import com.cve.web.RequestHandler;
@@ -45,10 +45,10 @@ public class AlternateViewHandler {
         URI tail = URIs.startingAtSlash(uri,3);
 
         // The server out of the URL
-        Server         server = DBURIParser.getServer(tail.toString());
+        Server         server = DBURICodec.getServer(tail.toString());
 
         // Setup the select
-        Select           select = DBURIParser.getSelect(tail.toString());
+        Select           select = DBURICodec.getSelect(tail.toString());
         DBConnection connection = ServersStore.getConnection(server);
         Hints hints = HintsStore.getHints(select.columns);
 

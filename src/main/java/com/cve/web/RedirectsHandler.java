@@ -4,7 +4,7 @@ import com.cve.web.db.SelectBuilderAction;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.select.URIRenderer;
-import com.cve.web.db.DBURIParser;
+import com.cve.web.db.DBURICodec;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -63,10 +63,10 @@ public final class RedirectsHandler implements RequestHandler {
         // the path up to the last slash
         String upToLastSlash = path.substring(0,lastSlash);
         String action = path.substring(lastSlash + 1);
-        final Select select = DBURIParser.getSelect(upToLastSlash);
-        Server server = DBURIParser.getServer(upToLastSlash);
+        final Select select = DBURICodec.getSelect(upToLastSlash);
+        Server server = DBURICodec.getServer(upToLastSlash);
         Select newSelect = SelectBuilderAction.doAction(action,select,server,query);
-        Search search = DBURIParser.getSearch(upToLastSlash);
+        Search search = DBURICodec.getSearch(upToLastSlash);
         URI dest = URIRenderer.render(newSelect,search);
         return dest;
     }

@@ -50,14 +50,14 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         if (URIs.slashCount(uri)!=4 && URIs.slashCount(uri)!=5) {
             return false;
         }
-        if (DBURIParser.getDatabases(uri).size() !=1){
+        if (DBURICodec.getDatabases(uri).size() !=1){
             return false;
         }
-        ImmutableList<DBTable> tables = DBURIParser.getTables(uri);
+        ImmutableList<DBTable> tables = DBURICodec.getTables(uri);
         if (tables.size()!=1){
             return false;
         }
-        if (DBURIParser.getColumns(tables, uri).size()!=1) {
+        if (DBURICodec.getColumns(tables, uri).size()!=1) {
             return false;
         }
         return true;
@@ -68,10 +68,10 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     static SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = DBURIParser.getServer(uri);
+        Server         server = DBURICodec.getServer(uri);
 
         // Setup the select
-        Select           select = DBURIParser.getSelect(uri);
+        Select           select = DBURICodec.getSelect(uri);
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));

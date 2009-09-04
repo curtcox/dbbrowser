@@ -26,7 +26,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
         args(request);
         String uri = request.requestURI;
 
-        Server     server = DBURIParser.getServer(uri);
+        Server     server = DBURICodec.getServer(uri);
         DBMetaData  meta = DBConnection.getDbmd(server);
         ImmutableList<Database> databases = meta.getDatabasesOn(server);
         ImmutableMultimap<Database,DBTable> tables = tablesOn(databases);
@@ -43,8 +43,8 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      * /server/
      */
     static boolean isDatabaseListRequest(String uri) {
-        return DBURIParser.getServer(uri)!=null &&
-               DBURIParser.getDatabases(uri).isEmpty();
+        return DBURICodec.getServer(uri)!=null &&
+               DBURICodec.getDatabases(uri).isEmpty();
     }
 
     static ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) throws SQLException {

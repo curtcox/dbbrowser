@@ -76,7 +76,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
             return page(sql,results,meta,message,null);
         }
         String uri = request.requestURI;
-        Server server = DBURIParser.getServer(uri);
+        Server server = DBURICodec.getServer(uri);
         if (isServerOnlyQuery(uri)) {
             try {
                 DBConnection connection = ServersStore.getConnection(server);
@@ -87,7 +87,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
                 return page(sql,DBResultSet.NULL,DBResultSetMetaData.NULL,e.getMessage(),e);
             }
         }
-        Database database = DBURIParser.getDatabase(uri);
+        Database database = DBURICodec.getDatabase(uri);
         try {
             DBConnection connection = ServersStore.getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
@@ -197,7 +197,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         DBConnection connection = ServersStore.getConnection(server);
         DBDriver driver = connection.info.driver;
         SQL sql = driver.render(select,search);
-        URI  target = URIs.of("/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
+        URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
         return target;
     }
 }

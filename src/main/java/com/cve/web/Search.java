@@ -1,7 +1,6 @@
 package com.cve.web;
 
 import com.cve.util.Check;
-import java.net.URLEncoder;
 
 /**
  * A textual search, ala Google.

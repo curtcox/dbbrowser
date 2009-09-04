@@ -2,12 +2,11 @@ package com.cve.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.util.URIs;
+import com.cve.web.db.DBURICodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 import static com.cve.log.Log.args;
-import static com.cve.util.URLCodec.encode;
 
 /**
  * A table in a {@link Database}.
@@ -73,18 +72,18 @@ public final class DBTable {
     public int hashCode() { return database.hashCode() ^ name.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         DBTable other = (DBTable) o;
         return database.equals(other.database) && name.equals(other.name);
     }
 
+    /**
+     * Provide a link to this table.
+     */
     public Link linkTo() {
         Label text = Label.of(name);
-        String databaseName = database.name;
-        Server server = database.server;
-        URI target = URIs.of(
-            "/" + server.uri + "/" + encode(databaseName) + "/" + encode(fullName()) + "/"
-        );
+        URI target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }
 }

@@ -20,11 +20,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
 
 /**
- * Tools for parsing the specially formatted database {@link URI}S we work with.
+ * Tools for converting between objects and the specially formatted database
+ * {@link URI}S we work with.
  * <p>
  * What is the special format?
  * The URL space hierarcy is mapped onto URLs like:
@@ -34,7 +36,7 @@ import static com.cve.util.Check.notNull;
  * http://webserver/dbserver/databases/tables/columns/joins////limit
  *
  */
-public final class DBURIParser {
+public final class DBURICodec {
 
     /**
      * The position within the URI where the given information is specified.
@@ -117,7 +119,7 @@ public final class DBURIParser {
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(DBURIParser.class);
+    static final Log LOG = Log.of(DBURICodec.class);
 
     static String at(String uri, Position pos) {
         args(uri);
@@ -356,5 +358,33 @@ public final class DBURIParser {
         }
     }
 
+
+    /**
+     * Return a URI for browsing the given server.
+     */
+    public static URI encode(Server server) {
+        String search = "+";
+        // For an empty search, use "+" instead of "".
+        // This is because HTTP URLs that start with // are taken to be relative,
+        // with only the protocol specified.  So,
+        //    //server/db -> http://server/db
+        // but
+        //    /+/server/db
+        // still gets mapped to this server, like we want.
+        return URIs.of("/" + search + "/" + server.uri + "/");
+    }
+
+    public static URI encode(Database database) {
+        Server server = database.server;
+        return URIs.of(encode(server) + database.name + "/");
+    }
+
+    public static URI encode(DBTable table) {
+        return URIs.of(encode(table.database) + table.fullName() + "/");
+    }
+
+    public static URI encode(DBColumn column) {
+        return URIs.of(encode(column.table) + column.fullName() + "/");
+    }
 
 }

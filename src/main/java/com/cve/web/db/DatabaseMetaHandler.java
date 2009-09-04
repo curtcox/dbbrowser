@@ -40,8 +40,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         String uri = request.requestURI;
 
         String suffix = uri.substring(PREFIX.length() - 1);
-        Server server = DBURIParser.getServer(suffix);
-        String method = DBURIParser.getMetaDataMethod(suffix);
+        Server server = DBURICodec.getServer(suffix);
+        String method = DBURICodec.getMetaDataMethod(suffix);
         return
             new StringModel(
                 h1("Available Metadata for " + server) +

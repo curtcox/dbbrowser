@@ -3,6 +3,7 @@ package com.cve.db;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.util.URIs;
+import com.cve.web.db.DBURICodec;
 import java.net.URI;
 
 import javax.annotation.concurrent.Immutable;
@@ -32,6 +33,7 @@ public final class Server {
     public   int hashCode() { return uri.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Server server = (Server) o;
         return uri.equals(server.uri);
@@ -46,7 +48,7 @@ public final class Server {
 
     public Link linkTo() {
         Label text = Label.of(toString());
-        URI target = URIs.of("/" + uri);
+        URI target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }
 }

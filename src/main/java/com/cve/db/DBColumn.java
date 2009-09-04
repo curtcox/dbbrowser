@@ -3,6 +3,7 @@ package com.cve.db;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.util.URIs;
+import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -105,6 +106,7 @@ public final class DBColumn {
     public   int hashCode() { return table.hashCode() ^ name.hashCode() ^ type.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         DBColumn other = (DBColumn) o;
         return table.equals(other.table) && name.equals(other.name) && type.equals(other.type);
@@ -116,11 +118,7 @@ public final class DBColumn {
     }
 
     public Link linkTo() {
-        Database database = table.database;
-        Server     server = database.server;
-        URI target = URIs.of(
-            "/" + server.uri + "/" + encode(database.name) + "/" + encode(table.fullName()) + "/" + encode(fullName()) + "/"
-        );
+        URI target = DBURICodec.encode(this);
         Label text = Label.of(name);
         return Link.textTarget(text, target);
     }

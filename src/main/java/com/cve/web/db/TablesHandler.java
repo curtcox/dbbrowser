@@ -36,8 +36,8 @@ public final class TablesHandler extends AbstractRequestHandler {
     public TablesPage get(PageRequest request) throws IOException, SQLException {
         args(request);
         String                    uri = request.requestURI;
-        Server                 server = DBURIParser.getServer(uri);
-        Database             database = DBURIParser.getDatabase(uri);
+        Server                 server = DBURICodec.getServer(uri);
+        Database             database = DBURICodec.getDatabase(uri);
         DBMetaData               meta = DBConnection.getDbmd(server);
         ImmutableList<DBTable> tables = meta.getTablesOn(database);
         ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);

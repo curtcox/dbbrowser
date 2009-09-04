@@ -55,7 +55,7 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     static PageResponse redirectedWithAddedColumns(PageRequest request) throws SQLException {
         String    uri = request.requestURI;
-        Select select = DBURIParser.getSelect(uri);
+        Select select = DBURICodec.getSelect(uri);
         if (select.columns.size()>0) {
             return null;
         }
@@ -67,7 +67,7 @@ public final class SelectBuilderHandler implements RequestHandler {
                 select = select.with(column);
             }
         }
-        Search search = DBURIParser.getSearch(uri);
+        Search search = DBURICodec.getSearch(uri);
         URI dest = URIRenderer.render(select,search);
         return PageResponse.newRedirect(dest);
     }
@@ -85,10 +85,10 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     static SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = DBURIParser.getServer(uri);
+        Server         server = DBURICodec.getServer(uri);
 
         // Setup the select
-        Select           select = DBURIParser.getSelect(uri);
+        Select           select = DBURICodec.getSelect(uri);
         DBConnection connection = ServersStore.getConnection(server);
         Hints hints = HintsStore.getHints(select.columns);
 

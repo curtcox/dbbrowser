@@ -2,7 +2,7 @@ package com.cve.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.util.URIs;
+import com.cve.web.db.DBURICodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -31,6 +31,7 @@ public final class Database {
     public   int hashCode() { return name.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         if (o==this) {
             return true;
@@ -50,7 +51,7 @@ public final class Database {
 
     public Link linkTo() {
         Label text = Label.of(name);
-        URI target = URIs.of("/" + server.uri + "/" + name + "/");
+        URI target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }
 }
