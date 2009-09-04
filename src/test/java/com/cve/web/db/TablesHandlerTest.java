@@ -16,16 +16,16 @@ public class TablesHandlerTest {
     @Test
     public void handlesTablesOnlyRequest() throws IOException, SQLException {
         TablesHandler handler = new TablesHandler();
-        PageRequest   request = PageRequest.path("/server/db/");
+        PageRequest   request = PageRequest.path("//server/db/");
         assertNotNull(handler.produce(request));
     }
 
     @Test
     public void isTablesOnlyRequest() {
-        assertFalse(TablesHandler.isTablesOnlyRequest("/server/"));
-        assertFalse(TablesHandler.isTablesOnlyRequest("/server:8080/"));
-        assertTrue(TablesHandler.isTablesOnlyRequest("/server/db/"));
-        assertFalse(TablesHandler.isTablesOnlyRequest("/server/db/table/"));
+        assertFalse(TablesHandler.isTablesOnlyRequest("//server/"));
+        assertFalse(TablesHandler.isTablesOnlyRequest("//server:8080/"));
+        assertTrue(TablesHandler.isTablesOnlyRequest("//server/db/"));
+        assertFalse(TablesHandler.isTablesOnlyRequest("//server/db/table/"));
     }
 
 }

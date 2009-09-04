@@ -12,6 +12,7 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Value;
 import com.cve.util.URIs;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import org.junit.Test;
@@ -31,8 +32,8 @@ public class URIRenderTest {
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
         Select      select = Select.from(database,person,name);
-        URI expected = URIs.of("/server/customer/customer.person/name/");
-        URI actual = URIRenderer.render(select);
+        URI expected = URIs.of("//server/customer/customer.person/name/");
+        URI actual = URIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -44,8 +45,8 @@ public class URIRenderTest {
         DBColumn        name = person.columnNameType("name",String.class);
         DBColumn         age = person.columnNameType("age",Integer.class);
         Select      select = Select.from(database,person,name,age);
-        URI expected = URIs.of("/server/customer/customer.person/name+age/");
-        URI actual = URIRenderer.render(select);
+        URI expected = URIs.of("//server/customer/customer.person/name+age/");
+        URI actual = URIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -68,14 +69,14 @@ public class URIRenderTest {
         Select        select = Select.from(
                 list(database),list(person,account),list(name,number),list(self,self),list(join),list(filter),list(order),list(),Limit.DEFAULT);
         URI expected = URIs.of(
-            "/server/customer/" + // server databases
+            "//server/customer/" + // server databases
             "customer.person+customer.account/" + // tables
             "name+0number/" + // columns
             "email=0email/" + // join
             "sex=F/" + // filter
             "name=ASC/" // order
             );
-        URI actual = URIRenderer.render(select);
+        URI actual = URIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 

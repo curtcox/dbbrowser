@@ -13,12 +13,12 @@ public class DatabasesHandlerTest {
 
     @Test
     public void isServerOnlyRequest() {
-        assertTrue(DatabasesHandler.isDatabaseListRequest("/server/"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("/server"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("/server:8080/"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("/server:8080/"));
-        assertFalse(DatabasesHandler.isDatabaseListRequest("/server/db/"));
-        assertFalse(DatabasesHandler.isDatabaseListRequest("/server/db/table/"));
+        assertTrue(DatabasesHandler.isDatabaseListRequest("//server/"));
+        assertTrue(DatabasesHandler.isDatabaseListRequest("//server"));
+        assertTrue(DatabasesHandler.isDatabaseListRequest("//server:8080/"));
+        assertTrue(DatabasesHandler.isDatabaseListRequest("//server:8080/"));
+        assertFalse(DatabasesHandler.isDatabaseListRequest("//server/db/"));
+        assertFalse(DatabasesHandler.isDatabaseListRequest("//server/db/table/"));
     }
 
     private static <T> ImmutableList<T> list(T... items) { return ImmutableList.of(items); }

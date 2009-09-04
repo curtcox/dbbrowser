@@ -11,9 +11,11 @@ import com.cve.db.Select;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.util.URIs;
+import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
@@ -72,11 +74,12 @@ public final class URIRenderer {
     /**
      * Render the given select statement as a URI.
      */
-    public static URI render(Select select) {
+    public static URI render(Select select, Search search) {
         notNull(select);
         validate(select);
         StringBuilder out = new StringBuilder();
         Server server = select.server;
+        out.append("/" + URLEncoder.encode(search.target));
         out.append("/" + server.uri + "/");
         ImmutableList<DBTable> tables = select.tables;
         out.append(renderDatabases(select.databases) + "/");

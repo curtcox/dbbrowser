@@ -1,6 +1,5 @@
 package com.cve.web.db;
 
-import com.cve.web.db.SelectBuilderHandler;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.SelectResults;
@@ -25,7 +24,7 @@ public class SelectBuilderHandlerTest {
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
         ServersStore.addServer(server, info);
 
-        String            uri = "/server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
+        String            uri = "//server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
         SelectResults results = SelectBuilderHandler.getResultsFromDB(uri);
         assertNotNull(results);
     }

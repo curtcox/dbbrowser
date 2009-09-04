@@ -52,17 +52,22 @@ public final class RedirectsHandler implements RequestHandler {
         }
     }
 
+    /**
+     * Given a path and query, produce the URI it should redirect to.
+     */
     static URI redirectsActionsTo(String path, String query) throws SQLException {
         args(path,query);
         notNull(path);
         int lastSlash = path.lastIndexOf("/");
         notNegative(lastSlash);
+        // the path up to the last slash
         String upToLastSlash = path.substring(0,lastSlash);
         String action = path.substring(lastSlash + 1);
-        Select select = DBURIParser.getSelect(upToLastSlash);
+        final Select select = DBURIParser.getSelect(upToLastSlash);
         Server server = DBURIParser.getServer(upToLastSlash);
-        select = SelectBuilderAction.doAction(action,select,server,query);
-        URI dest = URIRenderer.render(select);
+        Select newSelect = SelectBuilderAction.doAction(action,select,server,query);
+        Search search = DBURIParser.getSearch(upToLastSlash);
+        URI dest = URIRenderer.render(newSelect,search);
         return dest;
     }
 

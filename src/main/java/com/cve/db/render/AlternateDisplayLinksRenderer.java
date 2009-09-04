@@ -55,7 +55,7 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewLink(AlternateView view) {
         Label  text = Label.of(view.toString());
-        URI  target = URIs.of( "/view/" + view + URIRenderer.render(select));
+        URI  target = URIs.of( "/view/" + view + URIRenderer.render(select,search));
         String tip = view.name();
         URI   image = view.icon;
         return Link.textTargetImageAlt(text, target, image,tip).toString();

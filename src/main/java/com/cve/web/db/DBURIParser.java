@@ -14,10 +14,12 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.log.Log;
+import com.cve.web.Search;
 import static com.cve.log.Log.args;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
 
@@ -43,60 +45,66 @@ public final class DBURIParser {
         /**
          * The database server.
          */
-        SERVER(1),
+        SEARCH(1),
+
+        /**
+         * The database server.
+         */
+        SERVER(2),
+        
         /**
          * The databases.
          */
-        DBS(2),
+        DBS(3),
 
         /**
          * The metadata method name.
          * This isn't used in normal operations.
          * It is for low-level JDBC debugging and experiments.
          */
-        METADATA(2),
+        METADATA(3),
 
         /**
          * The database tables.
          */
-        TABLES(3),
+        TABLES(4),
 
         /**
          * The table columns.
          */
-        COLUMNS(4),
+        COLUMNS(5),
 
         /**
          * Joins between tables.
          */
-        JOINS(5),
+        JOINS(6),
 
         /**
          * Filters on column values
          */
-        FILTERS(6),
+        FILTERS(7),
 
         /**
          * Column sort orders
          */
-        ORDERS(7),
+        ORDERS(8),
 
         /**
          * Group by clauses
          */
-        GROUPS(8),
+        GROUPS(9),
 
         /**
          * Limits on what rows should be returned.
          */
-        LIMIT(9),
+        LIMIT(10),
     ;
 
         /**
          * Number of slashes before this position in the URL.
          * For example:
-         *                     1        2        3
-         * http://webserver/dbserver/databases/tables
+         *                    1        2        3        4
+         * http://webserver/search/dbserver/databases/tables
          */
         private final int index;
 
@@ -119,6 +127,13 @@ public final class DBURIParser {
     static boolean exists(String uri, Position pos) {
         String[] parts = uri.split("/");
         return parts.length > pos.index;
+    }
+
+    public static Search getSearch(String uri) {
+        args(uri);
+        notNull(uri);
+        String target = at(uri,Position.SEARCH);
+        return Search.of(URLDecoder.decode(target));
     }
 
     public static Server getServer(String uri) {

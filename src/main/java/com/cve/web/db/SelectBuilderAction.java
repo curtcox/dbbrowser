@@ -11,6 +11,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
+import com.cve.web.Search;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -34,6 +35,7 @@ public enum SelectBuilderAction {
      * Modify the limit to page forward in the results.
      */
     NEXT("next") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             int   pages = Integer.parseInt(query);
             Limit limit = select.limit;
@@ -46,6 +48,7 @@ public enum SelectBuilderAction {
      * Modify the limit to page back in the results.
      */
     BACK("back") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             int   pages = Integer.parseInt(query);
             Limit limit = select.limit;
@@ -58,6 +61,7 @@ public enum SelectBuilderAction {
      * Make the maximum number of rows returned bigger.
      */
     BIGGER("bigger") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             int   factor = Integer.parseInt(query);
             Limit limit = select.limit;
@@ -70,6 +74,7 @@ public enum SelectBuilderAction {
      * Make the maximum number of rows returned smaller.
      */
     SMALLER("smaller") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             int   factor = Integer.parseInt(query);
             Limit limit = select.limit;
@@ -82,6 +87,7 @@ public enum SelectBuilderAction {
      * Remove the given column from the select.
      */
     HIDE("hide") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             return select.without(DBColumn.parse(server,select.tables,query));
         }
@@ -91,6 +97,7 @@ public enum SelectBuilderAction {
      * Add the given column to the select.
      */
     SHOW("show") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
              return select.with(DBColumn.parse(server,select.tables,query));
         }
@@ -100,6 +107,7 @@ public enum SelectBuilderAction {
      * Add the given filter to the select.
      */
     FILTER("filter") {
+        @Override
         public Select goDo(Select select, Server server, String query) {
             return select.with(Filter.parse(server,select.tables,query));
         }
@@ -109,6 +117,7 @@ public enum SelectBuilderAction {
      * Add the given join to the select.
      */
     JOIN("join") {
+        @Override
         public Select goDo(Select select, Server server, String query) throws SQLException {
             Join join = Join.parse(server,select.tables,query);
             select = select.with(join);

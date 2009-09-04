@@ -67,7 +67,8 @@ public final class SelectBuilderHandler implements RequestHandler {
                 select = select.with(column);
             }
         }
-        URI dest = URIRenderer.render(select);
+        Search search = DBURIParser.getSearch(uri);
+        URI dest = URIRenderer.render(select,search);
         return PageResponse.newRedirect(dest);
     }
 

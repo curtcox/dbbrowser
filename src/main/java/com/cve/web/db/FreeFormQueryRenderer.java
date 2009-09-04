@@ -15,6 +15,7 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import com.cve.web.Search;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
@@ -46,7 +47,8 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
     private URI base(FreeFormQueryModel page) {
         SQL sql = page.sql;
         Select select = SelectParser.parse(sql,page.meta);
-        URI uri = URIRenderer.render(select);
+        Search search = Search.EMPTY;
+        URI uri = URIRenderer.render(select,search);
         return uri;
     }
 

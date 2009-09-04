@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.util.Check;
+import java.net.URLEncoder;
 
 /**
  * A textual search, ala Google.
@@ -54,4 +55,5 @@ public final class Search {
         Search other = (Search) o;
         return target.equals(other.target);
     }
+
 }
