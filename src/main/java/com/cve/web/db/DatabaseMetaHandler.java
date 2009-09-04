@@ -261,7 +261,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
                 }
                 out.append("</tr>\r");
             }
-            return table(out.toString());
+            return borderTable(out.toString());
         } finally {
             results.close();
         }

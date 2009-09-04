@@ -1,5 +1,6 @@
-package com.cve.web;
+package com.cve.web.db;
 
+import com.cve.web.*;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -10,11 +11,11 @@ import static org.junit.Assert.*;
  *
  * @author curt
  */
-public class RedirectsHandlerTest {
+public class DBRedirectsHandlerTest {
 
     @Test
     public void handled() throws IOException {
-        RedirectsHandler     handler = new RedirectsHandler();
+        DBRedirectsHandler   handler = new DBRedirectsHandler();
         PageRequest   request = PageRequest.path("/");
         PageResponse response = handler.produce(request);
         assertNull(response);
@@ -36,6 +37,6 @@ public class RedirectsHandlerTest {
     }
 
     private void assertRedirected(String path, String query, String dest) throws SQLException {
-        assertEquals(URIs.of(dest),RedirectsHandler.redirectsActionsTo(path,query));
+        assertEquals(URIs.of(dest),DBRedirectsHandler.redirectsActionsTo(path,query));
     }
 }

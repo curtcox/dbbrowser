@@ -79,7 +79,7 @@ public final class ShowTableRenderer {
             String row = rowOut.toString() + td(shows.toString());
             tableOut.append(tr(row));
         }
-        return table(tableOut.toString());
+        return borderTable(tableOut.toString());
     }
 
     public static String    tdRowspan(String s, int height) { return "<td rowspan=" + q(height) + ">" + s + "</td>"; }

@@ -1,5 +1,6 @@
-package com.cve.web;
+package com.cve.web.db;
 
+import com.cve.web.*;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.db.Select;
 import com.cve.db.Server;
@@ -32,16 +33,20 @@ import static com.cve.log.Log.args;
  * </pre>
  * @author Curt
  */
-public final class RedirectsHandler implements RequestHandler {
+public final class DBRedirectsHandler implements RequestHandler {
 
     @Override
+    /**
+     * Poduce a response with the appropriate redirect, or null if this
+     * request should not be redirected.
+     */
     public PageResponse produce(PageRequest request) throws IOException {
         args(request);
         notNull(request);
 
         String query = request.queryString;
         if (query.isEmpty()) {
-            return null;
+            return null; // we only redirect 
         }
         try {
             String  path = request.requestURI;

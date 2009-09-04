@@ -28,8 +28,8 @@ public class DatabaseMetaHandlerTest {
     @Test
     public void getCatalogs() throws SQLException {
         Server server = getStoreServer();
-        String unnamed = table(tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
-        String db1 = table(tr(th("CATALOG_NAME")) + tr(td("DB1")) );
+        String unnamed = borderTable(tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
+        String db1 = borderTable(tr(th("CATALOG_NAME")) + tr(td("DB1")) );
         String actual = DatabaseMetaHandler.getCatalogs(server);
         assertTrue(actual.equals(unnamed) || actual.equals(db1));
     }

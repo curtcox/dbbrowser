@@ -41,7 +41,7 @@ public final class DatabasesPageRenderer implements ModelHtmlRenderer {
                 )
             );
         }
-        return table(out.toString());
+        return borderTable(out.toString());
     }
 
     static String tablesOn(DatabasesPage page, Database database) {

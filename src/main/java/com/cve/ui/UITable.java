@@ -48,6 +48,6 @@ public final class UITable implements UIElement {
         for (UIRow row : rows) {
             out.append(row.toString());
         }
-        return HTML.table(out.toString());
+        return HTML.borderTable(out.toString());
     }
 }

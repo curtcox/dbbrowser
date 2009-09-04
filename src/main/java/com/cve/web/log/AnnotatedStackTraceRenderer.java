@@ -39,7 +39,7 @@ public final class AnnotatedStackTraceRenderer
                 Object[] args = trace.args.get(next);
                 table.append(row(e,args));
             }
-            out.append(table(table.toString()));
+            out.append(borderTable(table.toString()));
             trace = trace.cause;
             if (trace!=null) {
                 out.append("Caused by");

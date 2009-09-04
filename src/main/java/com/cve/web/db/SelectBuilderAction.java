@@ -11,7 +11,6 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import com.cve.web.Search;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.Arrays;

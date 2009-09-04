@@ -17,7 +17,10 @@ public final class UIText implements UIElement {
         this.name  = Check.notNull(name);
         this.value = Check.notNull(value);
     }
-    
+
+    /**
+     * Return a text box, given it's name in the form and initial value.
+     */
     public static UIText nameValue(String name, String value) {
         return new UIText(name,value);
     }

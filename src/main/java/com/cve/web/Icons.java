@@ -23,6 +23,8 @@ public final class Icons {
 
     public static final URI OFF   = URIs.of("/resource/icons/actions/system-shutdown.png");
 
+    public static final URI SEARCH = URIs.of("/resource/icons/actions/system-search.png");
+
     public static final URI CSV   = URIs.of("/resource/icons/mimetypes/text-x-generic.png");
 
     public static final URI XML   = URIs.of("/resource/icons/mimetypes/Small_Orange_XML_Button_for_RSS_Page.png");
@@ -34,5 +36,6 @@ public final class Icons {
     public static final URI JSON  = URIs.of("/resource/icons/mimetypes/jsonpill.png");
 
     public static final URI SQL   = URIs.of("/resource/icons/mimetypes/sql.png");
+
 
 }

@@ -31,9 +31,9 @@ public class SelectBuilderHandlerTest {
 
     @Test
     public void isSelectBuilderRequest() {
-        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("/"));
-        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("/server/"));
-        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("/server/db/"));
-        assertTrue(SelectBuilderHandler.isSelectBuilderRequest("/server/db/table/"));
+        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("//"));
+        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("//server/"));
+        assertFalse(SelectBuilderHandler.isSelectBuilderRequest("//server/db/"));
+        assertTrue(SelectBuilderHandler.isSelectBuilderRequest("//server/db/table/"));
     }
 }

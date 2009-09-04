@@ -96,7 +96,7 @@ public class ShowTableRendererTest {
     @Test
     public void personShowTableWhenNotEmpty() {
         String expected = Replace.bracketQuote(
-            table(
+            borderTable(
                 tr("<td rowspan=[1]>Show</td><td>customer.person</td><td><a href=[show?customer.person.age]>age</a> </td>")
             ));
         String rendered = ShowTableRenderer.results(resultsForShowTable()).showTable();

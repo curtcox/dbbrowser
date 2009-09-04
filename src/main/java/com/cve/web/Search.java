@@ -36,15 +36,6 @@ public final class Search {
         return new Search(target);
     }
 
-    public static Search from(PageRequest request) {
-        String target = request.parameters.get(FIND);
-        if (target == null) {
-            return EMPTY;
-        }
-        return of(target);
-    }
-
-
     @Override
     public int hashCode() { return target.hashCode(); }
 

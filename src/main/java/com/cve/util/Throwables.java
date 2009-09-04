@@ -2,13 +2,11 @@ package com.cve.util;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.log.Log;
 import com.cve.web.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 
 import java.net.URI;
-import java.util.Arrays;
 import static com.cve.html.HTML.*;
 /**
  * For printing throwables.
@@ -37,7 +35,7 @@ public final class Throwables {
             for (StackTraceElement e : t.getStackTrace()) {
                 table.append(row(e));
 }
-            out.append(table(table.toString()));
+            out.append(borderTable(table.toString()));
             t = t.getCause();
             if (t!=null) {
                 out.append("Caused by");

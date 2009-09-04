@@ -16,21 +16,49 @@ import java.util.List;
  */
 public final class UIForm {
 
+    /**
+     * The URI to invoke when the form is submitted.
+     */
     private final URI action;
+
+    /**
+     * GET or POST?
+     */
     private final PageRequest.Method method;
+
+    /**
+     * UI elements in the form.
+     */
     private final ImmutableList<UIElement> elements;
 
+    /**
+     * Create a new form that POSTs against the given URI.
+     */
     public static UIForm postAction(URI action) {
         ImmutableList<UIElement> elements = ImmutableList.of();
         return new UIForm(action,PageRequest.Method.POST,elements);
     }
 
+    /**
+     * Create a new form that GETs against the given URI.
+     */
+    public static UIForm getAction(URI action) {
+        ImmutableList<UIElement> elements = ImmutableList.of();
+        return new UIForm(action,PageRequest.Method.GET,elements);
+    }
+
+    /**
+     * Use a factory instead.
+     */
     private UIForm(URI action, PageRequest.Method method, List<UIElement> elements) {
         this.action   = notNull(action);
         this.method   = notNull(method);
         this.elements = ImmutableList.copyOf(notNull(elements));
     }
 
+    /**
+     * Return a form like this one, but with the given element added.
+     */
     public UIForm with(UIElement element) {
         List<UIElement> newElements = Lists.newArrayList();
         newElements.addAll(elements);

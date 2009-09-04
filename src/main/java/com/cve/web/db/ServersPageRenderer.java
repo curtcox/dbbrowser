@@ -7,6 +7,7 @@ import com.cve.html.CSS;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.ui.UISearchBox;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.log.ObjectLink;
@@ -23,7 +24,9 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";
-        String[] navigation = new String[] { addServer(), removeServer() , shutdown() , title };
+        String[] navigation = new String[] {
+            addServer(), removeServer() , shutdown() , title, search(page.search)
+        };
         String guts  = tableOfServers(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
@@ -42,6 +45,13 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
         URI target = URIs.of("remove");
         URI  image = Icons.MINUS;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
+    }
+
+    /**
+     * Return a search box 
+     */
+    String search(Search search) {
+        return UISearchBox.contents(search.target).toString();
     }
 
     String shutdown() {
@@ -83,7 +93,7 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
             server.linkTo();
         }
         
-        return table(out.toString());
+        return borderTable(out.toString());
     }
 
     /**

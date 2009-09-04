@@ -259,7 +259,7 @@ private String showFields() {
         out.append(showField(f,o));
     }
     out.append(headerRow);
-    return table(out.toString());
+    return borderTable(out.toString());
 }
 
 /**
@@ -338,7 +338,7 @@ private String showExecutablesFromOneClass(Collection<Executable> executables) {
         out.append(showExecutable(executable));
     }
     out.append(headerRow);
-    return table(out.toString());
+    return borderTable(out.toString());
 }
 
 /**

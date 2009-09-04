@@ -6,6 +6,7 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
+import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -40,10 +41,11 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
     /**
      * Return true, if of the form
-     * /server/
+     * /search/server/
      */
     static boolean isDatabaseListRequest(String uri) {
-        return DBURICodec.getServer(uri)!=null &&
+        return URIs.slashCount(uri) > 1 &&
+               DBURICodec.getServer(uri)!=null &&
                DBURICodec.getDatabases(uri).isEmpty();
     }
 

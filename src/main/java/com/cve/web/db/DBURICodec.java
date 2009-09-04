@@ -134,6 +134,9 @@ public final class DBURICodec {
     public static Search getSearch(String uri) {
         args(uri);
         notNull(uri);
+        if (uri.equals("/")) {
+            return Search.EMPTY;
+        }
         String target = at(uri,Position.SEARCH);
         return Search.of(URLDecoder.decode(target));
     }
@@ -353,17 +356,13 @@ public final class DBURICodec {
 
     static void validateMinimumSize(List<?> list, int minimum) {
         if (list.size() < minimum) {
-            String message = "Must contain at least " + minimum + " elements.";
+            String message = "Must contain at least " + minimum + " elements, but doesn't " + list;
             throw new IllegalArgumentException(message);
         }
     }
 
 
-    /**
-     * Return a URI for browsing the given server.
-     */
-    public static URI encode(Server server) {
-        String search = "+";
+    public static URI encode(Search search) {
         // For an empty search, use "+" instead of "".
         // This is because HTTP URLs that start with // are taken to be relative,
         // with only the protocol specified.  So,
@@ -371,7 +370,16 @@ public final class DBURICodec {
         // but
         //    /+/server/db
         // still gets mapped to this server, like we want.
-        return URIs.of("/" + search + "/" + server.uri + "/");
+        String target = search.target.isEmpty() ? " " : search.target;
+        return URIs.of("/" + URLEncoder.encode(target) + "/");
+    }
+
+    /**
+     * Return a URI for browsing the given server.
+     */
+    public static URI encode(Server server) {
+        Search search = Search.EMPTY;
+        return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
     public static URI encode(Database database) {

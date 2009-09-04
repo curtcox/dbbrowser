@@ -11,7 +11,8 @@ public final class DBBrowserHandler {
     private static final RequestHandler handler = CompositeRequestHandler.of(
         // handler                         // for URLs of the form
         new FreeFormQueryHandler(),        // /server/select... & /server/database/select...
-        new RedirectsHandler(),            // action?args
+        new SearchRedirectsHandler(),      // search?find=what
+        new DBRedirectsHandler(),          // action?args
         new ServersHandler(),              // /
         new AddServerHandler(),            // /add
         new RemoveServerHandler(),         // /remove

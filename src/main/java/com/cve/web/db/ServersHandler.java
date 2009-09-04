@@ -6,6 +6,7 @@ import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.log.Log;
 import com.cve.stores.ServersStore;
+import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -27,13 +28,14 @@ public final class ServersHandler extends AbstractRequestHandler {
         args(request);
         ImmutableList<Server>              servers = ServersStore.getServers();
         ImmutableMultimap<Server,Object> databases = getDatabases(servers);
-        Search search = Search.from(request);
+        Search                              search = DBURICodec.getSearch(request.requestURI);
         return new ServersPage(search,servers,databases);
     }
 
     @Override
     public boolean handles(String uri) {
-        return "/".equals(uri);
+        int slashes = URIs.slashCount(uri);
+        return slashes == 1 || slashes ==2 && uri.endsWith("/");
     }
 
     /**

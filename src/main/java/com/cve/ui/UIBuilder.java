@@ -1,5 +1,7 @@
 package com.cve.ui;
 
+import java.net.URI;
+
 /**
  * Convenient static methods for building a UI.
  * @author curt
@@ -22,6 +24,9 @@ public final class UIBuilder {
         return UIRow.of(elements);
     }
 
+    /**
+     *
+     */
     public static UIText text(String name, String value) {
         return UIText.nameValue(name,value);
     }
@@ -37,4 +42,9 @@ public final class UIBuilder {
     public static UISubmit submit(String value) {
         return UISubmit.value(value);
     }
+
+    public static UISubmit submit(String value, URI icon) {
+        return UISubmit.valueIcon(value,icon);
+    }
+
 }

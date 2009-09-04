@@ -55,6 +55,11 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     static PageResponse redirectedWithAddedColumns(PageRequest request) throws SQLException {
         String    uri = request.requestURI;
+        //  1     2      3
+        // /search/server/db
+        if (URIs.slashCount(uri)<3) {
+            return null;
+        }
         Select select = DBURICodec.getSelect(uri);
         if (select.columns.size()>0) {
             return null;
@@ -74,10 +79,11 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     /**
      * Return true, if uri string like:
-     * /server/dbs/tables/columns...
+     * 1      2      3   4      5
+     * /search/server/dbs/tables/columns...
      */
     static boolean isSelectBuilderRequest(String uri) {
-        return URIs.slashCount(uri)>3;
+        return URIs.slashCount(uri)>4;
     }
 
     /**
