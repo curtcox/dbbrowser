@@ -46,4 +46,8 @@ public final class Search {
         return target.equals(other.target);
     }
 
+    public boolean isEmpty() {
+        return target.isEmpty();
+    }
+
 }

@@ -18,6 +18,7 @@ public final class DatabaseModelHtmlRenderers {
     public static ImmutableMap<Class,ModelHtmlRenderer> load() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(ServersPage.class,        PageDecorator.of(new ServersPageRenderer()));
+        map.put(ServersSearchPage.class,  PageDecorator.of(new ServersSearchPageRenderer()));
         map.put(DatabasesPage.class,      PageDecorator.of(new DatabasesPageRenderer()));
         map.put(TablesPage.class,         PageDecorator.of(new TablesPageRenderer()));
         map.put(SelectResults.class,      PageDecorator.of(new SelectResultsRenderer()));

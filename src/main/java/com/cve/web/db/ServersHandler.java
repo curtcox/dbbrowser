@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.db.DBColumn;
 import com.cve.web.*;
 import com.cve.db.Database;
 import com.cve.db.Server;
@@ -24,12 +25,31 @@ public final class ServersHandler extends AbstractRequestHandler {
     private static final Log log = Log.of(ServersHandler.class);
 
     @Override
-    public ServersPage get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) throws IOException, SQLException {
         args(request);
-        ImmutableList<Server>              servers = ServersStore.getServers();
-        ImmutableMultimap<Server,Object> databases = getDatabases(servers);
-        Search                              search = DBURICodec.getSearch(request.requestURI);
-        return new ServersPage(search,servers,databases);
+        Search search = DBURICodec.getSearch(request.requestURI);
+        if (search.isEmpty()) {
+            ImmutableList<Server> servers = ServersStore.getServers();
+            ImmutableMultimap<Server,Object> databases = getDatabases(servers);
+            return new ServersPage(servers,databases);
+        }
+        return newSearchPage(search);
+    }
+
+    static ServersSearchPage newSearchPage(Search search) {
+        ImmutableList<Server> servers = ServersStore.getServers();
+        Multimap<Server,Object> columns = HashMultimap.create();
+        for (Server server : servers) {
+            try {
+                for (DBColumn column : DBConnection.getDbmd(server).getColumnsFor(server)) {
+                    columns.put(server, column);
+                }
+            } catch (Throwable t) {
+                columns.put(server, Log.annotatedStackTrace(t));
+                log.warn(t);
+            }
+        }
+        return new ServersSearchPage(search,servers,ImmutableMultimap.copyOf(columns));
     }
 
     @Override

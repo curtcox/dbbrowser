@@ -1,7 +1,7 @@
 package com.cve.web.db;
 
+import com.cve.db.DBColumn;
 import com.cve.web.*;
-import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.html.CSS;
 
@@ -10,24 +10,23 @@ import com.cve.util.URIs;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import static com.cve.html.HTML.*;
-
 import static com.cve.web.db.NavigationButtons.*;
 
 /**
- * For picking a database server.
+ * For finding stuff in a database server.
  */
-public final class ServersPageRenderer implements ModelHtmlRenderer {
+public final class ServersSearchPageRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        ServersPage page = (ServersPage) model;
+        ServersSearchPage page = (ServersSearchPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN , title, SEARCH
+            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search.target)
         };
-        String guts  = tableOfServers(page);
+        String guts  = tableOfMatches(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
 
@@ -35,14 +34,14 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
     /**
      * Return a table of all the available servers.
      */
-    static String tableOfServers(ServersPage page) {
+    static String tableOfMatches(ServersSearchPage page) {
         StringBuilder out = new StringBuilder();
-        out.append(tr(th("Database Server") + th("Databases")));
+        out.append(tr(th("Database Server") + th("Database")));
         for (Server server : page.servers) {
             out.append(
                 tr(
                     td(server.linkTo().toString(),CSS.SERVER) +
-                    td(databasesOn(page,server),       CSS.DATABASE))
+                    td(columnsOn(page,server),    CSS.DATABASE))
             );
             server.linkTo();
         }
@@ -54,24 +53,18 @@ public final class ServersPageRenderer implements ModelHtmlRenderer {
      * Return a list of all (or at least the first several) databases
      * available on the given server.
      */
-    static String databasesOn(ServersPage page, Server server) {
+    static String columnsOn(ServersSearchPage page, Server server) {
         StringBuilder out = new StringBuilder();
-        int i = 0;
-        for (Object object : page.databases.get(server)) {
-            if (object instanceof Database) {
-                Database database = (Database) object;
-                out.append(database.linkTo() + " ");
+        for (Object object : page.columns.get(server)) {
+            if (object instanceof DBColumn) {
+                DBColumn column = (DBColumn) object;
+                out.append(column.linkTo() + " ");
             } else if (object instanceof AnnotatedStackTrace) {
                 AnnotatedStackTrace t = (AnnotatedStackTrace) object;
                 String message = t.throwable.getMessage();
                 out.append(ObjectLink.to(message, t));
             } else {
                 throw new IllegalArgumentException("" + object);
-            }
-            i++;
-            if (i>20) {
-                out.append("...");
-                return out.toString();
             }
         }
         return out.toString();
