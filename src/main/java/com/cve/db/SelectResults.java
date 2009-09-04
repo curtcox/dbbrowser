@@ -106,6 +106,14 @@ public final class SelectResults implements Model {
         return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,100,hasMore);
     }
 
+    public static SelectResults selectResultsHintsCountMore(
+        Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
+    {
+        Server server = check(select,resultSet);
+        Search search = Search.EMPTY;
+        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,count,hasMore);
+    }
+
     public static SelectResults typeSelectSearchResultsHintsCountMore(
         Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
     {
