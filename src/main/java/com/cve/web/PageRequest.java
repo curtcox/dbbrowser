@@ -104,4 +104,8 @@ public final class PageRequest {
         return (string==null) ? "" : string;
     }
 
+    public PageRequest withURI(String requestURI) {
+        return new PageRequest(method,requestURI,queryString,parameters,cookies);
+    }
+
 }

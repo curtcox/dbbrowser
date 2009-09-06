@@ -5,29 +5,28 @@ import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.log.AbstractBrowser;
 import com.cve.web.log.ObjectLink;
+import com.google.common.collect.Multimap;
 
 /**
+ * Map-aware object browser.
  * @author ccox
  */
-public final class ArrayBrowser
+public final class MultimapBrowser
     extends AbstractBrowser
 {
 
-    public ArrayBrowser() {
-        super(Object.class); // harmless lie
+    public MultimapBrowser() {
+        super(Multimap.class);
     }
 
-    /* (non-Javadoc)
-     */
     @Override
     public String getComponentFor(Object o) {
-        Object[] a = (Object[]) o;
+        Multimap map = (Multimap) o;
         UITable table = UITable.of();
-        int i = 0;
-        for (Object value : a) {
-            UIRow row = UIRow.of(UIDetail.of("" + i),link(value));
+        for (Object key : map.keySet()) {
+            Object value = map.get(key);
+            UIRow row = UIRow.of(link(key),link(value));
             table = table.with(row);
-            i++;
         }
         return table.toString();
     }
@@ -35,4 +34,5 @@ public final class ArrayBrowser
     private static UIDetail link(Object o) {
         return UIDetail.of(ObjectLink.to("" + o,o));
     }
+
 }

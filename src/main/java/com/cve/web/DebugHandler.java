@@ -11,6 +11,8 @@ import java.sql.SQLException;
  */
 public final class DebugHandler implements RequestHandler {
 
+    private static ThreadLocal<Boolean> debug = new ThreadLocal();
+
     /**
      * The thing that really handles the requests
      */
@@ -27,7 +29,17 @@ public final class DebugHandler implements RequestHandler {
     @Override
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         args(request);
-        return handler.produce(request);
+        String requestURI = request.requestURI;
+        if (!requestURI.startsWith("/*")) {
+            debug.set(Boolean.FALSE);
+            return handler.produce(request);
+        }
+        debug.set(Boolean.TRUE);
+        PageRequest stripped = request.withURI("/" + requestURI.substring(2));
+        return handler.produce(stripped);
     }
 
+    public static boolean isOn() {
+        return debug.get();
+    }
 }

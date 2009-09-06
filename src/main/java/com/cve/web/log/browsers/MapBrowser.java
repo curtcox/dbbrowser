@@ -19,18 +19,19 @@ public final class MapBrowser
         super(Map.class);
     }
 
-    /* (non-Javadoc)
-     */
     @Override
     public String getComponentFor(Object o) {
         Map map = (Map) o;
         UITable table = UITable.of();
         for (Object key : map.keySet()) {
             Object value = map.get(key);
-            UIRow row = UIRow.of(UIDetail.of(ObjectLink.to(key)),UIDetail.of(ObjectLink.to(value)));
+            UIRow row = UIRow.of(link(key),link(value));
             table = table.with(row);
         }
         return table.toString();
     }
 
+    private static UIDetail link(Object o) {
+        return UIDetail.of(ObjectLink.to("" + o,o));
+    }
 }

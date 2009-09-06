@@ -1,6 +1,10 @@
 package com.cve.html;
 
+import com.cve.log.Log;
+import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Replace;
+import com.cve.web.DebugHandler;
+import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -32,28 +36,64 @@ public final class Link {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
-        this.html = "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>";
+        this.html   = a(text,target,tip);
     }
 
     private Link(Label text, URI target, Tooltip tip, URI image) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
-        this.html = "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text.toString(),image) +"</a>";
+        this.html   = a(text,target,tip,image);
     }
 
     private Link(Label text, URI target) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
-        this.html = "<a href=" + q(target.toString()) + ">" + text +"</a>";
+        this.html   = a(text,target);
     }
 
     private Link(Label text, URI target, URI image, String alt) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
-        this.html = "<a href=" + q(target.toString()) + ">" + img(alt,image) +"</a>";
+        this.html   = a(text,target,image,alt);
+    }
+
+    private static String a(Label text, URI target, URI image, String alt) {
+        return "<a href=" + q(target.toString()) + ">" + img(alt,image) +"</a>" + debug();
+    }
+
+    private static String a(Label text, URI target) {
+        return "<a href=" + q(target.toString()) + ">" + text +"</a>" + debug();
+    }
+
+    private static String a(Label text, URI target, Tooltip tip) {
+        return "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>" + debug();
+    }
+
+    private static String a(Label text, URI target, Tooltip tip, URI image) {
+        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text.toString(),image) +"</a>" + debug();
+    }
+
+    /**
+     * Return a debugging link, if debugging is on.
+     * @return
+     */
+    private static String debug() {
+        if (!DebugHandler.isOn()) {
+            return "";
+        }
+        AnnotatedStackTrace trace = Log.annotatedStackTrace();
+        int max = 200;
+        if (trace.elements.size() > max) {
+            String message = "The maximum stack depth of " + max +
+               " has been passed.  This exception is being thrown to short-circuit" +
+               " what looks like endless recursion."
+            ;
+            throw new IllegalStateException(message);
+        }
+        return ObjectLink.to(".",trace);
     }
 
     public static Link textTarget(Label text, URI target) {

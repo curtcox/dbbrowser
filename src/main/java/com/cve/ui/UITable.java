@@ -6,6 +6,7 @@ import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a HTML table.
@@ -13,6 +14,7 @@ import java.util.List;
  * to render to something other than HTML later.
  * @author curt
  */
+@Immutable
 public final class UITable implements UIElement {
 
     private final ImmutableList<UIRow> rows;

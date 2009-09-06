@@ -13,7 +13,14 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Database {
 
+    /**
+     * The name of the database
+     */
     public final String name;
+
+    /**
+     * The server the database is on
+     */
     public final Server server;
 
     public static final Database NULL = new Database(Server.NULL,"");
@@ -28,7 +35,7 @@ public final class Database {
     }
 
     @Override
-    public   int hashCode() { return name.hashCode(); }
+    public   int hashCode() { return name.hashCode() ^ server.hashCode(); }
 
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
@@ -36,8 +43,8 @@ public final class Database {
         if (o==this) {
             return true;
         }
-        Database database = (Database) o;
-        return name.equals(database.name);
+        Database other = (Database) o;
+        return name.equals(other.name) && server.equals(other.server);
     }
 
     public DBTable tableName(String name) {

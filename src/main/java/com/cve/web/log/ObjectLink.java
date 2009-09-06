@@ -32,7 +32,7 @@ public final class ObjectLink {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(getLabel(object) + "/" + hash);
         URI target = URIs.of("/object/" + hash);
-        return Link.textTarget(text, target).toString();
+        return link(text, target).toString();
     }
 
     /**
@@ -42,7 +42,18 @@ public final class ObjectLink {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(labelText);
         URI target = URIs.of("/object/" + hash);
-        return Link.textTarget(text, target).toString();
+        return link(text, target).toString();
+    }
+
+    private static String link(Label text, URI target) {
+        return "<a href=" + q(target.toString()) + ">" + text +"</a>";
+    }
+
+    /**
+     * Quote the given string
+     */
+    private static String q(String text) {
+        return "\"" + text + "\"";
     }
 
 }

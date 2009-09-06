@@ -48,11 +48,13 @@ public final class RequestRouterServlet extends HttpServlet {
      * The router is just a composite handler.
      */
     private static final RequestHandler ROUTER = ErrorReportHandler.of(
-        CompositeRequestHandler.of(
-            CoreServerHandler.newInstance(),
-            AlternateViewHandler.newInstance(),
-            LogBrowserHandler.newInstance(),
-            DBBrowserHandler.newInstance()
+        DebugHandler.of(
+            CompositeRequestHandler.of(
+                CoreServerHandler.newInstance(),
+                AlternateViewHandler.newInstance(),
+                LogBrowserHandler.newInstance(),
+                DBBrowserHandler.newInstance()
+            )
         )
     );
 

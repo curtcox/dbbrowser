@@ -4,6 +4,7 @@ import com.cve.web.log.browsers.AnnotatedStackTraceBrowser;
 import com.cve.web.log.browsers.ArrayBrowser;
 import com.cve.web.log.browsers.CollectionBrowser;
 import com.cve.web.log.browsers.MapBrowser;
+import com.cve.web.log.browsers.MultimapBrowser;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
@@ -32,6 +33,7 @@ final class CustomBrowserRegistry {
     static {
         register(new CollectionBrowser());
         register(new MapBrowser());
+        register(new MultimapBrowser());
         register(new AnnotatedStackTraceBrowser());
         // add new custom browsers here
     }

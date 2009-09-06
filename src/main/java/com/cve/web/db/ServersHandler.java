@@ -1,6 +1,7 @@
 package com.cve.web.db;
 
 import com.cve.db.DBColumn;
+import com.cve.db.DBTable;
 import com.cve.web.*;
 import com.cve.db.Database;
 import com.cve.db.Server;
@@ -11,10 +12,15 @@ import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import static com.cve.log.Log.args;
 
 /**
@@ -36,20 +42,64 @@ public final class ServersHandler extends AbstractRequestHandler {
         return newSearchPage(search);
     }
 
-    static ServersSearchPage newSearchPage(Search search) {
-        ImmutableList<Server> servers = ServersStore.getServers();
-        Multimap<Server,Object> columns = HashMultimap.create();
-        for (Server server : servers) {
-            try {
-                for (DBColumn column : DBConnection.getDbmd(server).getColumnsFor(server)) {
-                    columns.put(server, column);
-                }
-            } catch (Throwable t) {
-                columns.put(server, Log.annotatedStackTrace(t));
-                log.warn(t);
+    /**
+     * Perform the requested search and return a results page.
+     */
+    static ServersSearchPage newSearchPage(Search search) throws SQLException {
+        args(search);
+        ImmutableList<DBColumn> columns = allColumns();
+        Set<Server> filteredServers = Sets.newHashSet();
+        Multimap<Server,Database> filteredDatabases = HashMultimap.create();
+        Multimap<Database,DBTable> filteredTables = HashMultimap.create();
+        Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();
+        for (DBColumn column : columns) {
+            String     target = search.target;
+            DBTable     table = column.table;
+            Database database = table.database;
+            Server     server = database.server;
+            if (isMatch(column.name,target)) {
+                filteredServers.add(server);
+                filteredDatabases.put(server,database);
+                filteredTables.put(database,table);
+                filteredColumns.put(table,column);
+            }
+            if (isMatch(table.name,target)) {
+                filteredServers.add(server);
+                filteredDatabases.put(server,database);
+                filteredTables.put(database,table);
+            }
+            if (isMatch(database.name,target)) {
+                filteredServers.add(server);
+                filteredDatabases.put(server,database);
+            }
+            if (isMatch(server.uri.toString(),target)) {
+                filteredServers.add(server);
             }
         }
-        return new ServersSearchPage(search,servers,ImmutableMultimap.copyOf(columns));
+        return new ServersSearchPage(search,
+            new ArrayList(filteredServers),filteredDatabases,
+            filteredTables,filteredColumns);
+    }
+
+    /**
+     * Return a list of all columns from all servers.
+     */
+    static ImmutableList<DBColumn> allColumns() throws SQLException {
+        List<DBColumn> columns = Lists.newArrayList();
+        ImmutableList<Server> servers = ServersStore.getServers();
+        for (Server server : servers) {
+            for (DBColumn column : DBConnection.getDbmd(server).getColumnsFor(server)) {
+                columns.add(column);
+            }
+        }
+        return ImmutableList.copyOf(columns);
+    }
+
+    /**
+     * Return true if the search should consider this a match.
+     */
+    static boolean isMatch(String text, String target) {
+        return text.toUpperCase().contains(target.toUpperCase());
     }
 
     @Override

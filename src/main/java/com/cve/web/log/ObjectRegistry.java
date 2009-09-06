@@ -1,8 +1,8 @@
 package com.cve.web.log;
 
+import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Gloabl map of registered objects.
@@ -51,6 +51,7 @@ public final class ObjectRegistry {
         }
 
         @Override
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
         public boolean equals(Object other) {
             Key key = (Key) other;
             return value == key.value;
@@ -62,7 +63,7 @@ public final class ObjectRegistry {
         }
     } // Key
 
-    static final Map<Key,Object> objects = new ConcurrentHashMap<Key,Object>();
+    static final Map<Key,Object> objects = SimpleCache.of();
 
     static Object get(Key key) {
         if (key==Key.NULL) {
