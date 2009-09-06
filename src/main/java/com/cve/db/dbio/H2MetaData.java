@@ -28,24 +28,26 @@ final class H2MetaData extends DefaultDBMetaData {
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
-        for (Database database : getDatabasesOn(server)) {
-            String          catalog = null;
-            String    schemaPattern = null;
-            String tableNamePattern = null;
-            String columnNamePattern = null;
-            ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            try {
-                while (results.next()) {
-                    String tableName = results.getString("TABLE_NAME");
-                    String columnName = results.getString("COLUMN_NAME");
-                    DBColumn column = database.tableName(tableName).columnName(columnName);
-                    list.add(column);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                close(results);
+        String          catalog = null;
+        String    schemaPattern = null;
+        String tableNamePattern = null;
+        String columnNamePattern = null;
+        ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        try {
+            while (results.next()) {
+                String tableName = results.getString("TABLE_NAME");
+                String columnName = results.getString("COLUMN_NAME");
+                // Due to a driver bug, we can't use the column name
+                int TABLE_SCHEMA = 2;
+                String databaseName = results.getString(TABLE_SCHEMA);
+                Database database = Database.serverName(server, databaseName);
+                DBColumn column = database.tableName(tableName).columnName(columnName);
+                list.add(column);
             }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(results);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
         return columns;
@@ -109,11 +111,12 @@ final class H2MetaData extends DefaultDBMetaData {
 
     @Override
     public ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException {
-        DBMetaDataIO     dbmd = getDbmdIO(server);
-        ResultSet results = dbmd.getSchemas();
+        DBMetaDataIO  dbmd = getDbmdIO(server);
+        ResultSet  results = dbmd.getSchemas();
         try {
             List<Database> list = Lists.newArrayList();
             while (results.next()) {
+                // Due to a driver bug, we can't use the column name
                 int SCHEMA_NAME = 1;
                 String databaseName = results.getString(SCHEMA_NAME);
                 list.add(server.databaseName(databaseName));

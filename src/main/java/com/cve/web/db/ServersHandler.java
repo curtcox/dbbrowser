@@ -127,4 +127,8 @@ public final class ServersHandler extends AbstractRequestHandler {
         }
         return ImmutableMultimap.copyOf(databases);
     }
+
+    static void info(String message) {
+        log.info(message);
+    }
 }
