@@ -53,6 +53,34 @@ final class H2MetaData extends DefaultDBMetaData {
         return columns;
     }
 
+        /**
+     */
+    @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        Server server = database.server;
+        DBMetaDataIO   dbmd = getDbmdIO(server);
+        List<DBColumn> list = Lists.newArrayList();
+        String          catalog = null;
+        String    schemaPattern = database.name;
+        String tableNamePattern = null;
+        String columnNamePattern = null;
+        ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        try {
+            while (results.next()) {
+                String tableName = results.getString("TABLE_NAME");
+                String columnName = results.getString("COLUMN_NAME");
+                DBColumn column = database.tableName(tableName).columnName(columnName);
+                list.add(column);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(results);
+        }
+        ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
+        return columns;
+    }
+
     /**
      * Simple cache
      */

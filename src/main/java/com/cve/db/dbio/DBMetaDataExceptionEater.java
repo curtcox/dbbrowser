@@ -27,6 +27,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         return new DBMetaDataExceptionEater(meta);
     }
 
+    @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getPrimaryKeysFor(tables);
@@ -36,6 +37,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getJoinsFor(tables);
@@ -45,6 +47,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server) {
         try {
             return meta.getColumnsFor(server);
@@ -54,6 +57,17 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) {
+        try {
+            return meta.getColumnsFor(database);
+        } catch (SQLException e) {
+            report(e);
+            return ImmutableList.of();
+        }
+    }
+
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) {
         try {
             return meta.getColumnsFor(table);
@@ -63,6 +77,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) {
         try {
             return meta.getDatabasesOn(server);
@@ -72,6 +87,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getColumnsFor(tables);
@@ -81,6 +97,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database) {
         try {
             return meta.getTablesOn(database);

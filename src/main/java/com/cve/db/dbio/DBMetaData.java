@@ -32,6 +32,7 @@ public interface DBMetaData {
 
     ImmutableList<DBColumn> getColumnsFor(Server server)  throws SQLException;
 
+    ImmutableList<DBColumn> getColumnsFor(Database database)  throws SQLException;
 
     ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException;
 

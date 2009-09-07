@@ -127,7 +127,7 @@ public class ResultsTableRendererTest {
 
     @Test
     public void personDatabaseRow() {
-        String expected = td("Database : <a href=[/server/customer/]>customer</a>",1);
+        String expected = td("Database : <a href=[/+/server/customer/]>customer</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
@@ -138,7 +138,7 @@ public class ResultsTableRendererTest {
 
     @Test
     public void personTableRow() {
-        String expected = td("Table : <a href=[/server/customer/customer.person/]>person</a>",1);
+        String expected = td("Table : <a href=[/+/server/customer/customer.person/]>person</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
@@ -151,7 +151,7 @@ public class ResultsTableRendererTest {
     public void personColumnNameRow() {
         String expected =
         td(
-        "<a href=[/server/customer/customer.person/customer.person.name/] " +
+        "<a href=[/+/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
              escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
@@ -170,7 +170,7 @@ public class ResultsTableRendererTest {
     @Test
     public void personColumnNameCell() {
         String expected =
-        "<a href=[/server/customer/customer.person/customer.person.name/] " +
+        "<a href=[/+/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
              escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
@@ -183,17 +183,6 @@ public class ResultsTableRendererTest {
 
         String rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).nameCell(column);
         equals(expected,rendered);
-    }
-
-    @Test
-    public void linkToColumn() {
-        Server           server = Server.uri(URIs.of("server"));
-        Database       database = server.databaseName("customer");
-        DBTable            person = database.tableName("person");
-        DBColumn             name = person.columnNameType("name",String.class);
-        String              uri = DBResultSetRenderer.linkTo(name).toString();
-        // server / database / table / column
-        equals("/server/customer/customer.person/customer.person.name/",uri);
     }
 
     @Test

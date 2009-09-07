@@ -61,6 +61,13 @@ final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        ImmutableList<DBColumn> result = meta.getColumnsFor(database);
+        queueColumns(result);
+        return result;
+    }
+
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         ImmutableList<DBColumn> result = meta.getColumnsFor(table);
         queueColumns(result);

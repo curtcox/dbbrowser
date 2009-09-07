@@ -40,6 +40,10 @@ public final class DebugHandler implements RequestHandler {
     }
 
     public static boolean isOn() {
-        return debug.get();
+        Boolean on = debug.get();
+        if (on==null) {
+            return false;
+        }
+        return on;
     }
 }

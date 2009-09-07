@@ -4,7 +4,7 @@ import com.cve.util.Check;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
-
+import static com.cve.log.Log.args;
 /**
  * Finds the proper renderer from those it is given and delegates.
  * @author curt
@@ -34,6 +34,7 @@ final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
+        args(model,client);
         Check.notNull(model);
         Class toRender = model.getClass();
         ModelHtmlRenderer renderer = renderers.get(model.getClass());

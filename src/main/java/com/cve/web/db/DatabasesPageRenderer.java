@@ -10,7 +10,7 @@ import com.cve.util.Replace;
 import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
-
+import static com.cve.web.db.NavigationButtons.*;
 /**
  * Renders a DatabasePage to a HTML string.
  */
@@ -25,7 +25,8 @@ public final class DatabasesPageRenderer implements ModelHtmlRenderer {
         String title = "Available Databases on " + server.toString();
         String guts  = tableOfDatabases(page);
         String nav[] = new String[] {
-            Replace.bracketQuote("Available Databases on <a href=[/]>server</a> ") + server
+            Replace.bracketQuote("Available Databases on <a href=[/]>server</a> ") + server,
+            SEARCH
         };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }

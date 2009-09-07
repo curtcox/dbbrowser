@@ -52,8 +52,8 @@ public final class ServersHandler extends AbstractRequestHandler {
         Multimap<Server,Database> filteredDatabases = HashMultimap.create();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();
+        String     target = search.target;
         for (DBColumn column : columns) {
-            String     target = search.target;
             DBTable     table = column.table;
             Database database = table.database;
             Server     server = database.server;

@@ -46,6 +46,12 @@ final class DBMetaDataLogger implements DBMetaData {
     }
 
     @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        print("getColumnsFor" + database);
+        return print(meta.getColumnsFor(database));
+    }
+
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         print("getColumnsFor" + table);
         return print(meta.getColumnsFor(table));

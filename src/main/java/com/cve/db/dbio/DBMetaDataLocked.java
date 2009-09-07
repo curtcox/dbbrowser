@@ -42,6 +42,11 @@ final class DBMetaDataLocked implements DBMetaData {
     }
 
     @Override
+    synchronized public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        return meta.getColumnsFor(database);
+    }
+
+    @Override
     synchronized public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         return meta.getColumnsFor(table);
     }

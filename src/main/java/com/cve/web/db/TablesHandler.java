@@ -12,9 +12,12 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+import java.util.Set;
 import static com.cve.log.Log.args;
 /**
  * For picking a table.
@@ -33,15 +36,19 @@ public final class TablesHandler extends AbstractRequestHandler {
      * Get the response (list of tables) for this request.
      */
     @Override
-    public TablesPage get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) throws IOException, SQLException {
         args(request);
         String                    uri = request.requestURI;
+        Search                 search = DBURICodec.getSearch(uri);
         Server                 server = DBURICodec.getServer(uri);
         Database             database = DBURICodec.getDatabase(uri);
-        DBMetaData               meta = DBConnection.getDbmd(server);
-        ImmutableList<DBTable> tables = meta.getTablesOn(database);
-        ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
-        return new TablesPage(server,database,tables,columns);
+        if (search.isEmpty()) {
+            DBMetaData               meta = DBConnection.getDbmd(server);
+            ImmutableList<DBTable> tables = meta.getTablesOn(database);
+            ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
+            return new TablesPage(server,database,tables,columns);
+        }
+        return newSearchPage(database,search);
     }
 
     /**
@@ -65,5 +72,36 @@ public final class TablesHandler extends AbstractRequestHandler {
             }
         }
         return ImmutableMultimap.copyOf(columns);
+    }
+
+    /**
+     * Perform the requested search and return a results page.
+     */
+    static TablesSearchPage newSearchPage(Database database,Search search) throws SQLException {
+        args(database,search);
+        DBMetaData               meta = DBConnection.getDbmd(database.server);
+        ImmutableList<DBColumn> columns = meta.getColumnsFor(database);
+        Set<DBTable> filteredTables = Sets.newHashSet();
+        Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();
+        for (DBColumn column : columns) {
+            String     target = search.target;
+            DBTable     table = column.table;
+            if (isMatch(column.name,target)) {
+                filteredTables.add(table);
+                filteredColumns.put(table,column);
+            }
+            if (isMatch(table.name,target)) {
+                filteredTables.add(table);
+            }
+        }
+        return new TablesSearchPage(search,
+            new ArrayList(filteredTables),filteredColumns);
+    }
+
+    /**
+     * Return true if the search should consider this a match.
+     */
+    static boolean isMatch(String text, String target) {
+        return text.toUpperCase().contains(target.toUpperCase());
     }
 }

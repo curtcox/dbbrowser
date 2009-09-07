@@ -29,7 +29,7 @@ public final class Search {
      * Use the factories.
      */
     private Search(String target) {
-        this.target = Check.notNull(target);
+        this.target = Check.notNull(target).trim();
     }
 
     public static Search of(String target) {

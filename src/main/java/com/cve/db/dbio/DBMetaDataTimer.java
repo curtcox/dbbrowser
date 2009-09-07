@@ -25,6 +25,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return new DBMetaDataTimer(meta);
     }
 
+    @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         Stopwatch watch = Stopwatch.start(tables);
         ImmutableList<DBColumn> result = meta.getPrimaryKeysFor(tables);
@@ -32,6 +33,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
         Stopwatch watch = Stopwatch.start(tables);
         ImmutableList<Join> result = meta.getJoinsFor(tables);
@@ -39,6 +41,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
         Stopwatch watch = Stopwatch.start(server);
         ImmutableList<DBColumn> result = meta.getColumnsFor(server);
@@ -46,6 +49,15 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        Stopwatch watch = Stopwatch.start(database);
+        ImmutableList<DBColumn> result = meta.getColumnsFor(database);
+        watch.stop();
+        return result;
+    }
+
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         Stopwatch watch = Stopwatch.start(table);
         ImmutableList<DBColumn> result = meta.getColumnsFor(table);
@@ -53,6 +65,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         Stopwatch watch = Stopwatch.start(server);
         ImmutableList<Database> result = meta.getDatabasesOn(server);
@@ -60,6 +73,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
         Stopwatch watch = Stopwatch.start(tables);
         ImmutableList<DBColumn> result = meta.getColumnsFor(tables);
@@ -67,6 +81,7 @@ final class DBMetaDataTimer implements DBMetaData {
         return result;
     }
 
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         Stopwatch watch = Stopwatch.start(database);
         ImmutableList<DBTable> result = meta.getTablesOn(database);

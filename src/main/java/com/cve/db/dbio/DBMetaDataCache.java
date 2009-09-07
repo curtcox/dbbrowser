@@ -60,6 +60,17 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
+    private final Map<Database,ImmutableList<DBColumn>> columnsForDatabase = Maps.newHashMap();
+    @Override
+    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+        if (columnsForDatabase.containsKey(database)) {
+            return columnsForDatabase.get(database);
+        }
+        ImmutableList<DBColumn> result = meta.getColumnsFor(database);
+        columnsForDatabase.put(database, result);
+        return result;
+    }
+
     private final Map<DBTable,ImmutableList<DBColumn>> columnsForTable = Maps.newHashMap();
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {

@@ -13,10 +13,8 @@ import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
-import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Value;
-import com.cve.db.select.URIRenderer;
 import com.cve.html.CSS;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -194,7 +192,7 @@ public final class DBResultSetRenderer {
      */
     static String nameCell(Database database) {
         Label  text = Label.of(database.name);
-        URI  target = linkTo(database);
+        URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
     }
 
@@ -203,7 +201,7 @@ public final class DBResultSetRenderer {
      */
     static String nameCell(DBTable table) {
         Label  text = Label.of(table.name);
-        URI  target = linkTo(table);
+        URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
     }
 
@@ -221,7 +219,7 @@ public final class DBResultSetRenderer {
             columnName = columnName.substring(0,width);
         }
         Label                    text = Label.of(columnName);
-        URI                    target = linkTo(column);
+        URI                    target = column.linkTo().getTarget();
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<Filter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
@@ -283,25 +281,6 @@ public final class DBResultSetRenderer {
         Filter       filter = Filter.of(column, value);
         URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
         return Link.textTarget(text, target).toString();
-    }
-
-    static URI linkTo(DBColumn column) {
-        DBTable       table = column.table;
-        Database database = table.database;
-        Server     server = database.server;
-
-        return URIRenderer.render(server,database,table,column);
-    }
-
-    static URI linkTo(DBTable table) {
-        Database database = table.database;
-        Server     server = database.server;
-        return URIRenderer.render(server,database,table);
-    }
-
-    static URI linkTo(Database database) {
-        Server     server = database.server;
-        return URIRenderer.render(server,database);
     }
 
 }

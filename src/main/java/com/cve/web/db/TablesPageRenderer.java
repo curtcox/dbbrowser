@@ -11,7 +11,7 @@ import com.cve.util.Replace;
 import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
-
+import static com.cve.web.db.NavigationButtons.*;
 /**
  * For picking a table.
  */
@@ -30,7 +30,8 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
             Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.name
-            )};
+            ), SEARCH
+        };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
