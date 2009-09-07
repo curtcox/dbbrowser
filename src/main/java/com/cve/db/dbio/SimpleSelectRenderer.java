@@ -17,11 +17,16 @@ import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
  * Renders a {@link Select} as {@link SQL}.
+ * This class is meant to be fairly easy to extend, but you can always just
+ * implement SelectRenderer from scratch.
  * @author curt
  */
 class SimpleSelectRenderer implements SelectRenderer {
 
+    // Constants we use in the generated SQL
     private static final String AND      = " AND ";
+    private static final String OR       = " OR ";
+    private static final String LIKE     = " LIKE ";
     private static final String FROM     = " FROM ";
     private static final String WHERE    = " WHERE ";
     private static final String ORDER_BY = " ORDER BY ";
@@ -37,7 +42,22 @@ class SimpleSelectRenderer implements SelectRenderer {
         out.append(columns(select.columns,select.functions));
         out.append(FROM);
         out.append(tables(select.tables));
-        out.append(where(select.joins,select.filters));
+        out.append(where(select.joins,select.filters,search,select.columns));
+        out.append(order(select.orders));
+        out.append(group(select.groups));
+        out.append(limit(select.limit));
+        return SQL.of(out.toString());
+    }
+
+    @Override
+    public SQL renderCount(Select select, Search search) {
+        notNull(select);
+        StringBuilder out = new StringBuilder();
+        out.append("SELECT ");
+        out.append(" count(*) ");
+        out.append(FROM);
+        out.append(tables(select.tables));
+        out.append(where(select.joins,select.filters,search,select.columns));
         out.append(order(select.orders));
         out.append(group(select.groups));
         out.append(limit(select.limit));
@@ -66,10 +86,14 @@ class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,",");
     }
 
-    public String where(ImmutableList<Join> joins, ImmutableList<Filter> filters) {
+    public String where(
+        ImmutableList<Join> joins, ImmutableList<Filter> filters,
+        Search search, ImmutableList<DBColumn> columns)
+    {
         boolean   hasJoins =   joins.size() > 0;
         boolean hasFilters = filters.size() > 0;
-        if (!hasJoins && !hasFilters) {
+        boolean  hasSearch =  !search.isEmpty();
+        if (!hasJoins && !hasFilters && !hasSearch) {
             return "";
         }
         StringBuilder out = new StringBuilder();
@@ -79,6 +103,10 @@ class SimpleSelectRenderer implements SelectRenderer {
             out.append(AND);
         }
         out.append(filters(filters));
+        if ((hasJoins || hasFilters) && hasSearch) {
+            out.append(AND);
+        }
+        out.append(search(search,columns));
         return out.toString();
     }
 
@@ -96,6 +124,14 @@ class SimpleSelectRenderer implements SelectRenderer {
             list.add(fullName(filter.column) + "=" + singleQuote(filter.value.toString()));
         }
         return separated(list,AND);
+    }
+
+    public String search(Search search, ImmutableList<DBColumn> columns) {
+        List<String> list = Lists.newArrayList();
+        for (DBColumn column : columns) {
+            list.add(lower(fullName(column)) + LIKE + lower(singleQuote("%" + search.target + "%")));
+        }
+        return "(" + separated(list,OR) + ")";
     }
 
     public String order(ImmutableList<Order> orders) {
@@ -148,4 +184,9 @@ class SimpleSelectRenderer implements SelectRenderer {
     static String singleQuote(String value) {
         return "'" + value + "'";
     }
+
+    static String lower(String value) {
+        return "lower(" + value + ")";
+    }
+
 }

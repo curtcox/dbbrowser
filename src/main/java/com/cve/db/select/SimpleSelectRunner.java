@@ -16,6 +16,7 @@ import com.cve.db.SelectContext;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBDriver;
+import com.cve.log.Log;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -33,6 +34,8 @@ import static com.cve.log.Log.args;
  * Runs {@link Select}S against database connections to produce {@link SelectResults}.
  */
 final class SimpleSelectRunner implements SelectRunner {
+
+    private static final Log log = Log.of(SimpleSelectRunner.class);
 
     @Override
     public SelectResults run(SelectContext context) {
@@ -75,7 +78,7 @@ final class SimpleSelectRunner implements SelectRunner {
         DBDriver driver = connection.info.driver;
         Select select = context.select;
         Search search = context.search;
-        SQL sql = driver.render(select.count().with(Limit.DEFAULT),search);
+        SQL sql = driver.renderCount(select,search);
         try {
             ResultSet results = connection.select(sql);
             try {

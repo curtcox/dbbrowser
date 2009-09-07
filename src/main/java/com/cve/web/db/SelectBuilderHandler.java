@@ -95,10 +95,11 @@ public final class SelectBuilderHandler implements RequestHandler {
 
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
+        Search           search = DBURICodec.getSearch(uri);
         DBConnection connection = ServersStore.getConnection(server);
         Hints hints = HintsStore.getHints(select.columns);
 
-        SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
+        SelectContext context = SelectContext.of(select, search, server, connection, hints);
 
         // run the select
         SelectResults results = SelectExecutor.run(context);

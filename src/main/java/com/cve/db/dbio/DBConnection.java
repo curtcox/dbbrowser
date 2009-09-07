@@ -41,6 +41,8 @@ public final class DBConnection {
      */
     public final DBMetaData dbMetaData;
 
+    private static final Log LOG = Log.of(DBConnection.class);
+
     private DBConnection(ConnectionInfo info) {
         this.info = notNull(info);
         dbMetaData = DefaultDBMetaData.getDbmd(this);
@@ -94,7 +96,9 @@ public final class DBConnection {
             @Override
             public ResultSet generate() throws SQLException {
                 Statement statement = getConnection().createStatement();
-                statement.execute(sql.toString());
+                String sqlString = sql.toString();
+                info(sqlString);
+                statement.execute(sqlString);
                 return ResultSetWrapper.of(statement.getResultSet());
             }
         });
@@ -105,10 +109,7 @@ public final class DBConnection {
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }
-
     
-    private static Log LOG = Log.of(DBConnection.class);
-
     static void info(String message) {
         LOG.info(message);
     }

@@ -32,7 +32,7 @@ public final class ServersSearchPageRenderer implements ModelHtmlRenderer {
         ServersSearchPage page = (ServersSearchPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search.target)
+            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search)
         };
         String guts  = Helper.render(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
@@ -126,7 +126,7 @@ static final class Helper {
         }
         serversOut.add(server);
         int height = height(server);
-        return UIDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height);
+        return RenderingTools.cell(server,height);
     }
 
     final Set<Database> databasesOut = Sets.newHashSet();
@@ -136,19 +136,7 @@ static final class Helper {
         }
         databasesOut.add(database);
         int height = height(database);
-        return UIDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height);
-    }
-
-    UIDetail cell(DBTable table) {
-        return UIDetail.of(table.linkTo().toString(),CSS.TABLE);
-    }
-
-    UIDetail cell(Collection<DBColumn> columns) {
-        StringBuilder out = new StringBuilder();
-        for (DBColumn column : columns) {
-            out.append(column.linkTo() + " ");
-        }
-        return UIDetail.of(out.toString(),CSS.COLUMN);
+        return RenderingTools.cell(database,height);
     }
 
     UIRow row(Server server) {
@@ -169,7 +157,7 @@ static final class Helper {
         UIDetail serverCell = cell(server);
         UIDetail databaseCell = cell(database);
         if (databaseCell==EMPTY_CELL) {
-            return UIRow.of(cell(table));
+            return UIRow.of(RenderingTools.cell(table));
         }
         if (serverCell==EMPTY_CELL) {
             return UIRow.of(databaseCell,cell(table));
@@ -199,6 +187,14 @@ static final class Helper {
         return UIRow.of(
             serverCell, databaseCell, tableCell, cell(columns)
         );
+    }
+
+    static UIDetail cell(DBTable table) {
+        return RenderingTools.cell(table);
+    }
+
+    static UIDetail cell(Collection<DBColumn> columns) {
+        return RenderingTools.cell(columns);
     }
 }
 

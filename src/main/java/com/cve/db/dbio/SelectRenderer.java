@@ -15,4 +15,10 @@ interface SelectRenderer {
      */
     SQL render(Select select, Search search);
 
+    /**
+     * Same as render, but return the SQL for a count of the rows, rather
+     * than the rows themselves.
+     */
+    SQL renderCount(Select select, Search search);
+
 }

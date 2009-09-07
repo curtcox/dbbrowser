@@ -148,14 +148,6 @@ public final class Select {
     }
 
     /**
-     * Return a query like this one, but just returning a row count.
-     */
-    public Select count() {
-        AggregateFunction count = AggregateFunction.COUNT;
-        return new Select(server,databases,tables,list(DBColumn.ALL),list(count),joins,filters,orders,groups,limit);
-    }
-
-    /**
      * Return a similar select, but with the given limit.
      */
     public Select with(Limit limit) {

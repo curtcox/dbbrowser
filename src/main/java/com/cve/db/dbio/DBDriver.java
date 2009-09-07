@@ -168,6 +168,10 @@ public enum DBDriver {
         return getSelectRenderer().render(select,search);
     }
 
+    public SQL renderCount(Select select, Search search) {
+        return getSelectRenderer().renderCount(select,search);
+    }
+
     /**
      * Return the proper connection info for this driver, given server machine
      * name, user name and password.
@@ -206,4 +210,5 @@ public enum DBDriver {
             }
         }
     }
+
 }

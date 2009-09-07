@@ -28,7 +28,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         TablesSearchPage page = (TablesSearchPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search.target)
+            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search)
         };
         String guts  = Helper.render(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
@@ -73,16 +73,12 @@ static final class Helper {
         return !page.columns.containsKey(table);
     }
 
-    UIDetail cell(DBTable table) {
-        return UIDetail.of(table.linkTo().toString(),CSS.TABLE);
+    static UIDetail cell(DBTable table) {
+        return RenderingTools.cell(table);
     }
 
-    UIDetail cell(Collection<DBColumn> columns) {
-        StringBuilder out = new StringBuilder();
-        for (DBColumn column : columns) {
-            out.append(column.linkTo() + " ");
-        }
-        return UIDetail.of(out.toString(),CSS.COLUMN);
+    static UIDetail cell(Collection<DBColumn> columns) {
+        return RenderingTools.cell(columns);
     }
 
     UIRow row(DBTable table) {

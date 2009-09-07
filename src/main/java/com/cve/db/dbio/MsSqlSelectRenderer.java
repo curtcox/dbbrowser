@@ -33,7 +33,7 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
         out.append(columns(select.columns,select.functions));
         out.append(FROM);
         out.append(tables(select.tables));
-        out.append(where(select.joins,select.filters));
+        out.append(where(select.joins,select.filters,search,select.columns));
         out.append(order(select.orders));
         out.append(group(select.groups));
         return SQL.of(out.toString());

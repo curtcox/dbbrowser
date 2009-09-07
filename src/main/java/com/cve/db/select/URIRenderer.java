@@ -12,10 +12,10 @@ import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.util.URIs;
 import com.cve.web.Search;
+import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
-import java.net.URLEncoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
@@ -52,25 +52,6 @@ import static com.cve.util.Check.notNull;
  */
 public final class URIRenderer {
 
-    public static URI render(Server server, Database database, DBTable table, DBColumn column) {
-        String target =
-            "/" + server.uri + "/" + database.name +
-            "/" + table.fullName() + "/" + column.fullName() + "/";
-        return URIs.of(target);
-    }
-
-    public static URI render(Server server, Database database, DBTable table) {
-        String target =
-            "/" + server.uri + "/" + database.name + "/" + table.fullName() + "/";
-        return URIs.of(target);
-    }
-
-    public static URI render(Server server, Database database) {
-        String target =
-            "/" + server.uri + "/" + database.name + "/";
-        return URIs.of(target);
-    }
-
     /**
      * Render the given select statement as a URI.
      */
@@ -79,8 +60,8 @@ public final class URIRenderer {
         validate(select);
         StringBuilder out = new StringBuilder();
         Server server = select.server;
-        out.append("/" + URLEncoder.encode(search.target));
-        out.append("/" + server.uri + "/");
+        out.append(DBURICodec.encode(search));
+        out.append(server.uri + "/");
         ImmutableList<DBTable> tables = select.tables;
         out.append(renderDatabases(select.databases) + "/");
         out.append(renderTables   (tables)    + "/");

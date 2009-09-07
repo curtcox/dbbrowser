@@ -31,7 +31,7 @@ public final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
         DatabasesSearchPage page = (DatabasesSearchPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search.target)
+            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search)
         };
         String guts  = Helper.render(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
@@ -104,21 +104,17 @@ static final class Helper {
         }
         databasesOut.add(database);
         int height = height(database);
-        return UIDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height);
+        return RenderingTools.cell(database,height);
     }
 
-    UIDetail cell(DBTable table) {
-        return UIDetail.of(table.linkTo().toString(),CSS.TABLE);
+    static UIDetail cell(DBTable table) {
+        return RenderingTools.cell(table);
     }
 
-    UIDetail cell(Collection<DBColumn> columns) {
-        StringBuilder out = new StringBuilder();
-        for (DBColumn column : columns) {
-            out.append(column.linkTo() + " ");
-        }
-        return UIDetail.of(out.toString(),CSS.COLUMN);
+    static UIDetail cell(Collection<DBColumn> columns) {
+        return RenderingTools.cell(columns);
     }
-
+    
     UIRow row(Database database) {
         return UIRow.of(cell(database));
     }

@@ -5,27 +5,28 @@ import com.cve.html.Link;
 import com.cve.ui.UISearchBox;
 import com.cve.util.URIs;
 import com.cve.web.Icons;
+import com.cve.web.Search;
 import java.net.URI;
 
 /**
- *
+ * Navigation buttons that are used on lots of different pages.
  * @author curt
  */
 public final class NavigationButtons {
 
-    static String ADD_SERVER = addServer();
+    public static String ADD_SERVER = addServer();
 
-    static String REMOVE_SERVER = removeServer();
+    public static String REMOVE_SERVER = removeServer();
 
-    static String SEARCH = search("");
+    public static String SEARCH = search(Search.EMPTY);
 
-    static String SHUTDOWN = shutdown();
+    public static String SHUTDOWN = shutdown();
 
-    static String LOGIN = login();
+    public static String LOGIN = login();
 
-    static String LOGOUT = logout();
+    public static String LOGOUT = logout();
 
-    static String addServer() {
+    public static String addServer() {
         String tip = "Add a database server";
         Label text = Label.of("+");
         URI target = URIs.of("add");
@@ -33,7 +34,7 @@ public final class NavigationButtons {
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    static String removeServer() {
+    public static String removeServer() {
         String tip = "Remove a database server";
         Label text = Label.of("-");
         URI target = URIs.of("remove");
@@ -44,11 +45,11 @@ public final class NavigationButtons {
     /**
      * Return a search box
      */
-    static String search(String target) {
-        return UISearchBox.contents(target).toString();
+    public static String search(Search search) {
+        return UISearchBox.contents(search.target).toString();
     }
 
-    static String shutdown() {
+    public static String shutdown() {
         String tip = "Shutdown DBBrowser";
         Label text = Label.of("X");
         URI target = URIs.of("exit");
@@ -56,11 +57,11 @@ public final class NavigationButtons {
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    static String login() {
+    public static String login() {
         return Link.textTarget(Label.of("login"), URIs.of("login")).toString();
     }
 
-    static String logout() {
+    public static String logout() {
         return Link.textTarget(Label.of("logout"), URIs.of("logout")).toString();
     }
 

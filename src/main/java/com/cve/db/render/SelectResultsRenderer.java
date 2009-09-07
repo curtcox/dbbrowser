@@ -11,6 +11,7 @@ import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
+import static com.cve.web.db.NavigationButtons.*;
 /**
  * Renders the results of a database select as HTML.
  * The parts of this are:
@@ -32,19 +33,28 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
-            String guts = renderColumnValueDistributionPage(results,client);
-            String title = "Values in " + results.select.columns.get(0);
-            String[] nav = new String[] {};
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+            return renderColumnValueDistribution(results,client);
         } else {
-            String guts = renderSelectBuilderPage(results,client);
-            Server server = results.server;
-            String title = "Data from server " + server.toString();
-            String[] nav = new String[] {
-                Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo())
-            };
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+            return renderNormalResults(results,client);
         }
+    }
+
+    public HtmlPage renderColumnValueDistribution(SelectResults results, ClientInfo client) {
+        String guts = renderColumnValueDistributionPage(results,client);
+        String title = "Values in " + results.select.columns.get(0);
+        String[] nav = new String[] { search(results.search) };
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+    }
+
+    public HtmlPage renderNormalResults(SelectResults results, ClientInfo client) {
+        String guts = renderSelectBuilderPage(results,client);
+        Server server = results.server;
+        String title = "Data from server " + server.toString();
+        String[] nav = new String[] {
+            Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo()),
+            search(results.search)
+        };
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     String renderColumnValueDistributionPage(SelectResults results, ClientInfo client) {
