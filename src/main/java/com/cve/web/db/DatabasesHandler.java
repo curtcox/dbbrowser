@@ -94,7 +94,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
                 filteredDatabases.add(database);
             }
         }
-        return new DatabasesSearchPage(search,
+        return new DatabasesSearchPage(search, server,
             new ArrayList(filteredDatabases),
             filteredTables,filteredColumns);
     }

@@ -94,7 +94,7 @@ public final class TablesHandler extends AbstractRequestHandler {
                 filteredTables.add(table);
             }
         }
-        return new TablesSearchPage(search,
+        return new TablesSearchPage(search, database,
             new ArrayList(filteredTables),filteredColumns);
     }
 

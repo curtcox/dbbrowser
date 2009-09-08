@@ -127,6 +127,9 @@ class SimpleSelectRenderer implements SelectRenderer {
     }
 
     public String search(Search search, ImmutableList<DBColumn> columns) {
+        if (search.isEmpty()) {
+            return "";
+        }
         List<String> list = Lists.newArrayList();
         for (DBColumn column : columns) {
             list.add(lower(fullName(column)) + LIKE + lower(singleQuote("%" + search.target + "%")));

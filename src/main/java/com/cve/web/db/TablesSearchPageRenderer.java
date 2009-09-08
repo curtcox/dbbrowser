@@ -2,12 +2,14 @@ package com.cve.web.db;
 
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
+import com.cve.db.Database;
+import com.cve.db.Server;
 import com.cve.web.*;
-import com.cve.html.CSS;
 
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITableBuilder;
+import com.cve.util.Replace;
 import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
 import java.net.URI;
@@ -26,12 +28,19 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
         TablesSearchPage page = (TablesSearchPage) model;
-        String title = "Available Servers";
-        String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search)
+        Search     search = page.search;
+        String     target = search.target;
+        Database database = page.database;
+        Server     server = database.server;
+        String title = "Occurences of " + target + " on "+ server.uri + "/" + database.name;
+        String[] nav = new String[] {
+            Replace.bracketQuote(
+                "Occurences of " + target + " on <a href=[/]>server</a> /" +
+                server.linkTo() + "/" + database.linkTo()
+            ), search(page.search)
         };
         String guts  = Helper.render(page);
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
 /**

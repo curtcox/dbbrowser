@@ -29,7 +29,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         String[] nav = new String[] {
             Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
-                server.linkTo() + "/" + database.name
+                server.linkTo() + "/" + database.linkTo()
             ), SEARCH
         };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
