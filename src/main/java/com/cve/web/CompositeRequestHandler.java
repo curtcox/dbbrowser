@@ -28,6 +28,7 @@ public final class CompositeRequestHandler implements RequestHandler {
          return new CompositeRequestHandler(handlers);
     }
 
+    @Override
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         for (RequestHandler handler : handlers) {
             PageResponse response = handler.produce(request);
