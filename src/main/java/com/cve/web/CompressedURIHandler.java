@@ -91,20 +91,46 @@ public final class CompressedURIHandler implements RequestHandler {
     }
 
     /**
-     * Compress the bytes
+     * Compress the bytes.
+     * For now, this uses deflater, but that should change because deflater sucks.
+     * <ol>
+     * <li> Underdocumented.
+     * <li> Buggy.  The methods to set level and strategy cause compression to
+     * fail.  Then again, I could be using them wrong.  See underdocumented.
+     * Setting the level in the constructor seems to work.
+     * <li> Native.  This makes using a debugger to work around the problems
+     * above much harder.
+     * <li> Not good enough.  It makes small URLs bigger (OK), but it doesn't
+     * shrink big URLs enough.  Sample results show the following results for
+     * the entire process (deflate + base64).
+     *   <ol>
+     *       <li>  4:19
+     *       <li>  5:20
+     *       <li>  8:23
+     *       <li>  9:24
+     *       <li> 760:472
+     *   </ol>
+     * This means that deflate is doing a little better than cutting the bytes
+     * in half for large URLs.  There are schemes available that could
+     * probably do at least twice as well as that.
+     *
+     * http://cs.fit.edu/~mmahoney/compression/paq.html
      */
     static byte[] deflate(byte[] input) {
-         Deflater deflater = new Deflater();
+         
+         Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION,false);
          // Setting the level or strategy will cause deflation to fail for
          // undocumented reasons.  Yet, we would like to get better comprssion,
          // since currently we make short URLs longer and only cut the size of
          // long URLs by less than half.
-         //deflater.setLevel(Deflater.BEST_COMPRESSION);
-         //deflater.setStrategy(Deflater.HUFFMAN_ONLY);
          deflater.setInput(input);
          deflater.finish();
          byte[] output = new byte[10000];
          int length = deflater.deflate(output);
+         //length += deflater.deflate(new byte[0]);
+         if (!deflater.finished()) {
+             throw new RuntimeException();
+         }
          return copy(output,length);
     }
 
