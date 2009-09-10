@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class CompressedURIHandlerTest {
 
     static final String LONG_1 =
-"http://localhost:8888/+/c8-qa/QA_C8_CORE/QA_C8_CORE.ACCOUNT/" +
+"/+/c8-qa/QA_C8_CORE/QA_C8_CORE.ACCOUNT/" +
 "account_id+product_id+customer_id+account_status_id+account_name+username+password+date_entered+entered_by+" +
 "setup+recurring+usage_fee+bill_period_id+parent_account_id+billing_start_date+renewal_date+" +
 "original_product_id+original_account_id+one_time_billed+account_status_date+agency_id+" +
@@ -98,6 +98,7 @@ public class CompressedURIHandlerTest {
     void longUri(String uri) {
         String relonged = CompressedURIHandler.longURI(CompressedURIHandler.shortURI(URIs.of(uri))).toString();
         equals(uri,relonged);
+        System.out.println(uri.length() + "v." + CompressedURIHandler.shortURI(URIs.of(uri)).toString().length());
     }
 
     void all(String s) {

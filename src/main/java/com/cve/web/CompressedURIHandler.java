@@ -49,24 +49,62 @@ public final class CompressedURIHandler implements RequestHandler {
 
     /**
      * See http://en.wikipedia.org/wiki/Base64
+     * Normal base 64 encoding uses + and /.
+     * We use - and _ instead AKA base64url.
+     * If we need source to include or modify, look here:
+     * http://www.source-code.biz/snippets/java/Base64Coder.java.txt
      */
     static byte[] encode(byte[] bytes) {
-        return Base64.encode(bytes);
+        return url(Base64.encode(bytes));
     }
 
     static byte[] decode(byte[] bytes) {
-        return Base64.decode(bytes);
+        return Base64.decode(deurl(bytes));
+    }
+
+    static byte[] url(byte[] in) {
+        byte[] out = new byte[in.length];
+        for (int i=0; i<in.length; i++) {
+            out[i] = in[i];
+            if (out[i]=='/') {
+                out[i] = '_';
+            }
+            if (out[i]=='+') {
+                out[i] = '-';
+            }
+        }
+        return out;
+    }
+
+    static byte[] deurl(byte[] in) {
+        byte[] out = new byte[in.length];
+        for (int i=0; i<in.length; i++) {
+            out[i] = in[i];
+            if (out[i]=='_') {
+                out[i] = '/';
+            }
+            if (out[i]=='-') {
+                out[i] = '+';
+            }
+        }
+        return out;
     }
 
     /**
      * Compress the bytes
      */
     static byte[] deflate(byte[] input) {
+         Deflater deflater = new Deflater();
+         // Setting the level or strategy will cause deflation to fail for
+         // undocumented reasons.  Yet, we would like to get better comprssion,
+         // since currently we make short URLs longer and only cut the size of
+         // long URLs by less than half.
+         //deflater.setLevel(Deflater.BEST_COMPRESSION);
+         //deflater.setStrategy(Deflater.HUFFMAN_ONLY);
+         deflater.setInput(input);
+         deflater.finish();
          byte[] output = new byte[10000];
-         Deflater compresser = new Deflater();
-         compresser.setInput(input);
-         compresser.finish();
-         int length = compresser.deflate(output);
+         int length = deflater.deflate(output);
          return copy(output,length);
     }
 
@@ -75,11 +113,11 @@ public final class CompressedURIHandler implements RequestHandler {
      */
     static byte[] inflate(byte[] input) {
         try {
-            Inflater decompresser = new Inflater();
-            decompresser.setInput(input, 0, input.length);
+            Inflater inflater = new Inflater();
+            inflater.setInput(input, 0, input.length);
             byte[] output = new byte[10000];
-            int length = decompresser.inflate(output);
-            decompresser.end();
+            int length = inflater.inflate(output);
+            inflater.end();
             return copy(output,length);
         } catch (DataFormatException e) {
             throw new RuntimeException(e);
@@ -112,7 +150,7 @@ public final class CompressedURIHandler implements RequestHandler {
     }
 
     /**
-     * Given a short URI starting with /z/ return the equivalent long one. 
+     * Given a short URI starting with /z/, return the equivalent long one.
      */
     public static URI longURI(URI uri) {
         Check.notNull(uri);
@@ -123,9 +161,9 @@ public final class CompressedURIHandler implements RequestHandler {
         String afterPrefix = string.substring(PREFIX.length());
         if (string.endsWith("/")) {
             String betweenSlashes = afterPrefix.substring(0,afterPrefix.length() - 1);
-            return URIs.of(longOf(betweenSlashes) + "/");
+            return URIs.of("/" + longOf(betweenSlashes) + "/");
         }
-        return URIs.of(PREFIX + longOf(afterPrefix));
+        return URIs.of("/" + longOf(afterPrefix));
     }
 
     /**
@@ -134,13 +172,13 @@ public final class CompressedURIHandler implements RequestHandler {
     public static URI shortURI(URI uri) {
         Check.notNull(uri);
         String string = uri.toString();
-        if ((!string.startsWith("/")) || string.startsWith("//"))  {
+        if (string.startsWith(PREFIX) || (!string.startsWith("/")) || string.startsWith("//"))  {
             throw new IllegalArgumentException("" + uri);
         }
         String afterPrefix = string.substring("/".length());
         if (string.endsWith("/")) {
             String betweenSlashes = afterPrefix.substring(0,afterPrefix.length() - 1);
-            return URIs.of(shortOf(betweenSlashes) + "/");
+            return URIs.of(PREFIX + shortOf(betweenSlashes) + "/");
         }
         return URIs.of(PREFIX + shortOf(afterPrefix));
     }

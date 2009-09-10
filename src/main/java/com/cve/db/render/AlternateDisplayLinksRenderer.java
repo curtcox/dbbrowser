@@ -6,6 +6,7 @@ import com.cve.html.Link;
 import com.cve.db.SelectResults;
 import com.cve.db.select.URIRenderer;
 import com.cve.util.URIs;
+import com.cve.web.CompressedURIHandler;
 import com.cve.web.Search;
 import com.cve.web.alt.AlternateView;
 import com.cve.web.db.FreeFormQueryHandler;
@@ -42,7 +43,8 @@ public final class AlternateDisplayLinksRenderer {
    }
 
     String viewLinks() {
-        return viewSQLLink() + " " +
+        return viewZLink() + " " +
+               viewSQLLink() + " " +
                viewLink(CSV) + " " +
                viewLink(XLS) + " " +
                viewLink(XML) + " " +
@@ -68,6 +70,17 @@ public final class AlternateDisplayLinksRenderer {
         Label  text = Label.of("SQL");
         URI target = FreeFormQueryHandler.linkTo(select,search);
         String tip = SQL.name();
+        URI   image = SQL.icon;
+        return Link.textTargetImageAlt(text, target, image, tip).toString();
+    }
+
+    /**
+     * Create a link to the given view.
+     */
+    String viewZLink() {
+        Label  text = Label.of("/z/");
+        URI  target = CompressedURIHandler.shortURI(URIRenderer.render(select,search));
+        String tip = "Compressed URL";
         URI   image = SQL.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();
     }

@@ -47,14 +47,17 @@ public final class RequestRouterServlet extends HttpServlet {
      * This is how we find something to respond to a given request.
      * The router is just a composite handler.
      */
-    private static final RequestHandler ROUTER = ErrorReportHandler.of(
-        DebugHandler.of(
-            CompositeRequestHandler.of(
-                CoreServerHandler.newInstance(),
-                AlternateViewHandler.newInstance(),
-                LogBrowserHandler.newInstance(),
-                DBBrowserHandler.newInstance()
-            )
+    private static final RequestHandler ROUTER =
+        ErrorReportHandler.of(
+            DebugHandler.of(
+                CompressedURIHandler.of(
+                    CompositeRequestHandler.of(
+                        CoreServerHandler.newInstance(),
+                        AlternateViewHandler.newInstance(),
+                        LogBrowserHandler.newInstance(),
+                        DBBrowserHandler.newInstance()
+                   )
+             )
         )
     );
 
