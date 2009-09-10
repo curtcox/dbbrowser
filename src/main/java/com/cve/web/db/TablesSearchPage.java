@@ -13,7 +13,7 @@ import java.util.List;
 import static com.cve.util.Check.notNull;
 
 /**
- * For picking a database.
+ * The results of searching the tables in a database.
  */
 public final class TablesSearchPage implements Model {
 

@@ -115,6 +115,7 @@ public final class CompressedURIHandler implements RequestHandler {
      * probably do at least twice as well as that.
      *
      * http://cs.fit.edu/~mmahoney/compression/paq.html
+     * http://mattmahoney.net/dc/
      */
     static byte[] deflate(byte[] input) {
          
