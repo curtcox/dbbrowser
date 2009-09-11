@@ -30,7 +30,7 @@ public class ServersHandlerTest {
     @Test
     public void skipsNonServersOnlyRequest() throws IOException, SQLException {
         ServersHandler handler = new ServersHandler();
-        PageRequest   request = PageRequest.path("//server/");
+        PageRequest   request = PageRequest.path("/+/server/");
         assertNull(handler.produce(request));
     }
 

@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.db.sample.SampleServer;
+import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
@@ -37,6 +38,7 @@ public final class Main {
 
     static void loadServers() {
         SampleServer.load();
+        ServersStore.load();
     }
 
     static void openBrowser() throws IOException {

@@ -50,14 +50,12 @@ public final class ServersStore {
     private static boolean loaded = false;
 
     /**
-     * When the VM starts, load the servers.
+     * Load the list of servers we know about from disk.
+     * While it would be nice to be able to do this automatically in a static
+     * initializer, doing so makes it harder to write a complete set of
+     * unit tests.
      */
-    static {
-        load();
-        loaded = true;
-    }
-
-    private static void load() {
+    public static void load() {
         Properties props = PropertiesIO.load(SERVERS);
         String all = props.getProperty(LIST_OF_ALL_SERVERS);
         if (all==null || all.equals("")) {
@@ -121,6 +119,10 @@ public final class ServersStore {
      */
     public static void addServer(Server server, ConnectionInfo info) {
         INFOS.put(server, info);
+        // Only save the server if the server list has been loaded.
+        // It won't have been loaded if:
+        // a) it is still loading
+        // b) we are running unit tests
         if (loaded) {
             save();
         }

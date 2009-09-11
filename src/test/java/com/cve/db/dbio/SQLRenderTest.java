@@ -44,23 +44,6 @@ public class SQLRenderTest {
     }
 
     @Test
-    public void renderSelectPersonCount() {
-        Server      server = Server.uri(URIs.of("server"));
-        Database  database = server.databaseName("customer");
-        DBTable       person = database.tableName("person");
-        DBColumn        name = person.columnNameType("name",String.class);
-        Filter      filter = Filter.of(name, Value.of("Smith"));
-        Select      select = Select.from(database,person,name,filter).count();
-        SQL expected = SQL.of(Replace.bracketSingleQuote(
-            "SELECT COUNT(*) " +
-            "FROM customer.person " +
-            "WHERE customer.person.name=[Smith] LIMIT 21 OFFSET 0"));
-        Search search = Search.EMPTY;
-        SQL actual = new SimpleSelectRenderer().render(select,search);
-        assertEquals(expected,actual);
-    }
-
-    @Test
     public void renderSelectPersonAccount() {
         Server        server = Server.uri(URIs.of("server"));
         Database    database = server.databaseName("customer");
