@@ -22,6 +22,7 @@ import static com.cve.log.Log.args;
 
 /**
  * For picking a database.
+ * This page lists all of the databases on the specified server.
  */
 public final class DatabasesHandler extends AbstractRequestHandler {
 

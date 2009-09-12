@@ -8,6 +8,7 @@ import com.cve.db.DBTable;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.URIs;
+import com.cve.web.Search.Space;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -48,7 +49,10 @@ public final class TablesHandler extends AbstractRequestHandler {
             ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
             return new TablesPage(server,database,tables,columns);
         }
-        return newSearchPage(database,search);
+        if (search.space==Space.CONTENTS) {
+            return DatabaseContentsSearchPageCreator.create(database,search);
+        }
+        return newNamesSearchPage(database,search);
     }
 
     /**
@@ -75,9 +79,10 @@ public final class TablesHandler extends AbstractRequestHandler {
     }
 
     /**
-     * Perform the requested search and return a results page.
+     * Perform the requested search of the table, column, database
+     * and server names.  Return a results page.
      */
-    static TablesSearchPage newSearchPage(Database database,Search search) throws SQLException {
+    static TablesSearchPage newNamesSearchPage(Database database,Search search) throws SQLException {
         args(database,search);
         DBMetaData               meta = DBConnection.getDbmd(database.server);
         ImmutableList<DBColumn> columns = meta.getColumnsFor(database);
@@ -99,9 +104,10 @@ public final class TablesHandler extends AbstractRequestHandler {
     }
 
     /**
-     * Return true if the search should consider this a match.
+     * Return true if the name search should consider this a match.
      */
     static boolean isMatch(String text, String target) {
         return text.toUpperCase().contains(target.toUpperCase());
     }
+
 }

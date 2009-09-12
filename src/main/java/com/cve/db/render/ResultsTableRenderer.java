@@ -52,11 +52,11 @@ public final class ResultsTableRenderer {
         return new ResultsTableRenderer(results,client);
     }
 
-    static String render(SelectResults results, ClientInfo client) {
+    public static String render(SelectResults results, ClientInfo client) {
         return new ResultsTableRenderer(results,client).resultsTable();
     }
 
-    public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
+    static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
 
 
     String resultsTable() {

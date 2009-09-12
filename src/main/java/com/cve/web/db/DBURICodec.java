@@ -137,8 +137,8 @@ public final class DBURICodec {
         if (uri.equals("/")) {
             return Search.EMPTY;
         }
-        String target = at(uri,Position.SEARCH);
-        return Search.of(URLDecoder.decode(target));
+        String search = URLDecoder.decode(at(uri,Position.SEARCH));
+        return Search.parse(search);
     }
 
     public static Server getServer(String uri) {
@@ -363,15 +363,7 @@ public final class DBURICodec {
 
 
     public static URI encode(Search search) {
-        // For an empty search, use "+" instead of "".
-        // This is because HTTP URLs that start with // are taken to be relative,
-        // with only the protocol specified.  So,
-        //    //server/db -> http://server/db
-        // but
-        //    /+/server/db
-        // still gets mapped to this server, like we want.
-        String target = search.target.isEmpty() ? " " : search.target;
-        return URIs.of("/" + URLEncoder.encode(target) + "/");
+        return URIs.of("/" + search.toUrlFragment() + "/");
     }
 
     /**
@@ -382,17 +374,36 @@ public final class DBURICodec {
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
+    /**
+     * Return a URI for browsing the given server.
+     */
+    public static URI encode(Search search, Server server) {
+        return URIs.of(encode(search) + server.uri.toString() + "/");
+    }
+
     public static URI encode(Database database) {
+        return encode(Search.EMPTY,database);
+    }
+
+    public static URI encode(Search search, Database database) {
         Server server = database.server;
-        return URIs.of(encode(server) + database.name + "/");
+        return URIs.of(encode(search,server) + database.name + "/");
+    }
+
+    public static URI encode(Search search, DBTable table) {
+        return URIs.of(encode(search,table.database) + table.fullName() + "/");
     }
 
     public static URI encode(DBTable table) {
-        return URIs.of(encode(table.database) + table.fullName() + "/");
+        return encode(Search.EMPTY,table);
+    }
+
+    public static URI encode(Search search, DBColumn column) {
+        return URIs.of(encode(search,column.table) + column.fullName() + "/");
     }
 
     public static URI encode(DBColumn column) {
-        return URIs.of(encode(column.table) + column.fullName() + "/");
+        return encode(Search.EMPTY,column);
     }
 
 }

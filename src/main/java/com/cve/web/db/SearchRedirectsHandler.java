@@ -48,7 +48,7 @@ final class SearchRedirectsHandler implements RequestHandler {
             notNegative(lastSlash);
             // the path up to the last slash
             String upToLastSlash = (lastSlash==0) ? "" : tail.toString().substring(1,lastSlash);
-            String redirected = DBURICodec.encode(Search.of(target)) + upToLastSlash;
+            String redirected = DBURICodec.encode(Search.parse(target)) + upToLastSlash;
             if (!redirected.endsWith("/")) {
                 redirected = redirected + "/";
             }

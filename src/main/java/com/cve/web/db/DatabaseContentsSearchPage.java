@@ -24,7 +24,7 @@ public final class DatabaseContentsSearchPage implements Model {
      */
     final ImmutableList<SelectResults> resultsList;
 
-    DatabaseContentsSearchPage(Search search, Database database, List<SelectResults> resultsList) {
+    private DatabaseContentsSearchPage(Search search, Database database, List<SelectResults> resultsList) {
         args(search,database,resultsList);
         this.search      = notNull(search);
         this.database    = notNull(database);
@@ -35,5 +35,9 @@ public final class DatabaseContentsSearchPage implements Model {
                 throw new IllegalArgumentException(message);
             }
         }
+    }
+
+    static DatabaseContentsSearchPage of(Search search, Database database, List<SelectResults> resultsList) {
+        return new DatabaseContentsSearchPage(search,database,resultsList);
     }
 }

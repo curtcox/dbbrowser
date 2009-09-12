@@ -11,6 +11,20 @@ import java.sql.SQLException;
  */
 public final class DebugHandler implements RequestHandler {
 
+    private static final String PREFIX = "/&";
+
+    /**
+     * Is this thread debugging?
+     * Right now, debugging is on or off per-request and not server-wide.
+     * This has pros and cons, so we might want to revisit this decision
+     * later.
+     * pros
+     *     - only debug what we need to, so we don't incur the costs and
+     *       modify the behaviour for all requests
+     * cons
+     *     - we could change the behaviour of the page we are trying to debug
+     *       by mucking with the URLs
+     */
     private static ThreadLocal<Boolean> debug = new ThreadLocal();
 
     /**
@@ -30,7 +44,7 @@ public final class DebugHandler implements RequestHandler {
     public PageResponse produce(PageRequest request) throws IOException, SQLException {
         args(request);
         String requestURI = request.requestURI;
-        if (!requestURI.startsWith("/*")) {
+        if (!requestURI.startsWith(PREFIX)) {
             debug.set(Boolean.FALSE);
             return handler.produce(request);
         }

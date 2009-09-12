@@ -12,13 +12,13 @@ import static com.cve.ui.UIBuilder.*;
  */
 public final class UISearchBox {
 
-    public static UIForm contents(String contents) {
-        return uriContents(URIs.of("search"),contents);
+    public static UIForm contents(Search search) {
+        return uriSearch(URIs.of("search"),search);
     }
 
-    public static UIForm uriContents(URI uri, String contents) {
+    public static UIForm uriSearch(URI uri, Search search) {
         UIForm form = UIForm.getAction(uri)
-            .with(text(Search.FIND,contents))
+            .with(text(Search.FIND,search.target))
             .with(submit("find",Icons.SEARCH));
         return form;
     }

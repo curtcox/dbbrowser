@@ -4,6 +4,8 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Server;
+import com.cve.html.Label;
+import com.cve.html.Link;
 import com.cve.web.*;
 
 import com.cve.ui.UIDetail;
@@ -12,6 +14,7 @@ import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
+import com.cve.web.Search.Space;
 import java.net.URI;
 import java.util.Collection;
 import static com.cve.web.db.NavigationButtons.*;
@@ -22,7 +25,7 @@ import static com.cve.log.Log.args;
  */
 public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
 
-    private static URI HELP = URIs.of("/resource/help/Servers.html");
+    private static URI HELP = URIs.of("/resource/help/TablesSearch.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
@@ -39,10 +42,19 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
                 server.linkTo() + "/" + database.linkTo()
             ), search(page.search)
         };
-        String guts  = Helper.render(page);
+        String guts  = Helper.render(page) + searchContentsLink(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
+    static String searchContentsLink(TablesSearchPage page) {
+        Search     search = Search.contents(page.search.target);
+        Database database = page.database;
+        String    alt = "Search the table rows";
+        Label    text = Label.of(alt);
+        URI    target = DBURICodec.encode(search.ofContents(),database);
+        URI     image = Icons.PLUS;
+        return Link.textTargetImageAlt(text, target, image, alt).toString();
+    }
 /**
  * For rendering the search results page.
  * This is surprisingly complicated.  There is probably a much better way.
@@ -66,6 +78,10 @@ static final class Helper {
      * Return a table of all the available servers.
      */
     String render() {
+        Search search = page.search;
+        if (page.columns.isEmpty()) {
+            return search.target + " not found on " + page.database.linkTo();
+        }
         UITableBuilder out = new UITableBuilder();
         out.add(UIRow.of(detail("Table"),detail("Columns")));
         for (DBTable table : page.tables) {

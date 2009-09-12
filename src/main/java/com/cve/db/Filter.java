@@ -73,6 +73,7 @@ public final class Filter {
     public int hashCode() { return column.hashCode() ^ value.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Filter other = (Filter) o;
         return column.equals(other.column) && value.equals(other.value);

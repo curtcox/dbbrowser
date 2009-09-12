@@ -5,7 +5,6 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.web.*;
 import com.cve.db.Server;
-import com.cve.html.CSS;
 
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -30,9 +29,10 @@ public final class ServersSearchPageRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
         ServersSearchPage page = (ServersSearchPage) model;
-        String title = "Available Servers";
+        Search          search = page.search;
+        String title = "Occurences of " + search.target;
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(page.search)
+            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(search)
         };
         String guts  = Helper.render(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);

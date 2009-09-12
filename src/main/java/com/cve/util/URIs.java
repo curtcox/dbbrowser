@@ -8,6 +8,16 @@ import static com.cve.util.Check.notNull;
 
 /**
  * Tools for working with {@link URI}S.
+ * What can you put in a URI?
+ * xalpha --  alpha  digit safe extra escape
+ * <ol>
+       <li> alpha -- a - z, A - Z
+       <li> digit -- 0 - 9
+       <li> safe -- $  -  _  @  .  &   +  -
+       <li> extra -- !  *   "   '  (  ) ,
+       <li> reserved -- =  ;  /  #  ? : space
+ * </ol>
+ * See http://www.w3.org/Addressing/URL/url-spec.txt
  */
 public final class URIs {
 

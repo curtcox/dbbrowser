@@ -46,7 +46,7 @@ public final class NavigationButtons {
      * Return a search box
      */
     public static String search(Search search) {
-        return UISearchBox.contents(search.target).toString();
+        return UISearchBox.contents(search).toString();
     }
 
     public static String shutdown() {
