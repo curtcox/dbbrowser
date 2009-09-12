@@ -1,9 +1,11 @@
 package com.cve.web.db;
 
 import com.cve.db.SelectResults;
-import com.cve.db.render.SelectResultsRenderer;
+import com.cve.web.db.render.SelectResultsRenderer;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.PageDecorator;
+import com.cve.web.db.databases.DatabasesModelHtmlRenderers;
+import com.cve.web.db.servers.ServerModelHtmlRenderers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
@@ -17,16 +19,12 @@ public final class DatabaseModelHtmlRenderers {
 
     public static ImmutableMap<Class,ModelHtmlRenderer> load() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.put(ServersPage.class,                PageDecorator.of(new ServersPageRenderer()));
-        map.put(ServersSearchPage.class,          PageDecorator.of(new ServersSearchPageRenderer()));
-        map.put(DatabaseContentsSearchPage.class, PageDecorator.of(new DatabaseContentsSearchPageRenderer()));
-        map.put(DatabasesPage.class,              PageDecorator.of(new DatabasesPageRenderer()));
-        map.put(DatabasesSearchPage.class,        PageDecorator.of(new DatabasesSearchPageRenderer()));
         map.put(TablesPage.class,                 PageDecorator.of(new TablesPageRenderer()));
         map.put(TablesSearchPage.class,           PageDecorator.of(new TablesSearchPageRenderer()));
         map.put(SelectResults.class,              PageDecorator.of(new SelectResultsRenderer()));
-        map.put(AddServerPage.class,              PageDecorator.of(new AddServerPageRenderer()));
         map.put(FreeFormQueryModel.class,         PageDecorator.of(new FreeFormQueryRenderer()));
+        map.putAll(ServerModelHtmlRenderers.RENDERERS);
+        map.putAll(DatabasesModelHtmlRenderers.RENDERERS);
         return ImmutableMap.copyOf(map);
     }
 

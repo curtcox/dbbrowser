@@ -1,6 +1,8 @@
 package com.cve.web.db;
 
+import com.cve.web.db.databases.DatabasesHandler;
 import com.cve.web.*;
+import com.cve.web.db.servers.DBServersHandler;
 
 /**
  * The {@link RequestHandler} for browsing databases.
@@ -13,9 +15,7 @@ public final class DBBrowserHandler {
         new FreeFormQueryHandler(),        // /server/select... & /server/database/select...
         new SearchRedirectsHandler(),      // search?find=what
         new DBRedirectsHandler(),          // action?args
-        new ServersHandler(),              // /
-        new AddServerHandler(),            // /add
-        new RemoveServerHandler(),         // /remove
+        DBServersHandler.newInstance(),    // / , /add , /remove
         DatabaseMetaHandler.newInstance(), // /meta/server/
         new DatabasesHandler(),            // /server/
         new TablesHandler(),               // /server/databases/

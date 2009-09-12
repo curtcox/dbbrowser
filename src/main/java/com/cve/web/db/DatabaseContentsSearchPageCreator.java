@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.web.db.databases.*;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
@@ -24,7 +25,7 @@ import static com.cve.log.Log.args;
  */
 final class DatabaseContentsSearchPageCreator {
 
-    static DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
+    public static DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
         List<SelectResults> resultsList = createResultsList(database,search);
         return DatabaseContentsSearchPage.of(search, database, resultsList);
     }

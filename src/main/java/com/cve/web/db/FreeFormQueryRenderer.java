@@ -4,7 +4,7 @@ import com.cve.db.DBResultSet;
 import com.cve.db.Hints;
 import com.cve.db.SQL;
 import com.cve.db.Select;
-import com.cve.db.render.DBResultSetRenderer;
+import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.db.select.SelectParser;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.HintsStore;

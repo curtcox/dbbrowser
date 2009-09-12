@@ -57,7 +57,7 @@ public final class TablesHandler extends AbstractRequestHandler {
 
     /**
      * Return true if URL is of the form
-     * //server/db/
+     * /+/server/db/
      */
     public static boolean isTablesOnlyRequest(String uri) {
         return URIs.slashCount(uri)==4;
