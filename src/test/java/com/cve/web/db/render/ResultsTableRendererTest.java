@@ -13,6 +13,7 @@ import com.cve.db.Join;
 import com.cve.db.Limit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
+import com.cve.db.Order;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
@@ -102,7 +103,8 @@ public class ResultsTableRendererTest {
     private String renderedOnePersonTable() {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
-        String       rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints, client).landscapeTable();
+        ImmutableList<Order> orders = ImmutableList.of();
+        String       rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints, client).landscapeTable();
         return rendered;
     }
 
@@ -129,22 +131,24 @@ public class ResultsTableRendererTest {
 
     @Test
     public void personDatabaseRow() {
-        String expected = td("Database : <a href=[/+/server/customer/]>customer</a>",1);
+        String expected = td("Database : <a href=[/*/server/customer/]>customer</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
-        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints,client).databaseRow();
+        ImmutableList<Order> orders = ImmutableList.of();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints,client).databaseRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
 
     @Test
     public void personTableRow() {
-        String expected = td("Table : <a href=[/+/server/customer/customer.person/]>person</a>",1);
+        String expected = td("Table : <a href=[/*/server/customer/customer.person/]>person</a>",1);
         expected = bracketQuote(expected);
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
-        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).tableRow();
+        ImmutableList<Order> orders = ImmutableList.of();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders, results.hints,client).tableRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -153,7 +157,7 @@ public class ResultsTableRendererTest {
     public void personColumnNameRow() {
         String expected =
         td(
-        "<a href=[/+/server/customer/customer.person/customer.person.name/] " +
+        "<a href=[/*/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
              escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
@@ -164,7 +168,8 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
 
         SelectResults results = onePersonResults();
-        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).columnNameRow();
+        ImmutableList<Order> orders = ImmutableList.of();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).columnNameRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -172,7 +177,7 @@ public class ResultsTableRendererTest {
     @Test
     public void personColumnNameCell() {
         String expected =
-        "<a href=[/+/server/customer/customer.person/customer.person.name/] " +
+        "<a href=[/*/server/customer/customer.person/customer.person.name/] " +
         "onmouseover=[Tip('" +
              escapeQuotes(bracketQuote(
                  "name<table border><tr><td><a href=[join?customer.person.name=customer.family.familyName]>" +
@@ -183,19 +188,20 @@ public class ResultsTableRendererTest {
         DBColumn         column = results.resultSet.columns.get(0);
         ClientInfo     client = ClientInfo.of();
 
-        String rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).nameCell(column);
+        ImmutableList<Order> orders = ImmutableList.of();
+        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).nameCell(column);
         equals(expected,rendered);
     }
 
     @Test
-    public void personColumnHideRow() {
-        String expected = bracketQuote(
-            td("<a href=[hide?customer.person.name]>x</a>"));
+    public void renderedContainsLinkToHide() {
+        String linkToHide = bracketQuote("hide?customer.person.name");
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
-        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).columnHideRow();
+        ImmutableList<Order> orders = ImmutableList.of();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).columnActionsRow();
         String rendered = list.get(0).toString();
-        equals(expected,rendered);
+        assertTrue(rendered.contains(linkToHide));
     }
 
     @Test
@@ -204,7 +210,8 @@ public class ResultsTableRendererTest {
             tr(td("<a href=[filter?customer.person.name=Smith]>Smith</a>"),CSS.ODD_ROW));
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
-        List list = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).valueRowsList();
+        ImmutableList<Order> orders = ImmutableList.of();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).valueRowsList();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -242,7 +249,8 @@ public class ResultsTableRendererTest {
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         ClientInfo     client = ClientInfo.of();
 
-        String rendered = DBResultSetRenderer.resultsHintsClient(results.resultSet,results.hints,client).nameCell(name);
+        ImmutableList<Order> orders = ImmutableList.of();
+        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).nameCell(name);
         assertTrue(rendered,rendered.contains("familyName"));
     }
 

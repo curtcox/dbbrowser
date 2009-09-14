@@ -46,7 +46,7 @@ public final class ResultsTableRenderer {
     private ResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.select.orders, results.hints, client);
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
     }
 
     static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {

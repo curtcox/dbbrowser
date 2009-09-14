@@ -75,7 +75,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         }
         Hints hints = HintsStore.getHints(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
-        DBResultSetRenderer renderer = DBResultSetRenderer.resultsHintsClient(results, orders, hints, client);
+        DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();
         URI base = base(page);
         return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);

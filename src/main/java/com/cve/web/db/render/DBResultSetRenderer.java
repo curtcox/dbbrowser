@@ -66,7 +66,7 @@ public final class DBResultSetRenderer {
         this.client  = notNull(client);
     }
 
-    public static DBResultSetRenderer resultsHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
+    public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
         notNull(results);
         notNull(client);
         return new DBResultSetRenderer(results,orders,hints,client);
@@ -82,7 +82,7 @@ public final class DBResultSetRenderer {
         rows.add(UIRow.of(databaseRow(),   CSS.DATABASE));
         rows.add(UIRow.of(tableRow(),      CSS.TABLE));
         rows.add(UIRow.of(columnNameRow()));
-        rows.add(UIRow.of(columnHideRow(), CSS.HIDE));
+        rows.add(UIRow.of(columnActionsRow(), CSS.HIDE));
         rows.addAll(valueRowsList());
         return UITable.of(rows).toString();
     }
@@ -162,7 +162,7 @@ public final class DBResultSetRenderer {
      * A table row where each cell a link to hide the column.
      * Cells in this row map one-to-one to columns in the result set.
      */
-    ImmutableList<UIDetail> columnHideRow() {
+    ImmutableList<UIDetail> columnActionsRow() {
         List<UIDetail> out = Lists.newArrayList();
         for (DBColumn column : results.columns) {
             out.add(UIDetail.of(actionCell(column,direction(column))));

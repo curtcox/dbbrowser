@@ -87,13 +87,9 @@ public class ColumnNameTooltipTest {
     @Test
     public void tipContents() {
         String html = getTip().toString();
-        String expected = "foo" +
-            table(
-              tr(td("<a href=[join?db.table.foo=db.table.bar]>join with db.table.bar</a>")) +
-              tr(td("<a href=[filter?db.table.foo=active]>show only active</a>"))
-            );
-        expected = Replace.bracketQuote(expected);
-        assertEquals(expected,html);
+        assertTrue(html.contains("foo"));
+        assertTrue(html.contains(Replace.bracketQuote("<a href=[join?db.table.foo=db.table.bar]>join with db.table.bar</a>")));
+        assertTrue(html.contains(Replace.bracketQuote("<a href=[filter?db.table.foo=active]>show only active</a>")));
     }
 
     @Test

@@ -45,7 +45,7 @@ public final class DistributionResultsTableRenderer {
     private DistributionResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.select.orders, results.hints, client);
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
     }
 
     static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client) {
