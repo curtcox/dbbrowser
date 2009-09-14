@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.db.DBResultSet;
 import com.cve.db.Hints;
+import com.cve.db.Order;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.web.db.render.DBResultSetRenderer;
@@ -17,6 +18,7 @@ import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.Search;
 import com.cve.web.log.ObjectLink;
+import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
@@ -72,7 +74,8 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
             return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         Hints hints = HintsStore.getHints(results.columns);
-        DBResultSetRenderer renderer = DBResultSetRenderer.resultsHintsClient(results, hints, client);
+        ImmutableList<Order> orders = ImmutableList.of();
+        DBResultSetRenderer renderer = DBResultSetRenderer.resultsHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();
         URI base = base(page);
         return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);

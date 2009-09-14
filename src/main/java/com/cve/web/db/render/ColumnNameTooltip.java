@@ -3,10 +3,12 @@ package com.cve.web.db.render;
 import com.cve.html.SimpleTooltip;
 import com.cve.html.Label;
 import com.cve.html.Tooltip;
-import com.cve.html.Link;
 import com.cve.html.HTML;
 import com.cve.db.DBColumn;
 import com.cve.db.Filter;
+import com.cve.ui.UICascadingMenu;
+import com.cve.ui.UIElement;
+import com.cve.ui.UILink;
 import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.ImmutableList;
 
@@ -27,10 +29,9 @@ public final class ColumnNameTooltip
     {
         String info =
             info(column).toString() +
-            table(
-                joinInfo(column,joins).toString()  +
-                filterInfo(filters).toString()
-            );
+            UICascadingMenu.of(joinInfo(column,joins))
+                .with(filterInfo(filters)
+            ).toString();
         HTML html = HTML.of(info);
         return SimpleTooltip.of(html);
     }
@@ -43,51 +44,46 @@ public final class ColumnNameTooltip
         return HTML.of(column.name);
     }
 
-    static HTML joinInfo(DBColumn source, DBColumn dest) {
+    static UIElement joinInfo(DBColumn source, DBColumn dest) {
         notNull(source);
         notNull(dest);
         String text   = "join with " + dest.fullName();
         URI    target = SelectBuilderAction.JOIN.withArgs(
              source.fullName() + "=" + dest.fullName()
         );
-        String   html = Link.textTarget(Label.of(text), target).toString();
-        return HTML.of(html);
+        UILink link = UILink.textTarget(Label.of(text), target);
+        return link;
     }
 
-    static HTML info(Filter filter) {
+    static UIElement info(Filter filter) {
         notNull(filter);
         DBColumn column = filter.column;
         String value  = filter.value.toString();
         String text   = "show only " + value;
         URI    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
-        String   html = Link.textTarget(Label.of(text), target).toString();
-        return HTML.of(html);
+        UILink   link = UILink.textTarget(Label.of(text), target);
+        return link;
     }
 
-    static HTML joinInfo(final DBColumn column, final ImmutableList<DBColumn> joins) {
+    static List<UIElement> joinInfo(final DBColumn column, final ImmutableList<DBColumn> joins) {
         notNull(joins);
         List<DBColumn> ordered = Lists.newArrayList(joins);
         Collections.sort(ordered, new ColumnProximityComparator(column));
-        StringBuilder out = new StringBuilder();
+        List<UIElement> list = Lists.newArrayList();
         // Only use the "best" joins
         for (int i=0; i<30 && i<ordered.size(); i++) {
             DBColumn dest = ordered.get(i);
-            out.append(tr(td( joinInfo(column,dest).toString() )));
+            list.add(joinInfo(column,dest));
         }
-        return HTML.of(out.toString());
+        return list;
     }
 
-    static HTML filterInfo(ImmutableList<Filter> filters) {
+    static List<UIElement> filterInfo(ImmutableList<Filter> filters) {
         notNull(filters);
-        StringBuilder out = new StringBuilder();
+        List<UIElement> list = Lists.newArrayList();
         for (Filter filter : filters) {
-            out.append(tr(td( info(filter).toString()  )));
+            list.add(info(filter));
         }
-        return HTML.of(out.toString());
+        return list;
     }
-
-    // Use our own copies to make sure we don't get carriage returns.
-    static String    td(String s) { return "<td>" + s + "</td>"; }
-    static String    tr(String s) { return "<tr>" + s + "</tr>"; }
-    static String table(String s) { return "<table border>" + s + "</table>"; }
 }

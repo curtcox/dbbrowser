@@ -5,8 +5,6 @@ import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.db.SelectResults;
-import com.cve.html.SimpleTooltip;
-import com.cve.html.Tooltip;
 import com.cve.web.Icons;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;

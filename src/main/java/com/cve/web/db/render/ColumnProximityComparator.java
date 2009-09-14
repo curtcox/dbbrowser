@@ -23,6 +23,7 @@ public final class ColumnProximityComparator implements Comparator<DBColumn> {
         this.database = table.database;
     }
 
+    @Override
     public int compare(DBColumn c1, DBColumn c2) {
         DBTable t1 = c1.table;
         DBTable t2 = c2.table;

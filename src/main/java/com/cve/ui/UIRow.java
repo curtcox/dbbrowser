@@ -5,12 +5,14 @@ import com.cve.html.HTML;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a HTML table row.
  * By constructing an object graph, rather than a string, it will be easier
  * to render to something other than HTML later.
  */
+@Immutable
 public final class UIRow {
 
     private final ImmutableList<UIDetail> details;

@@ -16,6 +16,7 @@ import static com.cve.util.Check.notNull;
 public final class Join {
 
     public final DBColumn source;
+
     public final DBColumn dest;
 
     private Join(DBColumn source, DBColumn dest) {
@@ -45,6 +46,7 @@ public final class Join {
     public int hashCode() { return source.hashCode() ^ dest.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Join other = (Join) o;
         return source.equals(other.source) && dest.equals(other.dest);

@@ -63,6 +63,14 @@ public final class DBTable {
         return DBColumn.tableName(this, name);
     }
 
+    public DBColumn keyColumnName(String name) {
+        return DBColumn.keyTableName(this, name);
+    }
+
+    public DBColumn foreignkeyColumnName(String name) {
+        return DBColumn.foreignkeyTableName(this, name);
+    }
+
     public String fullName() { return database.name + "." + name; }
 
     @Override

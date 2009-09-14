@@ -104,7 +104,7 @@ public final class Link {
         return new Link(text,target,image,alt);
     }
 
-    static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
+    public static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
         return new Link(text,target,tip,image);
     }
 

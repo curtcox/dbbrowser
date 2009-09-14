@@ -3,12 +3,14 @@ package com.cve.ui;
 import com.cve.html.CSS;
 import com.cve.html.HTML;
 import com.cve.util.Check;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a HTML table detail.
  * By constructing an object graph, rather than a string, it will be easier
  * to render to something other than HTML later.
  */
+@Immutable
 public final class UIDetail {
 
     /**

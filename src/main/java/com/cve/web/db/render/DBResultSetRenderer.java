@@ -14,11 +14,13 @@ import com.cve.db.Join;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.DBTable;
+import com.cve.db.Order;
 import com.cve.db.Value;
 import com.cve.html.CSS;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.ClientInfo;
+import com.cve.web.Icons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -38,7 +40,7 @@ import static com.cve.util.Check.notNull;
 public final class DBResultSetRenderer {
 
     /**
-     * 
+     * Hints about how we might want to join, filter, or otherwise manipulate this.
      */
     private final Hints hints;
 
@@ -48,22 +50,26 @@ public final class DBResultSetRenderer {
     private final DBResultSet results;
 
     /**
+     * How the given results are ordered.
+     */
+    private final ImmutableList<Order> orders;
+
+    /**
      * Information about what we are rendering to.
      */
     private final ClientInfo client;
 
-    public static final String HIDE = "x";
-
-    private DBResultSetRenderer(DBResultSet results, Hints hints, ClientInfo client) {
+    private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
         this.results = notNull(results);
+        this.orders  = notNull(orders);
         this.hints   = notNull(hints);
         this.client  = notNull(client);
     }
 
-    public static DBResultSetRenderer resultsHintsClient(DBResultSet results, Hints hints, ClientInfo client) {
+    public static DBResultSetRenderer resultsHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
         notNull(results);
         notNull(client);
-        return new DBResultSetRenderer(results,hints,client);
+        return new DBResultSetRenderer(results,orders,hints,client);
     }
 
     public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
@@ -159,9 +165,18 @@ public final class DBResultSetRenderer {
     ImmutableList<UIDetail> columnHideRow() {
         List<UIDetail> out = Lists.newArrayList();
         for (DBColumn column : results.columns) {
-            out.add(UIDetail.of(hideCell(column)));
+            out.add(UIDetail.of(actionCell(column,direction(column))));
         }
         return ImmutableList.copyOf(out);
+    }
+
+    Order.Direction direction(DBColumn column) {
+        for (Order order : orders) {
+            if (order.column.equals(column)) {
+                return order.direction;
+            }
+        }
+        return Order.Direction.NONE;
     }
 
     /**
@@ -267,10 +282,12 @@ public final class DBResultSetRenderer {
         return CSS.COLUMN;
     }
 
-    static String hideCell(DBColumn column) {
-        Label  text = Label.of(HIDE);
+    static String actionCell(DBColumn column, Order.Direction direction) {
+        Label  text = Label.of("Hide or sort");
         URI  target = SelectBuilderAction.HIDE.withArgs(column.fullName());
-        return Link.textTarget(text, target).toString();
+        Tooltip tip = ColumnActionTooltip.columnDirection(column,direction);
+        URI   image = Icons.CONFIGURE;
+        return Link.textTargetTipImage(text, target, tip,image).toString();
     }
 
     static String valueCell(Cell cell, Value value) {

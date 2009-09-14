@@ -71,7 +71,7 @@ class DefaultDBMetaData implements DBMetaData {
             List<DBColumn> list = Lists.newArrayList();
             while (results.next()) {
                 String columnName = results.getString("COLUMN_NAME");
-                list.add(table.columnName(columnName));
+                list.add(table.keyColumnName(columnName));
             }
             ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
             return columns;
@@ -279,8 +279,8 @@ class DefaultDBMetaData implements DBMetaData {
                 Database fkDatabase = server.databaseName(results.getString("FKTABLE_CAT"));
                 DBTable       pkTable = pkDatabase.tableName(results.getString("PKTABLE_NAME"));
                 DBTable       fkTable = fkDatabase.tableName(results.getString("FKTABLE_NAME"));
-                DBColumn       source = DBColumn.tableName(pkTable, results.getString("PKCOLUMN_NAME"));
-                DBColumn         dest = DBColumn.tableName(fkTable, results.getString("FKCOLUMN_NAME"));
+                DBColumn       source = DBColumn.keyTableName(pkTable, results.getString("PKCOLUMN_NAME"));
+                DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, results.getString("FKCOLUMN_NAME"));
                 list.add(Join.of(source, dest));
             }
             ImmutableList<Join> joins = ImmutableList.copyOf(list);
@@ -310,8 +310,8 @@ class DefaultDBMetaData implements DBMetaData {
                 Database fkDatabase = server.databaseName(results.getString("FKTABLE_CAT"));
                 DBTable       pkTable = pkDatabase.tableName(results.getString("PKTABLE_NAME"));
                 DBTable       fkTable = fkDatabase.tableName(results.getString("FKTABLE_NAME"));
-                DBColumn       source = DBColumn.tableName(pkTable, results.getString("PKCOLUMN_NAME"));
-                DBColumn         dest = DBColumn.tableName(fkTable, results.getString("FKCOLUMN_NAME"));
+                DBColumn       source = DBColumn.keyTableName(pkTable, results.getString("PKCOLUMN_NAME"));
+                DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, results.getString("FKCOLUMN_NAME"));
                 list.add(Join.of(source, dest));
             }
             ImmutableList<Join> joins = ImmutableList.copyOf(list);

@@ -2,12 +2,14 @@ package com.cve.ui;
 
 import com.cve.util.Check;
 import com.cve.util.Replace;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a HTML form text field.
  * By constructing an object graph, rather than a string, it will be easier
  * to render to something other than HTML later.
  */
+@Immutable
 public final class UITextArea implements UIElement {
 
     final String name;

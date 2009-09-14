@@ -35,7 +35,18 @@ public final class Icons {
 
     public static final URI JSON  = URIs.of("/resource/icons/mimetypes/jsonpill.png");
 
-    public static final URI SQL   = URIs.of("/resource/icons/mimetypes/sql.png");
+    public static final URI SQL   = URIs.of("/resource/icons/mimetypes/SQL.png");
 
+    public static final URI COMPRESSED = URIs.of("/resource/icons/mimetypes/compressed.png");
+
+    public static final URI HIDE = URIs.of("/resource/icons/status/dialog-error.png");
+
+    public static final URI SORT_ASC = URIs.of("/resource/icons/actions/go-up.png");
+
+    public static final URI SORT_DESC = URIs.of("/resource/icons/actions/go-down.png");
+
+    public static final URI SORT_NONE = URIs.of("/resource/icons/actions/sort-none.png");
+
+    public static final URI CONFIGURE = URIs.of("/resource/icons/categories/applications-system.png");
 
 }

@@ -2,19 +2,27 @@ package com.cve.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
-import static com.cve.util.URLCodec.encode;
 
 /**
  * A column in a database {@link Table}.
  */
 @Immutable
 public final class DBColumn {
+
+    /**
+     * How key is this column in this table?
+     * Primarym foreign, or none.
+     */
+    public enum Keyness {
+        PRIMARY,
+        FOREIGN,
+        NONE
+    }
 
     /**
      * The table this column is on.
@@ -34,6 +42,11 @@ public final class DBColumn {
     private final Class  type;
 
     /**
+     * Primary, foreign, or none.
+     */
+    public final Keyness keyness;
+
+    /**
      * The column to use for "all columns".
      * This is used with count(*).
      */
@@ -42,18 +55,27 @@ public final class DBColumn {
     /**
      * Use the factories.
      */
-    private DBColumn(DBTable table, String name, Class type) {
-        this.table = notNull(table);
-        this.name  = notNull(name);
-        this.type  = notNull(type);
+    private DBColumn(DBTable table, String name, Class type, Keyness keyness) {
+        this.table   = notNull(table);
+        this.name    = notNull(name);
+        this.type    = notNull(type);
+        this.keyness = notNull(keyness);
     }
 
     public static DBColumn tableNameType(DBTable table, String name, Class type) {
-        return new DBColumn(table,name,type);
+        return new DBColumn(table,name,type,Keyness.NONE);
     }
 
     public static DBColumn tableName(DBTable table, String name) {
-        return new DBColumn(table,name,Void.class);
+        return new DBColumn(table,name,Void.class,Keyness.NONE);
+    }
+
+    public static DBColumn keyTableName(DBTable table, String name) {
+        return new DBColumn(table,name,Void.class,Keyness.PRIMARY);
+    }
+
+    public static DBColumn foreignkeyTableName(DBTable table, String name) {
+        return new DBColumn(table,name,Void.class,Keyness.FOREIGN);
     }
 
     public Filter filterValue(Value value) {

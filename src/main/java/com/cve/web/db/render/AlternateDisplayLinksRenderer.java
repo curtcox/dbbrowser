@@ -81,7 +81,7 @@ public final class AlternateDisplayLinksRenderer {
         Label  text = Label.of("/z/");
         URI  target = CompressedURIHandler.shortURI(URIRenderer.render(select,search));
         String tip = "Compressed URL";
-        URI   image = SQL.icon;
+        URI   image = COMPRESSED.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();
     }
 

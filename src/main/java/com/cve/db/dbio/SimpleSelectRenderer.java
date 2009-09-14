@@ -58,7 +58,10 @@ class SimpleSelectRenderer implements SelectRenderer {
         out.append(FROM);
         out.append(tables(select.tables));
         out.append(where(select.joins,select.filters,search,select.columns));
-        out.append(order(select.orders));
+        // Order clauses don't change row counts, but some database engines
+        // require any columns used in the order clauses to be included in
+        // those selected.  Since we're only selecting count(*), that's no
+        // columns.  So we need to and are free to drop the order clauses.
         out.append(group(select.groups));
         out.append(limit(select.limit));
         return SQL.of(out.toString());
@@ -145,7 +148,7 @@ class SimpleSelectRenderer implements SelectRenderer {
         for (Order order : orders) {
             list.add(fullName(order.column) + " " + order.direction.toString());
         }
-        return ORDER_BY + separated(list,AND);
+        return ORDER_BY + separated(list,",");
     }
 
     public String group(ImmutableList<Group> groups) {

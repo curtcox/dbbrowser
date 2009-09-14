@@ -7,6 +7,7 @@ import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
 import com.cve.db.DBTable;
+import com.cve.db.Order;
 import com.cve.db.Value;
 import com.cve.html.CSS;
 import com.cve.ui.UIDetail;
@@ -45,7 +46,7 @@ public final class ResultsTableRenderer {
     private ResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.hints, client);
+        tools = DBResultSetRenderer.resultsHintsClient(results.resultSet, results.select.orders, results.hints, client);
     }
 
     static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {
@@ -77,7 +78,7 @@ public final class ResultsTableRenderer {
             UIDetail.of("Database",CSS.DATABASE),
             UIDetail.of("Table",CSS.TABLE),
             UIDetail.of("Column",CSS.COLUMN),
-            UIDetail.of("Hide",CSS.HIDE),
+            UIDetail.of("Action",CSS.HIDE),
             UIDetail.of("Value"));
         out.add(headerRow);
         Database lastDatabase = Database.NULL;
@@ -99,7 +100,7 @@ public final class ResultsTableRenderer {
                 lastTable = table;
             }
             details.add(UIDetail.of(nameCell(column),tools.classOf(column)));
-            details.add(UIDetail.of(hideCell(column),CSS.HIDE));
+            details.add(UIDetail.of(actionCell(column,direction(column)),CSS.HIDE));
             for (DBRow row : resultSet.rows) {
                 Cell cell = Cell.at(row, column);
                 Value value = resultSet.getValue(row, column);
@@ -109,6 +110,15 @@ public final class ResultsTableRenderer {
         }
         out.add(headerRow);
         return UITable.of(out).toString();
+    }
+
+    Order.Direction direction(DBColumn column) {
+        for (Order order : results.select.orders) {
+            if (order.column.equals(column)) {
+                return order.direction;
+            }
+        }
+        return Order.Direction.NONE;
     }
 
     String nameCell(DBColumn column) {

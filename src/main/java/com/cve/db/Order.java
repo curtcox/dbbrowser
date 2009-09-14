@@ -1,6 +1,8 @@
 package com.cve.db;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import java.util.List;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -11,14 +13,33 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class Order {
 
+    /**
+     * The column this order applies to
+     */
     public final DBColumn column;
+
+    /**
+     * The direction of the order.
+     */
     public final Direction direction;
 
     /**
-     * The direction of an order.  Ascending or descending.
+     * The direction of an order.  Ascending, descending, or none.
      */
     public enum Direction {
+        /**
+         * No imposed order
+         */
+        NONE,
+
+        /**
+         * Ascending
+         */
         ASC,
+
+        /**
+         * Descending
+         */
         DESC;
     }
 
@@ -44,10 +65,25 @@ public final class Order {
         return new Order(column,Direction.ASC);
     }
 
+    /**
+     * Return a similar list with only ascending and descending orders.
+     */
+    static ImmutableList<Order> normalize(ImmutableList<Order> orders) {
+        List<Order> copy = Lists.newArrayList();
+        for (Order order : orders) {
+            if (order.direction!=Order.Direction.NONE) {
+                copy.add(order);
+            }
+        }
+        return ImmutableList.copyOf(copy);
+    }
+
+
     @Override
     public int hashCode() { return column.hashCode() ^ direction.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Order other = (Order) o;
         return column.equals(other.column) && direction.equals(other.direction);

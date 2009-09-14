@@ -3,6 +3,7 @@ package com.cve.db;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -63,7 +64,7 @@ public final class Select {
         this.functions = notNull(functions);
         this.joins     = notNull(joins);
         this.filters   = notNull(filters);
-        this.orders    = notNull(orders);
+        this.orders    = Order.normalize(notNull(orders));
         this.groups    = notNull(groups);
         this.limit     = notNull(limit);
         if (columns.size()!=functions.size()) {
@@ -115,7 +116,7 @@ public final class Select {
         if (orders.contains(order)) {
             return this;
         }
-        return new Select(server,databases,tables,columns,functions,joins,filters,with(order,orders),groups,limit);
+        return new Select(server,databases,tables,columns,functions,joins,filters,withOrder(order,orders),groups,limit);
     }
 
     /**
@@ -247,6 +248,24 @@ public final class Select {
         List<T> list = Lists.newArrayList();
         list.addAll(items);
         list.add(t);
+        return ImmutableList.copyOf(list);
+    }
+
+    private static ImmutableList<Order> withOrder(Order added, ImmutableList<Order> orders) {
+        if (orders.contains(added)) {
+            return orders;
+        }
+        List<Order> list = Lists.newArrayList();
+        list.addAll(orders);
+        for (Iterator<Order> i = list.iterator(); i.hasNext(); ) {
+            Order order = i.next();
+            if (order.column.equals(added.column)) {
+                i.remove();  // take it out
+            }
+        }
+        if (added.direction!=Order.Direction.NONE) {
+            list.add(added);
+        }
         return ImmutableList.copyOf(list);
     }
 

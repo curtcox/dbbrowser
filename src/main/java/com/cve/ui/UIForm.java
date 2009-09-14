@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.List;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a HTML form.
@@ -14,6 +15,7 @@ import java.util.List;
  * to render to something other than HTML later.
  * @author curt
  */
+@Immutable
 public final class UIForm {
 
     /**

@@ -12,13 +12,13 @@ import java.net.URI;
  */
 public enum AlternateView {
 
-
     SQL(Icons.SQL),
     CSV(Icons.CSV),
     XLS(Icons.XLS),
     PDF(Icons.PDF),
     XML(Icons.XML),
-    JSON(Icons.JSON)
+    JSON(Icons.JSON),
+    COMPRESSED(Icons.COMPRESSED)
     ;
 
     public final URI icon;

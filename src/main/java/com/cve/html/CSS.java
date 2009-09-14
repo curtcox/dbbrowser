@@ -9,7 +9,6 @@ import com.cve.util.Replace;
  */
 public enum CSS {
 
-
     NONE("",""),
     HIDE("hide","880000"),
     SERVER("server","BBBBBB"),
@@ -54,24 +53,28 @@ public enum CSS {
         return "{" + value + " }";
     }
 
+    public static String TABLE_COLORING =
+        "tr.server   " + td(background(SERVER)) +
+        "tr.database " + td(background(DATABASE)) +
+        "tr.table    " + td(background(TABLE)) +
+        "tr.hide     " + td(background(HIDE)) +
+
+        "tr.even     " + td(background(EVEN_ROW)) +
+        "tr.odd      " + td(background(ODD_ROW)) +
+
+        "td.server   " + b(background(SERVER)) +
+        "td.database " + b(background(DATABASE)) +
+        "td.table    " + b(background(TABLE)) +
+        "td.column   " + b(background(COLUMN)) +
+        "td.join     " + b(background(COLUMN_JOIN)) +
+        "td.hide     " + b(background(HIDE))
+    ;
+    
     public static final String SHEET =
-Replace.bracketQuote(
-"<style type=[text/css]>" +
-"img"          + b("border: medium none;") + // don't outline images
-"tr.server   " + td(background(SERVER)) +
-"tr.database " + td(background(DATABASE)) +
-"tr.table    " + td(background(TABLE)) +
-"tr.hide     " + td(background(HIDE)) +
+        Replace.bracketQuote("<style type=[text/css]>") +
+        "img"          + b("border: medium none;") + // don't outline images
+        TABLE_COLORING +
+        "</style>"
+    ;
 
-"tr.even     " + td(background(EVEN_ROW)) +
-"tr.odd      " + td(background(ODD_ROW)) +
-
-"td.server   " + b(background(SERVER)) +
-"td.database " + b(background(DATABASE)) +
-"td.table    " + b(background(TABLE)) +
-"td.column   " + b(background(COLUMN)) +
-"td.join     " + b(background(COLUMN_JOIN)) +
-"td.hide     " + b(background(HIDE)) +
-"</style>"
-);
 }

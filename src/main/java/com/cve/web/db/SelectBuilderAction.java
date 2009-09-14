@@ -7,13 +7,16 @@ import com.cve.db.Limit;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
+import com.cve.db.Order;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
+import com.google.common.collect.Lists;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
  * Actions that are used to build a select statement.
@@ -109,6 +112,16 @@ public enum SelectBuilderAction {
         @Override
         public Select goDo(Select select, Server server, String query) {
             return select.with(Filter.parse(server,select.tables,query));
+        }
+    },
+
+    /**
+     * Add the given filter to the select.
+     */
+    ORDER("order") {
+        @Override
+        public Select goDo(Select select, Server server, String query) {
+            return select.with(Order.parse(server,select.tables,query));
         }
     },
 
