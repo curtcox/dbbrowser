@@ -53,6 +53,7 @@ public final class Cell {
     public int     hashCode() { return row.hashCode() ^ column.hashCode();  }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Cell cell = (Cell) o;
         return row.equals(cell.row) && column.equals(cell.column) && function.equals(cell.function);

@@ -5,8 +5,6 @@ import javax.annotation.concurrent.Immutable;
 import com.cve.html.HTML;
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.html.SimpleTooltip;
-import com.cve.html.Tooltip;
 import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
@@ -120,7 +118,7 @@ public final class HtmlPage {
 
     public static HtmlPage gutsTitleNavHelpBase(String guts, String title, String[] nav, URI help, URI base) {
         String head = base(base);
-        String body = nav + guts;
+        String body = body(title,guts,nav,help);
         return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
@@ -135,8 +133,8 @@ public final class HtmlPage {
     }
 
     public HtmlPage withGuts(String guts) {
-        String body = body(title,guts,navigation,help);
-        return new HtmlPage(title, guts, navigation, base, help, head, body);
+        String newBody = body(title,guts,navigation,help);
+        return new HtmlPage(title, guts, navigation, base, help, head, newBody);
     }
 
     @Override

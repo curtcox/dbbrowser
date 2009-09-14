@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class SimpleCache<K,V> implements Map {
 
-    private final int max = 1000;
+    private static final int MAX = 1000;
 
     private final Lock lock = new ReentrantLock();
 
@@ -23,7 +23,7 @@ public final class SimpleCache<K,V> implements Map {
         // specify a maximum size in the constructor.
         @Override
        protected boolean removeEldestEntry(Map.Entry eldest) {
-           return size() > max;
+           return size() > MAX;
        }
     };
 

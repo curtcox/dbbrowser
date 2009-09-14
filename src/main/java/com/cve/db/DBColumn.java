@@ -70,6 +70,10 @@ public final class DBColumn {
         return new DBColumn(table,name,Void.class,Keyness.NONE);
     }
 
+    public static DBColumn keynessTableName(Keyness keyness, DBTable table, String name) {
+        return new DBColumn(table,name,Void.class,keyness);
+    }
+
     public static DBColumn keyTableName(DBTable table, String name) {
         return new DBColumn(table,name,Void.class,Keyness.PRIMARY);
     }

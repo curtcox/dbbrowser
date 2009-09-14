@@ -7,6 +7,7 @@ import com.cve.html.Tooltip;
 import com.cve.html.Link;
 import com.cve.ui.UIDetail;
 import com.cve.db.DBColumn;
+import com.cve.db.DBColumn.Keyness;
 import com.cve.db.Database;
 import com.cve.db.Filter;
 import com.cve.db.Hints;
@@ -17,6 +18,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Order;
 import com.cve.db.Value;
 import com.cve.html.CSS;
+import com.cve.html.HTML;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.ClientInfo;
@@ -238,7 +240,18 @@ public final class DBResultSetRenderer {
         ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<Filter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
-        return Link.textTargetTip(text, target, tooltip).toString();
+        String link = Link.textTargetTip(text, target, tooltip).toString();
+        Keyness keyness = column.keyness;
+        if (keyness==DBColumn.Keyness.NONE) {
+            return link;
+        }
+        if (keyness==DBColumn.Keyness.PRIMARY) {
+            return HTML.img("Primary key", Icons.PRIMARY_KEY) + link;
+        }
+        if (keyness==DBColumn.Keyness.FOREIGN) {
+            return HTML.img("Foreign key", Icons.FOREIGN_KEY) + link;
+        }
+        throw new IllegalArgumentException("" + keyness);
     }
 
     /**

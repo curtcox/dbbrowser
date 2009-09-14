@@ -1,5 +1,6 @@
 package com.cve.html;
 
+import com.cve.util.Replace;
 import com.cve.web.PageRequest;
 import java.net.URI;
 import static com.cve.util.Check.notNull;
@@ -47,6 +48,15 @@ public final class HTML {
     public static String    td(String s, CSS... css)   { return debug("<td class=" + q(spaces(css)) + ">",s,"</td>"); }
     public static String    th(String s, CSS css)   { return debug("<th class=" + q(css.toString()) + ">",s,"</th>"); }
     public static String    tr(String s, CSS css)   { return debug("<tr class=" + q(css.toString()) + ">",s,"</tr>\r"); }
+
+    /**
+     * Image for the given URI.
+     * "Alt text is an alternative, not a tooltip"
+     * See http://www.456bereastreet.com/archive/200604/alt_text_is_an_alternative_not_a_tooltip/
+     */
+    public static String img(String title, URI uri) {
+        return Replace.bracketQuote("<img alt=[" + title + "] title=[" + title + "] src=[" + uri + "]>");
+    }
 
     /**
      <form action="form_handler.php" method="get">

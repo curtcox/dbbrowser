@@ -49,4 +49,8 @@ public final class Icons {
 
     public static final URI CONFIGURE = URIs.of("/resource/icons/categories/applications-system.png");
 
+    public static final URI PRIMARY_KEY = URIs.of("/resource/icons/db/primary-key.png");
+
+    public static final URI FOREIGN_KEY = URIs.of("/resource/icons/db/foreign-key.png");
+
 }

@@ -61,7 +61,7 @@ public final class Link {
     }
 
     private static String a(Label text, URI target, URI image, String alt) {
-        return "<a href=" + q(target.toString()) + ">" + img(alt,image) +"</a>" + debug();
+        return "<a href=" + q(target.toString()) + ">" + HTML.img(alt,image) +"</a>" + debug();
     }
 
     private static String a(Label text, URI target) {
@@ -73,7 +73,7 @@ public final class Link {
     }
 
     private static String a(Label text, URI target, Tooltip tip, URI image) {
-        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + img(text.toString(),image) +"</a>" + debug();
+        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTML.img(text.toString(),image) +"</a>" + debug();
     }
 
     /**
@@ -132,14 +132,6 @@ public final class Link {
         return "\"" + text + "\"";
     }
 
-    /**
-     * Image for the given URI.
-     * "Alt text is an alternative, not a tooltip"
-     * See http://www.456bereastreet.com/archive/200604/alt_text_is_an_alternative_not_a_tooltip/
-     */
-    private static String img(String title, URI uri) {
-        return Replace.bracketQuote("<img alt=[" + title + "] title=[" + title + "] src=[" + uri + "]>");
-    }
 
     @Override
     public String toString() { return html; }

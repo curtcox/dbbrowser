@@ -1,6 +1,7 @@
 package com.cve.db.dbio;
 
 import com.cve.db.DBColumn;
+import com.cve.db.DBColumn.Keyness;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
@@ -185,7 +186,8 @@ class DefaultDBMetaData implements DBMetaData {
             List<DBColumn> list = Lists.newArrayList();
             while (results.next()) {
                 String columnName = results.getString("COLUMN_NAME");
-                list.add(table.columnName(columnName));
+                Keyness   keyness = keyness(table,columnName);
+                list.add(table.keynessColumnName(keyness,columnName));
             }
             ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
             return columns;
@@ -194,6 +196,20 @@ class DefaultDBMetaData implements DBMetaData {
         } finally {
             close(results);
         }
+    }
+
+    public Keyness keyness(DBTable table, String columnName) throws SQLException {
+        for (DBColumn column : getPrimaryKeysFor(table)) {
+            if (columnName.equals(column.name)) {
+                return Keyness.PRIMARY;
+            }
+        }
+        for (Join join : getImportedKeysFor(table)) {
+            if (columnName.equals(join.dest.name)) {
+                return Keyness.FOREIGN;
+            }
+        }
+        return Keyness.NONE;
     }
 
     @Override

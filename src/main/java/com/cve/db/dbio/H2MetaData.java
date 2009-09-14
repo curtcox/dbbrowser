@@ -1,6 +1,7 @@
 package com.cve.db.dbio;
 
 import com.cve.db.DBColumn;
+import com.cve.db.DBColumn.Keyness;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Server;
@@ -82,7 +83,8 @@ final class H2MetaData extends DefaultDBMetaData {
     }
 
     /**
-     * Simple cache
+     * Nicer wrapper for
+     * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
@@ -98,8 +100,8 @@ final class H2MetaData extends DefaultDBMetaData {
             List<DBColumn> list = Lists.newArrayList();
             while (results.next()) {
                 String columnName = results.getString("COLUMN_NAME");
-                DBColumn column = table.columnName(columnName);
-                list.add(column);
+                Keyness   keyness = keyness(table,columnName);
+                list.add(table.keynessColumnName(keyness,columnName));
             }
             ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
             return columns;

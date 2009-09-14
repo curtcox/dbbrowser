@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.db.DBColumn.Keyness;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.web.db.DBURICodec;
@@ -54,13 +55,16 @@ public final class DBTable {
         return database.tableName(tableName);
     }
 
-
     public DBColumn columnNameType(String name, Class type) {
         return DBColumn.tableNameType(this, name, type);
     }
 
     public DBColumn columnName(String name) {
         return DBColumn.tableName(this, name);
+    }
+
+    public DBColumn keynessColumnName(Keyness keyness, String name) {
+        return DBColumn.keynessTableName(keyness, this, name);
     }
 
     public DBColumn keyColumnName(String name) {
