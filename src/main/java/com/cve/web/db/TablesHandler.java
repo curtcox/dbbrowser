@@ -11,13 +11,16 @@ import com.cve.util.URIs;
 import com.cve.web.Search.Space;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.io.IOException;
 import java.sql.SQLException;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import static com.cve.log.Log.args;
 /**
@@ -47,7 +50,8 @@ public final class TablesHandler extends AbstractRequestHandler {
             DBMetaData               meta = DBConnection.getDbmd(server);
             ImmutableList<DBTable> tables = meta.getTablesOn(database);
             ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
-            return new TablesPage(server,database,tables,columns);
+            ImmutableMap<DBTable,Long>             rows = rowsFor(tables);
+            return new TablesPage(server,database,tables,rows,columns);
         }
         if (search.space==Space.CONTENTS) {
             return DatabaseContentsSearchPageCreator.create(database,search);
@@ -76,6 +80,19 @@ public final class TablesHandler extends AbstractRequestHandler {
             }
         }
         return ImmutableMultimap.copyOf(columns);
+    }
+
+        /**
+     * Return a map from the given tables to the columns they contain.
+     */
+    static ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) throws SQLException {
+        Map<DBTable,Long> rows = Maps.newHashMap();
+        for (DBTable table : tables) {
+            Server      server = table.database.server;
+            DBMetaData    meta = DBConnection.getDbmd(server);
+            rows.put(table, meta.getRowCountFor(table));
+        }
+        return ImmutableMap.copyOf(rows);
     }
 
     /**

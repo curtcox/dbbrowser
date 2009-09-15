@@ -37,10 +37,11 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     static String tableOfTables(TablesPage page) {
         StringBuilder out = new StringBuilder();
-        out.append(th("Table") + th("Columns"));
+        out.append(th("Table") + th("Rows") + th("Columns"));
         for (DBTable table : page.tables) {
             out.append(tr(
                 td(table.linkTo().toString(),CSS.TABLE) +
+                td("" + page.rows.get(table),CSS.ROW_COUNT) +
                 td(columnsFor(page,table),CSS.COLUMN)
             ));
         }

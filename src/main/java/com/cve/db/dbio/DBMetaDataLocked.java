@@ -65,4 +65,10 @@ final class DBMetaDataLocked implements DBMetaData {
     synchronized public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         return meta.getTablesOn(database);
     }
+
+    @Override
+    synchronized public long getRowCountFor(DBTable table) throws SQLException {
+        return meta.getRowCountFor(table);
+    }
+
 }

@@ -75,6 +75,11 @@ final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
+    public long getRowCountFor(DBTable table) throws SQLException {
+        return meta.getRowCountFor(table);
+    }
+
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         ImmutableList<Database> result = meta.getDatabasesOn(server);
         queueServer(server);
@@ -164,5 +169,6 @@ final class DBMetaDataProactive implements DBMetaData {
     void queueJoins(ImmutableList<Join> join) {
         // nothing to do
     }
+
 
 }

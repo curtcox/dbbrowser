@@ -107,7 +107,18 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         }
     }
 
+        @Override
+    public long getRowCountFor(DBTable table) {
+        try {
+            return meta.getRowCountFor(table);
+        } catch (SQLException e) {
+            report(e);
+            return 0;
+        }
+    }
+
     private static void report(SQLException e) {
         // this should consolidate and log
     }
+
 }

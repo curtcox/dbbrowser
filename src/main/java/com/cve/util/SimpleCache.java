@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public final class SimpleCache<K,V> implements Map {
 
-    private static final int MAX = 1000;
+    private static final int MAX = 10000;
 
     private final Lock lock = new ReentrantLock();
 

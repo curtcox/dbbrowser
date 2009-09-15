@@ -45,5 +45,6 @@ public interface DBMetaData {
 
     ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException;
 
+    long getRowCountFor(DBTable table) throws SQLException;
 
 }

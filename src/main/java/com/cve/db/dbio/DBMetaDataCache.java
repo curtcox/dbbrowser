@@ -6,6 +6,7 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
 import com.cve.util.Check;
+import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ final class DBMetaDataCache implements DBMetaData {
         return new DBMetaDataCache(meta);
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys = Maps.newHashMap();
+    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys = SimpleCache.of();
     @Override
     public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         if (primaryKeys.containsKey(tables)) {
@@ -38,7 +39,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<Join>> joins = Maps.newHashMap();
+    private final Map<ImmutableList<DBTable>,ImmutableList<Join>> joins = SimpleCache.of();
     @Override
     public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (joins.containsKey(tables)) {
@@ -49,7 +50,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Server,ImmutableList<DBColumn>> columnsForServer = Maps.newHashMap();
+    private final Map<Server,ImmutableList<DBColumn>> columnsForServer = SimpleCache.of();
     @Override
     public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
         if (columnsForServer.containsKey(server)) {
@@ -60,7 +61,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Database,ImmutableList<DBColumn>> columnsForDatabase = Maps.newHashMap();
+    private final Map<Database,ImmutableList<DBColumn>> columnsForDatabase = SimpleCache.of();
     @Override
     public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
         if (columnsForDatabase.containsKey(database)) {
@@ -71,7 +72,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<DBTable,ImmutableList<DBColumn>> columnsForTable = Maps.newHashMap();
+    private final Map<DBTable,ImmutableList<DBColumn>> columnsForTable = SimpleCache.of();
     @Override
     public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
         if (columnsForTable.containsKey(table)) {
@@ -82,7 +83,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Server,ImmutableList<Database>> databases = Maps.newHashMap();
+    private final Map<Server,ImmutableList<Database>> databases = SimpleCache.of();
     @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         if (databases.containsKey(server)) {
@@ -93,7 +94,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables = Maps.newHashMap();
+    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables = SimpleCache.of();
     @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (columnsForTables.containsKey(tables)) {
@@ -104,7 +105,7 @@ final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Database,ImmutableList<DBTable>> tables = Maps.newHashMap();
+    private final Map<Database,ImmutableList<DBTable>> tables = SimpleCache.of();
     @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         if (tables.containsKey(database)) {
@@ -112,6 +113,17 @@ final class DBMetaDataCache implements DBMetaData {
         }
         ImmutableList<DBTable> result = meta.getTablesOn(database);
         tables.put(database, result);
+        return result;
+    }
+
+    private final Map<DBTable,Long> rowCounts = SimpleCache.of();
+    @Override
+    public long getRowCountFor(DBTable table) throws SQLException {
+        if (rowCounts.containsKey(table)) {
+            return rowCounts.get(table);
+        }
+        Long result = meta.getRowCountFor(table);
+        rowCounts.put(table, result);
         return result;
     }
 

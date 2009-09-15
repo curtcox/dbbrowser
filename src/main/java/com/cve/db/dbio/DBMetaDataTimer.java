@@ -66,6 +66,14 @@ final class DBMetaDataTimer implements DBMetaData {
     }
 
     @Override
+    public long getRowCountFor(DBTable table) throws SQLException {
+        Stopwatch watch = Stopwatch.start(table);
+        long result = meta.getRowCountFor(table);
+        watch.stop();
+        return result;
+    }
+
+    @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
         Stopwatch watch = Stopwatch.start(server);
         ImmutableList<Database> result = meta.getDatabasesOn(server);

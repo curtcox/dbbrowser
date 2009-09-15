@@ -12,6 +12,7 @@ import com.cve.web.ModelHtmlRenderer;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.web.db.NavigationButtons.*;
+import static com.cve.log.Log.args;
 /**
  * Renders the results of a database select as HTML.
  * The parts of this are:
@@ -31,6 +32,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
+        args(model,client);
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
             return renderColumnValueDistribution(results,client);

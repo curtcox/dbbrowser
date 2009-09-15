@@ -129,13 +129,13 @@ public final class DBColumn {
     }
 
     @Override
-    public   int hashCode() { return table.hashCode() ^ name.hashCode() ^ type.hashCode(); }
+    public   int hashCode() { return table.hashCode() ^ name.hashCode() ^ type.hashCode() ^ keyness.hashCode(); }
 
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         DBColumn other = (DBColumn) o;
-        return table.equals(other.table) && name.equals(other.name) && type.equals(other.type);
+        return keyness==other.keyness && table.equals(other.table) && name.equals(other.name) && type.equals(other.type);
     }
 
     @Override

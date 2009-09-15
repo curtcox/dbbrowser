@@ -169,6 +169,14 @@ public final class Select {
         return new Select(server,databases,tables,without(columns,column),ImmutableList.copyOf(list),joins,filters,orders,groups,limit);
     }
 
+    /**
+     * Return a similar select, but using these columns instead.
+     */
+    public Select with(List<DBColumn> newColumns) {
+        ImmutableList<DBColumn> copy = ImmutableList.copyOf(newColumns);
+        return new Select(server,databases,tables,copy,functions,joins,filters,orders,groups,limit);
+    }
+
     public static Select from(Database database, DBTable table, DBColumn column) {
         Server server = database.server;
         return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),Limit.DEFAULT);
@@ -289,4 +297,5 @@ public final class Select {
                " groups = "    + groups +
                " limit = "     + limit;
     }
+
 }

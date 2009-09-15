@@ -41,13 +41,14 @@ final class SimpleSelectRunner implements SelectRunner {
     public SelectResults run(SelectContext context) {
         args(context);
         try {
-            return tryRun(context);
+            return tryRun(context.verified());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     static SelectResults tryRun(SelectContext context) throws SQLException {
+        args(context);
         notNull(context);
         DBConnection connection = context.connection;
         Select select = context.select;

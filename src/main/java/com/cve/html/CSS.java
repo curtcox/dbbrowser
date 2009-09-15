@@ -10,18 +10,48 @@ import com.cve.util.Replace;
 public enum CSS {
 
     NONE("",""),
-    HIDE("hide","880000"),
+    
+    ACTIONS("actions","880000"),
+    
+    /**
+     * For server names
+     */
     SERVER("server","BBBBBB"),
+
+    /**
+     * For database names
+     */
     DATABASE("database","FF8888"),
+
+    /**
+     * For table names
+     */
     TABLE("table","88FF88"),
+
+    /**
+     * For column names
+     */
     COLUMN("column","BBBBFF"),
+
+    /**
+     * For row counts
+     */
+    ROW_COUNT("rowCount","CCCCCC"),
+
     /**
      * Used to indicate that a column name cell is for a column with
      * potential joins
      */
     COLUMN_JOIN("join","FFFF00"),
+
+    /**
+     * For even rows in tables
+     */
     EVEN_ROW("even","FFFFFF"),
 
+    /**
+     * For odd rows in tables
+     */
     ODD_ROW("odd","DDDDBB");
 
     private final String value;
@@ -57,7 +87,7 @@ public enum CSS {
         "tr.server   " + td(background(SERVER)) +
         "tr.database " + td(background(DATABASE)) +
         "tr.table    " + td(background(TABLE)) +
-        "tr.hide     " + td(background(HIDE)) +
+        "tr.hide     " + td(background(ACTIONS)) +
 
         "tr.even     " + td(background(EVEN_ROW)) +
         "tr.odd      " + td(background(ODD_ROW)) +
@@ -66,8 +96,9 @@ public enum CSS {
         "td.database " + b(background(DATABASE)) +
         "td.table    " + b(background(TABLE)) +
         "td.column   " + b(background(COLUMN)) +
+        "td.rowCount " + b(background(ROW_COUNT)) +
         "td.join     " + b(background(COLUMN_JOIN)) +
-        "td.hide     " + b(background(HIDE))
+        "td.actions  " + b(background(ACTIONS))
     ;
     
     public static final String SHEET =

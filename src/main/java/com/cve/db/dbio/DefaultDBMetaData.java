@@ -5,6 +5,7 @@ import com.cve.db.DBColumn.Keyness;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
+import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.stores.ServersStore;
 import com.cve.util.Check;
@@ -59,6 +60,9 @@ class DefaultDBMetaData implements DBMetaData {
         return ImmutableList.copyOf(keys);
     }
 
+    /**
+     * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getPrimaryKeys(java.lang.String,%20java.lang.String,%20java.lang.String)
+     */
     private static ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
         args(table);
         Database     database = table.database;
@@ -107,6 +111,25 @@ class DefaultDBMetaData implements DBMetaData {
             set.addAll(getColumnsFor(table));
         }
         return ImmutableList.copyOf(set);
+    }
+
+    @Override
+    public long getRowCountFor(DBTable table) throws SQLException {
+        args(table);
+        Server           server = table.database.server;
+        DBConnection connection = ServersStore.getConnection(server);
+        SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
+        try {
+            ResultSet results = connection.select(sql);
+            try {
+                results.next();
+                return results.getInt(1);
+            } finally {
+                results.close();
+            }
+        } catch (SQLException e) {
+            throw new SQLException(sql.toString(),e);
+        }
     }
 
     /**
@@ -198,6 +221,11 @@ class DefaultDBMetaData implements DBMetaData {
         }
     }
 
+    /**
+     * Return the keyness of the column name in the given table.
+     * Right now 2009/09/15 the driver H2 has a bug that prevents this from working.
+     * It works with MySQL.
+     */
     public Keyness keyness(DBTable table, String columnName) throws SQLException {
         for (DBColumn column : getPrimaryKeysFor(table)) {
             if (columnName.equals(column.name)) {
@@ -205,7 +233,8 @@ class DefaultDBMetaData implements DBMetaData {
             }
         }
         for (Join join : getImportedKeysFor(table)) {
-            if (columnName.equals(join.dest.name)) {
+            DBColumn column = join.dest;
+            if (columnName.equals(column.name)) {
                 return Keyness.FOREIGN;
             }
         }

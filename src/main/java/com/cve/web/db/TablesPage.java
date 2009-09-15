@@ -7,6 +7,7 @@ import com.cve.db.Server;
 import com.cve.db.DBTable;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 
 import static com.cve.util.Check.notNull;
@@ -28,13 +29,21 @@ public final class TablesPage implements Model {
 
     final ImmutableList<DBTable> tables;
 
-
     final ImmutableMultimap<DBTable,DBColumn> columns;
 
-    TablesPage(Server server, Database database, ImmutableList<DBTable> tables, ImmutableMultimap<DBTable,DBColumn> columns) {
+    final ImmutableMap<DBTable,Long> rows;
+
+    TablesPage(Server server, Database database,
+        ImmutableList<DBTable> tables, ImmutableMap<DBTable,Long> rows,
+        ImmutableMultimap<DBTable,DBColumn> columns)
+    {
         this.server    = notNull(server);
         this.database  = notNull(database);
         this.tables    = notNull(tables);
+        this.rows      = notNull(rows);
         this.columns   = notNull(columns);
+        if (!rows.keySet().equals(columns.keySet())) {
+            throw new IllegalArgumentException();
+        }
     }
 }

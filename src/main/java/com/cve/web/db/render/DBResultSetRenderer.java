@@ -33,6 +33,7 @@ import java.util.Set;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * Tools for rendering result sets as HTML.
@@ -84,7 +85,7 @@ public final class DBResultSetRenderer {
         rows.add(UIRow.of(databaseRow(),   CSS.DATABASE));
         rows.add(UIRow.of(tableRow(),      CSS.TABLE));
         rows.add(UIRow.of(columnNameRow()));
-        rows.add(UIRow.of(columnActionsRow(), CSS.HIDE));
+        rows.add(UIRow.of(columnActionsRow(), CSS.ACTIONS));
         rows.addAll(valueRowsList());
         return UITable.of(rows).toString();
     }
@@ -208,6 +209,7 @@ public final class DBResultSetRenderer {
      * Return a string to go in a database name cell.
      */
     static String nameCell(Database database) {
+        args(database);
         Label  text = Label.of(database.name);
         URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
@@ -217,6 +219,7 @@ public final class DBResultSetRenderer {
      * Return a string to go in a table name cell.
      */
     static String nameCell(DBTable table) {
+        args(table);
         Label  text = Label.of(table.name);
         URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
@@ -229,6 +232,7 @@ public final class DBResultSetRenderer {
      * for relevant hints (joins and filters);
      */
     String nameCell(DBColumn column) {
+        args(column);
         int                     width = maxWidth(column);
         String             columnName = breakUp(column.name);
 

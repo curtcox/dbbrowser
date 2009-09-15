@@ -78,7 +78,7 @@ public final class ResultsTableRenderer {
             UIDetail.of("Database",CSS.DATABASE),
             UIDetail.of("Table",CSS.TABLE),
             UIDetail.of("Column",CSS.COLUMN),
-            UIDetail.of("Action",CSS.HIDE),
+            UIDetail.of("Action",CSS.ACTIONS),
             UIDetail.of("Value"));
         out.add(headerRow);
         Database lastDatabase = Database.NULL;
@@ -100,7 +100,7 @@ public final class ResultsTableRenderer {
                 lastTable = table;
             }
             details.add(UIDetail.of(nameCell(column),tools.classOf(column)));
-            details.add(UIDetail.of(actionCell(column,direction(column)),CSS.HIDE));
+            details.add(UIDetail.of(actionCell(column,direction(column)),CSS.ACTIONS));
             for (DBRow row : resultSet.rows) {
                 Cell cell = Cell.at(row, column);
                 Value value = resultSet.getValue(row, column);

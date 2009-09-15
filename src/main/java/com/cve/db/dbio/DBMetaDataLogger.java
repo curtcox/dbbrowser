@@ -10,7 +10,7 @@ import java.io.PrintStream;
 import java.sql.SQLException;
 
 /**
- *
+ * For wrapping a DBMetaData and adding logging.
  * @author Curt
  */
 final class DBMetaDataLogger implements DBMetaData {
@@ -70,6 +70,12 @@ final class DBMetaDataLogger implements DBMetaData {
     }
 
     @Override
+    public long getRowCountFor(DBTable table) throws SQLException {
+        print("getRowCountFor" + table);
+        return print(meta.getRowCountFor(table));
+    }
+
+    @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
         print("getTablesOn" + database);
         return print(meta.getTablesOn(database));
@@ -79,4 +85,5 @@ final class DBMetaDataLogger implements DBMetaData {
         out.println(t);
         return t;
     }
+
 }
