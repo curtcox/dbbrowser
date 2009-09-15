@@ -10,8 +10,11 @@ import com.cve.util.Replace;
 public enum CSS {
 
     NONE("",""),
-    
-    ACTIONS("actions","880000"),
+
+    /**
+     * For a cell with things you can do.
+     */
+    ACTIONS("actions","DDDDFF"),
     
     /**
      * For server names
@@ -73,7 +76,7 @@ public enum CSS {
     }
 
     private static String td(String value) {
-        return "td {" + value + " }";
+        return " td {" + value + " }\r";
     }
 
     /**
@@ -84,23 +87,30 @@ public enum CSS {
     }
 
     public static String TABLE_COLORING =
-        "tr.server   " + td(background(SERVER)) +
-        "tr.database " + td(background(DATABASE)) +
-        "tr.table    " + td(background(TABLE)) +
-        "tr.hide     " + td(background(ACTIONS)) +
+        rowColoring(SERVER) +
+        rowColoring(DATABASE) +
+        rowColoring(TABLE) +
+        rowColoring(ACTIONS) +
+        rowColoring(EVEN_ROW) +
+        rowColoring(ODD_ROW) +
 
-        "tr.even     " + td(background(EVEN_ROW)) +
-        "tr.odd      " + td(background(ODD_ROW)) +
-
-        "td.server   " + b(background(SERVER)) +
-        "td.database " + b(background(DATABASE)) +
-        "td.table    " + b(background(TABLE)) +
-        "td.column   " + b(background(COLUMN)) +
-        "td.rowCount " + b(background(ROW_COUNT)) +
-        "td.join     " + b(background(COLUMN_JOIN)) +
-        "td.actions  " + b(background(ACTIONS))
+        cellColoring(SERVER) +
+        cellColoring(DATABASE) +
+        cellColoring(TABLE) +
+        cellColoring(COLUMN) +
+        cellColoring(ROW_COUNT) +
+        cellColoring(COLUMN_JOIN) +
+        cellColoring(ACTIONS)
     ;
-    
+
+    static String rowColoring(CSS css) {
+        return "tr." + css.value + td(background(css));
+    }
+
+    static String cellColoring(CSS css) {
+        return "td." + css.value + b(background(css));
+    }
+
     public static final String SHEET =
         Replace.bracketQuote("<style type=[text/css]>") +
         "img"          + b("border: medium none;") + // don't outline images
