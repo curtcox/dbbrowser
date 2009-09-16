@@ -29,6 +29,7 @@ public final class Group {
     public int hashCode() { return column.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Group other = (Group) o;
         return column.equals(other.column);

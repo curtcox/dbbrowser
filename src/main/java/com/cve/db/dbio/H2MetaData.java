@@ -41,8 +41,9 @@ final class H2MetaData extends DefaultDBMetaData {
                 // Due to a driver bug, we can't use the column name
                 int TABLE_SCHEMA = 2;
                 String databaseName = results.getString(TABLE_SCHEMA);
+                Class        type = classFor(results.getInt("DATA_TYPE"));
                 Database database = Database.serverName(server, databaseName);
-                DBColumn column = database.tableName(tableName).columnName(columnName);
+                DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
                 list.add(column);
             }
         } catch (SQLException e) {
@@ -54,7 +55,8 @@ final class H2MetaData extends DefaultDBMetaData {
         return columns;
     }
 
-        /**
+    /**
+     * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
     public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
@@ -68,9 +70,10 @@ final class H2MetaData extends DefaultDBMetaData {
         ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
         try {
             while (results.next()) {
-                String tableName = results.getString("TABLE_NAME");
+                String  tableName = results.getString("TABLE_NAME");
                 String columnName = results.getString("COLUMN_NAME");
-                DBColumn column = database.tableName(tableName).columnName(columnName);
+                Class        type = classFor(results.getInt("DATA_TYPE"));
+                DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
                 list.add(column);
             }
         } catch (SQLException e) {
@@ -100,8 +103,9 @@ final class H2MetaData extends DefaultDBMetaData {
             List<DBColumn> list = Lists.newArrayList();
             while (results.next()) {
                 String columnName = results.getString("COLUMN_NAME");
+                Class        type = classFor(results.getInt("DATA_TYPE"));
                 Keyness   keyness = keyness(table,columnName);
-                list.add(table.keynessColumnName(keyness,columnName));
+                list.add(table.keynessColumnNameType(keyness,columnName,type));
             }
             ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
             return columns;

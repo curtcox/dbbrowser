@@ -41,13 +41,14 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         return isColumnValueDist(uri);
     }
 
-    /**
-     * Is uri of the form /server/database/table/column[/]
+    /**                   1  2     3        4     5       6
+     * Is uri of the form /+/server/database/table/column[/]
      * @param uri
      * @return
      */
     static boolean isColumnValueDist(String uri) {
-        if (URIs.slashCount(uri)!=4 && URIs.slashCount(uri)!=5) {
+        int slashes = URIs.slashCount(uri);
+        if (slashes!=5 && slashes!=6) {
             return false;
         }
         if (DBURICodec.getDatabases(uri).size() !=1){

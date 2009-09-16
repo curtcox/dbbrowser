@@ -168,6 +168,9 @@ public enum DBDriver {
         return getSelectRenderer().render(select,search);
     }
 
+    /**
+     * Return the SQL appropriate to count the rows in this select.
+     */
     public SQL renderCount(Select select, Search search) {
         return getSelectRenderer().renderCount(select,search);
     }

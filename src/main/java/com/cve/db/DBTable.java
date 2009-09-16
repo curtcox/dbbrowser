@@ -63,6 +63,10 @@ public final class DBTable {
         return DBColumn.tableName(this, name);
     }
 
+    public DBColumn keynessColumnNameType(Keyness keyness, String name, Class type) {
+        return DBColumn.keynessTableNameType(keyness, this, name, type);
+    }
+
     public DBColumn keynessColumnName(Keyness keyness, String name) {
         return DBColumn.keynessTableName(keyness, this, name);
     }

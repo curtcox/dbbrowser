@@ -63,7 +63,9 @@ class SimpleSelectRenderer implements SelectRenderer {
         // those selected.  Since we're only selecting count(*), that's no
         // columns.  So we need to and are free to drop the order clauses.
         out.append(group(select.groups));
-        out.append(limit(select.limit));
+        // We should only be getting one value back (the count), but some
+        // DBMS's don't like putting a limit on the SQL.
+        // So don't add the limit.
         return SQL.of(out.toString());
     }
 

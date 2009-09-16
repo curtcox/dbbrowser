@@ -16,9 +16,12 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import static com.cve.log.Log.args;
+import static java.sql.Types.*;
 
 /**
  * Skeletal implementation of DB meta data reader.
@@ -149,7 +152,8 @@ class DefaultDBMetaData implements DBMetaData {
                 while (results.next()) {
                     String tableName = results.getString("TABLE_NAME");
                     String columnName = results.getString("COLUMN_NAME");
-                    DBColumn column = database.tableName(tableName).columnName(columnName);
+                    Class        type = classFor(results.getInt("DATA_TYPE"));
+                    DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
                     list.add(column);
                 }
             } catch (SQLException e) {
@@ -179,7 +183,8 @@ class DefaultDBMetaData implements DBMetaData {
             while (results.next()) {
                 String tableName = results.getString("TABLE_NAME");
                 String columnName = results.getString("COLUMN_NAME");
-                DBColumn column = database.tableName(tableName).columnName(columnName);
+                Class        type = classFor(results.getInt("DATA_TYPE"));
+                DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
                 list.add(column);
             }
         } catch (SQLException e) {
@@ -209,8 +214,9 @@ class DefaultDBMetaData implements DBMetaData {
             List<DBColumn> list = Lists.newArrayList();
             while (results.next()) {
                 String columnName = results.getString("COLUMN_NAME");
+                Class        type = classFor(results.getInt("DATA_TYPE"));
                 Keyness   keyness = keyness(table,columnName);
-                list.add(table.keynessColumnName(keyness,columnName));
+                list.add(table.keynessColumnNameType(keyness,columnName,type));
             }
             ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
             return columns;
@@ -392,4 +398,58 @@ class DefaultDBMetaData implements DBMetaData {
         return ImmutableList.copyOf(joins);
     }
 
+    /**
+     * See java.sql.Types
+     * Don't trust these mappings.  They haven't been researched.
+     * The void values below represent mappings I haven't even guessed at, yet.
+     */
+    private static Map<Integer,Class> KNOWN_TYPES = new HashMap() {{
+        put(ARRAY,          Object[].class);
+        put(BIGINT,         Void.class);
+        put(BINARY,         Void.class);
+        put(BIT,            Void.class);
+        put(BLOB,           Void.class);
+        put(BOOLEAN,        Boolean.class);
+        put(CHAR,           String.class);
+        put(CLOB,           String.class);
+        put(DATALINK,       Void.class);
+        put(DATE,           java.sql.Date.class);
+        put(DECIMAL,        Void.class);
+        put(DISTINCT,       Void.class);
+        put(DOUBLE,         Double.class);
+        put(FLOAT,          Float.class);
+        put(INTEGER,        Integer.class);
+        put(JAVA_OBJECT,    Void.class);
+        put(LONGNVARCHAR,   String.class);
+        put(LONGVARBINARY,  Void.class);
+        put(LONGVARCHAR,    String.class);
+        put(NCHAR,          String.class);
+        put(NCLOB,          String.class);
+        put(NULL,           Void.class);
+        put(NUMERIC,        Number.class);
+        put(NVARCHAR,       String.class);
+        put(OTHER,          Void.class);
+        put(REAL,           Void.class);
+        put(REF,            Void.class);
+        put(ROWID,          Void.class);
+        put(SMALLINT,       Short.class);
+        put(SQLXML,         Void.class);
+        put(STRUCT,         Void.class);
+        put(TIME,           java.util.Date.class);
+        put(TIMESTAMP,      Void.class);
+        put(TINYINT,        Void.class);
+        put(VARBINARY,      Void.class);
+        put(VARCHAR,        String.class);
+    }};
+
+    /**
+     * See java.sql.Types
+     */
+    public Class classFor(int value) {
+        Class c = KNOWN_TYPES.get(value);
+        if (c==null) {
+            throw new IllegalArgumentException(value + " is not a known type");
+        }
+        return c;
+    }
 }

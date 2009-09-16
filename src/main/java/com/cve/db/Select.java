@@ -298,4 +298,34 @@ public final class Select {
                " limit = "     + limit;
     }
 
+    @Override
+    public int hashCode() {
+        return server.hashCode() ^
+               databases.hashCode() ^
+               tables.hashCode() ^
+               columns.hashCode() ^
+               functions.hashCode() ^
+               joins.hashCode() ^
+               filters.hashCode() ^
+               orders.hashCode() ^
+               groups.hashCode() ^
+               limit.hashCode();
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        Select other = (Select) o;
+        return server.equals(other.server) &&
+               databases.equals(other.databases) &&
+               tables.equals(other.tables) &&
+               columns.equals(other.columns) &&
+               functions.equals(other.functions) &&
+               joins.equals(other.joins) &&
+               filters.equals(other.filters) &&
+               orders.equals(other.orders) &&
+               groups.equals(other.groups) &&
+               limit.equals(other.limit);
+    }
+
 }
