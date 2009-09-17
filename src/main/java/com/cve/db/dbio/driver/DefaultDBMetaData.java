@@ -1,7 +1,6 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.db.dbio.*;
-import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.DBColumn;
 import com.cve.db.DBColumn.Keyness;
 import com.cve.db.DBTable;
@@ -9,6 +8,9 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.SQL;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBMetaDataIO.KeySpecifier;
+import com.cve.db.dbio.DBMetaDataIO.PrimaryKeyInfo;
+import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.stores.ServersStore;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
@@ -76,20 +78,12 @@ public class DefaultDBMetaData implements DBMetaData {
         String        catalog = database.name;
         String         schema = null;
         String      tableName = table.name;
-        ResultSet results = dbmd.getPrimaryKeys(catalog, schema, tableName);
-        try {
-            List<DBColumn> list = Lists.newArrayList();
-            while (results.next()) {
-                String columnName = results.getString("COLUMN_NAME");
-                list.add(table.keyColumnName(columnName));
-            }
-            ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-            return columns;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<DBColumn> list = Lists.newArrayList();
+        for (PrimaryKeyInfo info : dbmd.getPrimaryKeys(KeySpecifier.of(catalog, schema, tableName))) {
+            list.add(table.keyColumnName(info.columnName));
         }
+        ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
+        return columns;
     }
 
 
@@ -303,7 +297,7 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      * Handy static method to close a result set without needing a try/catch
      */
-    public static void close(ResultSet results) {
+    static void close(ResultSet results) {
         try {
             results.close();
         } catch (SQLException e) {
@@ -314,7 +308,7 @@ public class DefaultDBMetaData implements DBMetaData {
     public static DBMetaDataIO getDbmdIO(Server server) {
         args(server);
         DBConnection connection = ServersStore.getConnection(server);
-        DBMetaDataIO   dbmd = DBMetaDataIO.connection(connection);
+        DBMetaDataIO   dbmd = DefaultDBMetaDataIO.connection(connection);
         return dbmd;
     }
 
@@ -328,25 +322,18 @@ public class DefaultDBMetaData implements DBMetaData {
         String   catalog = database.name;
         String    schema = null;
         String tableName = table.name;
-        ResultSet results = dbmd.getImportedKeys(catalog, schema, tableName);
-        try {
-            List<Join> list = Lists.newArrayList();
-            while (results.next()) {
-                Database pkDatabase = server.databaseName(results.getString("PKTABLE_CAT"));
-                Database fkDatabase = server.databaseName(results.getString("FKTABLE_CAT"));
-                DBTable       pkTable = pkDatabase.tableName(results.getString("PKTABLE_NAME"));
-                DBTable       fkTable = fkDatabase.tableName(results.getString("FKTABLE_NAME"));
-                DBColumn       source = DBColumn.keyTableName(pkTable, results.getString("PKCOLUMN_NAME"));
-                DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, results.getString("FKCOLUMN_NAME"));
-                list.add(Join.of(source, dest));
-            }
-            ImmutableList<Join> joins = ImmutableList.copyOf(list);
-            return joins;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<Join> list = Lists.newArrayList();
+        for (ReferencedKeyInfo info : dbmd.getImportedKeys(KeySpecifier.of(catalog, schema, tableName))) {
+            Database pkDatabase = server.databaseName(info.fkDatabase);
+            Database fkDatabase = server.databaseName(info.fkDatabase);
+            DBTable       pkTable = pkDatabase.tableName(info.pkTable);
+            DBTable       fkTable = fkDatabase.tableName(info.fkTable);
+            DBColumn       source = DBColumn.keyTableName(pkTable, info.pkColumn);
+            DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, info.fkColumn);
+            list.add(Join.of(source, dest));
         }
+        ImmutableList<Join> joins = ImmutableList.copyOf(list);
+        return joins;
     }
 
     /**
@@ -359,25 +346,18 @@ public class DefaultDBMetaData implements DBMetaData {
         String   catalog = database.name;
         String    schema = null;
         String tableName = table.name;
-        ResultSet results = dbmd.getExportedKeys(catalog, schema, tableName);
-        try {
-            List<Join> list = Lists.newArrayList();
-            while (results.next()) {
-                Database pkDatabase = server.databaseName(results.getString("PKTABLE_CAT"));
-                Database fkDatabase = server.databaseName(results.getString("FKTABLE_CAT"));
-                DBTable       pkTable = pkDatabase.tableName(results.getString("PKTABLE_NAME"));
-                DBTable       fkTable = fkDatabase.tableName(results.getString("FKTABLE_NAME"));
-                DBColumn       source = DBColumn.keyTableName(pkTable, results.getString("PKCOLUMN_NAME"));
-                DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, results.getString("FKCOLUMN_NAME"));
-                list.add(Join.of(source, dest));
-            }
-            ImmutableList<Join> joins = ImmutableList.copyOf(list);
-            return joins;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<Join> list = Lists.newArrayList();
+        for (ReferencedKeyInfo info : dbmd.getExportedKeys(KeySpecifier.of(catalog, schema, tableName))) {
+            Database pkDatabase = server.databaseName(info.fkDatabase);
+            Database fkDatabase = server.databaseName(info.fkDatabase);
+            DBTable       pkTable = pkDatabase.tableName(info.pkTable);
+            DBTable       fkTable = fkDatabase.tableName(info.fkTable);
+            DBColumn       source = DBColumn.keyTableName(pkTable, info.pkColumn);
+            DBColumn         dest = DBColumn.foreignkeyTableName(fkTable, info.fkColumn);
+            list.add(Join.of(source, dest));
         }
+        ImmutableList<Join> joins = ImmutableList.copyOf(list);
+        return joins;
     }
 
     /**

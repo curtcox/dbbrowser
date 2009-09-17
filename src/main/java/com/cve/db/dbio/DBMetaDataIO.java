@@ -1,100 +1,96 @@
 
 package com.cve.db.dbio;
 
+import com.cve.util.Strings;
+import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.annotation.concurrent.Immutable;
 
-import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * Low level access to database meta data.
  * @author curt
  */
-public final class DBMetaDataIO {
+public interface DBMetaDataIO {
 
-    private final DBConnection connection;
+    @Immutable
+    public static class KeySpecifier {
 
-    private DBMetaDataIO(DBConnection connection) {
-        this.connection = notNull(connection);
+        // any of these might need to be null
+        public final String catalog;
+        public final String schema;
+        public final String tableName;
+
+        private KeySpecifier(String catalog,String schema,String tableName) {
+            this.catalog = catalog;
+            this.schema = schema;
+            this.tableName = tableName;
+        }
+
+        public static KeySpecifier of(String catalog,String schema,String tableName) {
+            return new KeySpecifier(catalog,schema,tableName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Strings.hashCode(catalog) ^ Strings.hashCode(schema) ^ Strings.hashCode(tableName);
+        }
+
+        @Override
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+        public boolean equals(Object o) {
+            KeySpecifier other = (KeySpecifier) o;
+            return Strings.equals(catalog,other.catalog) && Strings.equals(schema,other.schema) && Strings.equals(tableName,other.tableName);
+
+        }
     }
 
-    public static DBMetaDataIO connection(DBConnection connection) {
-        args(connection);
-        return new DBMetaDataIO(connection);
+    public static class PrimaryKeyInfo {
+        public final String columnName;
+        PrimaryKeyInfo(String columnName) {
+            this.columnName = columnName;
+        }
+    }
+
+    public static class ReferencedKeyInfo {
+        public final String pkDatabase;
+        public final String fkDatabase;
+        public final String pkTable;
+        public final String fkTable;
+        public final String pkColumn;
+        public final String fkColumn;
+
+        ReferencedKeyInfo(String pkDatabase,String fkDatabase,String pkTable,String fkTable,String pkColumn,String fkColumn) {
+            this.pkDatabase = pkDatabase;
+            this.fkDatabase = fkDatabase;
+            this.pkTable    = pkTable;
+            this.fkTable    = fkTable;
+            this.pkColumn   = pkColumn;
+            this.fkColumn   = fkColumn;
+        }
     }
 
     // Wrappers for all of the DBMD functions we use
-    public ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getTables(catalog, schemaPattern, tableNamePattern, types);
-            }
-        });
-    }
+    ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException;
 
-    public ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-               return getMetaData().getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            }
-        });
-    }
+    ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException;
 
-    public ResultSet getImportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getImportedKeys(catalog, schema, tableName);
-            }
-        });
-    }
+    ImmutableList<ReferencedKeyInfo> getImportedKeys(KeySpecifier specifier) throws SQLException;
 
-    public ResultSet getPrimaryKeys(final String catalog, final String schema, final String tableName) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getPrimaryKeys(catalog, schema, tableName);
-            }
-        });
-    }
+    ImmutableList<PrimaryKeyInfo> getPrimaryKeys(KeySpecifier specifier) throws SQLException;
 
-    public ResultSet getExportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getExportedKeys(catalog, schema, tableName);
-            }
-        });
-    }
+    ImmutableList<ReferencedKeyInfo> getExportedKeys(KeySpecifier specifier) throws SQLException;
 
-    public ResultSet getCatalogs() throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getCatalogs();
-            }
-        });
-    }
+    ResultSet getCatalogs() throws SQLException;
 
-    public ResultSet getSchemas() throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getSchemas();
-            }
-        });
-    }
+    ResultSet getSchemas() throws SQLException;
 
     /**
      * Return the raw meta data.  This is mostly for debugging.
      */
-    public DatabaseMetaData getMetaData() {
-        return connection.getJDBCMetaData();
-    }
+    DatabaseMetaData getMetaData();
 
 
 

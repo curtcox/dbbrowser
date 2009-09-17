@@ -7,6 +7,26 @@ import java.util.List;
  */
 public final class Strings {
 
+    public static int hashCode(String s) {
+        if (s==null) {
+            return 0;
+        }
+        return s.hashCode();
+    }
+
+    public static boolean equals(String a, String b) {
+        if (a==null && b==null) {
+            return true;
+        }
+        if (a==null & b!=null) {
+            return false;
+        }
+        if (a!=null & b==null) {
+            return false;
+        }
+        return a.equals(b);
+    }
+
     /**
      * For things like generating CSV.
      * Return a string of the given strings, separated by the given separator.
