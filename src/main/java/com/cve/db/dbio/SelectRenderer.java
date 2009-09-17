@@ -8,7 +8,7 @@ import com.cve.web.Search;
  * This is how a select is turned into SQL.
  * @author curt
  */
-interface SelectRenderer {
+public interface SelectRenderer {
 
     /**
      * Render the given select as SQL.

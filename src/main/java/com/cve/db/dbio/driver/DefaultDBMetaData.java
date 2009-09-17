@@ -1,5 +1,7 @@
-package com.cve.db.dbio;
+package com.cve.db.dbio.driver;
 
+import com.cve.db.dbio.*;
+import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.DBColumn;
 import com.cve.db.DBColumn.Keyness;
 import com.cve.db.DBTable;
@@ -31,11 +33,11 @@ import static java.sql.Types.*;
  * meta data and give it to us.
  * @author curt
  */
-class DefaultDBMetaData implements DBMetaData {
+public class DefaultDBMetaData implements DBMetaData {
 
     protected DefaultDBMetaData() {}
 
-    static DBMetaData getDbmd(DBConnection connection) {
+    public static DBMetaData getDbmd(DBConnection connection) {
         args(connection);
         DBMetaData meta = getDbmd0(connection);
         meta = DBMetaDataLogger.of(System.out,meta);
@@ -153,7 +155,9 @@ class DefaultDBMetaData implements DBMetaData {
                     String tableName = results.getString("TABLE_NAME");
                     String columnName = results.getString("COLUMN_NAME");
                     Class        type = classFor(results.getInt("DATA_TYPE"));
-                    DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
+                    DBTable     table = database.tableName(tableName);
+                    Keyness   keyness = keyness(table,columnName);
+                    DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
                     list.add(column);
                 }
             } catch (SQLException e) {
@@ -184,7 +188,9 @@ class DefaultDBMetaData implements DBMetaData {
                 String tableName = results.getString("TABLE_NAME");
                 String columnName = results.getString("COLUMN_NAME");
                 Class        type = classFor(results.getInt("DATA_TYPE"));
-                DBColumn column = database.tableName(tableName).columnNameType(columnName,type);
+                DBTable     table = database.tableName(tableName);
+                Keyness   keyness = keyness(table,columnName);
+                DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
                 list.add(column);
             }
         } catch (SQLException e) {
@@ -392,7 +398,9 @@ class DefaultDBMetaData implements DBMetaData {
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBColumn source : getColumnsFor(table)) {
             for (DBColumn dest : columns.get(source.name)) {
-                joins.add(Join.of(source, dest));
+                if (!source.equals(dest)) {
+                    joins.add(Join.of(source, dest));
+                }
             }
         }
         return ImmutableList.copyOf(joins);

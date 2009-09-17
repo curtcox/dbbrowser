@@ -21,7 +21,7 @@ import static com.cve.util.Check.notNull;
  * implement SelectRenderer from scratch.
  * @author curt
  */
-class SimpleSelectRenderer implements SelectRenderer {
+public class SimpleSelectRenderer implements SelectRenderer {
 
     // Constants we use in the generated SQL
     private static final String AND      = " AND ";

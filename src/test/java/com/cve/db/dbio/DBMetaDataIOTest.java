@@ -1,5 +1,6 @@
 package com.cve.db.dbio;
 
+import com.cve.db.dbio.driver.DefaultDBMetaData;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.Database;
 import com.cve.db.JDBCURL;

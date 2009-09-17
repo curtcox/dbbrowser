@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * intercept and debug.
  * @author curt
  */
-final class ResultSetMetaDataWrapper extends NoResultSetMetaData {
+public final class ResultSetMetaDataWrapper extends NoResultSetMetaData {
 
     private final ResultSetMetaData meta;
 
@@ -18,7 +18,7 @@ final class ResultSetMetaDataWrapper extends NoResultSetMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static ResultSetMetaData of(ResultSetMetaData meta) {
+    public static ResultSetMetaData of(ResultSetMetaData meta) {
         return new ResultSetMetaDataWrapper(meta);
     }
 

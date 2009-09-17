@@ -1,6 +1,8 @@
 
 package com.cve.db.dbio;
 
+import com.cve.db.dbio.driver.DefaultDBMetaData;
+import com.cve.db.dbio.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.SQL;
 import com.cve.db.Server;

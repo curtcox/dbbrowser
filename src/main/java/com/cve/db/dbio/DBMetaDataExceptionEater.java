@@ -15,7 +15,7 @@ import java.sql.SQLException;
  * Unfortunately, some JDBC drivers will throw security exceptions, rather
  * than just limiting the data they return.
  */
-final class DBMetaDataExceptionEater implements DBMetaData {
+public final class DBMetaDataExceptionEater implements DBMetaData {
 
     private final DBMetaData meta;
 
@@ -23,7 +23,7 @@ final class DBMetaDataExceptionEater implements DBMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static DBMetaData of(DBMetaData meta) {
+    public static DBMetaData of(DBMetaData meta) {
         return new DBMetaDataExceptionEater(meta);
     }
 

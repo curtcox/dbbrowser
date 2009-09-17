@@ -12,7 +12,7 @@ import static com.cve.log.Log.args;
  * Low level access to database meta data.
  * @author curt
  */
-final class DBMetaDataIO {
+public final class DBMetaDataIO {
 
     private final DBConnection connection;
 
@@ -26,7 +26,7 @@ final class DBMetaDataIO {
     }
 
     // Wrappers for all of the DBMD functions we use
-    ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
+    public ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -35,7 +35,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException {
+    public ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -44,7 +44,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getImportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
+    public ResultSet getImportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -53,7 +53,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getPrimaryKeys(final String catalog, final String schema, final String tableName) throws SQLException {
+    public ResultSet getPrimaryKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -62,7 +62,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getExportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
+    public ResultSet getExportedKeys(final String catalog, final String schema, final String tableName) throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -71,7 +71,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getCatalogs() throws SQLException {
+    public ResultSet getCatalogs() throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
@@ -80,7 +80,7 @@ final class DBMetaDataIO {
         });
     }
 
-    ResultSet getSchemas() throws SQLException {
+    public ResultSet getSchemas() throws SQLException {
         return ResultSetRetry.run(connection,new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {

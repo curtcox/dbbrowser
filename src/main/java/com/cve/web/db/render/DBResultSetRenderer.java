@@ -241,7 +241,7 @@ public final class DBResultSetRenderer {
         }
         Label                    text = Label.of(columnName);
         URI                    target = column.linkTo().getTarget();
-        ImmutableList<DBColumn>   joins = destinationColumns(column,hints.getJoinsFor(column));
+        ImmutableList<DBColumn> joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<Filter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
         String link = Link.textTargetTip(text, target, tooltip).toString();

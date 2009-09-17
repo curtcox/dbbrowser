@@ -94,6 +94,7 @@ public final class Hints {
     public int hashCode() { return joins.hashCode() ^ filters.hashCode(); }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Hints other = (Hints) o;
         return joins.equals(other.joins) && filters.equals(other.filters);

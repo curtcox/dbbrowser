@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.html.HTML;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.web.db.DBURICodec;
@@ -149,7 +150,14 @@ public final class DBColumn {
 
     public Link linkTo() {
         URI target = DBURICodec.encode(this);
-        Label text = Label.of(name);
+        String markedName = name;
+        if (keyness==Keyness.PRIMARY) {
+            markedName = HTML.b(name);
+        }
+        if (keyness==Keyness.FOREIGN) {
+            markedName = HTML.i(name);
+        }
+        Label text = Label.of(markedName);
         return Link.textTarget(text, target);
     }
 

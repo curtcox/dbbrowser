@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * intercept and debug.
  * @author curt
  */
-final class ResultSetWrapper extends NoResultSet {
+public final class ResultSetWrapper extends NoResultSet {
 
     private final ResultSet results;
 
@@ -19,7 +19,7 @@ final class ResultSetWrapper extends NoResultSet {
         this.results = Check.notNull(results);
     }
 
-    static ResultSet of(ResultSet results) {
+    public static ResultSet of(ResultSet results) {
         return new ResultSetWrapper(results);
     }
 

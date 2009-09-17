@@ -14,7 +14,7 @@ import java.sql.SQLException;
  * Right now, we just synchronize, but we could do something better if needed.
  * @author curt
  */
-final class DBMetaDataLocked implements DBMetaData {
+public final class DBMetaDataLocked implements DBMetaData {
 
     private final DBMetaData meta;
 
@@ -22,7 +22,7 @@ final class DBMetaDataLocked implements DBMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static DBMetaData of(DBMetaData meta) {
+    public static DBMetaData of(DBMetaData meta) {
         return new DBMetaDataLocked(meta);
     }
 

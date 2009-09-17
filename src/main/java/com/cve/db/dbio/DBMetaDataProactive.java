@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
  * should give better results.
  * @author curt
  */
-final class DBMetaDataProactive implements DBMetaData {
+public final class DBMetaDataProactive implements DBMetaData {
 
     private final DBMetaData meta;
 
@@ -35,7 +35,7 @@ final class DBMetaDataProactive implements DBMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static DBMetaData of(DBMetaData meta) {
+    public static DBMetaData of(DBMetaData meta) {
         return new DBMetaDataProactive(meta);
     }
 

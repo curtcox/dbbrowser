@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * For wrapping a DBMetaData and adding logging.
  * @author Curt
  */
-final class DBMetaDataLogger implements DBMetaData {
+public final class DBMetaDataLogger implements DBMetaData {
 
     final PrintStream out;
     final DBMetaData meta;
@@ -23,7 +23,7 @@ final class DBMetaDataLogger implements DBMetaData {
         this.meta = meta;
     }
 
-    static DBMetaData of(PrintStream out, DBMetaData meta) {
+    public static DBMetaData of(PrintStream out, DBMetaData meta) {
         return new DBMetaDataLogger(out,meta);
     }
 

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 /**
  * For timing meta data access.
  */
-final class DBMetaDataTimer implements DBMetaData {
+public final class DBMetaDataTimer implements DBMetaData {
 
     private final DBMetaData meta;
 
@@ -21,7 +21,7 @@ final class DBMetaDataTimer implements DBMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static DBMetaData of(DBMetaData meta) {
+    public static DBMetaData of(DBMetaData meta) {
         return new DBMetaDataTimer(meta);
     }
 

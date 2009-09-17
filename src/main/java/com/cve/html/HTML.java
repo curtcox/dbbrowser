@@ -36,6 +36,8 @@ public final class HTML {
     public static String    td(String s) { return debug("<td>",s,"</td>"); }
     public static String    th(String s) { return debug("<th>",s,"</th>"); }
     public static String    tr(String s) { return debug("<tr>",s,"</tr>\r"); }
+    public static String     b(String s) { return debug("<b>",s,"</b>\r"); }
+    public static String     i(String s) { return debug("<i>",s,"</i>\r"); }
     public static String   pre(String s) { return debug("<pre>\r",s,"\r</pre>\r"); }
     public static String table(String s) { return debug("<table>",s,"</table>\r"); }
     public static String borderTable(String s) { return debug("<table border>",s,"</table>\r"); }

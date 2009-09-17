@@ -1,6 +1,6 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.dbio.DBDriver;
+import com.cve.db.dbio.driver.DBDriver;
 import com.cve.html.HTML;
 import com.cve.ui.UIForm;
 import com.cve.ui.UITable;

@@ -7,7 +7,7 @@ import java.sql.SQLException;
  * Not a result set meta data, but you could extend it to make one.
  * @author Curt
  */
-abstract class NoResultSetMetaData implements ResultSetMetaData {
+public abstract class NoResultSetMetaData implements ResultSetMetaData {
 
     @Override
     public int getColumnCount() throws SQLException {        throw no();    }

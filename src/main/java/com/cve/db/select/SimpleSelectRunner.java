@@ -15,7 +15,7 @@ import com.cve.db.Hints;
 import com.cve.db.SelectContext;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
-import com.cve.db.dbio.DBDriver;
+import com.cve.db.dbio.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;

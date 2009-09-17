@@ -27,7 +27,7 @@ import java.util.Map;
  * make one.
  * @author curt
  */
-abstract class NoResultSet implements ResultSet {
+public abstract class NoResultSet implements ResultSet {
 
 
     @Override

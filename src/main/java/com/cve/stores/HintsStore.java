@@ -42,6 +42,9 @@ public final class HintsStore {
      */
     private static Multimap<DBColumn,Filter> filters = HashMultimap.create();
 
+    /**
+     * Add these hints to those in the store.
+     */
     public static void putHints(Hints hints) {
         for (Join join : hints.joins) {
             joins.put(join.source, join);

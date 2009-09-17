@@ -1,6 +1,6 @@
 package com.cve.db;
 
-import com.cve.db.dbio.DBDriver;
+import com.cve.db.dbio.driver.DBDriver;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 

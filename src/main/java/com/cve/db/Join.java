@@ -15,13 +15,22 @@ import static com.cve.util.Check.notNull;
 
 public final class Join {
 
+    /**
+     * From where
+     */
     public final DBColumn source;
 
+    /**
+     * To where
+     */
     public final DBColumn dest;
 
     private Join(DBColumn source, DBColumn dest) {
         this.source = notNull(source);
         this.dest   = notNull(dest);
+        if (source.equals(dest)) {
+            throw new IllegalArgumentException(source + " used as both source and dest.");
+        }
     }
 
     public static Join of(DBColumn source, DBColumn dest) {

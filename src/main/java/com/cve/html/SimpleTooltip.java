@@ -1,6 +1,5 @@
 package com.cve.html;
 
-import com.cve.html.HTML;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -25,6 +24,7 @@ public final class SimpleTooltip
         return new SimpleTooltip(HTML.of(html));
     }
 
+    @Override
     public HTML toHTML() { return html; }
 
 }

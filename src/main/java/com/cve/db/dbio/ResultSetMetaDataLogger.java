@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * intercept and debug.
  * @author curt
  */
-final class ResultSetMetaDataLogger extends NoResultSetMetaData {
+public final class ResultSetMetaDataLogger extends NoResultSetMetaData {
 
     final ResultSetMetaData meta;
 

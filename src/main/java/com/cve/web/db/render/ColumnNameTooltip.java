@@ -5,10 +5,14 @@ import com.cve.html.Label;
 import com.cve.html.Tooltip;
 import com.cve.html.HTML;
 import com.cve.db.DBColumn;
+import com.cve.db.DBColumn.Keyness;
 import com.cve.db.Filter;
 import com.cve.ui.UICascadingMenu;
+import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
+import com.cve.ui.UIImage;
 import com.cve.ui.UILink;
+import com.cve.web.Icons;
 import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.ImmutableList;
 
@@ -28,8 +32,9 @@ public final class ColumnNameTooltip
         DBColumn column, ImmutableList<DBColumn> joins, ImmutableList<Filter> filters)
     {
         String info =
-            info(column).toString() +
-            UICascadingMenu.of(joinInfo(column,joins))
+            //info(column).toString() +
+            UICascadingMenu.of(
+                joinInfo(column,joins))
                 .with(filterInfo(filters)
             ).toString();
         HTML html = HTML.of(info);
@@ -47,11 +52,22 @@ public final class ColumnNameTooltip
     static UIElement joinInfo(DBColumn source, DBColumn dest) {
         notNull(source);
         notNull(dest);
-        String text   = "join with " + dest.fullName();
+        String destName = dest.fullName();
+        // For consistency, we should make the destination name bold, or italics
+        // when it is a primary or foreign key.  For some reason, bold in a
+        // hyperlink in a tooltip causes the tooltip not to show at all.
+        // At least that's true of version 5.31 of the Javascript tooltip
+        // library we're using and Firefox on Linux.
+        // Images display properly, however, so the key images will be enough
+        // for now.
+        String text   = "join with " + destName;
         URI    target = SelectBuilderAction.JOIN.withArgs(
-             source.fullName() + "=" + dest.fullName()
+             source.fullName() + "=" + destName
         );
         UILink link = UILink.textTarget(Label.of(text), target);
+        if (dest.keyness==Keyness.PRIMARY) {
+            return UIComposite.of(UIImage.textURI("Primary key", Icons.PRIMARY_KEY),link);
+        }
         return link;
     }
 
@@ -71,7 +87,7 @@ public final class ColumnNameTooltip
         Collections.sort(ordered, new ColumnProximityComparator(column));
         List<UIElement> list = Lists.newArrayList();
         // Only use the "best" joins
-        for (int i=0; i<30 && i<ordered.size(); i++) {
+        for (int i=0; i<25 && i<ordered.size(); i++) {
             DBColumn dest = ordered.get(i);
             list.add(joinInfo(column,dest));
         }

@@ -8,7 +8,6 @@ import com.cve.db.Server;
 import com.cve.util.Check;
 import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ import java.util.Map;
  * Wraps a DBMetaData to provide caching for it.
  * @author curt
  */
-final class DBMetaDataCache implements DBMetaData {
+public final class DBMetaDataCache implements DBMetaData {
 
     private final DBMetaData meta;
 
@@ -24,7 +23,7 @@ final class DBMetaDataCache implements DBMetaData {
         this.meta = Check.notNull(meta);
     }
 
-    static DBMetaData of(DBMetaData meta) {
+    public static DBMetaData of(DBMetaData meta) {
         return new DBMetaDataCache(meta);
     }
 
