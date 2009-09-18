@@ -4,7 +4,6 @@ package com.cve.db.dbio;
 import com.cve.util.Strings;
 import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.annotation.concurrent.Immutable;
 
@@ -45,12 +44,105 @@ public interface DBMetaDataIO {
             return Strings.equals(catalog,other.catalog) && Strings.equals(schema,other.schema) && Strings.equals(tableName,other.tableName);
 
         }
+
+        @Override
+        public String toString() {
+            return " catalog=" + catalog +
+                   " schema=" + schema +
+                   " tableName=" + tableName;
+        }
+    }
+
+    @Immutable
+    public static class ColumnSpecifier {
+
+        // any of these might need to be null
+        public final String catalog;
+        public final String schemaPattern;
+        public final String tableNamePattern;
+        public final String columnNamePattern;
+
+        private ColumnSpecifier(String catalog,String schemaPattern,String tableNamePattern,String columnNamePattern) {
+            this.catalog = catalog;
+            this.schemaPattern = schemaPattern;
+            this.tableNamePattern = tableNamePattern;
+            this.columnNamePattern = columnNamePattern;
+        }
+
+        public static ColumnSpecifier of(String catalog,String schemaPattern,String tableNamePattern,String columnNamePattern) {
+            return new ColumnSpecifier(catalog,schemaPattern,tableNamePattern,columnNamePattern);
+        }
+
+        @Override
+        public int hashCode() {
+            return Strings.hashCode(catalog) ^
+                   Strings.hashCode(schemaPattern) ^
+                   Strings.hashCode(tableNamePattern) ^
+                   Strings.hashCode(columnNamePattern);
+        }
+
+        @Override
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+        public boolean equals(Object o) {
+            ColumnSpecifier other = (ColumnSpecifier) o;
+            return Strings.equals(catalog,other.catalog) &&
+                   Strings.equals(schemaPattern,other.schemaPattern) &&
+                   Strings.equals(tableNamePattern,other.tableNamePattern) &&
+                   Strings.equals(columnNamePattern,other.columnNamePattern)
+            ;
+        }
+
+        @Override
+        public String toString() {
+            return " catalog=" + catalog +
+                   " schemaPattern=" + schemaPattern +
+                   " tableNamePattern=" + tableNamePattern +
+                   " columnNamePattern=" + columnNamePattern
+            ;
+        }
     }
 
     public static class PrimaryKeyInfo {
         public final String columnName;
         PrimaryKeyInfo(String columnName) {
             this.columnName = columnName;
+        }
+    }
+
+    public static class TableInfo {
+        public final String tableName;
+        TableInfo(String tableName) {
+            this.tableName = tableName;
+        }
+    }
+
+    public static class ColumnInfo {
+        public final String tableSchema;
+        public final String tableName;
+        public final String columnName;
+        public final int dataType;
+        // Due to a H2 driver bug, we can't use the column name
+        static int TABLE_SCHEMA = 2;
+    ColumnInfo(String tableSchema, String tableName, String columnName, int dataType) {
+            this.tableSchema = tableSchema;
+            this.tableName   = tableName;
+            this.columnName  = columnName;
+            this.dataType    = dataType;
+        }
+    }
+
+    public static class CatalogInfo {
+        public final String databaseName;
+        CatalogInfo(String databaseName) {
+            this.databaseName = databaseName;
+        }
+    }
+
+    public static class SchemaInfo {
+        public final String schemaName;
+
+        SchemaInfo(String schemaName) {
+            this.schemaName = schemaName;
         }
     }
 
@@ -73,9 +165,9 @@ public interface DBMetaDataIO {
     }
 
     // Wrappers for all of the DBMD functions we use
-    ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException;
+    ImmutableList<TableInfo> getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException;
 
-    ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException;
+    ImmutableList<ColumnInfo> getColumns(ColumnSpecifier specifier) throws SQLException;
 
     ImmutableList<ReferencedKeyInfo> getImportedKeys(KeySpecifier specifier) throws SQLException;
 
@@ -83,9 +175,9 @@ public interface DBMetaDataIO {
 
     ImmutableList<ReferencedKeyInfo> getExportedKeys(KeySpecifier specifier) throws SQLException;
 
-    ResultSet getCatalogs() throws SQLException;
+    ImmutableList<CatalogInfo> getCatalogs() throws SQLException;
 
-    ResultSet getSchemas() throws SQLException;
+    ImmutableList<SchemaInfo> getSchemas() throws SQLException;
 
     /**
      * Return the raw meta data.  This is mostly for debugging.

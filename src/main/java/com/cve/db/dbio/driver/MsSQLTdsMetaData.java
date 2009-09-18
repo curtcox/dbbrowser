@@ -5,9 +5,11 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
+import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
+import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -34,20 +36,13 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
             String    schemaPattern = null;
             String tableNamePattern = null;
             String columnNamePattern = null;
-            ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            try {
-                while (results.next()) {
-                    String tableName = results.getString("TABLE_NAME");
-                    String columnName = results.getString("COLUMN_NAME");
-                    DBColumn column = database.tableName(tableName).columnName(columnName);
-                    if (!isSystemColumn(column)) {
-                        list.add(column);
-                    }
+            for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern))) {
+                String  tableName = info.tableName;
+                String columnName = info.columnName;
+                DBColumn column = database.tableName(tableName).columnName(columnName);
+                if (!isSystemColumn(column)) {
+                    list.add(column);
                 }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                close(results);
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
@@ -66,23 +61,17 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = table.name;
         String columnNamePattern = null;
-        ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-        try {
-            List<DBColumn> list = Lists.newArrayList();
-            while (results.next()) {
-                String columnName = results.getString("COLUMN_NAME");
-                DBColumn column = table.columnName(columnName);
-                if (!isSystemColumn(column)) {
-                    list.add(column);
-                }
+        List<DBColumn> list = Lists.newArrayList();
+        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern))) {
+            String  tableName = info.tableName;
+            String columnName = info.columnName;
+            DBColumn column = database.tableName(tableName).columnName(columnName);
+            if (!isSystemColumn(column)) {
+                list.add(column);
             }
-            ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-            return columns;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
         }
+        ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
+        return columns;
     }
 
     /**
@@ -95,23 +84,16 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = null;
         String[]          types = null;
-        ResultSet results = dbmd.getTables(catalog, schemaPattern, tableNamePattern, types);
-        try {
-            List<DBTable> list = Lists.newArrayList();
-            while (results.next()) {
-                String tableName = results.getString("TABLE_NAME");
-                DBTable table = database.tableName(tableName);
-                if (!isSystemTable(table)) {
-                    list.add(table);
-                }
+        List<DBTable> list = Lists.newArrayList();
+        for (TableInfo info : dbmd.getTables(catalog, schemaPattern, tableNamePattern, types)) {
+            String tableName = info.tableName;
+            DBTable table = database.tableName(tableName);
+            if (!isSystemTable(table)) {
+                list.add(table);
             }
-            ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-            return tables;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
         }
+        ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
+        return tables;
     }
 
     static boolean isSystemTable(DBTable table) {

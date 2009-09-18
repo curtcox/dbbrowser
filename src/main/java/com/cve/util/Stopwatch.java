@@ -6,6 +6,7 @@ package com.cve.util;
  */
 public final class Stopwatch {
 
+
     private final String message;
     private final Throwable here = new Throwable();
     private final long start = System.currentTimeMillis();
@@ -14,6 +15,10 @@ public final class Stopwatch {
 
     private Stopwatch(String message) {
         this.message = message;
+    }
+
+    public static Stopwatch start() {
+        return new Stopwatch("");
     }
 
     public static Stopwatch start(Object object) {

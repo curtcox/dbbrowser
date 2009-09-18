@@ -43,7 +43,7 @@ public final class ColumnProximityComparator implements Comparator<DBColumn> {
         }
         // if c2 is a key, but c1 isn't, c2 is better
         if (c1.keyness==NONE && c2.keyness!=NONE) {
-            return -1;
+            return +1;
         }
 
         // Anything in the same table as the target column sorts higher

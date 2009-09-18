@@ -8,9 +8,13 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.SQL;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBMetaDataIO.CatalogInfo;
+import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
+import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.KeySpecifier;
 import com.cve.db.dbio.DBMetaDataIO.PrimaryKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
+import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.stores.ServersStore;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
@@ -143,21 +147,14 @@ public class DefaultDBMetaData implements DBMetaData {
             String    schemaPattern = null;
             String tableNamePattern = null;
             String columnNamePattern = null;
-            ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-            try {
-                while (results.next()) {
-                    String tableName = results.getString("TABLE_NAME");
-                    String columnName = results.getString("COLUMN_NAME");
-                    Class        type = classFor(results.getInt("DATA_TYPE"));
-                    DBTable     table = database.tableName(tableName);
-                    Keyness   keyness = keyness(table,columnName);
-                    DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
-                    list.add(column);
-                }
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                close(results);
+            for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+                String  tableName = info.tableName; 
+                String columnName = info.columnName;
+                Class        type = classFor(info.dataType); 
+                DBTable     table = database.tableName(tableName);
+                Keyness   keyness = keyness(table,columnName);
+                DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
+                list.add(column);
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
@@ -176,21 +173,14 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = null;
         String columnNamePattern = null;
-        ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-        try {
-            while (results.next()) {
-                String tableName = results.getString("TABLE_NAME");
-                String columnName = results.getString("COLUMN_NAME");
-                Class        type = classFor(results.getInt("DATA_TYPE"));
-                DBTable     table = database.tableName(tableName);
-                Keyness   keyness = keyness(table,columnName);
-                DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
-                list.add(column);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+            String  tableName = info.tableName;
+            String columnName = info.columnName;
+            Class        type = classFor(info.dataType);
+            DBTable     table = database.tableName(tableName);
+            Keyness   keyness = keyness(table,columnName);
+            DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
+            list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
         return columns;
@@ -209,22 +199,16 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = table.name;
         String columnNamePattern = null;
-        ResultSet results = dbmd.getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
-        try {
-            List<DBColumn> list = Lists.newArrayList();
-            while (results.next()) {
-                String columnName = results.getString("COLUMN_NAME");
-                Class        type = classFor(results.getInt("DATA_TYPE"));
-                Keyness   keyness = keyness(table,columnName);
-                list.add(table.keynessColumnNameType(keyness,columnName,type));
-            }
-            ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-            return columns;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<DBColumn> list = Lists.newArrayList();
+        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+            String columnName = info.columnName;
+            Class        type = classFor(info.dataType);
+            Keyness   keyness = keyness(table,columnName);
+            DBColumn column = table.keynessColumnNameType(keyness,columnName,type);
+            list.add(column);
         }
+        ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
+        return columns;
     }
 
     /**
@@ -251,20 +235,13 @@ public class DefaultDBMetaData implements DBMetaData {
     public ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException {
         args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
-        ResultSet results = dbmd.getCatalogs();
-        try {
-            List<Database> list = Lists.newArrayList();
-            while (results.next()) {
-                String databaseName = results.getString("TABLE_CAT");
-                list.add(server.databaseName(databaseName));
-            }
-            ImmutableList<Database> databases = ImmutableList.copyOf(list);
-            return databases;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<Database> list = Lists.newArrayList();
+        for (CatalogInfo info : dbmd.getCatalogs()) {
+            String databaseName = info.databaseName;
+            list.add(server.databaseName(databaseName));
         }
+        ImmutableList<Database> databases = ImmutableList.copyOf(list);
+        return databases;
     }
 
     /**
@@ -278,20 +255,13 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = null;
         String[]          types = null;
-        ResultSet results = dbmd.getTables(catalog, schemaPattern, tableNamePattern, types);
-        try {
-            List<DBTable> list = Lists.newArrayList();
-            while (results.next()) {
-                String tableName = results.getString("TABLE_NAME");
-                list.add(database.tableName(tableName));
-            }
-            ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-            return tables;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        List<DBTable> list = Lists.newArrayList();
+        for (TableInfo info : dbmd.getTables(catalog, schemaPattern, tableNamePattern, types)) {
+            String tableName = info.tableName;
+            list.add(database.tableName(tableName));
         }
+        ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
+        return tables;
     }
 
     /**

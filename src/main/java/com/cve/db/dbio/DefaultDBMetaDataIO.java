@@ -13,6 +13,7 @@ import static com.cve.log.Log.args;
 
 /**
  * Low level access to database meta data.
+ * TODO restore ResultSetRetry logic
  * @author curt
  */
 public final class DefaultDBMetaDataIO implements DBMetaDataIO {
@@ -25,33 +26,71 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     public static DBMetaDataIO connection(DBConnection connection) {
         args(connection);
-        return CachedDBMetaDataIO.of(new DefaultDBMetaDataIO(connection));
+        return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection)));
     }
 
     // Wrappers for all of the DBMD functions we use
     @Override
-    public ResultSet getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
+    public ImmutableList<TableInfo> getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
+        ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getTables(catalog, schemaPattern, tableNamePattern, types);
             }
-        });
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
+        try {
+            List<TableInfo> list = Lists.newArrayList();
+            while (results.next()) {
+                String tableName = results.getString("TABLE_NAME");
+                list.add(new TableInfo(tableName));
+            }
+            ImmutableList<TableInfo> tables = ImmutableList.copyOf(list);
+            return tables;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(results);
+        }
     }
 
     @Override
-    public ResultSet getColumns(final String catalog, final String schemaPattern, final String tableNamePattern, final String columnNamePattern) throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
+    public ImmutableList<ColumnInfo> getColumns(final ColumnSpecifier specifier) throws SQLException {
+        ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
-               return getMetaData().getColumns(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+                return getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern,specifier.columnNamePattern);
             }
-        });
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
+        try {
+            List<ColumnInfo> list = Lists.newArrayList();
+            while (results.next()) {
+                String schemaName = results.getString("TABLE_SCHEM");
+                String  tableName = results.getString("TABLE_NAME");
+                String columnName = results.getString("COLUMN_NAME");
+                int          type = results.getInt("DATA_TYPE");
+                ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
+                list.add(column);
+            }
+            ImmutableList<ColumnInfo> infos = ImmutableList.copyOf(list);
+            return infos;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(results);
+        }
     }
 
     @Override
     public ImmutableList<ReferencedKeyInfo> getImportedKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSet results = getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+        ResultSetGenerator generator = new ResultSetGenerator() {
+            @Override
+            public ResultSet generate() throws SQLException {
+                return getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            }
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
         try {
             List<ReferencedKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
@@ -65,8 +104,6 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             }
             ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
             return refs;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         } finally {
             close(results);
         }
@@ -74,7 +111,13 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     @Override
     public ImmutableList<PrimaryKeyInfo> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSet results = getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName);
+        ResultSetGenerator generator = new ResultSetGenerator() {
+            @Override
+            public ResultSet generate() throws SQLException {
+                return getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            }
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
         try {
             List<PrimaryKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
@@ -83,8 +126,6 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             }
             ImmutableList<PrimaryKeyInfo> keys = ImmutableList.copyOf(list);
             return keys;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         } finally {
             close(results);
         }
@@ -92,7 +133,13 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     @Override
     public ImmutableList<ReferencedKeyInfo> getExportedKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSet results = getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+        ResultSetGenerator generator = new ResultSetGenerator() {
+            @Override
+            public ResultSet generate() throws SQLException {
+                return getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            }
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
         try {
             List<ReferencedKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
@@ -106,6 +153,30 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             }
             ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
             return refs;
+        } finally {
+            close(results);
+        }
+    }
+
+    @Override
+    public ImmutableList<CatalogInfo> getCatalogs() throws SQLException {
+        ResultSetGenerator generator = new ResultSetGenerator() {
+            @Override
+            public ResultSet generate() throws SQLException {
+                return getMetaData().getCatalogs();
+            }
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
+        try {
+            List<CatalogInfo> list = Lists.newArrayList();
+            while (results.next()) {
+                // Due to a H2 driver bug, we can't use the column name
+                int TABLE_CAT = 1;
+                String databaseName = results.getString(TABLE_CAT);
+                list.add(new CatalogInfo(databaseName));
+            }
+            ImmutableList<CatalogInfo> infos = ImmutableList.copyOf(list);
+            return infos;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -114,23 +185,29 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     }
 
     @Override
-    public ResultSet getCatalogs() throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getCatalogs();
-            }
-        });
-    }
-
-    @Override
-    public ResultSet getSchemas() throws SQLException {
-        return ResultSetRetry.run(connection,new ResultSetGenerator() {
+    public ImmutableList<SchemaInfo> getSchemas() throws SQLException {
+        ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
             public ResultSet generate() throws SQLException {
                 return getMetaData().getSchemas();
             }
-        });
+        };
+        ResultSet results = ResultSetRetry.run(connection, generator);
+        try {
+            List<SchemaInfo> list = Lists.newArrayList();
+            while (results.next()) {
+                // Due to a H2 driver bug, we can't use the column name
+                int SCHEMA_NAME = 1;
+                String databaseName = results.getString(SCHEMA_NAME);
+                list.add(new SchemaInfo(databaseName));
+            }
+            ImmutableList<SchemaInfo> infos = ImmutableList.copyOf(list);
+            return infos;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            close(results);
+        }
     }
 
     /**
