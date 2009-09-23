@@ -3,6 +3,7 @@ package com.cve.db;
 import com.cve.html.HTML;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
@@ -63,28 +64,36 @@ public final class DBColumn {
         this.keyness = notNull(keyness);
     }
 
+    /**
+     * For limiting the number of objects we produce.
+     */
+    private static final Canonicalizer<DBColumn> CANONICALIZER = Canonicalizer.of();
+    private static DBColumn canonical(DBColumn column) {
+        return CANONICALIZER.canonical(column);
+    }
+
     public static DBColumn tableNameType(DBTable table, String name, Class type) {
-        return new DBColumn(table,name,type,Keyness.NONE);
+        return canonical(new DBColumn(table,name,type,Keyness.NONE));
     }
 
     public static DBColumn tableName(DBTable table, String name) {
-        return new DBColumn(table,name,Void.class,Keyness.NONE);
+        return canonical(new DBColumn(table,name,Void.class,Keyness.NONE));
     }
 
     public static DBColumn keynessTableNameType(Keyness keyness, DBTable table, String name, Class type) {
-        return new DBColumn(table,name,type,keyness);
+        return canonical(new DBColumn(table,name,type,keyness));
     }
 
     public static DBColumn keynessTableName(Keyness keyness, DBTable table, String name) {
-        return new DBColumn(table,name,Void.class,keyness);
+        return canonical(new DBColumn(table,name,Void.class,keyness));
     }
 
     public static DBColumn keyTableName(DBTable table, String name) {
-        return new DBColumn(table,name,Void.class,Keyness.PRIMARY);
+        return canonical(new DBColumn(table,name,Void.class,Keyness.PRIMARY));
     }
 
     public static DBColumn foreignkeyTableName(DBTable table, String name) {
-        return new DBColumn(table,name,Void.class,Keyness.FOREIGN);
+        return canonical(new DBColumn(table,name,Void.class,Keyness.FOREIGN));
     }
 
     public Filter filterValue(Value value) {
