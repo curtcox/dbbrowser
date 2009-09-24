@@ -49,6 +49,11 @@ public final class DBColumn {
     public final Keyness keyness;
 
     /**
+     * For limiting the number of objects we produce.
+     */
+    private static final Canonicalizer<DBColumn> CANONICALIZER = Canonicalizer.of();
+
+    /**
      * The column to use for "all columns".
      * This is used with count(*).
      */
@@ -64,10 +69,6 @@ public final class DBColumn {
         this.keyness = notNull(keyness);
     }
 
-    /**
-     * For limiting the number of objects we produce.
-     */
-    private static final Canonicalizer<DBColumn> CANONICALIZER = Canonicalizer.of();
     private static DBColumn canonical(DBColumn column) {
         return CANONICALIZER.canonical(column);
     }
