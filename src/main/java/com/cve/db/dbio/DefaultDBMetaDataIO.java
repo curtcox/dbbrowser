@@ -1,6 +1,7 @@
 
 package com.cve.db.dbio;
 
+import com.cve.util.Canonicalizer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.DatabaseMetaData;
@@ -19,6 +20,17 @@ import static com.cve.log.Log.args;
 public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     private final DBConnection connection;
+
+    private static final String TABLE_NAME    = "TABLE_NAME";
+    private static final String TABLE_SCHEM   = "TABLE_SCHEM";
+    private static final String DATA_TYPE     = "DATA_TYPE";
+    private static final String COLUMN_NAME   = "COLUMN_NAME";
+    private static final String PKTABLE_CAT   = "PKTABLE_CAT";
+    private static final String FKTABLE_CAT   = "FKTABLE_CAT";
+    private static final String PKTABLE_NAME  = "PKTABLE_NAME";
+    private static final String FKTABLE_NAME  = "FKTABLE_NAME";
+    private static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
+    private static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
 
     private DefaultDBMetaDataIO(DBConnection connection) {
         this.connection = notNull(connection);
@@ -42,7 +54,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         try {
             List<TableInfo> list = Lists.newArrayList();
             while (results.next()) {
-                String tableName = results.getString("TABLE_NAME");
+                String tableName = getString(results,TABLE_NAME);
                 list.add(new TableInfo(tableName));
             }
             ImmutableList<TableInfo> tables = ImmutableList.copyOf(list);
@@ -66,10 +78,10 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         try {
             List<ColumnInfo> list = Lists.newArrayList();
             while (results.next()) {
-                String schemaName = results.getString("TABLE_SCHEM");
-                String  tableName = results.getString("TABLE_NAME");
-                String columnName = results.getString("COLUMN_NAME");
-                int          type = results.getInt("DATA_TYPE");
+                String schemaName = getString(results,TABLE_SCHEM);
+                String  tableName = getString(results,TABLE_NAME);
+                String columnName = getString(results,COLUMN_NAME);
+                int          type = results.getInt(DATA_TYPE);
                 ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
                 list.add(column);
             }
@@ -94,12 +106,12 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         try {
             List<ReferencedKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
-                String pkDatabase = results.getString("PKTABLE_CAT");
-                String fkDatabase = results.getString("FKTABLE_CAT");
-                String    pkTable = results.getString("PKTABLE_NAME");
-                String    fkTable = results.getString("FKTABLE_NAME");
-                String   pkColumn = results.getString("PKCOLUMN_NAME");
-                String   fkColumn = results.getString("FKCOLUMN_NAME");
+                String pkDatabase = getString(results,PKTABLE_CAT);
+                String fkDatabase = getString(results,FKTABLE_CAT);
+                String    pkTable = getString(results,PKTABLE_NAME);
+                String    fkTable = getString(results,FKTABLE_NAME);
+                String   pkColumn = getString(results,PKCOLUMN_NAME);
+                String   fkColumn = getString(results,FKCOLUMN_NAME);
                 list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
             }
             ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
@@ -121,7 +133,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         try {
             List<PrimaryKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
-                String columnName = results.getString("COLUMN_NAME");
+                String columnName = getString(results,COLUMN_NAME);
                 list.add(new PrimaryKeyInfo(columnName));
             }
             ImmutableList<PrimaryKeyInfo> keys = ImmutableList.copyOf(list);
@@ -143,12 +155,12 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         try {
             List<ReferencedKeyInfo> list = Lists.newArrayList();
             while (results.next()) {
-                String pkDatabase = results.getString("PKTABLE_CAT");
-                String fkDatabase = results.getString("FKTABLE_CAT");
-                String    pkTable = results.getString("PKTABLE_NAME");
-                String    fkTable = results.getString("FKTABLE_NAME");
-                String   pkColumn = results.getString("PKCOLUMN_NAME");
-                String   fkColumn = results.getString("FKCOLUMN_NAME");
+                String pkDatabase = getString(results,PKTABLE_CAT);
+                String fkDatabase = getString(results,FKTABLE_CAT);
+                String    pkTable = getString(results,PKTABLE_NAME);
+                String    fkTable = getString(results,FKTABLE_NAME);
+                String   pkColumn = getString(results,PKCOLUMN_NAME);
+                String   fkColumn = getString(results,FKCOLUMN_NAME);
                 list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
             }
             ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
@@ -198,7 +210,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             while (results.next()) {
                 // Due to a H2 driver bug, we can't use the column name
                 int SCHEMA_NAME = 1;
-                String databaseName = results.getString(SCHEMA_NAME);
+                String databaseName = getString(results,SCHEMA_NAME);
                 list.add(new SchemaInfo(databaseName));
             }
             ImmutableList<SchemaInfo> infos = ImmutableList.copyOf(list);
@@ -218,7 +230,6 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return connection.getJDBCMetaData();
     }
 
-
     /**
      * Handy static method to close a result set without needing a try/catch
      */
@@ -229,4 +240,14 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             throw new RuntimeException(e);
         }
     }
+
+    private Canonicalizer<String> canonicalizer = Canonicalizer.of();
+    private String getString(ResultSet results, String key) throws SQLException {
+        return canonicalizer.canonical(results.getString(key));
+    }
+
+    private String getString(ResultSet results, int pos) throws SQLException {
+        return canonicalizer.canonical(results.getString(pos));
+    }
+
 }

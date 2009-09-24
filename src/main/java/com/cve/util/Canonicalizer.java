@@ -20,7 +20,9 @@ public final class Canonicalizer<T> {
     }
     
     public T canonical(T t) {
-        Check.notNull(t);
+        if (t==null) {
+            return null;
+        }
         synchronized (map) {
             T value = map.get(t);
             if (value!=null) {
