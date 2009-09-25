@@ -2,6 +2,7 @@ package com.cve.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.util.Canonicalizer;
 import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
@@ -19,14 +20,21 @@ public final class Server {
      */
     public final URI uri;
 
+    private static final Canonicalizer<Server> CANONICALIZER = Canonicalizer.of();
+
     public static Server NULL = new Server(URIs.of(""));
+
+
+    private static Server canonical(Server server) {
+        return CANONICALIZER.canonical(server);
+    }
 
     private Server(URI uri) {
         this.uri = notNull(uri);
     }
 
     public static Server uri(URI uri) {
-        return new Server(uri);
+        return canonical(new Server(uri));
     }
 
     @Override
@@ -35,6 +43,9 @@ public final class Server {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
+        if (o==this) {
+            return true;
+        }
         Server server = (Server) o;
         return uri.equals(server.uri);
     }

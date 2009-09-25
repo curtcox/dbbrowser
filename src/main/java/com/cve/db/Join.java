@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.util.Canonicalizer;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -25,6 +26,12 @@ public final class Join {
      */
     public final DBColumn dest;
 
+    private static final Canonicalizer<Join> CANONICALIZER = Canonicalizer.of();
+
+    private static Join canonical(Join join) {
+        return CANONICALIZER.canonical(join);
+    }
+
     private Join(DBColumn source, DBColumn dest) {
         this.source = notNull(source);
         this.dest   = notNull(dest);
@@ -34,7 +41,7 @@ public final class Join {
     }
 
     public static Join of(DBColumn source, DBColumn dest) {
-        return new Join(source,dest);
+        return canonical(new Join(source,dest));
     }
 
     public static Join parse(Server server, ImmutableList<DBTable> tables, String fullJoinName) {
@@ -57,6 +64,9 @@ public final class Join {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
+        if (o==this) {
+            return true;
+        }
         Join other = (Join) o;
         return source.equals(other.source) && dest.equals(other.dest);
     }

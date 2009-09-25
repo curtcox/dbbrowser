@@ -3,6 +3,7 @@ package com.cve.db;
 import com.cve.db.DBColumn.Keyness;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -26,10 +27,16 @@ public final class DBTable {
      */
     public final String name;
 
+    private static final Canonicalizer<DBTable> CANONICALIZER = Canonicalizer.of();
+
     /**
      * Something to use for null tables.
      */
     public static DBTable NULL = new DBTable(Database.NULL,"");
+
+    private static DBTable canonical(DBTable table) {
+        return CANONICALIZER.canonical(table);
+    }
 
     private DBTable(Database database, String name) {
         this.database = notNull(database);
@@ -37,7 +44,7 @@ public final class DBTable {
     }
 
     public static DBTable databaseName(Database database, String name) {
-        return new DBTable(database,name);
+        return canonical(new DBTable(database,name));
     }
 
     public static DBTable parse(Server server, String fullTableName) {
@@ -90,6 +97,9 @@ public final class DBTable {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
+        if (o==this) {
+            return true;
+        }
         DBTable other = (DBTable) o;
         return database.equals(other.database) && name.equals(other.name);
     }

@@ -149,6 +149,9 @@ public final class DBColumn {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
+        if (o==this) {
+            return true;
+        }
         DBColumn other = (DBColumn) o;
         return keyness==other.keyness && table.equals(other.table) && name.equals(other.name) && type.equals(other.type);
     }

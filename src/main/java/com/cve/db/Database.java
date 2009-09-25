@@ -2,6 +2,7 @@ package com.cve.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -23,6 +24,8 @@ public final class Database {
      */
     public final Server server;
 
+    private static final Canonicalizer<Database> CANONICALIZER = Canonicalizer.of();
+
     public static final Database NULL = new Database(Server.NULL,"");
 
     private Database(Server server, String name) {
@@ -30,8 +33,12 @@ public final class Database {
         this.name   = notNull(name);
     }
 
+    private static Database canonical(Database database) {
+        return CANONICALIZER.canonical(database);
+    }
+
     public static Database serverName(Server server, String name) {
-        return new Database(server,name);
+        return canonical(new Database(server,name));
     }
 
     @Override
