@@ -12,13 +12,13 @@ import java.util.Properties;
  * For loading and saving properties files
  * @author curt
  */
-final class PropertiesIO {
+public final class PropertiesIO {
 
     static File getUserHome() {
         return new File(System.getProperty("user.home"));
     }
 
-    static File getFile(String name) {
+    public static File getFile(String name) {
         File home = getUserHome();
         File dbbrowser = new File(home + File.separator + ".dbbrowser");
         if (!dbbrowser.exists()) {
@@ -28,7 +28,7 @@ final class PropertiesIO {
         return file;
     }
 
-    static Properties load(String name) {
+    public static Properties load(String name) {
         try {
             return load0(name);
         } catch (IOException e) {
@@ -36,7 +36,7 @@ final class PropertiesIO {
         }
     }
 
-    static void save(Properties props, String name) {
+    public static void save(Properties props, String name) {
         try {
             save0(props,name);
         } catch (IOException e) {

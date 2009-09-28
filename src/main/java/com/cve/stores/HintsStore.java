@@ -56,7 +56,6 @@ public final class HintsStore {
 
     public static Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
         args(columns);
-        Set<DBColumn>   keySet = Sets.newHashSet();
         Set<Join>      joinSet = Sets.newHashSet();
         Set<Filter>  filterSet = Sets.newHashSet();
         for (DBColumn column : columns) {
@@ -67,11 +66,9 @@ public final class HintsStore {
         Server                 server = tables.get(0).database.server;
         DBMetaData               meta = DBConnection.getDbmd(server);
         joinSet.addAll(meta.getJoinsFor(tables));
-        keySet.addAll(meta.getPrimaryKeysFor(tables));
         return Hints.of(
-            ImmutableList.copyOf(keySet),
-            ImmutableList.copyOf(joinSet),
-            ImmutableList.copyOf(filterSet),
+            joinSet,
+            filterSet,
             meta.getColumnsFor(tables)
         );
     }
