@@ -6,13 +6,12 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
 import com.cve.stores.ActiveFunction;
+import com.cve.stores.IO;
 import com.cve.stores.IOs;
 import com.cve.util.Check;
-import com.cve.util.SimpleCache;
 import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
-import java.util.Map;
 
 /**
  * Wraps a DBMetaData to provide caching for it.
@@ -30,16 +29,31 @@ public final class DBMetaDataFunctions implements DBMetaData {
         return new DBMetaDataFunctions(meta);
     }
 
-    private final Function<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys =
-        ActiveFunction.fileIOFunc(
-            "primaryKeys", IOs.tableListToColumnList(), new Function<ImmutableList<DBTable>,ImmutableList<DBColumn>>() {
+    private interface F {
+        Object of(Object x) throws SQLException;
+    }
+
+    private Function of(String name, IO io, final F f) {
+        return ActiveFunction.fileIOFunc(
+            name, IOs.tableListToColumnList(), new Function() {
                 @Override
-                public ImmutableList<DBColumn> apply(ImmutableList<DBTable> from) {
+                public Object apply(Object from) {
                     try {
-                        return meta.getPrimaryKeysFor(from);
+                        return f.of(from);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
+                }
+            }
+        );
+    }
+
+    private final Function<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys =
+        of(
+            "primaryKeys", IOs.tableListToColumnList(), new F() {
+                @Override
+                public ImmutableList<DBColumn> of(Object from) throws SQLException {
+                    return meta.getPrimaryKeysFor((ImmutableList<DBTable>)from);
                 }
             }
         );
@@ -50,15 +64,11 @@ public final class DBMetaDataFunctions implements DBMetaData {
     }
 
     private final Function<ImmutableList<DBTable>,ImmutableList<Join>> joins =
-        ActiveFunction.fileIOFunc(
-            "joins", IOs.tableListToJoinList(), new Function<ImmutableList<DBTable>,ImmutableList<Join>>() {
+        of(
+            "joins", IOs.tableListToJoinList(), new F() {
                 @Override
-                public ImmutableList<Join> apply(ImmutableList<DBTable> from) {
-                    try {
-                        return meta.getJoinsFor(from);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                public ImmutableList<Join> of(Object from) throws SQLException {
+                    return meta.getJoinsFor((ImmutableList<DBTable>) from);
                 }
             }
         );
@@ -68,15 +78,11 @@ public final class DBMetaDataFunctions implements DBMetaData {
     }
 
     private final Function<Server,ImmutableList<DBColumn>> columnsForServer =
-        ActiveFunction.fileIOFunc(
-            "columnsForServer", IOs.serverToColumnList(), new Function<Server,ImmutableList<DBColumn>>() {
+        of(
+            "columnsForServer", IOs.serverToColumnList(), new F() {
                 @Override
-                public ImmutableList<DBColumn> apply(Server from) {
-                    try {
-                        return meta.getColumnsFor(from);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                public ImmutableList<DBColumn> of(Object from) throws SQLException {
+                    return meta.getColumnsFor((Server)from);
                 }
             }
         );
@@ -86,15 +92,11 @@ public final class DBMetaDataFunctions implements DBMetaData {
     }
 
     private final Function<Database,ImmutableList<DBColumn>> columnsForDatabase =
-        ActiveFunction.fileIOFunc(
-            "columnsForDatabase", IOs.serverToColumnList(), new Function<Database,ImmutableList<DBColumn>>() {
+        of(
+            "columnsForDatabase", IOs.serverToColumnList(), new F() {
                 @Override
-                public ImmutableList<DBColumn> apply(Database from) {
-                    try {
-                        return meta.getColumnsFor(from);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
-                    }
+                public ImmutableList<DBColumn> of(Object from) throws SQLException {
+                    return meta.getColumnsFor((Database)from);
                 }
             }
         );
@@ -104,12 +106,12 @@ public final class DBMetaDataFunctions implements DBMetaData {
     }
 
     private final Function<DBTable,ImmutableList<DBColumn>> columnsForTable =
-        ActiveFunction.fileIOFunc(
-            "columnsForTable", IOs.serverToColumnList(), new Function<DBTable,ImmutableList<DBColumn>>() {
+        of(
+            "columnsForTable", IOs.serverToColumnList(), new F() {
                 @Override
-                public ImmutableList<DBColumn> apply(DBTable from) {
+                public ImmutableList<DBColumn> of(Object from) {
                     try {
-                        return meta.getColumnsFor(from);
+                        return meta.getColumnsFor((DBTable)from);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -122,48 +124,64 @@ public final class DBMetaDataFunctions implements DBMetaData {
         return columnsForTable.apply(table);
     }
 
-    private final Map<Server,ImmutableList<Database>> databases = SimpleCache.of();
+    private final Function<Server,ImmutableList<Database>> databases =
+        of(
+            "databases", IOs.serverToDatabaseList(), new F() {
+                @Override
+                public ImmutableList<Database> of(Object from) {
+                    try {
+                        return meta.getDatabasesOn((Server)from);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        );
     @Override
     public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
-        if (databases.containsKey(server)) {
-            return databases.get(server);
-        }
-        ImmutableList<Database> result = meta.getDatabasesOn(server);
-        databases.put(server, result);
-        return result;
+        return databases.apply(server);
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables = SimpleCache.of();
+    private final Function<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables =
+        of(
+            "columnsForTables", IOs.tableListToColumnList(), new F() {
+                @Override
+                public ImmutableList<DBColumn> of(Object from) throws SQLException {
+                    return meta.getColumnsFor((ImmutableList<DBTable>)from);
+                }
+            }
+        );
     @Override
     public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
-        if (columnsForTables.containsKey(tables)) {
-            return columnsForTables.get(tables);
-        }
-        ImmutableList<DBColumn> result = meta.getColumnsFor(tables);
-        columnsForTables.put(tables, result);
-        return result;
+        return columnsForTables.apply(tables);
     }
 
-    private final Map<Database,ImmutableList<DBTable>> tables = SimpleCache.of();
+    private final Function<Database,ImmutableList<DBTable>> tables =
+        of(
+            "tables", IOs.databaseToTableList(), new F() {
+                @Override
+                public ImmutableList<DBTable> of(Object from) throws SQLException {
+                    return meta.getTablesOn((Database)from);
+                }
+            }
+        );
     @Override
     public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
-        if (tables.containsKey(database)) {
-            return tables.get(database);
-        }
-        ImmutableList<DBTable> result = meta.getTablesOn(database);
-        tables.put(database, result);
-        return result;
+        return tables.apply(database);
     }
 
-    private final Map<DBTable,Long> rowCounts = SimpleCache.of();
+    private final Function<DBTable,Long> rowCounts =
+        of(
+            "rowCounts", IOs.tableToLong(), new F() {
+                @Override
+                public Long of(Object from) throws SQLException {
+                    return meta.getRowCountFor((DBTable)from);
+                }
+            }
+        );
     @Override
     public long getRowCountFor(DBTable table) throws SQLException {
-        if (rowCounts.containsKey(table)) {
-            return rowCounts.get(table);
-        }
-        Long result = meta.getRowCountFor(table);
-        rowCounts.put(table, result);
-        return result;
+        return rowCounts.apply(table);
     }
 
 

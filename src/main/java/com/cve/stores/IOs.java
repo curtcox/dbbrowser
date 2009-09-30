@@ -17,4 +17,17 @@ public final class IOs {
     public static IO serverToColumnList() {
         return null;
     }
+
+    public static IO serverToDatabaseList() {
+        return null;
+    }
+
+    public static IO databaseToTableList() {
+        return null;
+    }
+
+    public static IO tableToLong() {
+        return null;
+    }
+
 }

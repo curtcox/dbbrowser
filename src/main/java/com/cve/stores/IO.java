@@ -1,4 +1,4 @@
 package com.cve.stores;
 
-interface IO {
+public interface IO {
 }
