@@ -6,7 +6,6 @@ import com.cve.db.JDBCURL;
 import com.cve.db.Server;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
-import java.sql.Connection;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
