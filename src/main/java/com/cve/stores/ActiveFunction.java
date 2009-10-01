@@ -4,6 +4,8 @@ import com.cve.util.Check;
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -23,31 +25,36 @@ import java.util.concurrent.Executors;
  *
  * @author Curt
  */
-public final class ActiveFunction<F,T> implements Function<F,T> {
+public final class ActiveFunction<F,T> implements SQLFunction<F,T> {
+
+    /**
+     * When was the last time any of our data changed?
+     */
+    private volatile long lastUpdate = System.currentTimeMillis();
 
     private final IO io;
     private final File file;
-    private final Function<F,T> mapper;
+    private final SQLFunction<F,T> mapper;
     private final Map<F,T> values = Maps.newHashMap();
     private final Executor executor = Executors.newSingleThreadExecutor();
 
-    private ActiveFunction(File file, IO io, Function mapper) {
+    private ActiveFunction(File file, IO io, SQLFunction mapper) {
         this.file = Check.notNull(file);
         this.io = Check.notNull(io);
         this.mapper = Check.notNull(mapper);
         new HashMap();
     }
 
-    public static Function fileIOFunc(String file, IO io, Function mapper) {
-        return new ActiveFunction(new File(file),io,mapper);
-    }
-
-    public static Function fileIOFunc(File file, IO io, Function mapper) {
-        return new ActiveFunction(file,io,mapper);
+    public static SQLFunction fileIOFunc(File file, IO io, SQLFunction mapper) throws IOException {
+        ActiveFunction func = new ActiveFunction(file,io,mapper);
+        if (file.exists()) {
+            func.load();
+        }
+        return func;
     }
 
     @Override
-    public T apply(F from) {
+    public T apply(F from) throws SQLException {
         F f = (F) from;
         synchronized (values) {
             if (values.containsKey(f)) {
@@ -55,12 +62,16 @@ public final class ActiveFunction<F,T> implements Function<F,T> {
             }
             T value = mapper.apply(f);
             values.put(f, value);
+            lastUpdateNow();
             return value;
         }
     }
 
-    static UnsupportedOperationException no() {
-        return new UnsupportedOperationException("Not supported yet.");
+    private void lastUpdateNow() {
+        lastUpdate = System.currentTimeMillis();
     }
 
+    private void load() throws IOException {
+
+    }
 }

@@ -1,8 +1,8 @@
 package com.cve.stores;
 
-import com.cve.stores.IO;
-import com.google.common.base.Function;
 import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class ActiveFunctionTest {
 
-    static Function MAPPER_1 = new Function() {
+    static SQLFunction MAPPER_1 = new SQLFunction() {
         @Override
         public Object apply(Object k) {
             return k + "1";
@@ -24,9 +24,9 @@ public class ActiveFunctionTest {
     };
 
     @Test
-    public void emptyMapContainsMappedValue() {
+    public void emptyMapContainsMappedValue() throws IOException, SQLException {
         File file = new File("test");
-        Function map = ActiveFunction.fileMapper(file,IO_1,MAPPER_1);
+        SQLFunction map = ActiveFunction.fileIOFunc(file,IO_1,MAPPER_1);
         assertEquals("1",map.apply(""));
     }
 
