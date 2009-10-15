@@ -1,9 +1,10 @@
 package com.cve.stores;
 
 import com.cve.util.Check;
-import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ public final class ActiveFunction<F,T> implements SQLFunction<F,T> {
      */
     private volatile long lastUpdate = System.currentTimeMillis();
 
-    private final IO io;
+    private final IO<F,T> io;
     private final File file;
     private final SQLFunction<F,T> mapper;
     private final Map<F,T> values = Maps.newHashMap();
@@ -72,6 +73,21 @@ public final class ActiveFunction<F,T> implements SQLFunction<F,T> {
     }
 
     private void load() throws IOException {
-
+        synchronized (values) {
+            values.clear();
+            BufferedReader lines = new BufferedReader(new FileReader(file));
+            boolean isKey = true;
+            F key = null;
+            T value = null;
+            for (String line = lines.readLine(); line!=null; line = lines.readLine()) {
+                if (isKey) {
+                    key = io.readKey(line);
+                } else {
+                    value = io.readValue(line);
+                    values.put(key, value);
+                }
+                isKey = !isKey;
+            }
+        }
     }
 }
