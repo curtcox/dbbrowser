@@ -2,12 +2,9 @@ package com.cve.stores;
 
 import com.cve.util.Check;
 import com.google.common.collect.Maps;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -18,10 +15,12 @@ import java.util.concurrent.Executors;
  * all, it is easier to do them all in the same class, because they all
  * impact each other.  We can, however, define them separately:
  * <ol>
- *   <li> Persistence
- *   <li> Caching
- *   <li> Cache evistion
- *   <li> Value Computation
+ *   <li> Persistence -- storing stuff we already know to disk.  We do this because
+ * the local disk responds more quickly than the database server.
+ *   <li> Caching -- Keeping some (right, now all) of our data in memory
+ *   <li> Cache evistion -- Getting rid of cached values that aren't as valuable as
+ * other values, or potentially wrong based on age.
+ *   <li> Value Computation -- determining values for keys.
  * </ol>
  *
  * @author Curt
@@ -31,27 +30,89 @@ public final class ActiveFunction<F,T> implements SQLFunction<F,T> {
     /**
      * When was the last time any of our data changed?
      */
-    private volatile long lastUpdate = System.currentTimeMillis();
+    volatile long lastUpdate = now();
 
-    private final IO<F,T> io;
-    private final File file;
-    private final SQLFunction<F,T> mapper;
-    private final Map<F,T> values = Maps.newHashMap();
-    private final Executor executor = Executors.newSingleThreadExecutor();
+    /**
+     * When was the last time our data was saved?
+     */
+    volatile long lastSave = lastUpdate;
 
-    private ActiveFunction(File file, IO io, SQLFunction mapper) {
+    /**
+     * For reading and writing keys and values.
+     */
+    final MapIO io;
+
+    /**
+     * Where we read from and write to.
+     */
+    final File file;
+
+    /**
+     * How we produce new values.
+     */
+    final SQLFunction<F,T> mapper;
+
+    /**
+     * The keys and values we know about.
+     */
+    final Map<F,T> values = Maps.newHashMap();
+
+    static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
+
+    private ActiveFunction(File file, MapIO io, SQLFunction mapper) {
         this.file = Check.notNull(file);
         this.io = Check.notNull(io);
         this.mapper = Check.notNull(mapper);
-        new HashMap();
     }
 
-    public static SQLFunction fileIOFunc(File file, IO io, SQLFunction mapper) throws IOException {
+    /**
+     * Create a new Active function given the required arguments.
+     */
+    public static SQLFunction fileIOFunc(File file, MapIO io, SQLFunction mapper) throws IOException {
         ActiveFunction func = new ActiveFunction(file,io,mapper);
         if (file.exists()) {
-            func.load();
+            try {
+               func.load();
+            } catch (Throwable t) {
+                boolean successfullyDeleted = file.delete();
+                if (!successfullyDeleted) {
+                    throw new IOException();
+                }
+            }
         }
+        new PeriodicSave(func).schedule();
         return func;
+    }
+
+    /**
+     * Runnable to periodically save our data.
+     */
+    static final class PeriodicSave implements Runnable {
+        final ActiveFunction func;
+        PeriodicSave(ActiveFunction func) {
+            this.func = func;
+        }
+
+        @Override
+        public void run() {
+            try {
+                if ((func.lastUpdate != func.lastSave) && (now() - func.lastSave > 5 * 1000)) {
+                    func.save();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                schedule();
+            }
+        }
+
+        void schedule() {
+            EXECUTOR.execute(this);
+        }
+    }
+
+    static long now() {
+        return System.currentTimeMillis();
     }
 
     @Override
@@ -63,31 +124,22 @@ public final class ActiveFunction<F,T> implements SQLFunction<F,T> {
             }
             T value = mapper.apply(f);
             values.put(f, value);
-            lastUpdateNow();
+            lastUpdate = now();
             return value;
         }
     }
 
-    private void lastUpdateNow() {
-        lastUpdate = System.currentTimeMillis();
+    /**
+     * Load all existing values from disk.
+     */
+    void load() throws IOException {
     }
 
-    private void load() throws IOException {
-        synchronized (values) {
-            values.clear();
-            BufferedReader lines = new BufferedReader(new FileReader(file));
-            boolean isKey = true;
-            F key = null;
-            T value = null;
-            for (String line = lines.readLine(); line!=null; line = lines.readLine()) {
-                if (isKey) {
-                    key = io.readKey(line);
-                } else {
-                    value = io.readValue(line);
-                    values.put(key, value);
-                }
-                isKey = !isKey;
-            }
-        }
+    /**
+     * Save all of our lines.
+     * @throws IOException
+     */
+    void save() throws IOException {
+        lastSave = now();
     }
 }

@@ -19,9 +19,7 @@ public class ActiveFunctionTest {
         }
     };
 
-    static IO IO_1 = new IO() {
-
-    };
+    static MapIO IO_1 = IOs.stringToString();
 
     @Test
     public void emptyMapContainsMappedValue() throws IOException, SQLException {

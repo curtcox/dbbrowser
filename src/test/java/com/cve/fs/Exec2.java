@@ -14,31 +14,31 @@ import java.io.PrintStream;
 public final class Exec2 {
   
   public static void main(String[] arg) throws JSchException, IOException, InterruptedException {
-	  UserInfo ui = new UserInfoValue(null,"password");
-	  exec("curt@127.0.0.1","ls /home/curt",ui);
+      UserInfo ui = new UserInfoValue(null,"password");
+      exec("curt@127.0.0.1","ls /home/curt",ui);
   }
 
-	static void exec(final String spec, final String command, final UserInfo ui) throws JSchException, IOException, InterruptedException{
-	      JSch jsch=new JSch();  
+    static void exec(final String spec, final String command, final UserInfo ui) throws JSchException, IOException, InterruptedException{
+      JSch jsch=new JSch();
 
-	      String user=spec.substring(0, spec.indexOf('@'));
-	      String host=spec.substring(spec.indexOf('@')+1);
-	      Session session=jsch.getSession(user, host, 22);
-	      session.setUserInfo(ui);
-	      session.connect();
-	      Channel channel=session.openChannel("exec");
-          ChannelExec exec = (ChannelExec)channel;
-	      exec.setCommand(command);
+      String user=spec.substring(0, spec.indexOf('@'));
+      String host=spec.substring(spec.indexOf('@')+1);
+      Session session=jsch.getSession(user, host, 22);
+      session.setUserInfo(ui);
+      session.connect();
+      Channel channel=session.openChannel("exec");
+      ChannelExec exec = (ChannelExec)channel;
+      exec.setCommand(command);
 
-	      channel.setInputStream(null);
-	      exec.setErrStream(System.err);
+      channel.setInputStream(null);
+      exec.setErrStream(System.err);
 
-	      InputStream in=channel.getInputStream();
-	      channel.connect();
-          run(channel,in,System.out);
-	      channel.disconnect();
-	      session.disconnect();
-	  }
+      InputStream in=channel.getInputStream();
+      channel.connect();
+      run(channel,in,System.out);
+          channel.disconnect();
+          session.disconnect();
+    }
 
     static void run(Channel channel, InputStream in, PrintStream out) throws IOException, InterruptedException {
         byte[] tmp=new byte[1024];

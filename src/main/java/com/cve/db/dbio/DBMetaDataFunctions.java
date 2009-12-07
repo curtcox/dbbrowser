@@ -6,7 +6,7 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
 import com.cve.stores.ActiveFunction;
-import com.cve.stores.IO;
+import com.cve.stores.MapIO;
 import com.cve.stores.IOs;
 import com.cve.stores.SQLFunction;
 import com.cve.util.Check;
@@ -43,7 +43,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
         return new DBMetaDataFunctions(meta,baseDir);
     }
 
-    private SQLFunction of(String name, IO io, final SQLFunction f) {
+    private SQLFunction of(String name, MapIO io, final SQLFunction f) {
         File file = new File(baseDir + File.separator + name);
         try {
             return ActiveFunction.fileIOFunc(file, io, f);
