@@ -7,12 +7,20 @@ package com.cve.stores;
  * This is similar to java.io.Serializable, but with several key differences:
  * <ol>
  *   <li> The IO instance handles persistence instead of the object itself.
- *   <li>
+ *   <li> Only object trees are persisted -- not object graphs.
+ *   <li> There is no support for object versioning.
  * </ol>
  * You might be more comfortable with the term data access object.
  * @author Curt
  */
 public interface IO<T> {
-    T parse(byte[] line);
-    byte[] format(T value);
+    /**
+     * Turn the given bytes into an object.
+     */
+    T read(byte[] line);
+
+    /**
+     * Turn the given object into bytes.
+     */
+    byte[] write(T value);
 }

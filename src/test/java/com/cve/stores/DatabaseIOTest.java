@@ -21,7 +21,7 @@ public class DatabaseIOTest {
     }
 
     void both(Database db) {
-         assertEquals(db, io.parse(io.format(db)));
+         assertEquals(db, io.read(io.write(db)));
     }
 
 }

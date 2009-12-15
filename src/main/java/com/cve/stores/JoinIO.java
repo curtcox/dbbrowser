@@ -23,8 +23,8 @@ final class JoinIO implements IO<Join> {
     }
 
     @Override
-    public Join parse(byte[] bytes) {
-        String line = stringIO.parse(bytes);
+    public Join read(byte[] bytes) {
+        String line = stringIO.read(bytes);
         String[] parts = Check.notNull(line).split(".");
         DBColumn source = Server.uri(URIs.of(parts[0]))
                 .databaseName(line)
@@ -38,8 +38,8 @@ final class JoinIO implements IO<Join> {
     }
 
     @Override
-    public byte[] format(Join value) {
-        return stringIO.format(Check.notNull(value).toString());
+    public byte[] write(Join value) {
+        return stringIO.write(Check.notNull(value).toString());
     }
 
 }

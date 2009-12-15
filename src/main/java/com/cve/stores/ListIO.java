@@ -22,15 +22,15 @@ final class ListIO implements IO<List> {
     }
     
     @Override
-    public List parse(byte[] bytes) {
+    public List read(byte[] bytes) {
         List list = Lists.newArrayList();
         return list;
     }
 
     @Override
-    public byte[] format(List list) {
+    public byte[] write(List list) {
         ByteWriter writer = ByteWriter.of();
-        writer.add(longIO.format(list.size()));
+        writer.add(longIO.write(list.size()));
         return writer.toBytes();
     }
 }

@@ -12,20 +12,5 @@ import static org.junit.Assert.*;
  */
 public class ActiveFunctionTest {
 
-    static SQLFunction MAPPER_1 = new SQLFunction() {
-        @Override
-        public Object apply(Object k) {
-            return k + "1";
-        }
-    };
-
-    static MapIO IO_1 = IOs.stringToString();
-
-    @Test
-    public void emptyMapContainsMappedValue() throws IOException, SQLException {
-        File file = new File("test");
-        SQLFunction map = ActiveFunction.fileIOFunc(file,IO_1,MAPPER_1);
-        assertEquals("1",map.apply(""));
-    }
 
 }

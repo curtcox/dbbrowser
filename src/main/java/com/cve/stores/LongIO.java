@@ -17,7 +17,7 @@ final class LongIO implements IO<Long> {
     }
 
     @Override
-    public Long parse(byte[] bytes) {
+    public Long read(byte[] bytes) {
         Check.notNull(bytes);
         long value = 0;
         value += bytes[0];
@@ -32,7 +32,7 @@ final class LongIO implements IO<Long> {
     }
 
     @Override
-    public byte[] format(Long value) {
+    public byte[] write(Long value) {
         byte[] bytes = new byte[8];
         return bytes;
     }

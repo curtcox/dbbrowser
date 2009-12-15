@@ -18,7 +18,7 @@ public class LongIOTest {
     }
 
     void both(Long num) {
-         assertEquals(num, io.parse(io.format(num)));
+         assertEquals(num, io.read(io.write(num)));
     }
 
 }

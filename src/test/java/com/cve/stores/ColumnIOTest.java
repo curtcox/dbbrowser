@@ -21,7 +21,7 @@ public class ColumnIOTest {
     }
 
     void both(DBColumn c) {
-         assertEquals(c, io.parse(io.format(c)));
+         assertEquals(c, io.read(io.write(c)));
     }
 
 }

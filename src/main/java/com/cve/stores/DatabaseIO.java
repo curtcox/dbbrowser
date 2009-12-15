@@ -22,13 +22,13 @@ final class DatabaseIO implements IO<Database> {
     }
 
     @Override
-    public byte[] format(Database value) {
-        return stringIO.format(value.toString());
+    public byte[] write(Database value) {
+        return stringIO.write(value.toString());
     }
 
     @Override
-    public Database parse(byte[] bytes) {
-        String line = stringIO.parse(bytes);
+    public Database read(byte[] bytes) {
+        String line = stringIO.read(bytes);
         String[] parts = Check.notNull(line).split(".");
         Server server = Server.uri(URIs.of(parts[0]));
         return server.databaseName(parts[1]);

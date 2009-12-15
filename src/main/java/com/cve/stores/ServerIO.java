@@ -21,13 +21,13 @@ final class ServerIO implements IO<Server> {
     }
     
     @Override
-    public Server parse(byte[] bytes) {
-        return Server.uri(URIs.of(Check.notNull(stringIO.parse(bytes))));
+    public Server read(byte[] bytes) {
+        return Server.uri(URIs.of(Check.notNull(stringIO.read(bytes))));
     }
 
     @Override
-    public byte[] format(Server value) {
-        return stringIO.format(value.toString());
+    public byte[] write(Server value) {
+        return stringIO.write(value.toString());
     }
 
 }

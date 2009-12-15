@@ -21,7 +21,7 @@ public class TableIOTest {
     }
 
     void both(DBTable t) {
-         assertEquals(t, io.parse(io.format(t)));
+         assertEquals(t, io.read(io.write(t)));
     }
 
     private void assertEquals(DBTable t, DBTable parse) {

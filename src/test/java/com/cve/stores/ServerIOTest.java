@@ -20,7 +20,7 @@ public class ServerIOTest {
     }
 
     void both(Server s) {
-         assertEquals(s, io.parse(io.format(s)));
+         assertEquals(s, io.read(io.write(s)));
     }
 
 }

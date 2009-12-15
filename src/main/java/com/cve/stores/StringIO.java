@@ -17,12 +17,12 @@ final class StringIO implements IO<String> {
     }
     
     @Override
-    public byte[] format(String string) {
+    public byte[] write(String string) {
         return Check.notNull(string.getBytes());
     }
 
     @Override
-    public String parse(byte[] bytes) {
+    public String read(byte[] bytes) {
         return Check.notNull(new String(bytes));
     }
 

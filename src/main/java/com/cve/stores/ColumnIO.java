@@ -22,13 +22,13 @@ final class ColumnIO implements IO<DBColumn> {
     }
 
     @Override
-    public byte[] format(DBColumn value) {
-        return stringIO.format(value.toString());
+    public byte[] write(DBColumn value) {
+        return stringIO.write(value.toString());
     }
 
     @Override
-    public DBColumn parse(byte[] bytes) {
-        String line = stringIO.parse(bytes);
+    public DBColumn read(byte[] bytes) {
+        String line = stringIO.read(bytes);
         String[] parts = Check.notNull(line).split(".");
         return Server.uri(URIs.of(parts[0]))
                .databaseName(parts[1])

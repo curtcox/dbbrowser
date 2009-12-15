@@ -7,16 +7,34 @@ package com.cve.util;
 public final class Stopwatch {
 
 
+    /**
+     * Message to display if threshhold is exceeded.
+     */
     private final String message;
+
+    /**
+     * Where we were created.
+     */
     private final Throwable here = new Throwable();
+
+    /**
+     * When we were created.
+     */
     private final long start = System.currentTimeMillis();
 
+    /**
+     * How long is too long?
+     */
     private static final long THRESHHOLD = 100;
 
     private Stopwatch(String message) {
         this.message = message;
     }
 
+    /**
+     * Start a new stopwatch.
+     * @return
+     */
     public static Stopwatch start() {
         return new Stopwatch("");
     }
@@ -25,6 +43,9 @@ public final class Stopwatch {
         return new Stopwatch(object.toString());
     }
 
+    /**
+     * Stop the stopwatch a complain if it took too long.
+     */
     public void stop() {
         long end = System.currentTimeMillis();
         long duration = end - start;

@@ -23,12 +23,12 @@ public final class MapIO implements IO<Map> {
     }
 
     @Override
-    public Map parse(byte[] line) {
+    public Map read(byte[] line) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public byte[] format(Map value) {
+    public byte[] write(Map value) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

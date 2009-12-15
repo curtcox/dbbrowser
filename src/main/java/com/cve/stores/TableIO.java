@@ -22,13 +22,13 @@ final class TableIO implements IO<DBTable> {
     }
 
     @Override
-    public byte[] format(DBTable value) {
-        return stringIO.format(value.toString());
+    public byte[] write(DBTable value) {
+        return stringIO.write(value.toString());
     }
 
     @Override
-    public DBTable parse(byte[] bytes) {
-        String line = stringIO.parse(bytes);
+    public DBTable read(byte[] bytes) {
+        String line = stringIO.read(bytes);
         String[]    parts = Check.notNull(line).split(".");
         return Server.uri(URIs.of(parts[0]))
                 .databaseName(parts[1])

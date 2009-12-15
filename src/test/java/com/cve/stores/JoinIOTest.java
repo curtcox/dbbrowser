@@ -26,7 +26,7 @@ public class JoinIOTest {
     }
 
     void both(Join j) {
-         assertEquals(j, io.parse(io.format(j)));
+         assertEquals(j, io.read(io.write(j)));
     }
 
 }
