@@ -1,14 +1,13 @@
 package com.cve.web.db;
 
 import com.cve.web.*;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.stores.ServersStore;
 import com.cve.util.Throwables;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -27,12 +26,20 @@ import static com.cve.html.HTML.*;
  */
 public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
     private static final String PREFIX = "/meta/";
 
-    private DatabaseMetaHandler() { super("^" + PREFIX); }
+    private DatabaseMetaHandler(DBMetaData.Factory db) {
+        super("^" + PREFIX);
+        this.db = db;
+    }
 
-    public static RequestHandler newInstance() {
-        return new DatabaseMetaHandler();
+    public static DatabaseMetaHandler of(DBMetaData.Factory db) {
+        return new DatabaseMetaHandler(db);
     }
 
     @Override
@@ -54,11 +61,11 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
      * /server/meta/ or
      * /server/meta/method/
      */
-    static boolean isDatabaseMetaRequest(String uri) {
-        return new DatabaseMetaHandler().handles(uri);
+    boolean isDatabaseMetaRequest(String uri) {
+        return handles(uri);
     }
 
-    static String page(Server server, String method) {
+    String page(Server server, String method) {
         try {
             return tryPage(server,method);
         } catch (SQLException e) {
@@ -66,7 +73,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         }
     }
 
-    static String tryPage(Server server, String method) throws SQLException {
+    String tryPage(Server server, String method) throws SQLException {
         if (method.equals(""))               { return getIndex(server);       }
         if (method.equals("attributes"))     { return getAttributes(server);  }
         if (method.equals("clientInfoProperties")) { return getClientInfoProperties(server);  }
@@ -148,9 +155,9 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return render(metaFor(server).getTables(catalog, schemaPattern, tableNamePattern, types));
     }
 
-    static String getColumns(Server server) throws SQLException {
+    String getColumns(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
-        for (Database database : DBConnection.getDbmd(server).getDatabasesOn(server)) {
+        for (Database database : db.of(server).getDatabasesOn(server)) {
             String catalog           = database.name;
             String schemaPattern     = null;
             String tableNamePattern  = null;
@@ -181,7 +188,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
             foreignSchema, foreignTable));
     }
 
-    static String getExportedKeys(Server server) throws SQLException {
+    String getExportedKeys(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         for (DBTable table : getTablesOn(server)) {
              String catalog = table.database.name;
@@ -191,9 +198,9 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return out.toString();
     }
 
-    static ImmutableList<DBTable> getTablesOn(Server server) throws SQLException {
+    ImmutableList<DBTable> getTablesOn(Server server) throws SQLException {
         List<DBTable> list = Lists.newArrayList();
-        DBMetaData dbmd = DBConnection.getDbmd(server);
+        DBMetaData dbmd = db.of(server);
         for (Database database : dbmd.getDatabasesOn(server)) {
             for (DBTable table : dbmd.getTablesOn(database)) {
                 list.add(table);
@@ -202,7 +209,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return ImmutableList.copyOf(list);
     }
 
-    static String getImportedKeys(Server server) throws SQLException {
+    String getImportedKeys(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         for (DBTable table : getTablesOn(server)) {
              String catalog = table.database.name;
@@ -212,7 +219,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return out.toString();
     }
 
-    static String getPrimaryKeys(Server server) throws SQLException {
+    String getPrimaryKeys(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
         DatabaseMetaData meta = metaFor(server);
         for (DBTable table : getTablesOn(server)) {
@@ -229,8 +236,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     }
 
     static DatabaseMetaData metaFor(Server server) throws SQLException {
-        DBConnection connection = ServersStore.getConnection(server);
-        return connection.getJDBCMetaData();
+        return DBConnectionFactory.metaFor(server);
     }
 
     public static String render(ResultSet results) throws SQLException {

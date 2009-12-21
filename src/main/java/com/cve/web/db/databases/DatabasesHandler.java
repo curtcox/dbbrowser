@@ -6,7 +6,6 @@ import com.cve.web.*;
 import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
@@ -27,6 +26,18 @@ import static com.cve.log.Log.args;
  */
 public final class DatabasesHandler extends AbstractRequestHandler {
 
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private DatabasesHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    public static DatabasesHandler of(DBMetaData.Factory db) {
+        return new DatabasesHandler(db);
+    }
 
     @Override
     public Model get(PageRequest request) throws IOException, SQLException {
@@ -36,7 +47,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
         Search search = DBURICodec.getSearch(uri);
         Server server = DBURICodec.getServer(uri);
         if (search.isEmpty()) {
-            DBMetaData  meta = DBConnection.getDbmd(server);
+            DBMetaData  meta = db.of(server);
             ImmutableList<Database> databases = meta.getDatabasesOn(server);
             ImmutableMultimap<Database,DBTable> tables = tablesOn(databases);
             return new DatabasesPage(server,databases,tables);
@@ -59,10 +70,10 @@ public final class DatabasesHandler extends AbstractRequestHandler {
                DBURICodec.getDatabases(uri).isEmpty();
     }
 
-    static ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) throws SQLException {
+    ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) throws SQLException {
         Multimap<Database,DBTable> tables = HashMultimap.create();
         for (Database database : databases) {
-            DBMetaData  meta = DBConnection.getDbmd(database.server);
+            DBMetaData  meta = db.of(database.server);
             for (DBTable table : meta.getTablesOn(database)) {
                 tables.put(database,table);
             }
@@ -73,9 +84,9 @@ public final class DatabasesHandler extends AbstractRequestHandler {
     /**
      * Perform the requested search and return a results page.
      */
-    static DatabasesSearchPage newSearchPage(Server server,Search search) throws SQLException {
+    DatabasesSearchPage newSearchPage(Server server,Search search) throws SQLException {
         args(server,search);
-        ImmutableList<DBColumn> columns = DBConnection.getDbmd(server).getColumnsFor(server);
+        ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server);
         Set<Database> filteredDatabases = Sets.newHashSet();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();

@@ -15,7 +15,7 @@ public class DBBrowserHandlerTest {
 
     @Test
     public void handle() throws IOException, SQLException {
-        RequestHandler handler = DBBrowserHandler.newInstance();
+        RequestHandler handler = DBBrowserHandler.of(null).of();
         PageRequest   request = PageRequest.path("//server/");
         assertNotNull(handler.produce(request));
     }

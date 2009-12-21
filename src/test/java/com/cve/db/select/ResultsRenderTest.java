@@ -15,6 +15,7 @@ import com.cve.db.DBTable;
 import com.cve.db.JDBCURL;
 import com.cve.db.SelectContext;
 import com.cve.db.Value;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.util.URIs;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
@@ -81,6 +82,6 @@ public class ResultsRenderTest {
         String user = "";
         String password = "";
         ConnectionInfo info = ConnectionInfo.urlUserPassword(url, user, password);
-        return DBConnection.info(info);
+        return DBConnectionFactory.of(info);
     }
 }

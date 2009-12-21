@@ -6,7 +6,6 @@ import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBTable;
 import com.cve.db.Server;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -33,6 +32,19 @@ import static com.cve.log.Log.args;
 public final class HintsStore {
 
     /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private HintsStore(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    public static HintsStore of(DBMetaData.Factory db) {
+        return new HintsStore(db);
+    }
+
+    /**
      * Columns -> joins they participate in.
      */
     private static Multimap<DBColumn,Join>     joins = HashMultimap.create();
@@ -54,7 +66,7 @@ public final class HintsStore {
         }
     }
 
-    public static Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
+    public Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
         args(columns);
         Set<Join>      joinSet = Sets.newHashSet();
         Set<Filter>  filterSet = Sets.newHashSet();
@@ -64,7 +76,7 @@ public final class HintsStore {
         }
         ImmutableList<DBTable> tables = spanningTables(columns);
         Server                 server = tables.get(0).database.server;
-        DBMetaData               meta = DBConnection.getDbmd(server);
+        DBMetaData               meta = db.of(server);
         joinSet.addAll(meta.getJoinsFor(tables));
         return Hints.of(
             joinSet,

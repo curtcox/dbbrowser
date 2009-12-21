@@ -8,15 +8,12 @@ import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.Order;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import com.google.common.collect.Lists;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
  * Actions that are used to build a select statement.
@@ -38,7 +35,7 @@ public enum SelectBuilderAction {
      */
     NEXT("next") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             int   pages = Integer.parseInt(query);
             Limit limit = select.limit;
             select = select.with(limit.next(pages));
@@ -51,7 +48,7 @@ public enum SelectBuilderAction {
      */
     BACK("back") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             int   pages = Integer.parseInt(query);
             Limit limit = select.limit;
             select = select.with(limit.back(pages));
@@ -64,7 +61,7 @@ public enum SelectBuilderAction {
      */
     BIGGER("bigger") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             int   factor = Integer.parseInt(query);
             Limit limit = select.limit;
             select = select.with(limit.bigger(factor));
@@ -77,7 +74,7 @@ public enum SelectBuilderAction {
      */
     SMALLER("smaller") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             int   factor = Integer.parseInt(query);
             Limit limit = select.limit;
             select = select.with(limit.smaller(factor));
@@ -90,7 +87,7 @@ public enum SelectBuilderAction {
      */
     HIDE("hide") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             return select.without(DBColumn.parse(server,select.tables,query));
         }
     },
@@ -100,7 +97,7 @@ public enum SelectBuilderAction {
      */
     SHOW("show") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
              return select.with(DBColumn.parse(server,select.tables,query));
         }
     },
@@ -110,7 +107,7 @@ public enum SelectBuilderAction {
      */
     FILTER("filter") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             return select.with(Filter.parse(server,select.tables,query));
         }
     },
@@ -120,7 +117,7 @@ public enum SelectBuilderAction {
      */
     ORDER("order") {
         @Override
-        public Select goDo(Select select, Server server, String query) {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) {
             return select.with(Order.parse(server,select.tables,query));
         }
     },
@@ -130,11 +127,11 @@ public enum SelectBuilderAction {
      */
     JOIN("join") {
         @Override
-        public Select goDo(Select select, Server server, String query) throws SQLException {
+        public Select goDo(Select select, Server server, DBMetaData.Factory db, String query) throws SQLException {
             Join join = Join.parse(server,select.tables,query);
             select = select.with(join);
             DBTable table = join.dest.table;
-            DBMetaData meta = DBConnection.getDbmd(table.database.server);
+            DBMetaData meta = db.of(table.database.server);
             for (DBColumn column : meta.getColumnsFor(table)) {
                 select = select.with(column);
             }
@@ -164,14 +161,14 @@ public enum SelectBuilderAction {
      * produce another select statement.
      * In loving memory of Harvey Korman.
      */
-    public abstract Select goDo(Select select, Server server, String args) throws SQLException;
+    public abstract Select goDo(Select select, Server server, DBMetaData.Factory db, String args) throws SQLException;
 
     /**
      * Find the relevant action and go do it.
      */
     public static Select doAction(
         String actionString, Select select, Server server,
-        String query)
+        DBMetaData.Factory db, String query)
         throws SQLException
     {
         Check.notNull(actionString);
@@ -179,7 +176,7 @@ public enum SelectBuilderAction {
         Check.notNull(server);
         Check.notNull(query);
         SelectBuilderAction action = findAction(actionString);
-        return action.goDo(select, server, query);
+        return action.goDo(select, server, db, query);
     }
 
     /**

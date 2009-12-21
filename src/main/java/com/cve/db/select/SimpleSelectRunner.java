@@ -53,7 +53,7 @@ final class SimpleSelectRunner implements SelectRunner {
         DBConnection connection = context.connection;
         Select select = context.select;
         Search search = context.search;
-        DBDriver driver = connection.info.driver;
+        DBDriver driver = connection.getInfo().driver;
         SQL         sql = driver.render(select,search);
         int       count = determineRowCount(context);
         try {
@@ -76,7 +76,7 @@ final class SimpleSelectRunner implements SelectRunner {
      */
     static int determineRowCount(SelectContext context) throws SQLException {
         DBConnection connection = context.connection;
-        DBDriver driver = connection.info.driver;
+        DBDriver driver = connection.getInfo().driver;
         Select select = context.select;
         Search search = context.search;
         SQL sql = driver.renderCount(select,search);

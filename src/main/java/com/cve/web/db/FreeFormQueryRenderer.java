@@ -5,6 +5,7 @@ import com.cve.db.Hints;
 import com.cve.db.Order;
 import com.cve.db.SQL;
 import com.cve.db.Select;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.db.select.SelectParser;
 import com.cve.db.select.URIRenderer;
@@ -32,10 +33,21 @@ import static com.cve.log.Log.args;
  */
 final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
     private static URI HELP = URIs.of("/resource/help/Select.html");
 
-    FreeFormQueryRenderer() {}
+    private FreeFormQueryRenderer(DBMetaData.Factory db) {
+        this.db = db;
+    }
 
+    static FreeFormQueryRenderer of(DBMetaData.Factory db) {
+        return new FreeFormQueryRenderer(db);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         args(model,client);
@@ -73,7 +85,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
             String guts = page.message + form.toString() + ObjectLink.to("details",trace);
             return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
-        Hints hints = HintsStore.getHints(results.columns);
+        Hints hints = HintsStore.of(db).getHints(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
         DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();

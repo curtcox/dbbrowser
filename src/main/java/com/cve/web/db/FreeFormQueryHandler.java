@@ -49,8 +49,12 @@ import static com.cve.log.Log.args;
  */
 public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
-    FreeFormQueryHandler() {}
+    private FreeFormQueryHandler() {}
 
+    public static FreeFormQueryHandler of() {
+        return new FreeFormQueryHandler();
+    }
+    
     /**
      * Do we handle this URI?
      */
@@ -195,7 +199,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         args(select);
         Server server = select.server;
         DBConnection connection = ServersStore.getConnection(server);
-        DBDriver driver = connection.info.driver;
+        DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);
         URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
         return target;

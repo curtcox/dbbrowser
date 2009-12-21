@@ -11,6 +11,10 @@ import java.sql.SQLException;
  */
 public interface RequestHandler {
 
+    public interface Factory {
+        RequestHandler of();
+    }
+
     /**
      * Return a response for this request, or null if this isn't the sort
      * of request we prodcuce responses for.

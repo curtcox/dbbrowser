@@ -1,11 +1,10 @@
 package com.cve.web.db;
 
 import com.cve.web.*;
-import com.cve.web.db.SelectBuilderAction;
 import com.cve.db.Select;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.URIRenderer;
-import com.cve.web.db.DBURICodec;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;
@@ -35,6 +34,16 @@ import static com.cve.log.Log.args;
  */
 public final class DBRedirectsHandler implements RequestHandler {
 
+    final DBMetaData.Factory db;
+
+    private DBRedirectsHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    public static DBRedirectsHandler of(DBMetaData.Factory db) {
+        return new DBRedirectsHandler(db);
+    }
+
     @Override
     /**
      * Poduce a response with the appropriate redirect, or null if this
@@ -60,7 +69,7 @@ public final class DBRedirectsHandler implements RequestHandler {
     /**
      * Given a path and query, produce the URI it should redirect to.
      */
-    static URI redirectsActionsTo(String path, String query) throws SQLException {
+    URI redirectsActionsTo(String path, String query) throws SQLException {
         args(path,query);
         notNull(path);
         int lastSlash = path.lastIndexOf("/");
@@ -70,7 +79,7 @@ public final class DBRedirectsHandler implements RequestHandler {
         String action = path.substring(lastSlash + 1);
         final Select select = DBURICodec.getSelect(upToLastSlash);
         Server server = DBURICodec.getServer(upToLastSlash);
-        Select newSelect = SelectBuilderAction.doAction(action,select,server,query);
+        Select newSelect = SelectBuilderAction.doAction(action,select,server,db,query);
         Search search = DBURICodec.getSearch(upToLastSlash);
         URI dest = URIRenderer.render(newSelect,search);
         return dest;

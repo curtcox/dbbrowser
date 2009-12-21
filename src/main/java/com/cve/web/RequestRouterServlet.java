@@ -1,13 +1,11 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.util.Check;
 import com.cve.web.alt.AltModelHtmlRenderers;
 import static com.cve.log.Log.args;
 
-import com.cve.web.db.DBBrowserHandler;
-import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DatabaseModelHtmlRenderers;
-import com.cve.web.log.LogBrowserHandler;
 import com.cve.web.log.LogModelHtmlRenderers;
 import java.sql.SQLException;
 import javax.servlet.http.*;
@@ -39,27 +37,19 @@ import java.net.URI;
 public final class RequestRouterServlet extends HttpServlet {
 
     /**
+     * This is how we find something to respond to a given request.
+     * The router is just a composite handler.
+     */
+    final RequestHandler router;
+
+    /**
      * Where we log to.
      */
     static final Log LOG = Log.of(RequestRouterServlet.class);
 
-    /**
-     * This is how we find something to respond to a given request.
-     * The router is just a composite handler.
-     */
-    private static final RequestHandler ROUTER =
-        ErrorReportHandler.of(
-            DebugHandler.of(
-                CompressedURIHandler.of(
-                    CompositeRequestHandler.of(
-                        CoreServerHandler.newInstance(),
-                        AlternateViewHandler.newInstance(),
-                        LogBrowserHandler.newInstance(),
-                        DBBrowserHandler.newInstance()
-                   )
-             )
-        )
-    );
+    private RequestRouterServlet(RequestHandler router) {
+        this.router = Check.notNull(router);
+    }
 
     /**
      * Renders models into HTML, JPG, PNG, etc...
@@ -75,6 +65,10 @@ public final class RequestRouterServlet extends HttpServlet {
      * Dumps servlet requests for diagnostic purposes.
      */
     private static final RequestDumpServlet DUMPER = RequestDumpServlet.newInstance();
+
+    public static RequestRouterServlet of(RequestHandler router) {
+        return new RequestRouterServlet(router);
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -142,7 +136,7 @@ public final class RequestRouterServlet extends HttpServlet {
      * Route the request into something that can handle it and send the
      * response.
      */
-    static void route(HttpServletRequest request, HttpServletResponse response)
+    void route(HttpServletRequest request, HttpServletResponse response)
         throws IOException, SQLException
     {
         args(request,response);
@@ -155,7 +149,7 @@ public final class RequestRouterServlet extends HttpServlet {
         // Transform the request, produce route it to something that knows how
         // to process it, and write the response.
         PageRequest   pageRequest = PageRequest.request(request);
-        PageResponse  uriResponse = ROUTER.produce(pageRequest);
+        PageResponse  uriResponse = router.produce(pageRequest);
         if (uriResponse!=null) {
             write(uriResponse,response);
             return;

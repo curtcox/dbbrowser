@@ -25,7 +25,7 @@ public class DBMetaDataIOTest {
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
         ServersStore.addServer(server, info);
-        DBConnection connection = DBConnection.info(info);
+        DBConnection connection = DefaultDBConnection.info(info);
         DBMetaData meta = DefaultDBMetaData.getDbmd(connection);
         assertEquals(0,meta.getTablesOn(database).size());
     }

@@ -17,24 +17,24 @@ public final class ResultSetRetry {
     /**
      * The connection we want to try and retry on
      */
-    private final DBConnection connection;
+    private final DefaultDBConnection connection;
 
     /**
      * This knows about the connection and will generate a result set.
      */
     private final ResultSetGenerator generator;
 
-    private ResultSetRetry(DBConnection connection, ResultSetGenerator generator) {
+    private ResultSetRetry(DefaultDBConnection connection, ResultSetGenerator generator) {
         this.connection = Check.notNull(connection);
         this.generator  = Check.notNull(generator);
     }
 
-    private static ResultSetRetry of(DBConnection connection, ResultSetGenerator generator) {
+    private static ResultSetRetry of(DefaultDBConnection connection, ResultSetGenerator generator) {
         args(connection,generator);
         return new ResultSetRetry(connection,generator);
     }
 
-    static ResultSet run(DBConnection connection, ResultSetGenerator generator) throws SQLException {
+    static ResultSet run(DefaultDBConnection connection, ResultSetGenerator generator) throws SQLException {
         args(connection,generator);
         return of(connection,generator).generate();
     }

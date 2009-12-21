@@ -5,6 +5,7 @@ import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
 import com.cve.db.Value;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.util.Strings;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
@@ -21,12 +22,25 @@ import static com.cve.log.Log.args;
  */
 final class CSVHandler extends AbstractBinaryRequestHandler {
 
-    CSVHandler() { super("^/view/CSV/",ContentType.TEXT); }
+     /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private CSVHandler(DBMetaData.Factory db) {
+        super("^/view/CSV/",ContentType.TEXT);
+        this.db = db;
+    }
+
+    static CSVHandler of(DBMetaData.Factory db) {
+        return new CSVHandler(db);
+    }
 
     @Override
     public byte[] get(PageRequest request) throws IOException, SQLException {
         args(request);
-        return csv(AlternateViewHandler.getResultsFromDB(request.requestURI));
+        AlternateViewHandler alt = AlternateViewHandler.of(db);
+        return csv(alt.getResultsFromDB(request.requestURI));
     }
 
     public static byte[] csv(SelectResults results) {

@@ -33,7 +33,7 @@ public class HintsStoreTest {
         Hints expected = Hints.of(Join.of(account_product_id, product_product_id));
         HintsStore.putHints(expected);
 
-        Hints actual = HintsStore.getHints(columns);
+        Hints actual = HintsStore.of(null).getHints(columns);
         assertEquals(expected,actual);
     }
 

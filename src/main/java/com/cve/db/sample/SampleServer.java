@@ -7,6 +7,7 @@ import com.cve.db.JDBCURL;
 import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import java.sql.Connection;
@@ -42,7 +43,7 @@ public final class SampleServer {
 
     static DBConnection getConnection() {
         final ConnectionInfo info = getConnectionInfo();
-        return DBConnection.info(info);
+        return DBConnectionFactory.of(info);
     }
 
     /**

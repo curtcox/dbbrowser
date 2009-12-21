@@ -25,15 +25,28 @@ import static com.cve.log.Log.args;
  */
 final class DatabaseContentsSearchPageCreator {
 
-    public static DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db) {
+        return new DatabaseContentsSearchPageCreator(db);
+    }
+
+    public DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
         List<SelectResults> resultsList = createResultsList(database,search);
         return DatabaseContentsSearchPage.of(search, database, resultsList);
     }
 
-    static List<SelectResults> createResultsList(Database database, Search search) throws SQLException {
+    List<SelectResults> createResultsList(Database database, Search search) throws SQLException {
         args(database,search);
         List<SelectResults> resultsList = Lists.newArrayList();
-        DBMetaData                 meta = DBConnection.getDbmd(database.server);
+        DBMetaData                 meta = db.of(database.server);
         for (DBTable table : meta.getTablesOn(database)) {
             SelectResults results = getResultsFromTable(meta,search,table);
             if (!results.resultSet.rows.isEmpty()) {
@@ -46,7 +59,7 @@ final class DatabaseContentsSearchPageCreator {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    static SelectResults getResultsFromTable(DBMetaData meta ,Search search, DBTable table) throws SQLException {
+    SelectResults getResultsFromTable(DBMetaData meta ,Search search, DBTable table) throws SQLException {
         Server         server = table.database.server;
 
         // Setup the select
@@ -54,7 +67,7 @@ final class DatabaseContentsSearchPageCreator {
         DBColumn[] columns = meta.getColumnsFor(table).toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.columns);
+        Hints hints = HintsStore.of(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

@@ -22,7 +22,7 @@ public final class DatabaseModelHtmlRenderers {
         map.put(TablesPage.class,                 PageDecorator.of(new TablesPageRenderer()));
         map.put(TablesSearchPage.class,           PageDecorator.of(new TablesSearchPageRenderer()));
         map.put(SelectResults.class,              PageDecorator.of(new SelectResultsRenderer()));
-        map.put(FreeFormQueryModel.class,         PageDecorator.of(new FreeFormQueryRenderer()));
+        map.put(FreeFormQueryModel.class,         PageDecorator.of(FreeFormQueryRenderer.of(null)));
         map.putAll(ServerModelHtmlRenderers.RENDERERS);
         map.putAll(DatabasesModelHtmlRenderers.RENDERERS);
         return ImmutableMap.copyOf(map);

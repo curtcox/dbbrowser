@@ -15,7 +15,7 @@ public class DBRedirectsHandlerTest {
 
     @Test
     public void handled() throws IOException {
-        DBRedirectsHandler   handler = new DBRedirectsHandler();
+        DBRedirectsHandler   handler = DBRedirectsHandler.of(null);
         PageRequest   request = PageRequest.path("/");
         PageResponse response = handler.produce(request);
         assertNull(response);
@@ -37,6 +37,6 @@ public class DBRedirectsHandlerTest {
     }
 
     private void assertRedirected(String path, String query, String dest) throws SQLException {
-        assertEquals(URIs.of(dest),DBRedirectsHandler.redirectsActionsTo(path,query));
+        assertEquals(URIs.of(dest),DBRedirectsHandler.of(null).redirectsActionsTo(path,query));
     }
 }

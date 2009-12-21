@@ -5,6 +5,7 @@ import com.cve.db.ConnectionInfo;
 import com.cve.db.Database;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBConnectionFactory;
 import static com.cve.util.Check.notNull;
 import com.cve.util.Strings;
 import com.cve.util.URIs;
@@ -166,7 +167,7 @@ public final class ServersStore {
                 ".  Connection available for " + CONNECTIONS.keySet();
             throw new IllegalArgumentException(message);
         }
-        return DBConnection.info(info);
+        return DBConnectionFactory.of(info);
     }
 
 }

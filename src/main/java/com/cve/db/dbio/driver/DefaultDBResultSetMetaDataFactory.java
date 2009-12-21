@@ -42,7 +42,7 @@ public class DefaultDBResultSetMetaDataFactory {
 
     private static DefaultDBResultSetMetaDataFactory factory(Server server, DBConnection connection, ResultSet results) throws SQLException {
         args(server,connection,results);
-        DBDriver driver = connection.info.driver;
+        DBDriver driver = connection.getInfo().driver;
         ResultSetMetaData meta = results.getMetaData();
         meta = ResultSetMetaDataWrapper.of(meta);
         if (driver==DBDriver.MySql) {

@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.db.dbio.DBMetaData;
 import com.cve.web.db.*;
 import com.cve.web.*;
 
@@ -10,16 +11,27 @@ import com.cve.web.*;
  */
 public final class DBServersHandler {
 
-    private static final RequestHandler handler = CompositeRequestHandler.of(
-        // handler                         // for URLs of the form
-        new ServersHandler(),              // /
-        new AddServerHandler(),            // /add
-        new RemoveServerHandler(),         // /remove
-        DatabaseMetaHandler.newInstance()  // /meta/server/
-    );
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
 
-    public static RequestHandler newInstance() {
-        return handler;
+    private DBServersHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    public static DBServersHandler of(DBMetaData.Factory db) {
+        return new DBServersHandler(db);
+    }
+
+    public RequestHandler of() {
+        return CompositeRequestHandler.of(
+            // handler                         // for URLs of the form
+            ServersHandler.of(db),             // /
+            new AddServerHandler(),            // /add
+            new RemoveServerHandler(),         // /remove
+            DatabaseMetaHandler.of(db)  // /meta/server/
+        );
     }
 
 }

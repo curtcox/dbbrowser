@@ -15,7 +15,7 @@ public class TablesHandlerTest {
 
     @Test
     public void handlesTablesOnlyRequest() throws IOException, SQLException {
-        TablesHandler handler = new TablesHandler();
+        TablesHandler handler = TablesHandler.of(null);
         PageRequest   request = PageRequest.path("//server/db/");
         assertNotNull(handler.produce(request));
     }

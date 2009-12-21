@@ -25,7 +25,7 @@ public class SelectBuilderHandlerTest {
         ServersStore.addServer(server, info);
 
         String            uri = "//server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
-        SelectResults results = SelectBuilderHandler.getResultsFromDB(uri);
+        SelectResults results = SelectBuilderHandler.of(null).getResultsFromDB(uri);
         assertNotNull(results);
     }
 

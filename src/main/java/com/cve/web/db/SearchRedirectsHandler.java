@@ -15,7 +15,11 @@ import static com.cve.log.Log.args;
  */
 final class SearchRedirectsHandler implements RequestHandler {
 
-    SearchRedirectsHandler() {}
+    private SearchRedirectsHandler() {}
+
+    public static SearchRedirectsHandler of() {
+        return new SearchRedirectsHandler();
+    }
 
     @Override
     /**

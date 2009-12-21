@@ -5,7 +5,6 @@ import com.cve.db.DBColumn;
 import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.util.URIs;
 import com.cve.web.Search.Space;
@@ -29,6 +28,19 @@ import static com.cve.log.Log.args;
 public final class TablesHandler extends AbstractRequestHandler {
 
     /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private TablesHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    static TablesHandler of(DBMetaData.Factory db) {
+        return new TablesHandler(db);
+    }
+    
+    /**
      * Do we handle this URI?
      */
     @Override
@@ -47,14 +59,14 @@ public final class TablesHandler extends AbstractRequestHandler {
         Server                 server = DBURICodec.getServer(uri);
         Database             database = DBURICodec.getDatabase(uri);
         if (search.isEmpty()) {
-            DBMetaData               meta = DBConnection.getDbmd(server);
+            DBMetaData               meta = db.of(server);
             ImmutableList<DBTable> tables = meta.getTablesOn(database);
             ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
             ImmutableMap<DBTable,Long>             rows = rowsFor(tables);
             return new TablesPage(server,database,tables,rows,columns);
         }
         if (search.space==Space.CONTENTS) {
-            return DatabaseContentsSearchPageCreator.create(database,search);
+            return DatabaseContentsSearchPageCreator.of(db).create(database,search);
         }
         return newNamesSearchPage(database,search);
     }
@@ -70,11 +82,11 @@ public final class TablesHandler extends AbstractRequestHandler {
     /**
      * Return a map from the given tables to the columns they contain.
      */
-    static ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) throws SQLException {
         Multimap<DBTable,DBColumn> columns = HashMultimap.create();
         for (DBTable table : tables) {
             Server      server = table.database.server;
-            DBMetaData    meta = DBConnection.getDbmd(server);
+            DBMetaData    meta = db.of(server);
             for (DBColumn column : meta.getColumnsFor(table)) {
                 columns.put(table, column);
             }
@@ -85,11 +97,11 @@ public final class TablesHandler extends AbstractRequestHandler {
         /**
      * Return a map from the given tables to the columns they contain.
      */
-    static ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) throws SQLException {
+    ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) throws SQLException {
         Map<DBTable,Long> rows = Maps.newHashMap();
         for (DBTable table : tables) {
             Server      server = table.database.server;
-            DBMetaData    meta = DBConnection.getDbmd(server);
+            DBMetaData    meta = db.of(server);
             rows.put(table, meta.getRowCountFor(table));
         }
         return ImmutableMap.copyOf(rows);
@@ -99,9 +111,9 @@ public final class TablesHandler extends AbstractRequestHandler {
      * Perform the requested search of the table, column, database
      * and server names.  Return a results page.
      */
-    static TablesSearchPage newNamesSearchPage(Database database,Search search) throws SQLException {
+    TablesSearchPage newNamesSearchPage(Database database,Search search) throws SQLException {
         args(database,search);
-        DBMetaData               meta = DBConnection.getDbmd(database.server);
+        DBMetaData               meta = db.of(database.server);
         ImmutableList<DBColumn> columns = meta.getColumnsFor(database);
         Set<DBTable> filteredTables = Sets.newHashSet();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();

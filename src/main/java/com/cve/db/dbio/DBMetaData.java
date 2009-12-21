@@ -21,6 +21,10 @@ import java.sql.SQLException;
  */
 public interface DBMetaData {
 
+    public interface Factory {
+        DBMetaData of(Server server);
+    }
+
     ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables)  throws SQLException;
 
 

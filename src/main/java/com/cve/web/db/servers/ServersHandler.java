@@ -6,7 +6,7 @@ import com.cve.db.DBTable;
 import com.cve.web.*;
 import com.cve.db.Database;
 import com.cve.db.Server;
-import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.log.Log;
 import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
@@ -29,9 +29,20 @@ import static com.cve.log.Log.args;
  */
 final class ServersHandler extends AbstractRequestHandler {
 
-    ServersHandler() {}
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
 
     private static final Log log = Log.of(ServersHandler.class);
+
+    private ServersHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    static ServersHandler of(DBMetaData.Factory db) {
+        return new ServersHandler(db);
+    }
 
     @Override
     public Model get(PageRequest request) throws IOException, SQLException {
@@ -48,7 +59,7 @@ final class ServersHandler extends AbstractRequestHandler {
     /**
      * Perform the requested search and return a results page.
      */
-    static ServersSearchPage newSearchPage(Search search) throws SQLException {
+    ServersSearchPage newSearchPage(Search search) throws SQLException {
         args(search);
         ImmutableList<DBColumn> columns = allColumns();
         Set<Server> filteredServers = Sets.newHashSet();
@@ -87,11 +98,11 @@ final class ServersHandler extends AbstractRequestHandler {
     /**
      * Return a list of all columns from all servers.
      */
-    static ImmutableList<DBColumn> allColumns() throws SQLException {
+    ImmutableList<DBColumn> allColumns() throws SQLException {
         List<DBColumn> columns = Lists.newArrayList();
         ImmutableList<Server> servers = ServersStore.getServers();
         for (Server server : servers) {
-            for (DBColumn column : DBConnection.getDbmd(server).getColumnsFor(server)) {
+            for (DBColumn column : db.of(server).getColumnsFor(server)) {
                 columns.add(column);
             }
         }
@@ -116,11 +127,11 @@ final class ServersHandler extends AbstractRequestHandler {
      * @param servers
      * @return
      */
-    static ImmutableMultimap<Server,Object> getDatabases(ImmutableList<Server> servers) {
+    ImmutableMultimap<Server,Object> getDatabases(ImmutableList<Server> servers) {
         Multimap<Server,Object> databases = HashMultimap.create();
         for (Server server : servers) {
             try {
-                for (Database database : DBConnection.getDbmd(server).getDatabasesOn(server)) {
+                for (Database database : db.of(server).getDatabasesOn(server)) {
                     databases.put(server, database);
                 }
             } catch (Throwable t) {

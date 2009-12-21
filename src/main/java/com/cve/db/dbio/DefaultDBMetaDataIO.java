@@ -19,7 +19,7 @@ import static com.cve.log.Log.args;
  */
 public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
-    private final DBConnection connection;
+    private final DefaultDBConnection connection;
 
     private static final String TABLE_NAME    = "TABLE_NAME";
     private static final String TABLE_SCHEM   = "TABLE_SCHEM";
@@ -32,11 +32,11 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     private static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
     private static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
 
-    private DefaultDBMetaDataIO(DBConnection connection) {
+    private DefaultDBMetaDataIO(DefaultDBConnection connection) {
         this.connection = notNull(connection);
     }
 
-    public static DBMetaDataIO connection(DBConnection connection) {
+    public static DBMetaDataIO connection(DefaultDBConnection connection) {
         args(connection);
         return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection)));
     }

@@ -11,6 +11,7 @@ import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
@@ -28,7 +29,18 @@ import java.sql.SQLException;
  */
 final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
-    ColumnValueDistributionHandler() {}
+    /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
+
+    private ColumnValueDistributionHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    static ColumnValueDistributionHandler of(DBMetaData.Factory db) {
+        return new ColumnValueDistributionHandler(db);
+    }
 
     @Override
     public SelectResults get(PageRequest request) throws IOException, SQLException {
@@ -67,7 +79,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    static SelectResults getResultsFromDB(String uri) throws SQLException {
+    SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
         Server         server = DBURICodec.getServer(uri);
 
@@ -77,7 +89,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.columns);
+        Hints hints = HintsStore.of(db).getHints(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

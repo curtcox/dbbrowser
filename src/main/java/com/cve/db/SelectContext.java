@@ -64,7 +64,7 @@ public final class SelectContext {
      */
     DBColumn keyed(DBColumn target) throws SQLException {
         DBTable table = target.table;
-        for (DBColumn column : connection.dbMetaData.getColumnsFor(table)) {
+        for (DBColumn column : connection.getMetaData().getColumnsFor(table)) {
             if (column.name.equals(target.name)) {
                 return column;
             }

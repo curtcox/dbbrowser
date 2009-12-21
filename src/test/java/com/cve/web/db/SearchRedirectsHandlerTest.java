@@ -15,7 +15,7 @@ public class SearchRedirectsHandlerTest {
 
     @Test
     public void handled() throws IOException {
-        SearchRedirectsHandler   handler = new SearchRedirectsHandler();
+        SearchRedirectsHandler   handler = SearchRedirectsHandler.of();
         PageRequest   request = PageRequest.path("/");
         PageResponse response = handler.produce(request);
         assertNull(response);

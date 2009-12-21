@@ -55,7 +55,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     private static DBMetaData getDbmd0(DBConnection connection) {
         Check.notNull(connection);
-        DBDriver driver = connection.info.driver;
+        DBDriver driver = connection.getInfo().driver;
         DBMetaData meta = driver.getDBMetaData();
         return meta;
     }
@@ -277,9 +277,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     public static DBMetaDataIO getDbmdIO(Server server) {
         args(server);
-        DBConnection connection = ServersStore.getConnection(server);
-        DBMetaDataIO   dbmd = DefaultDBMetaDataIO.connection(connection);
-        return dbmd;
+        return DBConnectionFactory.getDbmdIO(server);
     }
 
     /**

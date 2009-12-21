@@ -6,6 +6,7 @@ import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
@@ -21,24 +22,37 @@ import static com.cve.log.Log.args;
 /**
  * The {@link RequestHandler} for alternate views of a select result.
  */
-public class AlternateViewHandler {
+public final class AlternateViewHandler implements RequestHandler.Factory {
 
-    private static final RequestHandler handler = CompositeRequestHandler.of(
-        // handler            // for URLs of the form
-        new CSVHandler(),     // /view/CSV/
-        new XLSHandler(),     // /view/XLS/
-        new PDFHandler(),     // /view/PDF/
-        new JSONHandler(),    // /view/JSON/
-        new XMLHandler());    // /view/XML/
+     /**
+     * How we access databases.
+     */
+    final DBMetaData.Factory db;
 
-    public static RequestHandler newInstance() {
-        return handler;
+    private AlternateViewHandler(DBMetaData.Factory db) {
+        this.db = db;
+    }
+
+    public static AlternateViewHandler of(DBMetaData.Factory db) {
+        return new AlternateViewHandler(db);
+    }
+
+
+    public RequestHandler of() {
+        return CompositeRequestHandler.of(
+            // handler            // for URLs of the form
+            CSVHandler.of(db),      // /view/CSV/
+            new XLSHandler(),     // /view/XLS/
+            new PDFHandler(),     // /view/PDF/
+            new JSONHandler(),    // /view/JSON/
+            new XMLHandler()  // /view/XML/
+        );
     }
 
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    static SelectResults getResultsFromDB(final String uri) throws SQLException {
+    SelectResults getResultsFromDB(final String uri) throws SQLException {
         args(uri);
         // /view/CSV/foo
         //          ^ start here
@@ -50,7 +64,7 @@ public class AlternateViewHandler {
         // Setup the select
         Select           select = DBURICodec.getSelect(tail.toString());
         DBConnection connection = ServersStore.getConnection(server);
-        Hints hints = HintsStore.getHints(select.columns);
+        Hints             hints = HintsStore.of(db).getHints(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

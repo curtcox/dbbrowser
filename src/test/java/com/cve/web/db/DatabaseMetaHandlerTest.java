@@ -36,18 +36,20 @@ public class DatabaseMetaHandlerTest {
 
     @Test
     public void isDatabaseMetaRequest() {
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/server/"));
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/server:8080/"));
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/server/db/"));
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/server/db/foo/"));
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/meaty/server/"));
-        assertFalse(DatabaseMetaHandler.isDatabaseMetaRequest("/motto/server/"));
-        assertTrue(DatabaseMetaHandler.isDatabaseMetaRequest("/meta/server/"));
-        assertTrue(DatabaseMetaHandler.isDatabaseMetaRequest("/meta/server/catalogs/"));
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null);
+        assertFalse(handler.isDatabaseMetaRequest("/server/"));
+        assertFalse(handler.isDatabaseMetaRequest("/server:8080/"));
+        assertFalse(handler.isDatabaseMetaRequest("/server/db/"));
+        assertFalse(handler.isDatabaseMetaRequest("/server/db/foo/"));
+        assertFalse(handler.isDatabaseMetaRequest("/meaty/server/"));
+        assertFalse(handler.isDatabaseMetaRequest("/motto/server/"));
+        assertTrue(handler.isDatabaseMetaRequest("/meta/server/"));
+        assertTrue(handler.isDatabaseMetaRequest("/meta/server/catalogs/"));
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
-        DatabaseMetaHandler.tryPage(Server.uri(URIs.of("server")), "bad method name");
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null);
+        handler.tryPage(Server.uri(URIs.of("server")), "bad method name");
     }
 }
