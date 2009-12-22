@@ -30,7 +30,12 @@ public final class Main {
     }
 
     static void startGrizzly() throws IOException {
-        ServletAdapter adapter = new ServletAdapter(RequestRouterServlet.of(LocalRequestHandler.of()));
+        ServletAdapter adapter = new ServletAdapter(
+            RequestRouterServlet.of(
+                LocalRequestHandler.of(),
+                DefaultModelHtmlRenderers.RENDERERS
+            )
+        );
         GrizzlyWebServer    server = new GrizzlyWebServer(PORT,"/");
         server.addGrizzlyAdapter(adapter,new String[] {"/"});
         server.start();

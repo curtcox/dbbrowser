@@ -2,11 +2,8 @@ package com.cve.web;
 
 import com.cve.log.Log;
 import com.cve.util.Check;
-import com.cve.web.alt.AltModelHtmlRenderers;
 import static com.cve.log.Log.args;
 
-import com.cve.web.db.DatabaseModelHtmlRenderers;
-import com.cve.web.log.LogModelHtmlRenderers;
 import java.sql.SQLException;
 import javax.servlet.http.*;
 import java.io.*;
@@ -47,27 +44,23 @@ public final class RequestRouterServlet extends HttpServlet {
      */
     static final Log LOG = Log.of(RequestRouterServlet.class);
 
-    private RequestRouterServlet(RequestHandler router) {
+    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer) {
         this.router = Check.notNull(router);
+        this.renderer = Check.notNull(renderer);
     }
 
     /**
      * Renders models into HTML, JPG, PNG, etc...
      */
-    private static final ModelHtmlRenderer RENDERER =
-        CompositeModelHtmlRenderer.of(ModelHtmlRendererMap.RENDERERS)
-            .with(DatabaseModelHtmlRenderers.RENDERERS)
-            .with(LogModelHtmlRenderers.RENDERERS)
-            .with(AltModelHtmlRenderers.RENDERERS)
-        ;
+    private final ModelHtmlRenderer renderer;
 
     /**
      * Dumps servlet requests for diagnostic purposes.
      */
     private static final RequestDumpServlet DUMPER = RequestDumpServlet.newInstance();
 
-    public static RequestRouterServlet of(RequestHandler router) {
-        return new RequestRouterServlet(router);
+    public static RequestRouterServlet of(RequestHandler router, ModelHtmlRenderer renderer) {
+        return new RequestRouterServlet(router, renderer);
     }
 
     @Override
@@ -99,7 +92,7 @@ public final class RequestRouterServlet extends HttpServlet {
     /**
      * Either redirect, or render the model and send it to the client.
      */
-    static void write(PageResponse page, HttpServletResponse response) throws IOException {
+    void write(PageResponse page, HttpServletResponse response) throws IOException {
         args(page,response);
         URI redirect = page.redirect;
         // Redirect, if that is the response
@@ -125,7 +118,7 @@ public final class RequestRouterServlet extends HttpServlet {
 
         // Everything else gets rendered, typed, and written to a writer
         ClientInfo client = ClientInfo.of();
-        HtmlPage rendered = RENDERER.render(model,client);
+        HtmlPage rendered = renderer.render(model,client);
         response.setContentType(ContentType.HTML.toString());
         PrintWriter pw = response.getWriter();
         pw.print(rendered);

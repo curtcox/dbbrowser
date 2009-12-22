@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import static com.cve.log.Log.args;
 
 /**
- *
+ * For confining implementations to this package.
  * @author curt
  */
 public final class DBConnectionFactory {
