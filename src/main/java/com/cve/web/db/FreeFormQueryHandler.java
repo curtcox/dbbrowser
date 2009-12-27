@@ -17,6 +17,7 @@ import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.log.Log;
 import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
@@ -83,7 +84,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         Server server = DBURICodec.getServer(uri);
         if (isServerOnlyQuery(uri)) {
             try {
-                DBConnection connection = ServersStore.getConnection(server);
+                DBConnection connection = Stores.getServerStores().getConnection(server);
                 ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
                 return page(sql,results.resultSet,results.meta,message,null);
@@ -93,7 +94,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         }
         Database database = DBURICodec.getDatabase(uri);
         try {
-            DBConnection connection = ServersStore.getConnection(server,database);
+            DBConnection connection = Stores.getServerStores().getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
             return page(sql,results.resultSet,results.meta,message,null);
@@ -198,7 +199,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
     public static URI linkTo(Select select, Search search) {
         args(select);
         Server server = select.server;
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);
         URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));

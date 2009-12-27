@@ -17,7 +17,7 @@ public class ServersStoreTest {
 
     @Test
     public void getServers() {
-        ImmutableList<Server> servers = ServersStore.getServers();
+        ImmutableList<Server> servers = Stores.getServerStores().getServers();
         assertNotNull(servers);
     }
 
@@ -26,9 +26,9 @@ public class ServersStoreTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db1"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL,"","");
-        ServersStore.addServer(server, info);
+        Stores.getServerStores().addServer(server, info);
 
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         assertNotNull(connection);
     }
 

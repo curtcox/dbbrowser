@@ -14,7 +14,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
@@ -88,7 +88,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         Hints hints = HintsStore.of(db).getHints(select.columns);
 
         // run the select

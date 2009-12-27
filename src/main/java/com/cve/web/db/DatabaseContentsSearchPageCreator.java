@@ -13,7 +13,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.web.Search;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -66,7 +66,7 @@ final class DatabaseContentsSearchPageCreator {
         Database database = table.database;
         DBColumn[] columns = meta.getColumnsFor(table).toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         Hints hints = HintsStore.of(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);

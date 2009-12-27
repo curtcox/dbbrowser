@@ -2,6 +2,7 @@ package com.cve.db.dbio;
 
 import com.cve.db.Server;
 import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 
 /**
  * For "direct" access to databases.
@@ -17,7 +18,7 @@ public final class LocalDBMetaDataFactory implements DBMetaData.Factory {
 
     @Override
     public DBMetaData of(Server server) {
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         return connection.getMetaData();
     }
 

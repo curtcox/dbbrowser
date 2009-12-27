@@ -6,6 +6,7 @@ import com.cve.db.Database;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
 import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.SQLException;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class DBMetaDataIOTest {
         Database database = server.databaseName("DB1");
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        ServersStore.addServer(server, info);
+        Stores.getServerStores().addServer(server, info);
         DBConnection connection = DefaultDBConnection.info(info);
         DBMetaData meta = DefaultDBMetaData.getDbmd(connection);
         assertEquals(0,meta.getTablesOn(database).size());

@@ -15,7 +15,7 @@ import com.cve.db.dbio.DBMetaDataIO.KeySpecifier;
 import com.cve.db.dbio.DBMetaDataIO.PrimaryKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -120,7 +120,7 @@ public class DefaultDBMetaData implements DBMetaData {
     public long getRowCountFor(DBTable table) throws SQLException {
         args(table);
         Server           server = table.database.server;
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         try {
             ResultSet results = connection.select(sql);

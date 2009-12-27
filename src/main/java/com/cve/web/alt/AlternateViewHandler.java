@@ -10,6 +10,7 @@ import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.web.db.DBURICodec;
 import com.cve.util.URIs;
 import com.cve.web.CompositeRequestHandler;
@@ -63,7 +64,7 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
 
         // Setup the select
         Select           select = DBURICodec.getSelect(tail.toString());
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         Hints             hints = HintsStore.of(db).getHints(select.columns);
 
         // run the select

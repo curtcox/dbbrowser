@@ -3,7 +3,7 @@ package com.cve.web.db.servers;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.cve.web.AbstractFormHandler;
 import com.cve.web.PageRequest;
@@ -42,14 +42,14 @@ final class AddServerHandler extends AbstractFormHandler {
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         Server       server = Server.uri(URIs.of(serverName));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
-        if (ServersStore.getServers().contains(server)) {
+        if (Stores.getServerStores().getServers().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
                 AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
         try {
-            ServersStore.addServer(server, info);
+            Stores.getServerStores().addServer(server, info);
             return PageResponse.newRedirect(server.linkTo().getTarget());
         } catch (RuntimeException e) {
             String message = e.getMessage();

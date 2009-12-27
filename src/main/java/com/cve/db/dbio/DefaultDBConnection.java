@@ -7,7 +7,7 @@ import com.cve.db.ConnectionInfo;
 import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.log.Log;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -121,7 +121,7 @@ final class DefaultDBConnection implements DBConnection {
     }
 
     static DBMetaData getDbmd(Server server) {
-        DefaultDBConnection connection = (DefaultDBConnection) ServersStore.getConnection(server);
+        DefaultDBConnection connection = (DefaultDBConnection) Stores.getServerStores().getConnection(server);
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }

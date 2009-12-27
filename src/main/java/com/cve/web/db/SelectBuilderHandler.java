@@ -14,6 +14,7 @@ import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.net.URI;
@@ -109,7 +110,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
         Search           search = DBURICodec.getSearch(uri);
-        DBConnection connection = ServersStore.getConnection(server);
+        DBConnection connection = Stores.getServerStores().getConnection(server);
         Hints hints = HintsStore.of(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);

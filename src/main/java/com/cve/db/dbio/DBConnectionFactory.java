@@ -2,7 +2,7 @@ package com.cve.db.dbio;
 
 import com.cve.db.ConnectionInfo;
 import com.cve.db.Server;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import java.sql.SQLException;
 import static com.cve.log.Log.args;
 
@@ -16,15 +16,19 @@ public final class DBConnectionFactory {
         return DefaultDBConnection.info(info);
     }
 
+    private static DefaultDBConnection getConnection(Server server) {
+        return (DefaultDBConnection) Stores.getServerStores().getConnection(server);
+    }
+
     public static DBMetaDataIO getDbmdIO(Server server) {
         args(server);
-        DefaultDBConnection connection = (DefaultDBConnection) ServersStore.getConnection(server);
+        DefaultDBConnection connection = getConnection(server);
         DBMetaDataIO   dbmd = DefaultDBMetaDataIO.connection(connection);
         return dbmd;
     }
     
     public static java.sql.DatabaseMetaData metaFor(Server server) throws SQLException {
-        DefaultDBConnection connection = (DefaultDBConnection) ServersStore.getConnection(server);
+        DefaultDBConnection connection = getConnection(server);
         return connection.getJDBCMetaData();
     }
 }

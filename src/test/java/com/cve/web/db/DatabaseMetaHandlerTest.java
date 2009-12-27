@@ -4,7 +4,7 @@ package com.cve.web.db;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
-import com.cve.stores.ServersStore;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.SQLException;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class DatabaseMetaHandlerTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        ServersStore.addServer(server, info);
+        Stores.getServerStores().addServer(server, info);
         return server;
     }
 
