@@ -60,7 +60,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         Database             database = DBURICodec.getDatabase(uri);
         if (search.isEmpty()) {
             DBMetaData               meta = db.of(server);
-            ImmutableList<DBTable> tables = meta.getTablesOn(database);
+            ImmutableList<DBTable> tables = meta.getTablesOn(database).value;
             ImmutableMultimap<DBTable,DBColumn> columns = columnsFor(tables);
             ImmutableMap<DBTable,Long>             rows = rowsFor(tables);
             return new TablesPage(server,database,tables,rows,columns);
@@ -87,7 +87,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         for (DBTable table : tables) {
             Server      server = table.database.server;
             DBMetaData    meta = db.of(server);
-            for (DBColumn column : meta.getColumnsFor(table)) {
+            for (DBColumn column : meta.getColumnsFor(table).value) {
                 columns.put(table, column);
             }
         }
@@ -102,7 +102,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         for (DBTable table : tables) {
             Server      server = table.database.server;
             DBMetaData    meta = db.of(server);
-            rows.put(table, meta.getRowCountFor(table));
+            rows.put(table, meta.getRowCountFor(table).value);
         }
         return ImmutableMap.copyOf(rows);
     }
@@ -114,7 +114,7 @@ public final class TablesHandler extends AbstractRequestHandler {
     TablesSearchPage newNamesSearchPage(Database database,Search search) throws SQLException {
         args(database,search);
         DBMetaData               meta = db.of(database.server);
-        ImmutableList<DBColumn> columns = meta.getColumnsFor(database);
+        ImmutableList<DBColumn> columns = meta.getColumnsFor(database).value;
         Set<DBTable> filteredTables = Sets.newHashSet();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();
         for (DBColumn column : columns) {

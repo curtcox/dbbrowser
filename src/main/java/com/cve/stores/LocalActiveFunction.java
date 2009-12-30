@@ -1,5 +1,13 @@
 package com.cve.stores;
 
+import com.cve.util.Check;
+import com.google.common.collect.Maps;
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * Persistence, cacheing, cache eviction and value computation are all
  * resonably separable concerns.  In practice, however, if you want to do them
@@ -16,10 +24,11 @@ package com.cve.stores;
  *
  * @author Curt
  */
-public interface ActiveFunction<F,T> {
+public final class LocalActiveFunction<F,T> implements ActiveFunction<F,T> {
 
-  /**
-   */
-  CurrentResult<T> apply(F from) throws Exception;
+    @Override
+    public CurrentResult<T> apply(F from) throws Exception {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
 }

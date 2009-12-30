@@ -47,7 +47,7 @@ final class DatabaseContentsSearchPageCreator {
         args(database,search);
         List<SelectResults> resultsList = Lists.newArrayList();
         DBMetaData                 meta = db.of(database.server);
-        for (DBTable table : meta.getTablesOn(database)) {
+        for (DBTable table : meta.getTablesOn(database).value) {
             SelectResults results = getResultsFromTable(meta,search,table);
             if (!results.resultSet.rows.isEmpty()) {
                 resultsList.add(results);
@@ -64,10 +64,10 @@ final class DatabaseContentsSearchPageCreator {
 
         // Setup the select
         Database database = table.database;
-        DBColumn[] columns = meta.getColumnsFor(table).toArray(new DBColumn[0]);
+        DBColumn[] columns = meta.getColumnsFor(table).value.toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
-        DBConnection connection = Stores.getServerStores().getConnection(server);
-        Hints hints = HintsStore.of(db).getHints(select.columns);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
+        Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

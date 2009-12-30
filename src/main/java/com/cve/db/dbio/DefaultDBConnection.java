@@ -121,7 +121,7 @@ final class DefaultDBConnection implements DBConnection {
     }
 
     static DBMetaData getDbmd(Server server) {
-        DefaultDBConnection connection = (DefaultDBConnection) Stores.getServerStores().getConnection(server);
+        DefaultDBConnection connection = (DefaultDBConnection) Stores.getServerStore().getConnection(server);
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }

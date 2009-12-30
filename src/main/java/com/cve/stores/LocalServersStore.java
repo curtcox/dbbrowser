@@ -56,6 +56,7 @@ final class LocalServersStore implements ServersStore {
      * initializer, doing so makes it harder to write a complete set of
      * unit tests.
      */
+    @Override
     public void load() {
         Properties props = PropertiesIO.load(SERVERS);
         String all = props.getProperty(LIST_OF_ALL_SERVERS);

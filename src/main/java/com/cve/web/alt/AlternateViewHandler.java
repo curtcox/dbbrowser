@@ -64,8 +64,8 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
 
         // Setup the select
         Select           select = DBURICodec.getSelect(tail.toString());
-        DBConnection connection = Stores.getServerStores().getConnection(server);
-        Hints             hints = HintsStore.of(db).getHints(select.columns);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
+        Hints             hints = Stores.getHintsStore(db).getHints(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

@@ -6,6 +6,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
+import com.cve.stores.CurrentResult;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
 
@@ -21,34 +22,37 @@ import java.sql.SQLException;
  */
 public interface DBMetaData {
 
+    /**
+     * For making DBMetaDataS.
+     */
     public interface Factory {
         DBMetaData of(Server server);
     }
 
-    ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables)  throws SQLException;
 
 
     /**
      * Return all the potential joins from the columns in the given tables.
      */
-    ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException;
 
 
-    ImmutableList<DBColumn> getColumnsFor(Server server)  throws SQLException;
+    CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException;
 
-    ImmutableList<DBColumn> getColumnsFor(Database database)  throws SQLException;
+    CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException;
 
-    ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException;
-
-
-    ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException;
+    CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException;
 
 
-    ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException;
 
 
-    ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException;
+    CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException;
 
-    long getRowCountFor(DBTable table) throws SQLException;
+
+    CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException;
+
+    CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException;
 
 }

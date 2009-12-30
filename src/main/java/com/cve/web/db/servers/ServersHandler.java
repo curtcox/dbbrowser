@@ -49,7 +49,7 @@ final class ServersHandler extends AbstractRequestHandler {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
-            ImmutableList<Server> servers = Stores.getServerStores().getServers();
+            ImmutableList<Server> servers = Stores.getServerStore().getServers();
             ImmutableMultimap<Server,Object> databases = getDatabases(servers);
             return new ServersPage(servers,databases);
         }
@@ -100,9 +100,9 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     ImmutableList<DBColumn> allColumns() throws SQLException {
         List<DBColumn> columns = Lists.newArrayList();
-        ImmutableList<Server> servers = Stores.getServerStores().getServers();
+        ImmutableList<Server> servers = Stores.getServerStore().getServers();
         for (Server server : servers) {
-            for (DBColumn column : db.of(server).getColumnsFor(server)) {
+            for (DBColumn column : db.of(server).getColumnsFor(server).value) {
                 columns.add(column);
             }
         }
@@ -131,7 +131,7 @@ final class ServersHandler extends AbstractRequestHandler {
         Multimap<Server,Object> databases = HashMultimap.create();
         for (Server server : servers) {
             try {
-                for (Database database : db.of(server).getDatabasesOn(server)) {
+                for (Database database : db.of(server).getDatabasesOn(server).value) {
                     databases.put(server, database);
                 }
             } catch (Throwable t) {

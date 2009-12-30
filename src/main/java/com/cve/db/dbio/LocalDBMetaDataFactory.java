@@ -18,7 +18,7 @@ public final class LocalDBMetaDataFactory implements DBMetaData.Factory {
 
     @Override
     public DBMetaData of(Server server) {
-        DBConnection connection = Stores.getServerStores().getConnection(server);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
         return connection.getMetaData();
     }
 

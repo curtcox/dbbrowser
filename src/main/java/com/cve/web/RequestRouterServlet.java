@@ -44,11 +44,6 @@ public final class RequestRouterServlet extends HttpServlet {
      */
     static final Log LOG = Log.of(RequestRouterServlet.class);
 
-    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer) {
-        this.router = Check.notNull(router);
-        this.renderer = Check.notNull(renderer);
-    }
-
     /**
      * Renders models into HTML, JPG, PNG, etc...
      */
@@ -61,6 +56,14 @@ public final class RequestRouterServlet extends HttpServlet {
 
     public static RequestRouterServlet of(RequestHandler router, ModelHtmlRenderer renderer) {
         return new RequestRouterServlet(router, renderer);
+    }
+
+    /**
+     * Use the factory.
+     */
+    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer) {
+        this.router = Check.notNull(router);
+        this.renderer = Check.notNull(renderer);
     }
 
     @Override

@@ -62,7 +62,7 @@ public final class SampleServer {
      * Add the server to the store of servers.
      */
     static void addToStore() {
-        Stores.getServerStores().addServer(SAMPLE, getConnectionInfo());
+        Stores.getServerStore().addServer(SAMPLE, getConnectionInfo());
     }
 
     /**

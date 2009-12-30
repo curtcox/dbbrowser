@@ -21,7 +21,7 @@ public class DatabaseMetaHandlerTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        Stores.getServerStores().addServer(server, info);
+        Stores.getServerStore().addServer(server, info);
         return server;
     }
 

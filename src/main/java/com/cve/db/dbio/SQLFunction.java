@@ -1,5 +1,6 @@
-package com.cve.stores;
+package com.cve.db.dbio;
 
+import com.cve.stores.ExceptionalFunction;
 import java.sql.SQLException;
 
 /**
@@ -8,7 +9,7 @@ import java.sql.SQLException;
  * using it instead.
  * @author curt
  */
-public interface SQLFunction<F, T> {
+public interface SQLFunction<F, T> extends ExceptionalFunction {
 
   /**
    */

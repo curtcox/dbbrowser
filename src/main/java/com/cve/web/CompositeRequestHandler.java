@@ -10,7 +10,7 @@ import static com.cve.util.Check.notNull;
 
 /**
  * For grouping {@link RequestHandler}S.
- * The handlers will each be asked in turn to survice the request until one
+ * The handlers will each be asked in turn to service the request until one
  * does.
  * @author Curt
  */

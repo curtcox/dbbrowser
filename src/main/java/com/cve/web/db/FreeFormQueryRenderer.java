@@ -10,6 +10,7 @@ import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.db.select.SelectParser;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.HintsStore;
+import com.cve.stores.Stores;
 import com.cve.ui.UIForm;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
@@ -85,7 +86,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
             String guts = page.message + form.toString() + ObjectLink.to("details",trace);
             return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
-        Hints hints = HintsStore.of(db).getHints(results.columns);
+        Hints hints = Stores.getHintsStore(db).getHints(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
         DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();

@@ -8,6 +8,7 @@ import com.cve.db.Server;
 import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
+import com.cve.stores.CurrentResult;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -28,10 +29,10 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
     /**
      */
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
-        for (Database database : getDatabasesOn(server)) {
+        for (Database database : getDatabasesOn(server).value) {
             String          catalog = null;
             String    schemaPattern = null;
             String tableNamePattern = null;
@@ -46,14 +47,14 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return columns;
+        return CurrentResult.of(columns);
     }
 
     /**
      * Simple cache
      */
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
         Database       database = table.database;
         Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
@@ -71,13 +72,13 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return columns;
+        return CurrentResult.of(columns);
     }
 
     /**
      */
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
         Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = database.name;
@@ -93,7 +94,7 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
             }
         }
         ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-        return tables;
+        return CurrentResult.of(tables);
     }
 
     static boolean isSystemTable(DBTable table) {

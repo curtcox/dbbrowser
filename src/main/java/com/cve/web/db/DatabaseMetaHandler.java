@@ -157,7 +157,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     String getColumns(Server server) throws SQLException {
         StringBuilder out = new StringBuilder();
-        for (Database database : db.of(server).getDatabasesOn(server)) {
+        for (Database database : db.of(server).getDatabasesOn(server).value) {
             String catalog           = database.name;
             String schemaPattern     = null;
             String tableNamePattern  = null;
@@ -201,8 +201,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     ImmutableList<DBTable> getTablesOn(Server server) throws SQLException {
         List<DBTable> list = Lists.newArrayList();
         DBMetaData dbmd = db.of(server);
-        for (Database database : dbmd.getDatabasesOn(server)) {
-            for (DBTable table : dbmd.getTablesOn(database)) {
+        for (Database database : dbmd.getDatabasesOn(server).value) {
+            for (DBTable table : dbmd.getTablesOn(database).value) {
                 list.add(table);
             }
         }

@@ -43,7 +43,7 @@ public final class Main {
 
     static void loadServers() {
         SampleServer.load();
-        Stores.getServerStores().load();
+        Stores.getServerStore().load();
     }
 
     static void openBrowser() throws IOException {

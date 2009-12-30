@@ -132,7 +132,7 @@ public enum SelectBuilderAction {
             select = select.with(join);
             DBTable table = join.dest.table;
             DBMetaData meta = db.of(table.database.server);
-            for (DBColumn column : meta.getColumnsFor(table)) {
+            for (DBColumn column : meta.getColumnsFor(table).value) {
                 select = select.with(column);
             }
             return select;

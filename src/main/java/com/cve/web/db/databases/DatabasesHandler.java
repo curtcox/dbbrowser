@@ -48,7 +48,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
         Server server = DBURICodec.getServer(uri);
         if (search.isEmpty()) {
             DBMetaData  meta = db.of(server);
-            ImmutableList<Database> databases = meta.getDatabasesOn(server);
+            ImmutableList<Database> databases = meta.getDatabasesOn(server).value;
             ImmutableMultimap<Database,DBTable> tables = tablesOn(databases);
             return new DatabasesPage(server,databases,tables);
         }
@@ -74,7 +74,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
         Multimap<Database,DBTable> tables = HashMultimap.create();
         for (Database database : databases) {
             DBMetaData  meta = db.of(database.server);
-            for (DBTable table : meta.getTablesOn(database)) {
+            for (DBTable table : meta.getTablesOn(database).value) {
                 tables.put(database,table);
             }
         }
@@ -86,7 +86,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      */
     DatabasesSearchPage newSearchPage(Server server,Search search) throws SQLException {
         args(server,search);
-        ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server);
+        ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server).value;
         Set<Database> filteredDatabases = Sets.newHashSet();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();

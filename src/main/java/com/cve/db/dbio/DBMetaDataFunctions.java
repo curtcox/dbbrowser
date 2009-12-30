@@ -6,13 +6,12 @@ import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
 import com.cve.stores.ActiveFunction;
+import com.cve.stores.CurrentResult;
 import com.cve.stores.MapIO;
 import com.cve.stores.IOs;
-import com.cve.stores.SQLFunction;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -43,141 +42,173 @@ public final class DBMetaDataFunctions implements DBMetaData {
         return new DBMetaDataFunctions(meta,baseDir);
     }
 
-    private SQLFunction of(String name, MapIO io, final SQLFunction f) {
-        File file = new File(baseDir + File.separator + name);
-        try {
-            return ActiveFunction.fileIOFunc(file, io, f);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private ActiveFunction of(final String name, final MapIO io, final SQLFunction f) {
+        final File file = new File(baseDir + File.separator + name);
+        throw new UnsupportedOperationException();
     }
 
-    private final SQLFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys =
+    private final ActiveFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys =
         of(
             "primaryKeys", IOs.tableListToColumnList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBColumn> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getPrimaryKeysFor((ImmutableList<DBTable>)from);
                 }
             }
         );
 
     @Override
-    public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
-        return primaryKeys.apply(tables);
+    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
+        try {
+            return primaryKeys.apply(tables);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<ImmutableList<DBTable>,ImmutableList<Join>> joins =
+    private final ActiveFunction<ImmutableList<DBTable>,ImmutableList<Join>> joins =
         of(
             "joins", IOs.tableListToJoinList(), new SQLFunction() {
                 @Override
-                public ImmutableList<Join> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<Join>> apply(Object from) throws SQLException {
                     return meta.getJoinsFor((ImmutableList<DBTable>) from);
                 }
             }
         );
     @Override
-    public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
-        return joins.apply(tables);
+    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+        try {
+            return joins.apply(tables);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<Server,ImmutableList<DBColumn>> columnsForServer =
+    private final ActiveFunction<Server,ImmutableList<DBColumn>> columnsForServer =
         of(
             "columnsForServer", IOs.serverToColumnList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBColumn> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((Server)from);
                 }
             }
         );
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
-        return columnsForServer.apply(server);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+        try {
+            return columnsForServer.apply(server);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<Database,ImmutableList<DBColumn>> columnsForDatabase =
+    private final ActiveFunction<Database,ImmutableList<DBColumn>> columnsForDatabase =
         of(
             "columnsForDatabase", IOs.serverToColumnList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBColumn> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((Database)from);
                 }
             }
         );
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
-        return columnsForDatabase.apply(database);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+        try {
+            return columnsForDatabase.apply(database);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<DBTable,ImmutableList<DBColumn>> columnsForTable =
+    private final ActiveFunction<DBTable,ImmutableList<DBColumn>> columnsForTable =
         of(
             "columnsForTable", IOs.serverToColumnList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBColumn> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((DBTable)from);
                 }
             }
         );
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
-        return columnsForTable.apply(table);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+        try {
+            return columnsForTable.apply(table);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<Server,ImmutableList<Database>> databases =
+    private final ActiveFunction<Server,ImmutableList<Database>> databases =
         of(
             "databases", IOs.serverToDatabaseList(), new SQLFunction() {
                 @Override
-                public ImmutableList<Database> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<Database>> apply(Object from) throws SQLException {
                     return meta.getDatabasesOn((Server)from);
                 }
             }
         );
     @Override
-    public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
-        return databases.apply(server);
+    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+        try {
+            return databases.apply(server);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables =
+    private final ActiveFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables =
         of(
             "columnsForTables", IOs.tableListToColumnList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBColumn> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((ImmutableList<DBTable>)from);
                 }
             }
         );
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
-        return columnsForTables.apply(tables);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+        try {
+            return columnsForTables.apply(tables);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<Database,ImmutableList<DBTable>> tables =
+    private final ActiveFunction<Database,ImmutableList<DBTable>> tables =
         of(
             "tables", IOs.databaseToTableList(), new SQLFunction() {
                 @Override
-                public ImmutableList<DBTable> apply(Object from) throws SQLException {
+                public CurrentResult<ImmutableList<DBTable>> apply(Object from) throws SQLException {
                     return meta.getTablesOn((Database)from);
                 }
             }
         );
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
-        return tables.apply(database);
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+        try {
+            return tables.apply(database);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private final SQLFunction<DBTable,Long> rowCounts =
+    private final ActiveFunction<DBTable,Long> rowCounts =
         of(
             "rowCounts", IOs.tableToLong(), new SQLFunction() {
                 @Override
-                public Long apply(Object from) throws SQLException {
+                public CurrentResult<Long> apply(Object from) throws SQLException {
                     return meta.getRowCountFor((DBTable)from);
                 }
             }
         );
     @Override
-    public long getRowCountFor(DBTable table) throws SQLException {
-        return rowCounts.apply(table);
+    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
+        try {
+            return rowCounts.apply(table);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 

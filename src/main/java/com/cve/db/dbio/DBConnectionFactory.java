@@ -17,7 +17,7 @@ public final class DBConnectionFactory {
     }
 
     private static DefaultDBConnection getConnection(Server server) {
-        return (DefaultDBConnection) Stores.getServerStores().getConnection(server);
+        return (DefaultDBConnection) Stores.getServerStore().getConnection(server);
     }
 
     public static DBMetaDataIO getDbmdIO(Server server) {

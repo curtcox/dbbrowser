@@ -42,14 +42,14 @@ final class AddServerHandler extends AbstractFormHandler {
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         Server       server = Server.uri(URIs.of(serverName));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
-        if (Stores.getServerStores().getServers().contains(server)) {
+        if (Stores.getServerStore().getServers().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
                 AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
         try {
-            Stores.getServerStores().addServer(server, info);
+            Stores.getServerStore().addServer(server, info);
             return PageResponse.newRedirect(server.linkTo().getTarget());
         } catch (RuntimeException e) {
             String message = e.getMessage();

@@ -88,8 +88,8 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
-        DBConnection connection = Stores.getServerStores().getConnection(server);
-        Hints hints = HintsStore.of(db).getHints(select.columns);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
+        Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

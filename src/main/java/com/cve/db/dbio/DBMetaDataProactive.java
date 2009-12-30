@@ -5,6 +5,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
+import com.cve.stores.CurrentResult;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
@@ -40,73 +41,73 @@ public final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
-    public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
-        ImmutableList<DBColumn> result = meta.getPrimaryKeysFor(tables);
+    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getPrimaryKeysFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
-        ImmutableList<Join> result = meta.getJoinsFor(tables);
+    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentResult<ImmutableList<Join>> result = meta.getJoinsFor(tables);
         queueJoins(result);
         return result;
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
-        ImmutableList<DBColumn> result = meta.getColumnsFor(server);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(server);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
-        ImmutableList<DBColumn> result = meta.getColumnsFor(database);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(database);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
-        ImmutableList<DBColumn> result = meta.getColumnsFor(table);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(table);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public long getRowCountFor(DBTable table) throws SQLException {
+    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
         return meta.getRowCountFor(table);
     }
 
     @Override
-    public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
-        ImmutableList<Database> result = meta.getDatabasesOn(server);
+    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+        CurrentResult<ImmutableList<Database>> result = meta.getDatabasesOn(server);
         queueServer(server);
         queueDatabases(result);
         return result;
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
-        ImmutableList<DBColumn> result = meta.getColumnsFor(tables);
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
-        ImmutableList<DBTable> result = meta.getTablesOn(database);
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+        CurrentResult<ImmutableList<DBTable>> result = meta.getTablesOn(database);
         queueTables(result);
         return result;
     }
 
-    void queueTables(final ImmutableList<DBTable> tables) {
+    void queueTables(final CurrentResult<ImmutableList<DBTable>> tables) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    meta.getColumnsFor(tables);
+                    meta.getColumnsFor(tables.value);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -116,7 +117,7 @@ public final class DBMetaDataProactive implements DBMetaData {
             @Override
             public void run() {
                 try {
-                    meta.getJoinsFor(tables);
+                    meta.getJoinsFor(tables.value);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -126,7 +127,7 @@ public final class DBMetaDataProactive implements DBMetaData {
             @Override
             public void run() {
                 try {
-                    meta.getPrimaryKeysFor(tables);
+                    meta.getPrimaryKeysFor(tables.value);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -134,8 +135,8 @@ public final class DBMetaDataProactive implements DBMetaData {
         });
     }
 
-    void queueDatabases(ImmutableList<Database> databases) {
-        for (final Database database : databases) {
+    void queueDatabases(CurrentResult<ImmutableList<Database>> databases) {
+        for (final Database database : databases.value) {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -162,11 +163,11 @@ public final class DBMetaDataProactive implements DBMetaData {
         });
     }
 
-    void queueColumns(ImmutableList<DBColumn> columns) {
+    void queueColumns(CurrentResult<ImmutableList<DBColumn>> columns) {
         // nothing to do
     }
 
-    void queueJoins(ImmutableList<Join> join) {
+    void queueJoins(CurrentResult<ImmutableList<Join>> join) {
         // nothing to do
     }
 

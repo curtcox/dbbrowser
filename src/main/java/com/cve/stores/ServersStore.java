@@ -7,7 +7,7 @@ import com.cve.db.Server;
 import com.google.common.collect.ImmutableList;
 
 /**
- * The datbase {@link Server}S we know about.
+ * The database {@link Server}S we know about.
  */
 public interface ServersStore {
 

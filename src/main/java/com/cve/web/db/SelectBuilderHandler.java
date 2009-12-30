@@ -82,7 +82,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Now figure out where to.
         for (DBTable table : select.tables) {
             DBMetaData meta = db.of(table.database.server);
-            for (DBColumn column : meta.getColumnsFor(table)) {
+            for (DBColumn column : meta.getColumnsFor(table).value) {
                 select = select.with(column);
             }
         }
@@ -110,8 +110,8 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
         Search           search = DBURICodec.getSearch(uri);
-        DBConnection connection = Stores.getServerStores().getConnection(server);
-        Hints hints = HintsStore.of(db).getHints(select.columns);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
+        Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

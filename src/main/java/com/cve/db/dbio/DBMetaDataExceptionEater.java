@@ -5,6 +5,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
+import com.cve.stores.CurrentResult;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
@@ -28,92 +29,100 @@ public final class DBMetaDataExceptionEater implements DBMetaData {
     }
 
     @Override
-    public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
+    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getPrimaryKeysFor(tables);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBColumn> noColumns = ImmutableList.of();
+            return CurrentResult.of(noColumns);
         }
     }
 
     @Override
-    public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) {
+    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getJoinsFor(tables);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<Join> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server) {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) {
         try {
             return meta.getColumnsFor(server);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBColumn> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Database database) {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         try {
             return meta.getColumnsFor(database);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBColumn> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table) {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         try {
             return meta.getColumnsFor(table);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBColumn> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<Database> getDatabasesOn(Server server) {
+    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server) {
         try {
             return meta.getDatabasesOn(server);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<Database> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
         try {
             return meta.getColumnsFor(tables);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBColumn> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database) {
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database) {
         try {
             return meta.getTablesOn(database);
         } catch (SQLException e) {
             report(e);
-            return ImmutableList.of();
+            ImmutableList<DBTable> empty = ImmutableList.of();
+            return CurrentResult.of(empty);
         }
     }
 
-        @Override
-    public long getRowCountFor(DBTable table) {
+    @Override
+    public CurrentResult<Long> getRowCountFor(DBTable table) {
         try {
             return meta.getRowCountFor(table);
         } catch (SQLException e) {
             report(e);
-            return 0;
+            return CurrentResult.of(0L);
         }
     }
 

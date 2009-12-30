@@ -1,20 +1,9 @@
 package com.cve.stores;
 
 import com.cve.db.DBColumn;
-import com.cve.db.Filter;
 import com.cve.db.Hints;
-import com.cve.db.Join;
-import com.cve.db.DBTable;
-import com.cve.db.Server;
-import com.cve.db.dbio.DBMetaData;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Set;
-import static com.cve.log.Log.args;
 
 /**
  * The {@link Hints} we know about.
@@ -29,68 +18,8 @@ import static com.cve.log.Log.args;
  *    </ol>
  * </ol>
  */
-public final class HintsStore {
+public interface HintsStore {
 
-    /**
-     * How we access databases.
-     */
-    final DBMetaData.Factory db;
+    Hints getHints(ImmutableList<DBColumn> columns) throws SQLException;
 
-    private HintsStore(DBMetaData.Factory db) {
-        this.db = db;
-    }
-
-    public static HintsStore of(DBMetaData.Factory db) {
-        return new HintsStore(db);
-    }
-
-    /**
-     * Columns -> joins they participate in.
-     */
-    private static Multimap<DBColumn,Join>     joins = HashMultimap.create();
-
-    /**
-     * Columns -> useful filters for that column.
-     */
-    private static Multimap<DBColumn,Filter> filters = HashMultimap.create();
-
-    /**
-     * Add these hints to those in the store.
-     */
-    public static void putHints(Hints hints) {
-        for (Join join : hints.joins) {
-            joins.put(join.source, join);
-        }
-        for (Filter filter : hints.filters) {
-            filters.put(filter.column, filter);
-        }
-    }
-
-    public Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
-        args(columns);
-        Set<Join>      joinSet = Sets.newHashSet();
-        Set<Filter>  filterSet = Sets.newHashSet();
-        for (DBColumn column : columns) {
-            joinSet.addAll(joins.get(column));
-            filterSet.addAll(filters.get(column));
-        }
-        ImmutableList<DBTable> tables = spanningTables(columns);
-        Server                 server = tables.get(0).database.server;
-        DBMetaData               meta = db.of(server);
-        joinSet.addAll(meta.getJoinsFor(tables));
-        return Hints.of(
-            joinSet,
-            filterSet,
-            meta.getColumnsFor(tables)
-        );
-    }
-
-    static ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
-        args(columns);
-        Set<DBTable>  tables = Sets.newHashSet();
-        for (DBColumn column : columns) {
-            tables.add(column.table);
-        }
-        return ImmutableList.copyOf(tables);
-    }
 }

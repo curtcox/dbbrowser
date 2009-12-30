@@ -15,6 +15,7 @@ import com.cve.db.dbio.DBMetaDataIO.KeySpecifier;
 import com.cve.db.dbio.DBMetaDataIO.PrimaryKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
+import com.cve.stores.CurrentResult;
 import com.cve.stores.Stores;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
@@ -62,13 +63,13 @@ public class DefaultDBMetaData implements DBMetaData {
 
 
     @Override
-    public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         args(tables);
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
             keys.addAll(getPrimaryKeysFor(table));
         }
-        return ImmutableList.copyOf(keys);
+        return CurrentResult.of(ImmutableList.copyOf(keys));
     }
 
     /**
@@ -95,7 +96,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * Return all the potential joins from the columns in the given tables.
      */
     @Override
-    public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
         args(tables);
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
@@ -103,30 +104,32 @@ public class DefaultDBMetaData implements DBMetaData {
             joins.addAll(getExportedKeysFor(table));
             joins.addAll(getReasonableJoinsFor(table));
         }
-        return ImmutableList.copyOf(joins);
+        ImmutableList<Join> copy = ImmutableList.copyOf(joins);
+        return CurrentResult.of(copy);
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
         args(tables);
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
-            set.addAll(getColumnsFor(table));
+            set.addAll(getColumnsFor(table).value);
         }
-        return ImmutableList.copyOf(set);
+        ImmutableList<DBColumn> columns = ImmutableList.copyOf(set);
+        return CurrentResult.of(columns);
     }
 
     @Override
-    public long getRowCountFor(DBTable table) throws SQLException {
+    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
         args(table);
         Server           server = table.database.server;
-        DBConnection connection = Stores.getServerStores().getConnection(server);
+        DBConnection connection = Stores.getServerStore().getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         try {
             ResultSet results = connection.select(sql);
             try {
                 results.next();
-                return results.getInt(1);
+                return CurrentResult.of(new Long(results.getInt(1)));
             } finally {
                 results.close();
             }
@@ -138,11 +141,11 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      */
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server)  throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException {
         args(server);
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
-        for (Database database : getDatabasesOn(server)) {
+        for (Database database : getDatabasesOn(server).value) {
             String          catalog = database.name;
             String    schemaPattern = null;
             String tableNamePattern = null;
@@ -158,13 +161,13 @@ public class DefaultDBMetaData implements DBMetaData {
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return columns;
+        return CurrentResult.of(columns);
     }
 
         /**
      */
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Database database)  throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException {
         args(database);
         Server server = database.server;
         DBMetaDataIO   dbmd = getDbmdIO(server);
@@ -183,14 +186,14 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return columns;
+        return CurrentResult.of(columns);
     }
 
     /**
      * Simple cache
      */
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table)  throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException {
         args(table);
         Database       database = table.database;
         Server           server = database.server;
@@ -208,7 +211,7 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return columns;
+        return CurrentResult.of(columns);
     }
 
     /**
@@ -232,7 +235,7 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     @Override
-    public ImmutableList<Database> getDatabasesOn(Server server)  throws SQLException {
+    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
         args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
@@ -241,13 +244,13 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(server.databaseName(databaseName));
         }
         ImmutableList<Database> databases = ImmutableList.copyOf(list);
-        return databases;
+        return CurrentResult.of(databases);
     }
 
     /**
      */
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database)  throws SQLException {
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
         args(database);
         Server           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
@@ -261,7 +264,7 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(database.tableName(tableName));
         }
         ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-        return tables;
+        return CurrentResult.of(tables);
     }
 
     /**
@@ -339,12 +342,12 @@ public class DefaultDBMetaData implements DBMetaData {
         Server     server = database.server;
 
         Multimap<String,DBColumn> columns = HashMultimap.create();
-        for (DBColumn column : getColumnsFor(server)) {
+        for (DBColumn column : getColumnsFor(server).value) {
             columns.put(column.name, column);
         }
 
         Set<Join> joins = Sets.newLinkedHashSet();
-        for (DBColumn source : getColumnsFor(table)) {
+        for (DBColumn source : getColumnsFor(table).value) {
             for (DBColumn dest : columns.get(source.name)) {
                 if (!source.equals(dest)) {
                     joins.add(Join.of(source, dest));

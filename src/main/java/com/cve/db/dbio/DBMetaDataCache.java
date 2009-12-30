@@ -5,6 +5,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
+import com.cve.stores.CurrentResult;
 import com.cve.util.Check;
 import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
@@ -27,101 +28,101 @@ public final class DBMetaDataCache implements DBMetaData {
         return new DBMetaDataCache(meta);
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys = SimpleCache.of();
+    private final Map<ImmutableList<DBTable>,CurrentResult<ImmutableList<DBColumn>>> primaryKeys = SimpleCache.of();
     @Override
-    public ImmutableList<DBColumn> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         if (primaryKeys.containsKey(tables)) {
             return primaryKeys.get(tables);
         }
-        ImmutableList<DBColumn> result = meta.getPrimaryKeysFor(tables);
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getPrimaryKeysFor(tables);
         primaryKeys.put(tables, result);
         return result;
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<Join>> joins = SimpleCache.of();
+    private final Map<ImmutableList<DBTable>,CurrentResult<ImmutableList<Join>>> joins = SimpleCache.of();
     @Override
-    public ImmutableList<Join> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (joins.containsKey(tables)) {
             return joins.get(tables);
         }
-        ImmutableList<Join> result = meta.getJoinsFor(tables);
+        CurrentResult<ImmutableList<Join>> result = meta.getJoinsFor(tables);
         joins.put(tables, result);
         return result;
     }
 
-    private final Map<Server,ImmutableList<DBColumn>> columnsForServer = SimpleCache.of();
+    private final Map<Server,CurrentResult<ImmutableList<DBColumn>>> columnsForServer = SimpleCache.of();
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Server server) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
         if (columnsForServer.containsKey(server)) {
             return columnsForServer.get(server);
         }
-        ImmutableList<DBColumn> result = meta.getColumnsFor(server);
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(server);
         columnsForServer.put(server, result);
         return result;
     }
 
-    private final Map<Database,ImmutableList<DBColumn>> columnsForDatabase = SimpleCache.of();
+    private final Map<Database,CurrentResult<ImmutableList<DBColumn>>> columnsForDatabase = SimpleCache.of();
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(Database database) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
         if (columnsForDatabase.containsKey(database)) {
             return columnsForDatabase.get(database);
         }
-        ImmutableList<DBColumn> result = meta.getColumnsFor(database);
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(database);
         columnsForDatabase.put(database, result);
         return result;
     }
 
-    private final Map<DBTable,ImmutableList<DBColumn>> columnsForTable = SimpleCache.of();
+    private final Map<DBTable,CurrentResult<ImmutableList<DBColumn>>> columnsForTable = SimpleCache.of();
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
         if (columnsForTable.containsKey(table)) {
             return columnsForTable.get(table);
         }
-        ImmutableList<DBColumn> result = meta.getColumnsFor(table);
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(table);
         columnsForTable.put(table, result);
         return result;
     }
 
-    private final Map<Server,ImmutableList<Database>> databases = SimpleCache.of();
+    private final Map<Server,CurrentResult<ImmutableList<Database>>> databases = SimpleCache.of();
     @Override
-    public ImmutableList<Database> getDatabasesOn(Server server) throws SQLException {
+    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
         if (databases.containsKey(server)) {
             return databases.get(server);
         }
-        ImmutableList<Database> result = meta.getDatabasesOn(server);
+        CurrentResult<ImmutableList<Database>> result = meta.getDatabasesOn(server);
         databases.put(server, result);
         return result;
     }
 
-    private final Map<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables = SimpleCache.of();
+    private final Map<ImmutableList<DBTable>,CurrentResult<ImmutableList<DBColumn>>> columnsForTables = SimpleCache.of();
     @Override
-    public ImmutableList<DBColumn> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
         if (columnsForTables.containsKey(tables)) {
             return columnsForTables.get(tables);
         }
-        ImmutableList<DBColumn> result = meta.getColumnsFor(tables);
+        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(tables);
         columnsForTables.put(tables, result);
         return result;
     }
 
-    private final Map<Database,ImmutableList<DBTable>> tables = SimpleCache.of();
+    private final Map<Database,CurrentResult<ImmutableList<DBTable>>> tables = SimpleCache.of();
     @Override
-    public ImmutableList<DBTable> getTablesOn(Database database) throws SQLException {
+    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
         if (tables.containsKey(database)) {
             return tables.get(database);
         }
-        ImmutableList<DBTable> result = meta.getTablesOn(database);
+        CurrentResult<ImmutableList<DBTable>> result = meta.getTablesOn(database);
         tables.put(database, result);
         return result;
     }
 
-    private final Map<DBTable,Long> rowCounts = SimpleCache.of();
+    private final Map<DBTable,CurrentResult<Long>> rowCounts = SimpleCache.of();
     @Override
-    public long getRowCountFor(DBTable table) throws SQLException {
+    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
         if (rowCounts.containsKey(table)) {
             return rowCounts.get(table);
         }
-        Long result = meta.getRowCountFor(table);
+        CurrentResult<Long> result = meta.getRowCountFor(table);
         rowCounts.put(table, result);
         return result;
     }
