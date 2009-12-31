@@ -10,8 +10,6 @@ import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -26,25 +24,24 @@ public class DefaultDBResultSetMetaDataFactory {
 
     final Server server;
 
-    final ResultSetMetaData meta;
+    final DBResultSetMetaDataIO meta;
 
-    DefaultDBResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
+    DefaultDBResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
         this.server = Check.notNull(server);
         this.meta = Check.notNull(meta);
     }
 
-    public static DBResultSetMetaData of(Server server, DBConnection connection, ResultSet results) throws SQLException {
+    public static DBResultSetMetaData of(Server server, DBConnection connection, DBResultSetIO results) throws SQLException {
         args(server,connection,results);
         DefaultDBResultSetMetaDataFactory factory = factory(server,connection,results);
         DBResultSetMetaData meta = DBResultSetMetaData.of(factory.getDatabases(),factory.getTables(),factory.getColumns(),factory.getFunctions());
         return meta;
     }
 
-    private static DefaultDBResultSetMetaDataFactory factory(Server server, DBConnection connection, ResultSet results) throws SQLException {
+    private static DefaultDBResultSetMetaDataFactory factory(Server server, DBConnection connection, DBResultSetIO results) throws SQLException {
         args(server,connection,results);
         DBDriver driver = connection.getInfo().driver;
-        ResultSetMetaData meta = results.getMetaData();
-        meta = ResultSetMetaDataWrapper.of(meta);
+        DBResultSetMetaDataIO meta = results.meta;
         if (driver==DBDriver.MySql) {
             return new MySQLResultSetMetaDataFactory(server,meta);
         }

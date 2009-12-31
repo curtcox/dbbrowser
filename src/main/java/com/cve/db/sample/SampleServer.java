@@ -139,8 +139,8 @@ public final class SampleServer {
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";
         update(SQL.of(sql));
-        connection.select(SQL.of("SELECT COUNT(*) FROM " + table)).close();
-        connection.select(SQL.of("SELECT * FROM " + table)).close();
+        connection.select(SQL.of("SELECT COUNT(*) FROM " + table));
+        connection.select(SQL.of("SELECT * FROM " + table));
     }
 
     static void update(SQL sql) throws SQLException {

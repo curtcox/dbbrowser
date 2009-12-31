@@ -1,6 +1,6 @@
 package com.cve.db.dbio;
 
-import com.cve.stores.ExceptionalFunction;
+import com.cve.stores.UnpredictableFunction;
 import java.sql.SQLException;
 
 /**
@@ -9,7 +9,7 @@ import java.sql.SQLException;
  * using it instead.
  * @author curt
  */
-public interface SQLFunction<F, T> extends ExceptionalFunction {
+public interface SQLFunction<F, T> extends UnpredictableFunction {
 
   /**
    */

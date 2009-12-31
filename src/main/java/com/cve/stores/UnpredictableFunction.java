@@ -6,7 +6,7 @@ package com.cve.stores;
  * using it instead.
  * @author curt
  */
-public interface ExceptionalFunction<F, T> {
+public interface UnpredictableFunction<F, T> {
 
   /**
    */

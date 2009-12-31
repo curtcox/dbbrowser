@@ -5,7 +5,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.Server;
-import com.cve.stores.CurrentResult;
+import com.cve.stores.CurrentValue;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
@@ -41,68 +41,68 @@ public final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
-        CurrentResult<ImmutableList<DBColumn>> result = meta.getPrimaryKeysFor(tables);
+    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentValue<ImmutableList<DBColumn>> result = meta.getPrimaryKeysFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
-        CurrentResult<ImmutableList<Join>> result = meta.getJoinsFor(tables);
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentValue<ImmutableList<Join>> result = meta.getJoinsFor(tables);
         queueJoins(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
-        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(server);
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+        CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(server);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
-        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(database);
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+        CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(database);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
-        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(table);
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+        CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(table);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
         return meta.getRowCountFor(table);
     }
 
     @Override
-    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
-        CurrentResult<ImmutableList<Database>> result = meta.getDatabasesOn(server);
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+        CurrentValue<ImmutableList<Database>> result = meta.getDatabasesOn(server);
         queueServer(server);
         queueDatabases(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
-        CurrentResult<ImmutableList<DBColumn>> result = meta.getColumnsFor(tables);
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+        CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
-        CurrentResult<ImmutableList<DBTable>> result = meta.getTablesOn(database);
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+        CurrentValue<ImmutableList<DBTable>> result = meta.getTablesOn(database);
         queueTables(result);
         return result;
     }
 
-    void queueTables(final CurrentResult<ImmutableList<DBTable>> tables) {
+    void queueTables(final CurrentValue<ImmutableList<DBTable>> tables) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +135,7 @@ public final class DBMetaDataProactive implements DBMetaData {
         });
     }
 
-    void queueDatabases(CurrentResult<ImmutableList<Database>> databases) {
+    void queueDatabases(CurrentValue<ImmutableList<Database>> databases) {
         for (final Database database : databases.value) {
             executor.execute(new Runnable() {
                 @Override
@@ -163,11 +163,11 @@ public final class DBMetaDataProactive implements DBMetaData {
         });
     }
 
-    void queueColumns(CurrentResult<ImmutableList<DBColumn>> columns) {
+    void queueColumns(CurrentValue<ImmutableList<DBColumn>> columns) {
         // nothing to do
     }
 
-    void queueJoins(CurrentResult<ImmutableList<Join>> join) {
+    void queueJoins(CurrentValue<ImmutableList<Join>> join) {
         // nothing to do
     }
 

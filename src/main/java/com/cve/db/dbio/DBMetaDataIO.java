@@ -1,6 +1,7 @@
 
 package com.cve.db.dbio;
 
+import com.cve.stores.CurrentValue;
 import com.cve.util.Strings;
 import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
@@ -10,12 +11,13 @@ import javax.annotation.concurrent.Immutable;
 
 /**
  * Low level access to database meta data.
+ * This interface is used by our database drivers to access the database.
  * @author curt
  */
 public interface DBMetaDataIO {
 
     @Immutable
-    public static class KeySpecifier {
+    public static final class KeySpecifier {
 
         // any of these might need to be null
         public final String catalog;
@@ -54,7 +56,7 @@ public interface DBMetaDataIO {
     }
 
     @Immutable
-    public static class ColumnSpecifier {
+    public static final class ColumnSpecifier {
 
         // any of these might need to be null
         public final String catalog;
@@ -102,21 +104,24 @@ public interface DBMetaDataIO {
         }
     }
 
-    public static class PrimaryKeyInfo {
+    @Immutable
+    public static final class PrimaryKeyInfo {
         public final String columnName;
         PrimaryKeyInfo(String columnName) {
             this.columnName = columnName;
         }
     }
 
-    public static class TableInfo {
+    @Immutable
+    public static final class TableInfo {
         public final String tableName;
         TableInfo(String tableName) {
             this.tableName = tableName;
         }
     }
 
-    public static class ColumnInfo {
+    @Immutable
+    public static final class ColumnInfo {
         public final String tableSchema;
         public final String tableName;
         public final String columnName;
@@ -131,14 +136,16 @@ public interface DBMetaDataIO {
         }
     }
 
-    public static class CatalogInfo {
+    @Immutable
+    public static final class CatalogInfo {
         public final String databaseName;
         CatalogInfo(String databaseName) {
             this.databaseName = databaseName;
         }
     }
 
-    public static class SchemaInfo {
+    @Immutable
+    public static final class SchemaInfo {
         public final String schemaName;
 
         SchemaInfo(String schemaName) {
@@ -146,7 +153,8 @@ public interface DBMetaDataIO {
         }
     }
 
-    public static class ReferencedKeyInfo {
+    @Immutable
+    public static final class ReferencedKeyInfo {
         public final String pkDatabase;
         public final String fkDatabase;
         public final String pkTable;
@@ -164,8 +172,25 @@ public interface DBMetaDataIO {
         }
     }
 
+    @Immutable
+    public static final class TableSpecifier {
+        final String catalog;
+        final String schemaPattern;
+        final String tableNamePattern;
+        final String[] types;
+        private TableSpecifier(String catalog, String schemaPattern, String tableNamePattern, String[] types) {
+            this.catalog = catalog;
+            this.schemaPattern = schemaPattern;
+            this.tableNamePattern = tableNamePattern;
+            this.types = types;
+        }
+        public static TableSpecifier of(String catalog, String schemaPattern, String tableNamePattern, String[] types) {
+            return new TableSpecifier(catalog,schemaPattern,tableNamePattern,types);
+        }
+    }
+
     // Wrappers for all of the DBMD functions we use
-    ImmutableList<TableInfo> getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException;
+    CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException;
 
     ImmutableList<ColumnInfo> getColumns(ColumnSpecifier specifier) throws SQLException;
 

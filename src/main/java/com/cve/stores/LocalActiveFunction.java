@@ -24,10 +24,10 @@ import java.util.concurrent.Executors;
  *
  * @author Curt
  */
-public final class LocalActiveFunction<F,T> implements ActiveFunction<F,T> {
+public final class LocalActiveFunction<F,T> implements ManagedFunction<F,T> {
 
     @Override
-    public CurrentResult<T> apply(F from) throws Exception {
+    public CurrentValue<T> apply(F from) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

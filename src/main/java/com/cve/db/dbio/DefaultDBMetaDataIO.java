@@ -1,6 +1,10 @@
 
 package com.cve.db.dbio;
 
+import com.cve.stores.CurrentValue;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.SimpleManagedFunction;
+import com.cve.stores.UnpredictableFunction;
 import com.cve.util.Canonicalizer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -17,7 +21,7 @@ import static com.cve.log.Log.args;
  * TODO restore ResultSetRetry logic
  * @author curt
  */
-public final class DefaultDBMetaDataIO implements DBMetaDataIO {
+final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     private final DefaultDBConnection connection;
 
@@ -36,190 +40,156 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         this.connection = notNull(connection);
     }
 
-    public static DBMetaDataIO connection(DefaultDBConnection connection) {
+    static DBMetaDataIO connection(DefaultDBConnection connection) {
         args(connection);
         return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection)));
     }
 
+    private final ManagedFunction<TableSpecifier,DBResultSetIO> tables = SimpleManagedFunction.of(
+        new UnpredictableFunction<TableSpecifier,DBResultSetIO>() {
+
+        @Override
+        public DBResultSetIO apply(TableSpecifier spec) throws Exception {
+            return DBResultSetIO.of(getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types));
+        }
+    });
+
+
+
     // Wrappers for all of the DBMD functions we use
     @Override
-    public ImmutableList<TableInfo> getTables(final String catalog, final String schemaPattern, final String tableNamePattern, final String[] types) throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getTables(catalog, schemaPattern, tableNamePattern, types);
-            }
-        };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<TableInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                String tableName = getString(results,TABLE_NAME);
-                list.add(new TableInfo(tableName));
-            }
-            ImmutableList<TableInfo> tables = ImmutableList.copyOf(list);
-            return tables;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
+        DBResultSetIO results = tables.apply(specifier).value;
+        List<TableInfo> list = Lists.newArrayList();
+        for (int r=0; r<results.rows.size(); r++) {
+            String tableName = results.getString(r,TABLE_NAME);
+            list.add(new TableInfo(tableName));
         }
+        ImmutableList<TableInfo> tables = ImmutableList.copyOf(list);
+        return CurrentValue.of(tables);
     }
 
     @Override
     public ImmutableList<ColumnInfo> getColumns(final ColumnSpecifier specifier) throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern,specifier.columnNamePattern);
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(
+                        getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern,specifier.columnNamePattern));
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<ColumnInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                String schemaName = getString(results,TABLE_SCHEM);
-                String  tableName = getString(results,TABLE_NAME);
-                String columnName = getString(results,COLUMN_NAME);
-                int          type = results.getInt(DATA_TYPE);
-                ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
-                list.add(column);
-            }
-            ImmutableList<ColumnInfo> infos = ImmutableList.copyOf(list);
-            return infos;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<ColumnInfo> list = Lists.newArrayList();
+        for (int r=0; r<results.rows.size(); r++) {
+            String schemaName = results.getString(r,TABLE_SCHEM);
+            String  tableName = results.getString(r,TABLE_NAME);
+            String columnName = results.getString(r,COLUMN_NAME);
+            int          type = results.getInt(r,DATA_TYPE);
+            ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
+            list.add(column);
         }
+        ImmutableList<ColumnInfo> infos = ImmutableList.copyOf(list);
+        return infos;
     }
 
     @Override
     public ImmutableList<ReferencedKeyInfo> getImportedKeys(final KeySpecifier specifier) throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<ReferencedKeyInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                String pkDatabase = getString(results,PKTABLE_CAT);
-                String fkDatabase = getString(results,FKTABLE_CAT);
-                String    pkTable = getString(results,PKTABLE_NAME);
-                String    fkTable = getString(results,FKTABLE_NAME);
-                String   pkColumn = getString(results,PKCOLUMN_NAME);
-                String   fkColumn = getString(results,FKCOLUMN_NAME);
-                list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
-            }
-            ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
-            return refs;
-        } finally {
-            close(results);
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<ReferencedKeyInfo> list = Lists.newArrayList();
+        for (int r=0; r<results.rows.size(); r++) {
+            String pkDatabase = results.getString(r,PKTABLE_CAT);
+            String fkDatabase = results.getString(r,FKTABLE_CAT);
+            String    pkTable = results.getString(r,PKTABLE_NAME);
+            String    fkTable = results.getString(r,FKTABLE_NAME);
+            String   pkColumn = results.getString(r,PKCOLUMN_NAME);
+            String   fkColumn = results.getString(r,FKCOLUMN_NAME);
+            list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
         }
+        ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
+        return refs;
     }
 
     @Override
     public ImmutableList<PrimaryKeyInfo> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<PrimaryKeyInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                String columnName = getString(results,COLUMN_NAME);
-                list.add(new PrimaryKeyInfo(columnName));
-            }
-            ImmutableList<PrimaryKeyInfo> keys = ImmutableList.copyOf(list);
-            return keys;
-        } finally {
-            close(results);
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<PrimaryKeyInfo> list = Lists.newArrayList();
+        for (int r=0; r<results.rows.size(); r++) {
+            String columnName = results.getString(r,COLUMN_NAME);
+            list.add(new PrimaryKeyInfo(columnName));
         }
+        ImmutableList<PrimaryKeyInfo> keys = ImmutableList.copyOf(list);
+        return keys;
     }
 
     @Override
     public ImmutableList<ReferencedKeyInfo> getExportedKeys(final KeySpecifier specifier) throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName);
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<ReferencedKeyInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                String pkDatabase = getString(results,PKTABLE_CAT);
-                String fkDatabase = getString(results,FKTABLE_CAT);
-                String    pkTable = getString(results,PKTABLE_NAME);
-                String    fkTable = getString(results,FKTABLE_NAME);
-                String   pkColumn = getString(results,PKCOLUMN_NAME);
-                String   fkColumn = getString(results,FKCOLUMN_NAME);
-                list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
-            }
-            ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
-            return refs;
-        } finally {
-            close(results);
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<ReferencedKeyInfo> list = Lists.newArrayList();
+        for (int r=0; r<results.rows.size(); r++) {
+            String pkDatabase = results.getString(r,PKTABLE_CAT);
+            String fkDatabase = results.getString(r,FKTABLE_CAT);
+            String    pkTable = results.getString(r,PKTABLE_NAME);
+            String    fkTable = results.getString(r,FKTABLE_NAME);
+            String   pkColumn = results.getString(r,PKCOLUMN_NAME);
+            String   fkColumn = results.getString(r,FKCOLUMN_NAME);
+            list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
         }
+        ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
+        return refs;
     }
 
     @Override
     public ImmutableList<CatalogInfo> getCatalogs() throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getCatalogs();
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(getMetaData().getCatalogs());
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<CatalogInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                // Due to a H2 driver bug, we can't use the column name
-                int TABLE_CAT = 1;
-                String databaseName = results.getString(TABLE_CAT);
-                list.add(new CatalogInfo(databaseName));
-            }
-            ImmutableList<CatalogInfo> infos = ImmutableList.copyOf(list);
-            return infos;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
-        }
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<CatalogInfo> list = Lists.newArrayList();
+        // Due to a H2 driver bug, we can't use the column name
+        int TABLE_CAT = 1;
+        String databaseName = results.getString(0,TABLE_CAT);
+        list.add(new CatalogInfo(databaseName));
+        ImmutableList<CatalogInfo> infos = ImmutableList.copyOf(list);
+        return infos;
     }
 
     @Override
     public ImmutableList<SchemaInfo> getSchemas() throws SQLException {
         ResultSetGenerator generator = new ResultSetGenerator() {
             @Override
-            public ResultSet generate() throws SQLException {
-                return getMetaData().getSchemas();
+            public DBResultSetIO generate() throws SQLException {
+                return DBResultSetIO.of(getMetaData().getSchemas());
             }
         };
-        ResultSet results = ResultSetRetry.run(connection, generator);
-        try {
-            List<SchemaInfo> list = Lists.newArrayList();
-            while (results.next()) {
-                // Due to a H2 driver bug, we can't use the column name
-                int SCHEMA_NAME = 1;
-                String databaseName = getString(results,SCHEMA_NAME);
-                list.add(new SchemaInfo(databaseName));
-            }
-            ImmutableList<SchemaInfo> infos = ImmutableList.copyOf(list);
-            return infos;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            close(results);
-        }
+        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        List<SchemaInfo> list = Lists.newArrayList();
+        // Due to a H2 driver bug, we can't use the column name
+        int SCHEMA_NAME = 1;
+        String databaseName = results.getString(0,SCHEMA_NAME);
+        list.add(new SchemaInfo(databaseName));
+        ImmutableList<SchemaInfo> infos = ImmutableList.copyOf(list);
+        return infos;
     }
 
     /**

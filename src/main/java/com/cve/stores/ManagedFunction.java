@@ -16,10 +16,10 @@ package com.cve.stores;
  *
  * @author Curt
  */
-public interface ActiveFunction<F,T> {
+public interface ManagedFunction<F,T> {
 
   /**
    */
-  CurrentResult<T> apply(F from) throws Exception;
+  CurrentValue<T> apply(F from);
 
 }

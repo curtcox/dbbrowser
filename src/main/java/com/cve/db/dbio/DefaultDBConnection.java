@@ -7,13 +7,16 @@ import com.cve.db.ConnectionInfo;
 import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.log.Log;
+import com.cve.stores.CurrentValue;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.SimpleManagedFunction;
 import com.cve.stores.Stores;
+import com.cve.stores.UnpredictableFunction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.ResultSet;
 import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
@@ -63,7 +66,7 @@ final class DefaultDBConnection implements DBConnection {
     }
 
     @Override
-    public synchronized DBResultSetMetaData getMetaData(Server server, ResultSet results) throws SQLException {
+    public synchronized DBResultSetMetaData getMetaData(Server server, DBResultSetIO results) throws SQLException {
         args(server,results);
         return DefaultDBResultSetMetaDataFactory.of(server,this,results);
     }
@@ -93,21 +96,28 @@ final class DefaultDBConnection implements DBConnection {
         return DatabaseMetaDataWrapper.of(getConnection().getMetaData());
     }
 
+    private ManagedFunction<SQL,DBResultSetIO> resultSets = SimpleManagedFunction.of(
+        new UnpredictableFunction<SQL,DBResultSetIO>() {
+
+        @Override
+        public DBResultSetIO apply(SQL sql) throws Exception {
+            Statement statement = getConnection().createStatement();
+            String sqlString = sql.toString();
+            info(sqlString);
+            statement.execute(sqlString);
+            return DBResultSetIO.of(ResultSetWrapper.of(statement.getResultSet()));
+        }
+
+        }
+    );
+
+
     /**
      * Execute the given SQL.
      */
     @Override
-    public synchronized ResultSet select(final SQL sql) throws SQLException {
-        return ResultSetRetry.run(this,new ResultSetGenerator() {
-            @Override
-            public ResultSet generate() throws SQLException {
-                Statement statement = getConnection().createStatement();
-                String sqlString = sql.toString();
-                info(sqlString);
-                statement.execute(sqlString);
-                return ResultSetWrapper.of(statement.getResultSet());
-            }
-        });
+    public synchronized CurrentValue<DBResultSetIO> select(final SQL sql) throws SQLException {
+        return resultSets.apply(sql);
     }
 
     @Override

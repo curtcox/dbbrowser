@@ -5,10 +5,10 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Server;
+import com.cve.db.dbio.DBResultSetMetaDataIO;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
@@ -19,7 +19,7 @@ import java.util.Set;
  */
 final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MySQLResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
+    public MySQLResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 

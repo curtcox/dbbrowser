@@ -1,7 +1,7 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.db.Server;
-import java.sql.ResultSetMetaData;
+import com.cve.db.dbio.DBResultSetMetaDataIO;
 
 /**
  *
@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
  */
 final class OracleResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public OracleResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
+    public OracleResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 

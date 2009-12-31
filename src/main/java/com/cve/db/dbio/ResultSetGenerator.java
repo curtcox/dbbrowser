@@ -1,16 +1,7 @@
-
 package com.cve.db.dbio;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 /**
- * Something that generates a result set.
- * This interface exists to deal with stale connections.
- * A generator can be wrapped with logic to get a new connection and retry.
- * @author curt
+ * This interface is obsolete.
+ * It is being replaced with UnpredictableFunction and ManagedFunction.
  */
-interface ResultSetGenerator {
-
-    ResultSet generate() throws SQLException;
-}
+final class ResultSetGenerator {}

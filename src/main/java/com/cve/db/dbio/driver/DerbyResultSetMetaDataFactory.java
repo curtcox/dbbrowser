@@ -1,7 +1,7 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.db.Server;
-import java.sql.ResultSetMetaData;
+import com.cve.db.dbio.DBResultSetMetaDataIO;
 
 /**
  *
@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
  */
 final class DerbyResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public DerbyResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
+    public DerbyResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 

@@ -1,6 +1,7 @@
 
 package com.cve.db.dbio;
 
+import com.cve.stores.CurrentValue;
 import com.cve.util.Check;
 import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
@@ -25,8 +26,8 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
     }
 
     @Override
-    public ImmutableList<TableInfo> getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
-        return io.getTables(catalog, schemaPattern, tableNamePattern, types);
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
+        return io.getTables(specifier);
     }
 
     private final Map<ColumnSpecifier,ImmutableList<ColumnInfo>> columns = SimpleCache.of();

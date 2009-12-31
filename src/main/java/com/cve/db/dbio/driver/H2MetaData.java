@@ -9,7 +9,8 @@ import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.SchemaInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
-import com.cve.stores.CurrentResult;
+import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
+import com.cve.stores.CurrentValue;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ final class H2MetaData extends DefaultDBMetaData {
     /**
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         String           catalog = null;
@@ -47,14 +48,14 @@ final class H2MetaData extends DefaultDBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     /**
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
         Server server = database.server;
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
@@ -70,7 +71,7 @@ final class H2MetaData extends DefaultDBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     /**
@@ -78,7 +79,7 @@ final class H2MetaData extends DefaultDBMetaData {
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
         Database       database = table.database;
         Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
@@ -94,13 +95,13 @@ final class H2MetaData extends DefaultDBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     /**
      */
     @Override
-    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
         Server           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = null;
@@ -108,17 +109,17 @@ final class H2MetaData extends DefaultDBMetaData {
         String tableNamePattern = null;
         String[]          types = null;
         List<DBTable> list = Lists.newArrayList();
-        for (TableInfo info : dbmd.getTables(catalog, schemaPattern, tableNamePattern, types) ) {
+        for (TableInfo info : dbmd.getTables(TableSpecifier.of(catalog, schemaPattern, tableNamePattern, types)).value ) {
             String tableName = info.tableName;
             DBTable table = database.tableName(tableName);
             list.add(table);
         }
         ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-        return CurrentResult.of(tables);
+        return CurrentValue.of(tables);
     }
 
     @Override
-    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
         DBMetaDataIO  dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
         for (SchemaInfo info : dbmd.getSchemas()) {
@@ -126,6 +127,6 @@ final class H2MetaData extends DefaultDBMetaData {
             list.add(server.databaseName(databaseName));
         }
         ImmutableList<Database> databases = ImmutableList.copyOf(list);
-        return CurrentResult.of(databases);
+        return CurrentValue.of(databases);
     }
 }

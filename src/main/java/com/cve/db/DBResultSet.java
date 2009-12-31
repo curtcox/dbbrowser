@@ -8,7 +8,7 @@ import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
 /**
- * The results of running a {@link Select}.
+ * The immutable results of running a {@link Select}.
  */
 @Immutable
 
@@ -120,6 +120,7 @@ public final class DBResultSet {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         DBResultSet other = (DBResultSet) o;
         return databases.equals(other.databases) &&

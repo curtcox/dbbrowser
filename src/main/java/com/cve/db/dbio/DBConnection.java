@@ -4,8 +4,8 @@ package com.cve.db.dbio;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.SQL;
 import com.cve.db.Server;
+import com.cve.stores.CurrentValue;
 import java.sql.SQLException;
-import java.sql.ResultSet;
 
 /**
  * A database connection.
@@ -17,17 +17,27 @@ import java.sql.ResultSet;
  */
 public interface DBConnection {
 
+    /**
+     * Return information about this connection.
+     */
     ConnectionInfo getInfo();
 
+    /**
+     * Return information about the database this is connected to.
+     */
     DBMetaData getMetaData();
 
-    DBResultSetMetaData getMetaData(Server server, ResultSet results) throws SQLException;
+    /**
+     * Return information about the given result set.
+     */
+    DBResultSetMetaData getMetaData(Server server, DBResultSetIO results) throws SQLException;
 
 
     /**
-     * Execute the given SQL.
+     * Execute the given SQL.  In the future, this should be changed to return
+     * an immutable value class
      */
-    ResultSet select(final SQL sql) throws SQLException;
+    CurrentValue<DBResultSetIO> select(final SQL sql) throws SQLException;
 
 
 }

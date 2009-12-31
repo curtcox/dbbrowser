@@ -15,7 +15,8 @@ import com.cve.db.dbio.DBMetaDataIO.KeySpecifier;
 import com.cve.db.dbio.DBMetaDataIO.PrimaryKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
-import com.cve.stores.CurrentResult;
+import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
+import com.cve.stores.CurrentValue;
 import com.cve.stores.Stores;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
@@ -38,6 +39,9 @@ import static java.sql.Types.*;
  * Ideally, this would be a value class like DBResultSetMetaData.
  * Unfortunately, it takes a long time for most DBMSs to generate all of their
  * meta data and give it to us.
+ * Also, if it were one big persisted value, then the whole thing would have
+ * to be obtained for every request -- despite the fact that any given
+ * request would only use a tiny bit of it.
  * @author curt
  */
 public class DefaultDBMetaData implements DBMetaData {
@@ -63,13 +67,13 @@ public class DefaultDBMetaData implements DBMetaData {
 
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
         args(tables);
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
             keys.addAll(getPrimaryKeysFor(table));
         }
-        return CurrentResult.of(ImmutableList.copyOf(keys));
+        return CurrentValue.of(ImmutableList.copyOf(keys));
     }
 
     /**
@@ -96,7 +100,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * Return all the potential joins from the columns in the given tables.
      */
     @Override
-    public CurrentResult<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
         args(tables);
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
@@ -105,43 +109,34 @@ public class DefaultDBMetaData implements DBMetaData {
             joins.addAll(getReasonableJoinsFor(table));
         }
         ImmutableList<Join> copy = ImmutableList.copyOf(joins);
-        return CurrentResult.of(copy);
+        return CurrentValue.of(copy);
     }
 
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
         args(tables);
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
             set.addAll(getColumnsFor(table).value);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(set);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     @Override
-    public CurrentResult<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
         args(table);
         Server           server = table.database.server;
         DBConnection connection = Stores.getServerStore().getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
-        try {
-            ResultSet results = connection.select(sql);
-            try {
-                results.next();
-                return CurrentResult.of(new Long(results.getInt(1)));
-            } finally {
-                results.close();
-            }
-        } catch (SQLException e) {
-            throw new SQLException(sql.toString(),e);
-        }
+        DBResultSetIO results = connection.select(sql).value;
+        return CurrentValue.of(new Long(results.getInt(0,1)));
     }
 
     /**
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException {
         args(server);
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
@@ -161,13 +156,13 @@ public class DefaultDBMetaData implements DBMetaData {
             }
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
         /**
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException {
         args(database);
         Server server = database.server;
         DBMetaDataIO   dbmd = getDbmdIO(server);
@@ -186,14 +181,14 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     /**
      * Simple cache
      */
     @Override
-    public CurrentResult<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException {
         args(table);
         Database       database = table.database;
         Server           server = database.server;
@@ -211,7 +206,7 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(column);
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
-        return CurrentResult.of(columns);
+        return CurrentValue.of(columns);
     }
 
     /**
@@ -235,7 +230,7 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     @Override
-    public CurrentResult<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
         args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
@@ -244,13 +239,13 @@ public class DefaultDBMetaData implements DBMetaData {
             list.add(server.databaseName(databaseName));
         }
         ImmutableList<Database> databases = ImmutableList.copyOf(list);
-        return CurrentResult.of(databases);
+        return CurrentValue.of(databases);
     }
 
     /**
      */
     @Override
-    public CurrentResult<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
         args(database);
         Server           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
@@ -259,12 +254,12 @@ public class DefaultDBMetaData implements DBMetaData {
         String tableNamePattern = null;
         String[]          types = null;
         List<DBTable> list = Lists.newArrayList();
-        for (TableInfo info : dbmd.getTables(catalog, schemaPattern, tableNamePattern, types)) {
+        for (TableInfo info : dbmd.getTables(TableSpecifier.of(catalog, schemaPattern, tableNamePattern, types)).value) {
             String tableName = info.tableName;
             list.add(database.tableName(tableName));
         }
         ImmutableList<DBTable> tables = ImmutableList.copyOf(list);
-        return CurrentResult.of(tables);
+        return CurrentValue.of(tables);
     }
 
     /**

@@ -52,6 +52,7 @@ public final class Value {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         Value other = (Value) o;
         if (this==NULL) {

@@ -1,5 +1,6 @@
 package com.cve.db.dbio;
 
+import com.cve.stores.CurrentValue;
 import com.cve.util.Check;
 import com.cve.util.Stopwatch;
 import com.google.common.collect.ImmutableList;
@@ -23,9 +24,9 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public ImmutableList<TableInfo> getTables(String catalog, String schemaPattern, String tableNamePattern, String[] types) throws SQLException {
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
         Stopwatch watch = Stopwatch.start();
-        ImmutableList<TableInfo> result = io.getTables(catalog,schemaPattern,tableNamePattern,types);
+        CurrentValue<ImmutableList<TableInfo>> result = io.getTables(specifier);
         watch.stop();
         return result;
     }

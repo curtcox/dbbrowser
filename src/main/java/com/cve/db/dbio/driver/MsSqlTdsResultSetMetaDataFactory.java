@@ -1,7 +1,7 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.db.Server;
-import java.sql.ResultSetMetaData;
+import com.cve.db.dbio.DBResultSetMetaDataIO;
 
 /**
  *
@@ -9,7 +9,7 @@ import java.sql.ResultSetMetaData;
  */
 final class MsSqlTdsResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MsSqlTdsResultSetMetaDataFactory(Server server, ResultSetMetaData meta) {
+    public MsSqlTdsResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 

@@ -13,10 +13,10 @@ import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBResultSetIO;
 import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.log.Log;
-import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
@@ -30,8 +30,6 @@ import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +111,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
     static ResultsAndMore exec(Server server, SQL sql, DBConnection connection) throws SQLException {
         args(server,sql,connection);
-        ResultSet                   results = connection.select(sql);
+        DBResultSetIO               results = connection.select(sql).value;
         DBResultSetMetaData            meta = connection.getMetaData(server,results);
         ImmutableList<Database>   databases = meta.databases;
         ImmutableList<DBTable>       tables = meta.tables;
@@ -122,19 +120,18 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         Map<Cell,Value>              values = Maps.newHashMap();
         ImmutableList<AggregateFunction> functions = meta.functions;
         int cols = columns.size();
-        int    r = 0;
         Limit limit = Limit.DEFAULT;
-        while (results.next() && r<(limit.limit - 1)) {
+        for (int r=0; r<(limit.limit - 1); r++) {
             DBRow row = DBRow.number(r);
             rows.add(row);
             r++;
             for (int c=1; c<=cols; c++) {
-                Object v = getObject(results,c);
+                Object v = results.rows.get(r).get(c);
                 Value value = Value.of(v);
                 values.put(Cell.at(row, columns.get(c-1),functions.get(c-1)), value);
             }
         }
-        boolean more = results.next();
+        boolean more = results.rows.size() > limit.limit;
         ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,Value>   fixedValues = ImmutableMap.copyOf(values);
         return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),meta,more);
@@ -151,22 +148,6 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
             this.resultSet = resultSet;
             this.meta      = meta;
             this.more      = more;
-        }
-    }
-
-    /**
-     * Get the object from the speciifed column.
-     * Return a string describing the conversion error if one is encountered.
-     */
-    static Object getObject(ResultSet results, int c) throws SQLException {
-        args(results,c);
-        try {
-            return results.getObject(c);
-        } catch (SQLException e) {
-            ResultSetMetaData meta = results.getMetaData();
-            String        typeName = meta.getColumnTypeName(c);
-            String       className = meta.getColumnClassName(c);
-            return "Error converting " + typeName + "/" + className;
         }
     }
 
