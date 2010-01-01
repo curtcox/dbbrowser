@@ -38,7 +38,7 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
             String    schemaPattern = null;
             String tableNamePattern = null;
             String columnNamePattern = null;
-            for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern))) {
+            for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)).value) {
                 String  tableName = info.tableName;
                 String columnName = info.columnName;
                 DBColumn column = database.tableName(tableName).columnName(columnName);
@@ -64,7 +64,7 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
         String tableNamePattern = table.name;
         String columnNamePattern = null;
         List<DBColumn> list = Lists.newArrayList();
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern))) {
+        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)).value) {
             String  tableName = info.tableName;
             String columnName = info.columnName;
             DBColumn column = database.tableName(tableName).columnName(columnName);

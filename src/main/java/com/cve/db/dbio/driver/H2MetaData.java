@@ -38,7 +38,8 @@ final class H2MetaData extends DefaultDBMetaData {
         String     schemaPattern = null;
         String  tableNamePattern = null;
         String columnNamePattern = null;
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+        ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
             String    tableName = info.tableName;
             String   columnName = info.columnName;
             String databaseName = info.tableSchema;
@@ -63,7 +64,8 @@ final class H2MetaData extends DefaultDBMetaData {
         String    schemaPattern = database.name;
         String tableNamePattern = null;
         String columnNamePattern = null;
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+        ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
             String    tableName = info.tableName;
             String   columnName = info.columnName;
             Class          type = classFor(info.dataType);
@@ -88,7 +90,8 @@ final class H2MetaData extends DefaultDBMetaData {
         String tableNamePattern = table.name;
         String columnNamePattern = null;
         List<DBColumn> list = Lists.newArrayList();
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+        ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
             String   columnName = info.columnName;
             Class          type = classFor(info.dataType);
             DBColumn     column = table.columnNameType(columnName,type);
@@ -109,7 +112,8 @@ final class H2MetaData extends DefaultDBMetaData {
         String tableNamePattern = null;
         String[]          types = null;
         List<DBTable> list = Lists.newArrayList();
-        for (TableInfo info : dbmd.getTables(TableSpecifier.of(catalog, schemaPattern, tableNamePattern, types)).value ) {
+        TableSpecifier specifier = TableSpecifier.of(catalog, schemaPattern, tableNamePattern, types);
+        for (TableInfo info : dbmd.getTables(specifier).value ) {
             String tableName = info.tableName;
             DBTable table = database.tableName(tableName);
             list.add(table);
@@ -122,7 +126,7 @@ final class H2MetaData extends DefaultDBMetaData {
     public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
         DBMetaDataIO  dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
-        for (SchemaInfo info : dbmd.getSchemas()) {
+        for (SchemaInfo info : dbmd.getSchemas().value) {
             String databaseName = info.schemaName;
             list.add(server.databaseName(databaseName));
         }

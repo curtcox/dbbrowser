@@ -88,7 +88,8 @@ public class DefaultDBMetaData implements DBMetaData {
         String         schema = null;
         String      tableName = table.name;
         List<DBColumn> list = Lists.newArrayList();
-        for (PrimaryKeyInfo info : dbmd.getPrimaryKeys(KeySpecifier.of(catalog, schema, tableName))) {
+        KeySpecifier specifier = KeySpecifier.of(catalog, schema, tableName);
+        for (PrimaryKeyInfo info : dbmd.getPrimaryKeys(specifier).value) {
             list.add(table.keyColumnName(info.columnName));
         }
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(list);
@@ -145,7 +146,8 @@ public class DefaultDBMetaData implements DBMetaData {
             String    schemaPattern = null;
             String tableNamePattern = null;
             String columnNamePattern = null;
-            for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+            ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+            for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
                 String  tableName = info.tableName; 
                 String columnName = info.columnName;
                 Class        type = classFor(info.dataType); 
@@ -171,7 +173,8 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schemaPattern = null;
         String tableNamePattern = null;
         String columnNamePattern = null;
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+        ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
             String  tableName = info.tableName;
             String columnName = info.columnName;
             Class        type = classFor(info.dataType);
@@ -198,7 +201,8 @@ public class DefaultDBMetaData implements DBMetaData {
         String tableNamePattern = table.name;
         String columnNamePattern = null;
         List<DBColumn> list = Lists.newArrayList();
-        for (ColumnInfo info : dbmd.getColumns(ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern)) ) {
+        ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
+        for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
             String columnName = info.columnName;
             Class        type = classFor(info.dataType);
             Keyness   keyness = keyness(table,columnName);
@@ -234,7 +238,7 @@ public class DefaultDBMetaData implements DBMetaData {
         args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
-        for (CatalogInfo info : dbmd.getCatalogs()) {
+        for (CatalogInfo info : dbmd.getCatalogs().value) {
             String databaseName = info.databaseName;
             list.add(server.databaseName(databaseName));
         }
@@ -289,7 +293,8 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schema = null;
         String tableName = table.name;
         List<Join> list = Lists.newArrayList();
-        for (ReferencedKeyInfo info : dbmd.getImportedKeys(KeySpecifier.of(catalog, schema, tableName))) {
+        KeySpecifier specifier = KeySpecifier.of(catalog, schema, tableName);
+        for (ReferencedKeyInfo info : dbmd.getImportedKeys(specifier).value) {
             Database pkDatabase = server.databaseName(info.fkDatabase);
             Database fkDatabase = server.databaseName(info.fkDatabase);
             DBTable       pkTable = pkDatabase.tableName(info.pkTable);
@@ -313,7 +318,8 @@ public class DefaultDBMetaData implements DBMetaData {
         String    schema = null;
         String tableName = table.name;
         List<Join> list = Lists.newArrayList();
-        for (ReferencedKeyInfo info : dbmd.getExportedKeys(KeySpecifier.of(catalog, schema, tableName))) {
+        KeySpecifier specifier = KeySpecifier.of(catalog, schema, tableName);
+        for (ReferencedKeyInfo info : dbmd.getExportedKeys(specifier).value) {
             Database pkDatabase = server.databaseName(info.fkDatabase);
             Database fkDatabase = server.databaseName(info.fkDatabase);
             DBTable       pkTable = pkDatabase.tableName(info.pkTable);
