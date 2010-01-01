@@ -32,49 +32,49 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public ImmutableList<ColumnInfo> getColumns(ColumnSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) throws SQLException {
         Stopwatch watch = Stopwatch.start(specifier);
-        ImmutableList<ColumnInfo> result = io.getColumns(specifier);
+        CurrentValue<ImmutableList<ColumnInfo>> result = io.getColumns(specifier);
         watch.stop();
         return result;
     }
 
     @Override
-    public ImmutableList<ReferencedKeyInfo> getImportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) throws SQLException {
         Stopwatch watch = Stopwatch.start(specifier);
-        ImmutableList<ReferencedKeyInfo> result = io.getImportedKeys(specifier);
+        CurrentValue<ImmutableList<ReferencedKeyInfo>> result = io.getImportedKeys(specifier);
         watch.stop();
         return result;
     }
 
     @Override
-    public ImmutableList<PrimaryKeyInfo> getPrimaryKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) throws SQLException {
         Stopwatch watch = Stopwatch.start(specifier);
-        ImmutableList<PrimaryKeyInfo> result = io.getPrimaryKeys(specifier);
+        CurrentValue<ImmutableList<PrimaryKeyInfo>> result = io.getPrimaryKeys(specifier);
         watch.stop();
         return result;
     }
 
     @Override
-    public ImmutableList<ReferencedKeyInfo> getExportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) throws SQLException {
         Stopwatch watch = Stopwatch.start(specifier);
-        ImmutableList<ReferencedKeyInfo> result = io.getExportedKeys(specifier);
+        CurrentValue<ImmutableList<ReferencedKeyInfo>> result = io.getExportedKeys(specifier);
         watch.stop();
         return result;
     }
 
     @Override
-    public ImmutableList<CatalogInfo> getCatalogs() throws SQLException {
+    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
         Stopwatch watch = Stopwatch.start();
-        ImmutableList<CatalogInfo> result = io.getCatalogs();
+        CurrentValue<ImmutableList<CatalogInfo>> result = io.getCatalogs();
         watch.stop();
         return result;
     }
 
     @Override
-    public ImmutableList<SchemaInfo> getSchemas() throws SQLException {
+    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
         Stopwatch watch = Stopwatch.start();
-        ImmutableList<SchemaInfo> result = io.getSchemas();
+        CurrentValue<ImmutableList<SchemaInfo>> result = io.getSchemas();
         watch.stop();
         return result;
     }

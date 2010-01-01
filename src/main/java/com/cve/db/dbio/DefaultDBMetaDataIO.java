@@ -5,11 +5,9 @@ import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.SimpleManagedFunction;
 import com.cve.stores.UnpredictableFunction;
-import com.cve.util.Canonicalizer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.util.List;
@@ -54,8 +52,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     });
 
-
-
     // Wrappers for all of the DBMD functions we use
     @Override
     public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
@@ -69,16 +65,19 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(tables);
     }
 
-    @Override
-    public ImmutableList<ColumnInfo> getColumns(final ColumnSpecifier specifier) throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
+    private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns = SimpleManagedFunction.of(
+        new UnpredictableFunction<ColumnSpecifier,DBResultSetIO>() {
+
+        @Override
+        public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
                 return DBResultSetIO.of(
                         getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern,specifier.columnNamePattern));
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        }
+    });
+
+    @Override
+    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(final ColumnSpecifier specifier) throws SQLException {
+        DBResultSetIO results = columns.apply(specifier).value;
         List<ColumnInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
             String schemaName = results.getString(r,TABLE_SCHEM);
@@ -89,18 +88,20 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
             list.add(column);
         }
         ImmutableList<ColumnInfo> infos = ImmutableList.copyOf(list);
-        return infos;
+        return CurrentValue.of(infos);
     }
 
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> importedKeys = SimpleManagedFunction.of(
+        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    });
+
     @Override
-    public ImmutableList<ReferencedKeyInfo> getImportedKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
-                return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(final KeySpecifier specifier) throws SQLException {
+        DBResultSetIO results = importedKeys.apply(specifier).value;
         List<ReferencedKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
             String pkDatabase = results.getString(r,PKTABLE_CAT);
@@ -112,36 +113,39 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
             list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
         }
         ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
-        return refs;
+        return CurrentValue.of(refs);
     }
 
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> primaryKeys = SimpleManagedFunction.of(
+        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    });
     @Override
-    public ImmutableList<PrimaryKeyInfo> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
-                return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
+        DBResultSetIO results = primaryKeys.apply(specifier).value;
         List<PrimaryKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
             String columnName = results.getString(r,COLUMN_NAME);
             list.add(new PrimaryKeyInfo(columnName));
         }
         ImmutableList<PrimaryKeyInfo> keys = ImmutableList.copyOf(list);
-        return keys;
+        return CurrentValue.of(keys);
     }
 
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> exportedKeys = SimpleManagedFunction.of(
+        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    });
+
     @Override
-    public ImmutableList<ReferencedKeyInfo> getExportedKeys(final KeySpecifier specifier) throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
-                return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(final KeySpecifier specifier) throws SQLException {
+        DBResultSetIO results = exportedKeys.apply(specifier).value;
         List<ReferencedKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
             String pkDatabase = results.getString(r,PKTABLE_CAT);
@@ -153,43 +157,47 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
             list.add(new ReferencedKeyInfo(pkDatabase,fkDatabase,pkTable,fkTable,pkColumn,fkColumn));
         }
         ImmutableList<ReferencedKeyInfo> refs = ImmutableList.copyOf(list);
-        return refs;
+        return CurrentValue.of(refs);
     }
 
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> catalogs = SimpleManagedFunction.of(
+        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getCatalogs());
+        }
+    });
+
     @Override
-    public ImmutableList<CatalogInfo> getCatalogs() throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
-                return DBResultSetIO.of(getMetaData().getCatalogs());
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
+        DBResultSetIO results = catalogs.apply(null).value;
         List<CatalogInfo> list = Lists.newArrayList();
         // Due to a H2 driver bug, we can't use the column name
         int TABLE_CAT = 1;
         String databaseName = results.getString(0,TABLE_CAT);
         list.add(new CatalogInfo(databaseName));
         ImmutableList<CatalogInfo> infos = ImmutableList.copyOf(list);
-        return infos;
+        return CurrentValue.of(infos);
     }
 
-    @Override
-    public ImmutableList<SchemaInfo> getSchemas() throws SQLException {
-        ResultSetGenerator generator = new ResultSetGenerator() {
-            @Override
-            public DBResultSetIO generate() throws SQLException {
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> schemas = SimpleManagedFunction.of(
+        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
                 return DBResultSetIO.of(getMetaData().getSchemas());
-            }
-        };
-        DBResultSetIO results = ResultSetRetry.run(connection, generator);
+        }
+    });
+
+    @Override
+    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
+        DBResultSetIO results = schemas.apply(null).value;
         List<SchemaInfo> list = Lists.newArrayList();
         // Due to a H2 driver bug, we can't use the column name
         int SCHEMA_NAME = 1;
         String databaseName = results.getString(0,SCHEMA_NAME);
         list.add(new SchemaInfo(databaseName));
         ImmutableList<SchemaInfo> infos = ImmutableList.copyOf(list);
-        return infos;
+        return CurrentValue.of(infos);
     }
 
     /**
@@ -198,26 +206,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     @Override
     public DatabaseMetaData getMetaData() {
         return connection.getJDBCMetaData();
-    }
-
-    /**
-     * Handy static method to close a result set without needing a try/catch
-     */
-    public static void close(ResultSet results) {
-        try {
-            results.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Canonicalizer<String> canonicalizer = Canonicalizer.of();
-    private String getString(ResultSet results, String key) throws SQLException {
-        return canonicalizer.canonical(results.getString(key));
-    }
-
-    private String getString(ResultSet results, int pos) throws SQLException {
-        return canonicalizer.canonical(results.getString(pos));
     }
 
 }
