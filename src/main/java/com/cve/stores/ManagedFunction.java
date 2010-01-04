@@ -18,6 +18,10 @@ package com.cve.stores;
  */
 public interface ManagedFunction<F,T> {
 
+    interface Factory<F,T> {
+        ManagedFunction<F,T> of(UnpredictableFunction<F,T> f);
+    }
+    
   /**
    */
   CurrentValue<T> apply(F from);

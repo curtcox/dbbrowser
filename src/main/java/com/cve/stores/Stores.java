@@ -7,10 +7,8 @@ import com.cve.db.dbio.DBMetaData.Factory;
  */
 public final class Stores {
 
-    private final static ServersStore SERVERS = new LocalServersStore();
-
-    public static ServersStore getServerStore() {
-        return SERVERS;
+    public static ServersStore getServerStore(ManagedFunction.Factory managedFunction) {
+        return LocalServersStore.of(managedFunction);
     }
 
     public static HintsStore getHintsStore(Factory db) {

@@ -8,6 +8,7 @@ import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.stores.ManagedFunction;
 import com.cve.util.Throwables;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -31,15 +32,19 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
+    final ManagedFunction.Factory managedFunction;
+
+
     private static final String PREFIX = "/meta/";
 
-    private DatabaseMetaHandler(DBMetaData.Factory db) {
+    private DatabaseMetaHandler(DBMetaData.Factory db, ManagedFunction.Factory managedFunction) {
         super("^" + PREFIX);
         this.db = db;
+        this.managedFunction = managedFunction;
     }
 
-    public static DatabaseMetaHandler of(DBMetaData.Factory db) {
-        return new DatabaseMetaHandler(db);
+    public static DatabaseMetaHandler of(DBMetaData.Factory db, ManagedFunction.Factory managedFunction) {
+        return new DatabaseMetaHandler(db,managedFunction);
     }
 
     @Override
@@ -135,19 +140,19 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
              td(description));
     }
 
-    static String getAttributes(Server server) throws SQLException {
+    String getAttributes(Server server) throws SQLException {
         return render(metaFor(server).getAttributes(null, null, null, null));
     }
 
-    static String getCatalogs(Server server) throws SQLException {
+    String getCatalogs(Server server) throws SQLException {
         return render(metaFor(server).getCatalogs());
     }
 
-    static String getSchemas(Server server) throws SQLException {
+    String getSchemas(Server server) throws SQLException {
         return render(metaFor(server).getSchemas());
     }
 
-    static String getTables(Server server) throws SQLException {
+    String getTables(Server server) throws SQLException {
         String          catalog = null;
         String    schemaPattern = null;
         String tableNamePattern = null;
@@ -171,11 +176,11 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return out.toString();
     }
 
-    static String getClientInfoProperties(Server server) throws SQLException {
+    String getClientInfoProperties(Server server) throws SQLException {
         return render(metaFor(server).getClientInfoProperties());
     }
 
-    static String getCrossReference(Server server) throws SQLException {
+    String getCrossReference(Server server) throws SQLException {
         String parentCatalog = null;
         String parentSchema = null;
         String parentTable = null;
@@ -231,12 +236,17 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return out.toString();
     }
 
-    static String getIndexInfos(Server server) throws SQLException {
-        return render(metaFor(server).getIndexInfo(null, null, null, true, true));
+    String getIndexInfos(Server server) throws SQLException {
+        String catalog = null;
+        String schema = null;
+        String table = null;
+        boolean unique = true;
+        boolean approximate = true;
+        return render(metaFor(server).getIndexInfo(catalog, schema, table, unique, approximate));
     }
 
-    static DatabaseMetaData metaFor(Server server) throws SQLException {
-        return DBConnectionFactory.metaFor(server);
+    DatabaseMetaData metaFor(Server server) throws SQLException {
+        return DBConnectionFactory.metaFor(server,managedFunction);
     }
 
     public static String render(ResultSet results) throws SQLException {

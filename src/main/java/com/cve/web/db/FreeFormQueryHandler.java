@@ -17,6 +17,7 @@ import com.cve.db.dbio.DBResultSetIO;
 import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.log.Log;
+import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
@@ -48,10 +49,14 @@ import static com.cve.log.Log.args;
  */
 public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
-    private FreeFormQueryHandler() {}
+    final ServersStore serversStore;
 
-    public static FreeFormQueryHandler of() {
-        return new FreeFormQueryHandler();
+    private FreeFormQueryHandler(ServersStore serversStore) {
+        this.serversStore = serversStore;
+    }
+
+    public static FreeFormQueryHandler of(ServersStore serversStore) {
+        return new FreeFormQueryHandler(serversStore);
     }
     
     /**
@@ -82,7 +87,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         Server server = DBURICodec.getServer(uri);
         if (isServerOnlyQuery(uri)) {
             try {
-                DBConnection connection = Stores.getServerStore().getConnection(server);
+                DBConnection connection = serversStore.getConnection(server);
                 ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
                 return page(sql,results.resultSet,results.meta,message,null);
@@ -92,7 +97,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         }
         Database database = DBURICodec.getDatabase(uri);
         try {
-            DBConnection connection = Stores.getServerStore().getConnection(server,database);
+            DBConnection connection = serversStore.getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
             return page(sql,results.resultSet,results.meta,message,null);
@@ -177,10 +182,10 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      * Return a URI that links to a free-form query page loaded with the
      * given select statement.
      */
-    public static URI linkTo(Select select, Search search) {
+    public URI linkTo(Select select, Search search) {
         args(select);
         Server server = select.server;
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);
         URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));

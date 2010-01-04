@@ -22,10 +22,10 @@ public class SelectBuilderHandlerTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        Stores.getServerStore().addServer(server, info);
+        Stores.getServerStore(null).addServer(server, info);
 
         String            uri = "//server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
-        SelectResults results = SelectBuilderHandler.of(null).getResultsFromDB(uri);
+        SelectResults results = SelectBuilderHandler.of(null,null).getResultsFromDB(uri);
         assertNotNull(results);
     }
 

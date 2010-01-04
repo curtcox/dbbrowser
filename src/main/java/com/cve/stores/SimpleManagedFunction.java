@@ -4,7 +4,7 @@ package com.cve.stores;
  *
  * @author curt
  */
-public final class SimpleManagedFunction implements ManagedFunction {
+final class SimpleManagedFunction implements ManagedFunction {
 
     private final UnpredictableFunction f;
 
@@ -12,7 +12,7 @@ public final class SimpleManagedFunction implements ManagedFunction {
         this.f = f;
     }
 
-    public static SimpleManagedFunction of(UnpredictableFunction f) {
+    private static SimpleManagedFunction of(UnpredictableFunction f) {
         return new SimpleManagedFunction(f);
     }
 

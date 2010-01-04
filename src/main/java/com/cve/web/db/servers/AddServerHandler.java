@@ -3,7 +3,7 @@ package com.cve.web.db.servers;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
-import com.cve.stores.Stores;
+import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractFormHandler;
 import com.cve.web.PageRequest;
@@ -19,7 +19,15 @@ import static com.cve.web.db.servers.AddServerPage.*;
  */
 final class AddServerHandler extends AbstractFormHandler {
 
-    AddServerHandler() {}
+    final ServersStore serversStore;
+
+    private AddServerHandler(ServersStore serversStore) {
+        this.serversStore = serversStore;
+    }
+
+    public static AddServerHandler of(ServersStore serversStore) {
+        return new AddServerHandler(serversStore);
+    }
 
     @Override
     public boolean handles(String uri) {
@@ -42,14 +50,14 @@ final class AddServerHandler extends AbstractFormHandler {
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         Server       server = Server.uri(URIs.of(serverName));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
-        if (Stores.getServerStore().getServers().contains(server)) {
+        if (serversStore.getServers().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
                 AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
         try {
-            Stores.getServerStore().addServer(server, info);
+            serversStore.addServer(server, info);
             return PageResponse.newRedirect(server.linkTo().getTarget());
         } catch (RuntimeException e) {
             String message = e.getMessage();

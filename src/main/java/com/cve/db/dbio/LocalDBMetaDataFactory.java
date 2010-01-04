@@ -2,7 +2,6 @@ package com.cve.db.dbio;
 
 import com.cve.db.Server;
 import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
 
 /**
  * For "direct" access to databases.
@@ -10,15 +9,19 @@ import com.cve.stores.Stores;
  */
 public final class LocalDBMetaDataFactory implements DBMetaData.Factory {
 
-    private LocalDBMetaDataFactory() {}
+    final ServersStore serversStore;
 
-    public static LocalDBMetaDataFactory of() {
-        return new LocalDBMetaDataFactory();
+    private LocalDBMetaDataFactory(ServersStore serversStore) {
+        this.serversStore = serversStore;
+    }
+
+    public static LocalDBMetaDataFactory of(ServersStore serversStore) {
+        return new LocalDBMetaDataFactory(serversStore);
     }
 
     @Override
     public DBMetaData of(Server server) {
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         return connection.getMetaData();
     }
 

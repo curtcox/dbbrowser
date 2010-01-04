@@ -12,7 +12,6 @@ import com.cve.db.SelectContext;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
-import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
@@ -35,12 +34,15 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     final DBMetaData.Factory db;
 
-    private SelectBuilderHandler(DBMetaData.Factory db) {
+    final ServersStore serversStore;
+
+    private SelectBuilderHandler(DBMetaData.Factory db, ServersStore serversStore) {
         this.db = db;
+        this.serversStore = serversStore;
     }
 
-    static SelectBuilderHandler of(DBMetaData.Factory db) {
-        return new SelectBuilderHandler(db);
+    static SelectBuilderHandler of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new SelectBuilderHandler(db,serversStore);
     }
 
     @Override
@@ -110,7 +112,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
         Search           search = DBURICodec.getSearch(uri);
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);

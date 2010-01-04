@@ -13,6 +13,7 @@ import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.HintsStore;
+import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.web.Search;
 import com.google.common.collect.Lists;
@@ -30,12 +31,15 @@ final class DatabaseContentsSearchPageCreator {
      */
     final DBMetaData.Factory db;
 
-    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db) {
+    final ServersStore serversStore;
+
+    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, ServersStore serversStore) {
         this.db = db;
+        this.serversStore = serversStore;
     }
 
-    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db) {
-        return new DatabaseContentsSearchPageCreator(db);
+    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new DatabaseContentsSearchPageCreator(db,serversStore);
     }
 
     public DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
@@ -66,7 +70,7 @@ final class DatabaseContentsSearchPageCreator {
         Database database = table.database;
         DBColumn[] columns = meta.getColumnsFor(table).value.toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);

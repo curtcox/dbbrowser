@@ -9,8 +9,7 @@ import com.cve.db.Server;
 import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.SimpleManagedFunction;
-import com.cve.stores.Stores;
+import com.cve.stores.ServersStore;
 import com.cve.stores.UnpredictableFunction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -47,15 +46,21 @@ final class DefaultDBConnection implements DBConnection {
      */
     public final DBMetaData dbMetaData;
 
+    final ServersStore serversStore;
+
+    private final ManagedFunction<SQL,DBResultSetIO> resultSets;
+
     private static final Log LOG = Log.of(DBConnection.class);
 
-    private DefaultDBConnection(ConnectionInfo info) {
+    private DefaultDBConnection(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.info = notNull(info);
+        this.serversStore = serversStore;
         dbMetaData = DefaultDBMetaData.getDbmd(this);
+        resultSets = managedFunction.of(new ExecuteSQL());
     }
 
-    public static DBConnection info(ConnectionInfo info) {
-        return new DefaultDBConnection(info);
+    public static DBConnection info(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new DefaultDBConnection(info,serversStore,managedFunction);
     }
 
     synchronized private Connection getConnection() throws SQLException {
@@ -96,22 +101,6 @@ final class DefaultDBConnection implements DBConnection {
         return DatabaseMetaDataWrapper.of(getConnection().getMetaData());
     }
 
-    private ManagedFunction<SQL,DBResultSetIO> resultSets = SimpleManagedFunction.of(
-        new UnpredictableFunction<SQL,DBResultSetIO>() {
-
-        @Override
-        public DBResultSetIO apply(SQL sql) throws Exception {
-            Statement statement = getConnection().createStatement();
-            String sqlString = sql.toString();
-            info(sqlString);
-            statement.execute(sqlString);
-            return DBResultSetIO.of(ResultSetWrapper.of(statement.getResultSet()));
-        }
-
-        }
-    );
-
-
     /**
      * Execute the given SQL.
      */
@@ -130,8 +119,8 @@ final class DefaultDBConnection implements DBConnection {
         return dbMetaData;
     }
 
-    static DBMetaData getDbmd(Server server) {
-        DefaultDBConnection connection = (DefaultDBConnection) Stores.getServerStore().getConnection(server);
+    DBMetaData getDbmd(Server server) {
+        DefaultDBConnection connection = (DefaultDBConnection) serversStore.getConnection(server);
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }
@@ -143,6 +132,19 @@ final class DefaultDBConnection implements DBConnection {
     static void warn(Throwable t) {
         LOG.warn(t);
     }
+
+    private final class ExecuteSQL implements UnpredictableFunction<SQL,DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(SQL sql) throws Exception {
+            Statement statement = getConnection().createStatement();
+            String sqlString = sql.toString();
+            info(sqlString);
+            statement.execute(sqlString);
+            return DBResultSetIO.of(ResultSetWrapper.of(statement.getResultSet()));
+        }
+
+   }
 
 
 }

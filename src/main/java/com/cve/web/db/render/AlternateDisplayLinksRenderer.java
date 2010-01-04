@@ -5,6 +5,7 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.db.SelectResults;
 import com.cve.db.select.URIRenderer;
+import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.CompressedURIHandler;
 import com.cve.web.Search;
@@ -28,17 +29,20 @@ public final class AlternateDisplayLinksRenderer {
 
     private final Search search;
 
-    private AlternateDisplayLinksRenderer(SelectResults results) {
+    final ServersStore serversStore;
+
+    private AlternateDisplayLinksRenderer(SelectResults results, ServersStore serversStore) {
         this.select  = notNull(results.select);
         this.search  = notNull(results.search);
+        this.serversStore = serversStore;
     }
 
-    static AlternateDisplayLinksRenderer results(SelectResults results) {
-        return new AlternateDisplayLinksRenderer(results);
+    static AlternateDisplayLinksRenderer results(SelectResults results, ServersStore serversStore) {
+        return new AlternateDisplayLinksRenderer(results,serversStore);
     }
 
-    public static String render(SelectResults results) {
-        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results);
+    public static String render(SelectResults results, ServersStore serversStore) {
+        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore);
         return renderer.viewLinks();
    }
 
@@ -68,7 +72,7 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewSQLLink() {
         Label  text = Label.of("SQL");
-        URI target = FreeFormQueryHandler.linkTo(select,search);
+        URI target = FreeFormQueryHandler.of(serversStore).linkTo(select,search);
         String tip = SQL.name();
         URI   image = SQL.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();

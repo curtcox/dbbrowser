@@ -13,7 +13,7 @@ import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
-import com.cve.stores.HintsStore;
+import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
@@ -34,12 +34,15 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    private ColumnValueDistributionHandler(DBMetaData.Factory db) {
+    final ServersStore serversStore;
+
+    private ColumnValueDistributionHandler(DBMetaData.Factory db, ServersStore serversStore) {
         this.db = db;
+        this.serversStore = serversStore;
     }
 
-    static ColumnValueDistributionHandler of(DBMetaData.Factory db) {
-        return new ColumnValueDistributionHandler(db);
+    static ColumnValueDistributionHandler of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new ColumnValueDistributionHandler(db,serversStore);
     }
 
     @Override
@@ -88,7 +91,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         Hints hints = Stores.getHintsStore(db).getHints(select.columns);
 
         // run the select

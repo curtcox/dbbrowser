@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  */
 public class FreeFormQueryHandlerTest {
 
-    final FreeFormQueryHandler handler = FreeFormQueryHandler.of();
+    final FreeFormQueryHandler handler = FreeFormQueryHandler.of(null);
 
     @Test
     public void doesntHandleServerWithNoQuery() {

@@ -10,6 +10,8 @@ import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.ServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -21,10 +23,12 @@ import java.util.List;
  */
 final class MsSQLTdsMetaData extends DefaultDBMetaData {
 
-    private MsSQLTdsMetaData() {}
+    private MsSQLTdsMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        super(managedFunction,serversStore);
+    }
 
-    static DBMetaData of() {
-        return new MsSQLTdsMetaData();
+    static DBMetaData of(ManagedFunction.Factory managedFunction,ServersStore serversStore) {
+        return new MsSQLTdsMetaData(managedFunction,serversStore);
     }
 
     /**

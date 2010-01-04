@@ -3,7 +3,6 @@ package com.cve.db.dbio;
 
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.SimpleManagedFunction;
 import com.cve.stores.UnpredictableFunction;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -21,7 +20,18 @@ import static com.cve.log.Log.args;
  */
 final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
+    /**
+     * How we connect to databases.
+     */
     private final DefaultDBConnection connection;
+
+    private final ManagedFunction<TableSpecifier,DBResultSetIO> tables;
+    private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns;
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> importedKeys;
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> primaryKeys;
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> exportedKeys;
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> catalogs;
+    private final ManagedFunction<KeySpecifier,DBResultSetIO> schemas;
 
     private static final String TABLE_NAME    = "TABLE_NAME";
     private static final String TABLE_SCHEM   = "TABLE_SCHEM";
@@ -34,23 +44,23 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     private static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
     private static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
 
-    private DefaultDBMetaDataIO(DefaultDBConnection connection) {
+    private DefaultDBMetaDataIO(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         this.connection = notNull(connection);
+        notNull(managedFunction);
+        tables = managedFunction.of(new GetTables());
+        columns = managedFunction.of(new GetColumns());
+        importedKeys = managedFunction.of(new GetImportedKeys());
+        primaryKeys = managedFunction.of( new GetPrimaryKeys());
+        exportedKeys = managedFunction.of( new GetExportedKeys());
+        catalogs = managedFunction.of(new GetCatalogs());
+        schemas = managedFunction.of(new GetSchemas());
     }
 
-    static DBMetaDataIO connection(DefaultDBConnection connection) {
+    static DBMetaDataIO connection(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         args(connection);
-        return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection)));
+        return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection,managedFunction)));
     }
 
-    private final ManagedFunction<TableSpecifier,DBResultSetIO> tables = SimpleManagedFunction.of(
-        new UnpredictableFunction<TableSpecifier,DBResultSetIO>() {
-
-        @Override
-        public DBResultSetIO apply(TableSpecifier spec) throws Exception {
-            return DBResultSetIO.of(getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types));
-        }
-    });
 
     // Wrappers for all of the DBMD functions we use
     @Override
@@ -65,15 +75,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(tables);
     }
 
-    private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns = SimpleManagedFunction.of(
-        new UnpredictableFunction<ColumnSpecifier,DBResultSetIO>() {
-
-        @Override
-        public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
-                return DBResultSetIO.of(
-                        getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern,specifier.columnNamePattern));
-        }
-    });
 
     @Override
     public CurrentValue<ImmutableList<ColumnInfo>> getColumns(final ColumnSpecifier specifier) throws SQLException {
@@ -91,13 +92,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(infos);
     }
 
-    private final ManagedFunction<KeySpecifier,DBResultSetIO> importedKeys = SimpleManagedFunction.of(
-        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
-        @Override
-        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
-        }
-    });
 
     @Override
     public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(final KeySpecifier specifier) throws SQLException {
@@ -116,13 +110,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(refs);
     }
 
-    private final ManagedFunction<KeySpecifier,DBResultSetIO> primaryKeys = SimpleManagedFunction.of(
-        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
-        @Override
-        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
-        }
-    });
     @Override
     public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
         DBResultSetIO results = primaryKeys.apply(specifier).value;
@@ -135,13 +122,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(keys);
     }
 
-    private final ManagedFunction<KeySpecifier,DBResultSetIO> exportedKeys = SimpleManagedFunction.of(
-        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
-        @Override
-        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
-        }
-    });
 
     @Override
     public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(final KeySpecifier specifier) throws SQLException {
@@ -160,13 +140,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         return CurrentValue.of(refs);
     }
 
-    private final ManagedFunction<KeySpecifier,DBResultSetIO> catalogs = SimpleManagedFunction.of(
-        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
-        @Override
-        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getCatalogs());
-        }
-    });
 
     @Override
     public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
@@ -179,14 +152,6 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
         ImmutableList<CatalogInfo> infos = ImmutableList.copyOf(list);
         return CurrentValue.of(infos);
     }
-
-    private final ManagedFunction<KeySpecifier,DBResultSetIO> schemas = SimpleManagedFunction.of(
-        new UnpredictableFunction<KeySpecifier,DBResultSetIO>() {
-        @Override
-        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-                return DBResultSetIO.of(getMetaData().getSchemas());
-        }
-    });
 
     @Override
     public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
@@ -206,6 +171,61 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     @Override
     public DatabaseMetaData getMetaData() {
         return connection.getJDBCMetaData();
+    }
+
+    class GetTables implements UnpredictableFunction<TableSpecifier, DBResultSetIO> {
+        @Override
+        public DBResultSetIO apply(TableSpecifier spec) throws Exception {
+            return DBResultSetIO.of(getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types));
+        }
+    }
+
+    class GetColumns implements UnpredictableFunction<ColumnSpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern, specifier.columnNamePattern));
+        }
+    }
+
+    class GetImportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    }
+
+    class GetPrimaryKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    }
+
+    class GetExportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+        }
+    }
+
+    class GetCatalogs implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getCatalogs());
+        }
+    }
+
+    class GetSchemas implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+
+        @Override
+        public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
+            return DBResultSetIO.of(getMetaData().getSchemas());
+        }
     }
 
 }

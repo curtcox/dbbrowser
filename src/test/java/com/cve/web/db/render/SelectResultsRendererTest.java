@@ -1,10 +1,6 @@
 package com.cve.web.db.render;
 
-import com.cve.web.db.render.SelectResultsRenderer;
 import com.cve.db.Cell;
-import com.cve.html.SimpleTooltip;
-import com.cve.html.Label;
-import com.cve.html.Link;
 import com.cve.db.CellValues;
 import com.cve.db.SelectResults;
 import com.cve.db.Database;
@@ -18,8 +14,7 @@ import com.cve.db.DBRow;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
-import com.cve.html.CSS;
-import com.cve.util.Replace;
+import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.google.common.collect.ImmutableList;
@@ -31,13 +26,13 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import static com.cve.html.HTML.*;
 /**
  *
  * @author Curt
  */
 public class SelectResultsRendererTest {
 
+    final ServersStore serversStore = null;
 
     public SelectResults onePersonResults() {
         Server           server = Server.uri(URIs.of("server"));
@@ -104,7 +99,7 @@ public class SelectResultsRendererTest {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
 
-        String       rendered = new SelectResultsRenderer().render(results,client).toString();
+        String       rendered = SelectResultsRenderer.of(serversStore).render(results,client).toString();
         return rendered;
     }
 
@@ -188,7 +183,7 @@ public class SelectResultsRendererTest {
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
         ClientInfo     client = ClientInfo.of();
 
-        String         rendered = new SelectResultsRenderer().render(results,client).toString();
+        String         rendered = SelectResultsRenderer.of(serversStore).render(results,client).toString();
         return rendered;
     }
 

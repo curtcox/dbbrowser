@@ -19,9 +19,11 @@ import java.util.Properties;
 import static com.cve.log.Log.args;
 
 /**
- * The datbase {@link Server}S we know about.
+ * The database {@link Server}S we know about.
  */
 final class LocalServersStore implements ServersStore {
+
+    final ManagedFunction.Factory managedFunction;
 
     /**
      * How to connect to servers.
@@ -49,6 +51,14 @@ final class LocalServersStore implements ServersStore {
      * Is startup over?
      */
     private static boolean loaded = false;
+
+    private LocalServersStore(ManagedFunction.Factory managedFunction) {
+        this.managedFunction = managedFunction;
+    }
+
+    public static ServersStore of(ManagedFunction.Factory managedFunction) {
+        return new LocalServersStore(managedFunction);
+    }
 
     /**
      * Load the list of servers we know about from disk.
@@ -165,14 +175,14 @@ final class LocalServersStore implements ServersStore {
         throw new UnsupportedOperationException();
     }
 
-    private static DBConnection tryGetConnection(Server server) throws SQLException {
+    private DBConnection tryGetConnection(Server server) throws SQLException {
         final ConnectionInfo info = INFOS.get(server);
         if (info==null) {
             String message = "No connection info for " + server +
                 ".  Connection available for " + CONNECTIONS.keySet();
             throw new IllegalArgumentException(message);
         }
-        return DBConnectionFactory.of(info);
+        return DBConnectionFactory.of(info,managedFunction);
     }
 
 }

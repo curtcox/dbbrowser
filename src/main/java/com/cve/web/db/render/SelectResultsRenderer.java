@@ -3,6 +3,7 @@ package com.cve.web.db.render;
 import com.cve.db.SelectResults;
 import com.cve.db.SelectResults.Type;
 import com.cve.db.Server;
+import com.cve.stores.ServersStore;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
@@ -26,9 +27,17 @@ import static com.cve.log.Log.args;
 @Immutable
 public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
+    final ServersStore serversStore;
+
     private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
-    public SelectResultsRenderer() {}
+    private SelectResultsRenderer(ServersStore serversStore) {
+        this.serversStore = serversStore;
+    }
+
+    public static SelectResultsRenderer of(ServersStore serversStore) {
+        return new SelectResultsRenderer(serversStore);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
@@ -63,7 +72,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         return
             DistributionResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results)
+            AlternateDisplayLinksRenderer.render(results,serversStore)
         ;
     }
 
@@ -72,7 +81,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
             ResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
             ShowTableRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results)
+            AlternateDisplayLinksRenderer.render(results,serversStore)
         ;
     }
 

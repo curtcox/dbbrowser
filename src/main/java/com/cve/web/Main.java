@@ -31,9 +31,9 @@ public final class Main {
 
     static void startGrizzly() throws IOException {
         ServletAdapter adapter = new ServletAdapter(
-            RequestRouterServlet.of(
+            RequestRouterServlet.of(SimpleWebApp.of(
                 LocalRequestHandler.of(),
-                DefaultModelHtmlRenderers.RENDERERS
+                DefaultModelHtmlRenderers.RENDERERS)
             )
         );
         GrizzlyWebServer    server = new GrizzlyWebServer(PORT,"/");

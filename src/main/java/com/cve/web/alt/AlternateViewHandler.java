@@ -8,7 +8,6 @@ import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
-import com.cve.stores.HintsStore;
 import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.web.db.DBURICodec;
@@ -30,19 +29,23 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
      */
     final DBMetaData.Factory db;
 
-    private AlternateViewHandler(DBMetaData.Factory db) {
+    final ServersStore serversStore;
+
+    private AlternateViewHandler(DBMetaData.Factory db, ServersStore serversStore) {
         this.db = db;
+        this.serversStore = serversStore;
     }
 
-    public static AlternateViewHandler of(DBMetaData.Factory db) {
-        return new AlternateViewHandler(db);
+    public static AlternateViewHandler of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new AlternateViewHandler(db,serversStore);
     }
 
 
+    @Override
     public RequestHandler of() {
         return CompositeRequestHandler.of(
             // handler            // for URLs of the form
-            CSVHandler.of(db),      // /view/CSV/
+            CSVHandler.of(db,serversStore),      // /view/CSV/
             new XLSHandler(),     // /view/XLS/
             new PDFHandler(),     // /view/PDF/
             new JSONHandler(),    // /view/JSON/
@@ -64,7 +67,7 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
 
         // Setup the select
         Select           select = DBURICodec.getSelect(tail.toString());
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         Hints             hints = Stores.getHintsStore(db).getHints(select.columns);
 
         // run the select

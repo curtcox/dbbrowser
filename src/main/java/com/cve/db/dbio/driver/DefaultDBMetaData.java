@@ -17,14 +17,14 @@ import com.cve.db.dbio.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
-import com.cve.stores.Stores;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.ServersStore;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -46,7 +46,14 @@ import static java.sql.Types.*;
  */
 public class DefaultDBMetaData implements DBMetaData {
 
-    protected DefaultDBMetaData() {}
+    final ManagedFunction.Factory managedFunction;
+
+    final ServersStore serversStore;
+
+    protected DefaultDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        this.managedFunction = managedFunction;
+        this.serversStore = serversStore;
+    }
 
     public static DBMetaData getDbmd(DBConnection connection) {
         args(connection);
@@ -61,7 +68,7 @@ public class DefaultDBMetaData implements DBMetaData {
     private static DBMetaData getDbmd0(DBConnection connection) {
         Check.notNull(connection);
         DBDriver driver = connection.getInfo().driver;
-        DBMetaData meta = driver.getDBMetaData();
+        DBMetaData meta = driver.getDBMetaData(managedFunction,serversStore);
         return meta;
     }
 
@@ -79,7 +86,7 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getPrimaryKeys(java.lang.String,%20java.lang.String,%20java.lang.String)
      */
-    private static ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
+    private ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
         args(table);
         Database     database = table.database;
         Server         server = database.server;
@@ -128,7 +135,7 @@ public class DefaultDBMetaData implements DBMetaData {
     public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
         args(table);
         Server           server = table.database.server;
-        DBConnection connection = Stores.getServerStore().getConnection(server);
+        DBConnection connection = serversStore.getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         DBResultSetIO results = connection.select(sql).value;
         return CurrentValue.of(new Long(results.getInt(0,1)));
@@ -266,20 +273,9 @@ public class DefaultDBMetaData implements DBMetaData {
         return CurrentValue.of(tables);
     }
 
-    /**
-     * Handy static method to close a result set without needing a try/catch
-     */
-    static void close(ResultSet results) {
-        try {
-            results.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static DBMetaDataIO getDbmdIO(Server server) {
+    DBMetaDataIO getDbmdIO(Server server) {
         args(server);
-        return DBConnectionFactory.getDbmdIO(server);
+        return DBConnectionFactory.getDbmdIO(server,managedFunction);
     }
 
     /**
@@ -309,7 +305,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     /**
      */
-    public static ImmutableList<Join> getExportedKeysFor(DBTable table)  throws SQLException {
+    public ImmutableList<Join> getExportedKeysFor(DBTable table)  throws SQLException {
         args(table);
         Database       database = table.database;
         Server           server = database.server;

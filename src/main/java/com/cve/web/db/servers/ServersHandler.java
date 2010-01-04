@@ -8,6 +8,7 @@ import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.log.Log;
+import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
@@ -34,14 +35,17 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
+    final ServersStore serversStore;
+
     private static final Log log = Log.of(ServersHandler.class);
 
-    private ServersHandler(DBMetaData.Factory db) {
+    private ServersHandler(DBMetaData.Factory db, ServersStore serversStore) {
         this.db = db;
+        this.serversStore = serversStore;
     }
 
-    static ServersHandler of(DBMetaData.Factory db) {
-        return new ServersHandler(db);
+    static ServersHandler of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new ServersHandler(db,serversStore);
     }
 
     @Override
@@ -49,7 +53,7 @@ final class ServersHandler extends AbstractRequestHandler {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
-            ImmutableList<Server> servers = Stores.getServerStore().getServers();
+            ImmutableList<Server> servers = serversStore.getServers();
             ImmutableMultimap<Server,Object> databases = getDatabases(servers);
             return new ServersPage(servers,databases);
         }
@@ -100,7 +104,7 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     ImmutableList<DBColumn> allColumns() throws SQLException {
         List<DBColumn> columns = Lists.newArrayList();
-        ImmutableList<Server> servers = Stores.getServerStore().getServers();
+        ImmutableList<Server> servers = Stores.getServerStore(null).getServers();
         for (Server server : servers) {
             for (DBColumn column : db.of(server).getColumnsFor(server).value) {
                 columns.add(column);

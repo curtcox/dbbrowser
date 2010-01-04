@@ -2,6 +2,7 @@ package com.cve.web;
 
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.dbio.LocalDBMetaDataFactory;
+import com.cve.stores.ServersStore;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
@@ -14,21 +15,31 @@ import com.cve.web.log.LogBrowserHandler;
  */
 final class LocalRequestHandler {
 
-    static RequestHandler of() {
-        DBMetaData.Factory db = LocalDBMetaDataFactory.of();
-        return of(db);
+    final ServersStore serversStore;
+
+    private LocalRequestHandler(ServersStore serversStore) {
+        this.serversStore = serversStore;
     }
 
-    private static RequestHandler of(DBMetaData.Factory db) {
+    static LocalRequestHandler of(ServersStore serversStore) {
+        return new LocalRequestHandler(serversStore);
+    }
+
+    static RequestHandler of() {
+        DBMetaData.Factory db = LocalDBMetaDataFactory.of();
+        return of(serversStore).of(db);
+    }
+
+    RequestHandler of(DBMetaData.Factory db) {
        return
            ErrorReportHandler.of(
                 DebugHandler.of(
                     CompressedURIHandler.of(
                         CompositeRequestHandler.of(
                             CoreServerHandler.newInstance(),
-                            AlternateViewHandler.of(db).of(),
+                            AlternateViewHandler.of(db,serversStore).of(),
                             LogBrowserHandler.newInstance(),
-                            DBBrowserHandler.of(db).of()
+                            DBBrowserHandler.of(db,serversStore).of()
                        )
                  )
             )

@@ -5,6 +5,8 @@ import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.SQL;
 import com.cve.db.Select;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.ServersStore;
 import com.cve.util.URIs;
 import java.sql.Driver;
 import com.cve.util.Check;
@@ -23,8 +25,8 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData() {
-            return new MySQLMetaData();
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+            return new MySQLMetaData(managedFunction,serversStore);
         }
         @Override
         public SelectRenderer getSelectRenderer() {
@@ -53,8 +55,8 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData() {
-            return DBMetaDataExceptionEater.of(MsSQLTdsMetaData.of());
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+            return DBMetaDataExceptionEater.of(MsSQLTdsMetaData.of(managedFunction,serversStore));
         }
         @Override
         SelectRenderer getSelectRenderer() {
@@ -85,8 +87,8 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData() {
-            return H2MetaData.of();
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+            return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
         SelectRenderer getSelectRenderer() {
@@ -102,8 +104,8 @@ public enum DBDriver {
                 return JDBCURL.uri(URIs.of(url));
             }
         @Override
-        public DBMetaData getDBMetaData() {
-            return H2MetaData.of();
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+            return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
         SelectRenderer getSelectRenderer() {
@@ -119,8 +121,8 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData() {
-            return H2MetaData.of();
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+            return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
         SelectRenderer getSelectRenderer() {
@@ -154,7 +156,7 @@ public enum DBDriver {
     /**
      * Return the mechanism for getting metadta from databases using this driver.
      */
-    public abstract DBMetaData getDBMetaData();
+    public abstract DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore);
 
     /**
      * Return how to turn Selct objects to SQL.
