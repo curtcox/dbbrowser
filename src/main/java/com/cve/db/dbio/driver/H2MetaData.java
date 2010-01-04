@@ -12,7 +12,7 @@ import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;

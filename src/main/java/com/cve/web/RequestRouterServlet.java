@@ -55,8 +55,8 @@ public final class RequestRouterServlet extends HttpServlet {
     private static final RequestDumpServlet DUMPER = RequestDumpServlet.newInstance();
 
     public static RequestRouterServlet of(WebApp webapp) {
-        RequestHandler      router = webapp.getRequestHandler();
-        ModelHtmlRenderer renderer = webapp.getModelHtmlRenderer();
+        RequestHandler      router = webapp.handler;
+        ModelHtmlRenderer renderer = webapp.renderer;
         return new RequestRouterServlet(router, renderer);
     }
 

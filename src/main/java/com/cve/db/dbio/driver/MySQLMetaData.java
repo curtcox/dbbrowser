@@ -1,7 +1,7 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 
 /**
  *

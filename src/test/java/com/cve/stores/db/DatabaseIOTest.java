@@ -1,5 +1,6 @@
-package com.cve.stores;
+package com.cve.stores.db;
 
+import com.cve.stores.db.DatabaseIO;
 import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.util.URIs;

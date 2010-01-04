@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.db.ConnectionInfo;
 import com.cve.web.*;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.DBColumn;
@@ -9,11 +10,12 @@ import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.SelectContext;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
-import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
+import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.HintsStore;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.net.URI;
@@ -36,13 +38,17 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     final ServersStore serversStore;
 
-    private SelectBuilderHandler(DBMetaData.Factory db, ServersStore serversStore) {
+    final HintsStore hintsStore;
+
+    private SelectBuilderHandler(
+        DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore) {
         this.db = db;
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
     }
 
-    static SelectBuilderHandler of(DBMetaData.Factory db, ServersStore serversStore) {
-        return new SelectBuilderHandler(db,serversStore);
+    static SelectBuilderHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore) {
+        return new SelectBuilderHandler(db,serversStore,hintsStore);
     }
 
     @Override
@@ -112,8 +118,8 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
         Search           search = DBURICodec.getSearch(uri);
-        DBConnection connection = serversStore.getConnection(server);
-        Hints hints = Stores.getHintsStore(db).getHints(select.columns);
+        DBConnection connection = DBConnectionFactory.getConnection(server, serversStore, null);
+        Hints             hints = hintsStore.getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

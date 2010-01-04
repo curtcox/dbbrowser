@@ -7,8 +7,7 @@ import com.cve.db.Join;
 import com.cve.db.Server;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.CurrentValue;
-import com.cve.stores.MapIO;
-import com.cve.stores.IOs;
+import com.cve.stores.IO;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import java.io.File;
@@ -42,14 +41,14 @@ public final class DBMetaDataFunctions implements DBMetaData {
         return new DBMetaDataFunctions(meta,baseDir);
     }
 
-    private ManagedFunction of(final String name, final MapIO io, final SQLFunction f) {
+    private ManagedFunction of(final String name, final IO io, final SQLFunction f) {
         final File file = new File(baseDir + File.separator + name);
         throw new UnsupportedOperationException();
     }
 
     private final ManagedFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> primaryKeys =
         of(
-            "primaryKeys", IOs.tableListToColumnList(), new SQLFunction() {
+            "primaryKeys", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getPrimaryKeysFor((ImmutableList<DBTable>)from);
@@ -68,7 +67,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<ImmutableList<DBTable>,ImmutableList<Join>> joins =
         of(
-            "joins", IOs.tableListToJoinList(), new SQLFunction() {
+            "joins", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<Join>> apply(Object from) throws SQLException {
                     return meta.getJoinsFor((ImmutableList<DBTable>) from);
@@ -86,7 +85,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<Server,ImmutableList<DBColumn>> columnsForServer =
         of(
-            "columnsForServer", IOs.serverToColumnList(), new SQLFunction() {
+            "columnsForServer", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((Server)from);
@@ -104,7 +103,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<Database,ImmutableList<DBColumn>> columnsForDatabase =
         of(
-            "columnsForDatabase", IOs.serverToColumnList(), new SQLFunction() {
+            "columnsForDatabase", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((Database)from);
@@ -122,7 +121,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<DBTable,ImmutableList<DBColumn>> columnsForTable =
         of(
-            "columnsForTable", IOs.serverToColumnList(), new SQLFunction() {
+            "columnsForTable", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((DBTable)from);
@@ -141,7 +140,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<Server,ImmutableList<Database>> databases =
         of(
-            "databases", IOs.serverToDatabaseList(), new SQLFunction() {
+            "databases", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<Database>> apply(Object from) throws SQLException {
                     return meta.getDatabasesOn((Server)from);
@@ -159,7 +158,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<ImmutableList<DBTable>,ImmutableList<DBColumn>> columnsForTables =
         of(
-            "columnsForTables", IOs.tableListToColumnList(), new SQLFunction() {
+            "columnsForTables", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
                     return meta.getColumnsFor((ImmutableList<DBTable>)from);
@@ -177,7 +176,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<Database,ImmutableList<DBTable>> tables =
         of(
-            "tables", IOs.databaseToTableList(), new SQLFunction() {
+            "tables", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<DBTable>> apply(Object from) throws SQLException {
                     return meta.getTablesOn((Database)from);
@@ -195,7 +194,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
 
     private final ManagedFunction<DBTable,Long> rowCounts =
         of(
-            "rowCounts", IOs.tableToLong(), new SQLFunction() {
+            "rowCounts", null, new SQLFunction() {
                 @Override
                 public CurrentValue<Long> apply(Object from) throws SQLException {
                     return meta.getRowCountFor((DBTable)from);

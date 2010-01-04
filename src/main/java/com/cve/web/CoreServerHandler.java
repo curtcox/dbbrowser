@@ -9,13 +9,13 @@ public class CoreServerHandler {
 
    private static final RequestHandler handler = CompositeRequestHandler.of(
         // handler                         // for URLs of the form
-        ExitHandler.newInstance(),         // /exit
-        ResourceHandler.newInstance(),     // /resource
-        new UserLoginHandler(),            // /login
-        new UserLogoutHandler()            // /logout
+        ExitHandler.of(),         // /exit
+        ResourceHandler.of(),     // /resource
+        UserLoginHandler.of(),            // /login
+        UserLogoutHandler.of()            // /logout
     );
 
-    public static RequestHandler newInstance() {
+    public static RequestHandler of() {
         return handler;
     }
 

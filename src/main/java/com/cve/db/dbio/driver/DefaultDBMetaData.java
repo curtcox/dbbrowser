@@ -18,7 +18,7 @@ import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -135,7 +135,7 @@ public class DefaultDBMetaData implements DBMetaData {
     public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
         args(table);
         Server           server = table.database.server;
-        DBConnection connection = serversStore.getConnection(server);
+        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         DBResultSetIO results = connection.select(sql).value;
         return CurrentValue.of(new Long(results.getInt(0,1)));
@@ -275,7 +275,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     DBMetaDataIO getDbmdIO(Server server) {
         args(server);
-        return DBConnectionFactory.getDbmdIO(server,managedFunction);
+        return DBConnectionFactory.getDbmdIO(server,serversStore,managedFunction);
     }
 
     /**

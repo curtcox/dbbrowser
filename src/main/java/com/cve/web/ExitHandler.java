@@ -10,7 +10,7 @@ final class ExitHandler
 
     private static final ExitHandler HANDLER = new ExitHandler();
 
-    static ExitHandler newInstance() {
+    static ExitHandler of() {
         return HANDLER;
     }
 

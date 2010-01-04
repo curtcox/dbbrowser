@@ -6,7 +6,9 @@ import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBMetaData;
-import com.cve.stores.ServersStore;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.Strings;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
@@ -30,20 +32,26 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
 
     final ServersStore serversStore;
 
-    private CSVHandler(DBMetaData.Factory db, ServersStore serversStore) {
+    final HintsStore hintsStore;
+
+    final ManagedFunction.Factory managedFunction;
+
+    private CSVHandler(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         super("^/view/CSV/",ContentType.TEXT);
         this.db = db;
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
+        this.managedFunction = managedFunction;
     }
 
-    static CSVHandler of(DBMetaData.Factory db, ServersStore serversStore) {
-        return new CSVHandler(db,serversStore);
+    static CSVHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new CSVHandler(db,serversStore,hintsStore,managedFunction);
     }
 
     @Override
     public byte[] get(PageRequest request) throws IOException, SQLException {
         args(request);
-        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore);
+        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction);
         return csv(alt.getResultsFromDB(request.requestURI));
     }
 

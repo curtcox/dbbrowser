@@ -9,7 +9,7 @@ import com.cve.db.Server;
 import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.stores.UnpredictableFunction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -48,18 +48,23 @@ final class DefaultDBConnection implements DBConnection {
 
     final ServersStore serversStore;
 
+    final ManagedFunction.Factory managedFunction;
+
     private final ManagedFunction<SQL,DBResultSetIO> resultSets;
 
     private static final Log LOG = Log.of(DBConnection.class);
 
-    private DefaultDBConnection(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    private DefaultDBConnection(
+        ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction)
+    {
         this.info = notNull(info);
         this.serversStore = serversStore;
+        this.managedFunction = managedFunction;
         dbMetaData = DefaultDBMetaData.getDbmd(this,managedFunction,serversStore);
         resultSets = managedFunction.of(new ExecuteSQL());
     }
 
-    public static DBConnection info(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    static DefaultDBConnection of(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
         return new DefaultDBConnection(info,serversStore,managedFunction);
     }
 
@@ -120,7 +125,7 @@ final class DefaultDBConnection implements DBConnection {
     }
 
     DBMetaData getDbmd(Server server) {
-        DefaultDBConnection connection = (DefaultDBConnection) serversStore.getConnection(server);
+        DefaultDBConnection connection = (DefaultDBConnection) DBConnectionFactory.getConnection(info, serversStore, managedFunction);
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;
     }

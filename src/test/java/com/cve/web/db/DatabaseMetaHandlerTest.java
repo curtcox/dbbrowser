@@ -21,7 +21,8 @@ public class DatabaseMetaHandlerTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        Stores.getServerStore(null).addServer(server, info);
+        Stores stores = null;
+        stores.getStore(null).put(server, info);
         return server;
     }
 
@@ -30,13 +31,13 @@ public class DatabaseMetaHandlerTest {
         Server server = getStoreServer();
         String unnamed = borderTable(tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
         String db1 = borderTable(tr(th("CATALOG_NAME")) + tr(td("DB1")) );
-        String actual = DatabaseMetaHandler.of(null,null).getCatalogs(server);
+        String actual = DatabaseMetaHandler.of(null,null,null).getCatalogs(server);
         assertTrue(actual.equals(unnamed) || actual.equals(db1));
     }
 
     @Test
     public void isDatabaseMetaRequest() {
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null);
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null,null);
         assertFalse(handler.isDatabaseMetaRequest("/server/"));
         assertFalse(handler.isDatabaseMetaRequest("/server:8080/"));
         assertFalse(handler.isDatabaseMetaRequest("/server/db/"));
@@ -49,7 +50,7 @@ public class DatabaseMetaHandlerTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null);
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null,null);
         handler.tryPage(Server.uri(URIs.of("server")), "bad method name");
     }
 }

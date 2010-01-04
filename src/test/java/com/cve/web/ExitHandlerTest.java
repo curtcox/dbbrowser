@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
  */
 public class ExitHandlerTest {
 
-    private final ExitHandler   handler = ExitHandler.newInstance();
+    private final ExitHandler   handler = ExitHandler.of();
 
     @Test
     public void handlesExit() throws IOException {

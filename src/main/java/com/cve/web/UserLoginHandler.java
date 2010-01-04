@@ -9,7 +9,11 @@ import java.sql.SQLException;
  */
 final class UserLoginHandler extends AbstractRequestHandler {
 
-    UserLoginHandler() {}
+    private UserLoginHandler() {}
+
+    static UserLoginHandler of() {
+        return new UserLoginHandler();
+    }
 
     @Override
     public boolean handles(String uri) {

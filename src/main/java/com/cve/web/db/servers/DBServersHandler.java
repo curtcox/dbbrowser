@@ -2,7 +2,7 @@ package com.cve.web.db.servers;
 
 import com.cve.db.dbio.DBMetaData;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.web.db.*;
 import com.cve.web.*;
 
@@ -38,7 +38,7 @@ public final class DBServersHandler {
             ServersHandler.of(db,serversStore),             // /
             AddServerHandler.of(serversStore),            // /add
             new RemoveServerHandler(),         // /remove
-            DatabaseMetaHandler.of(db,managedFunction)  // /meta/server/
+            DatabaseMetaHandler.of(db,serversStore,managedFunction)  // /meta/server/
         );
     }
 

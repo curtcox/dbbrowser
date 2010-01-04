@@ -3,7 +3,8 @@ package com.cve.web.db.render;
 import com.cve.db.SelectResults;
 import com.cve.db.SelectResults.Type;
 import com.cve.db.Server;
-import com.cve.stores.ServersStore;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
@@ -29,14 +30,17 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     final ServersStore serversStore;
 
+    final ManagedFunction.Factory managedFunction;
+
     private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
-    private SelectResultsRenderer(ServersStore serversStore) {
+    private SelectResultsRenderer(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.serversStore = serversStore;
+        this.managedFunction = managedFunction;
     }
 
-    public static SelectResultsRenderer of(ServersStore serversStore) {
-        return new SelectResultsRenderer(serversStore);
+    public static SelectResultsRenderer of(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new SelectResultsRenderer(serversStore,managedFunction);
     }
 
     @Override
@@ -72,7 +76,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         return
             DistributionResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
         ;
     }
 
@@ -81,7 +85,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
             ResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
             ShowTableRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
         ;
     }
 

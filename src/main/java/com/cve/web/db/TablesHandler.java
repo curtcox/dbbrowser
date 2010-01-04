@@ -6,7 +6,9 @@ import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.DBTable;
 import com.cve.db.dbio.DBMetaData;
-import com.cve.stores.ServersStore;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.Search.Space;
 import com.google.common.collect.HashMultimap;
@@ -35,13 +37,19 @@ public final class TablesHandler extends AbstractRequestHandler {
 
     final ServersStore serversStore;
 
-    private TablesHandler(DBMetaData.Factory db, ServersStore serversStore) {
+    final HintsStore hintsStore;
+
+    final ManagedFunction.Factory managedFunction;
+
+    private TablesHandler(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
+        this.managedFunction = managedFunction;
     }
 
-    static TablesHandler of(DBMetaData.Factory db, ServersStore serversStore) {
-        return new TablesHandler(db,serversStore);
+    static TablesHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new TablesHandler(db,serversStore,hintsStore,managedFunction);
     }
     
     /**
@@ -70,7 +78,7 @@ public final class TablesHandler extends AbstractRequestHandler {
             return new TablesPage(server,database,tables,rows,columns);
         }
         if (search.space==Space.CONTENTS) {
-            return DatabaseContentsSearchPageCreator.of(db,serversStore).create(database,search);
+            return DatabaseContentsSearchPageCreator.of(db,serversStore,hintsStore,managedFunction).create(database,search);
         }
         return newNamesSearchPage(database,search);
     }

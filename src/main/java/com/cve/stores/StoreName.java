@@ -4,6 +4,6 @@ package com.cve.stores;
  *
  * @author curt
  */
-public interface StoreFactory {
+public final class StoreName {
 
 }

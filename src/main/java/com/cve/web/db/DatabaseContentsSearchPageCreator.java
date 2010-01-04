@@ -10,11 +10,12 @@ import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
-import com.cve.stores.HintsStore;
-import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.web.Search;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -33,13 +34,19 @@ final class DatabaseContentsSearchPageCreator {
 
     final ServersStore serversStore;
 
-    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, ServersStore serversStore) {
+    final HintsStore hintsStore;
+
+    final ManagedFunction.Factory managedFunction;
+
+    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
+        this.managedFunction = managedFunction;
     }
 
-    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, ServersStore serversStore) {
-        return new DatabaseContentsSearchPageCreator(db,serversStore);
+    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new DatabaseContentsSearchPageCreator(db,serversStore,hintsStore, managedFunction);
     }
 
     public DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
@@ -70,8 +77,8 @@ final class DatabaseContentsSearchPageCreator {
         Database database = table.database;
         DBColumn[] columns = meta.getColumnsFor(table).value.toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
-        DBConnection connection = serversStore.getConnection(server);
-        Hints hints = Stores.getHintsStore(db).getHints(select.columns);
+        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        Hints hints = hintsStore.getHints(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

@@ -31,7 +31,7 @@ public final class CompressedURIHandler implements RequestHandler {
         this.handler = Check.notNull(handler);
     }
     
-    static RequestHandler of(RequestHandler handler) {
+    public static RequestHandler of(RequestHandler handler) {
         return new CompressedURIHandler(handler);
     }
 

@@ -9,6 +9,7 @@ import com.cve.db.dbio.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.Throwables;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -34,17 +35,21 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
+    final ServersStore serversStore;
 
     private static final String PREFIX = "/meta/";
 
-    private DatabaseMetaHandler(DBMetaData.Factory db, ManagedFunction.Factory managedFunction) {
+    private DatabaseMetaHandler(DBMetaData.Factory db, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
         super("^" + PREFIX);
         this.db = db;
         this.managedFunction = managedFunction;
+        this.serversStore = serversStore;
     }
 
-    public static DatabaseMetaHandler of(DBMetaData.Factory db, ManagedFunction.Factory managedFunction) {
-        return new DatabaseMetaHandler(db,managedFunction);
+    public static DatabaseMetaHandler of(
+        DBMetaData.Factory db, ServersStore serversStore, ManagedFunction.Factory managedFunction)
+    {
+        return new DatabaseMetaHandler(db,serversStore,managedFunction);
     }
 
     @Override
@@ -246,7 +251,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     }
 
     DatabaseMetaData metaFor(Server server) throws SQLException {
-        return DBConnectionFactory.metaFor(server,managedFunction);
+        return DBConnectionFactory.metaFor(server,serversStore,managedFunction);
     }
 
     public static String render(ResultSet results) throws SQLException {

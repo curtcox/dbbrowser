@@ -1,21 +1,32 @@
 package com.cve.web;
 
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.StoreFactory;
+import com.cve.stores.Stores;
 
 /**
  *
  * @author Curt
  */
-public interface WebApp {
+public class WebApp {
+
+    final RequestHandler handler;
+    final ModelHtmlRenderer renderer;
 
     interface Context {
         ManagedFunction.Factory getManagedFunctionFactory();
-        StoreFactory getStoreFactory();
+        Stores getStores();
     }
-    
-    RequestHandler getRequestHandler();
 
-    ModelHtmlRenderer getModelHtmlRenderer();
+    /**
+     * Use the factory.
+     */
+    private WebApp(RequestHandler handler, ModelHtmlRenderer renderer) {
+        this.handler = handler;
+        this.renderer = renderer;
+    }
+
+    public static WebApp of(RequestHandler handler, ModelHtmlRenderer renderer) {
+        return new WebApp(handler,renderer);
+    }
 
 }

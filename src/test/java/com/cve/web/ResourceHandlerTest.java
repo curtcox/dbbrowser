@@ -15,7 +15,7 @@ public class ResourceHandlerTest {
      @Test
      public void servesReouseHandler() throws IOException, SQLException {
         PageRequest   request = PageRequest.path("/resource/com/cve/web/ResourceHandler.java");
-        RequestHandler handler = ResourceHandler.newInstance();
+        RequestHandler handler = ResourceHandler.of();
         assertNotNull(handler.produce(request));
      }
 }

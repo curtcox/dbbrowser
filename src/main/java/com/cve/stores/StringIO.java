@@ -6,13 +6,13 @@ import com.cve.util.Check;
  * For formatting strings into strings.
  * @author Curt
  */
-final class StringIO implements IO<String> {
+public final class StringIO implements IO<String> {
 
     final static StringIO SINGLETON = new StringIO();
 
     private StringIO() {}
 
-    static StringIO of() {
+    public static StringIO of() {
         return SINGLETON;
     }
     

@@ -1,9 +1,10 @@
-package com.cve.stores;
+package com.cve.stores.db;
 
-import com.cve.db.dbio.DBConnection;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.Server;
+import com.cve.stores.Store;
+import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
@@ -17,7 +18,8 @@ public class ServersStoreTest {
 
     @Test
     public void getServers() {
-        ImmutableList<Server> servers = Stores.getServerStore(null).getServers();
+        Stores stores = null;
+        ImmutableList<Server> servers = stores.getStore(null).keySet();
         assertNotNull(servers);
     }
 
@@ -26,10 +28,11 @@ public class ServersStoreTest {
         Server server = Server.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db1"));
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL,"","");
-        Stores.getServerStore(null).addServer(server, info);
-
-        DBConnection connection = Stores.getServerStore(null).getConnection(server);
-        assertNotNull(connection);
+        Stores stores = null;
+        stores.getStore(null).put(server, info);
+        Store store = stores.getStore(null);
+        //DBConnection connection = store.getConnection(server);
+        //assertNotNull(connection);
     }
 
 }

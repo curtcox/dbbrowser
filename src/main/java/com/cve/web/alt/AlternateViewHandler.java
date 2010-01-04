@@ -6,10 +6,12 @@ import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
+import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
-import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.HintsStore;
 import com.cve.web.db.DBURICodec;
 import com.cve.util.URIs;
 import com.cve.web.CompositeRequestHandler;
@@ -31,13 +33,19 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
 
     final ServersStore serversStore;
 
-    private AlternateViewHandler(DBMetaData.Factory db, ServersStore serversStore) {
+    final HintsStore hintsStore;
+
+    final ManagedFunction.Factory managedFunction;
+
+    private AlternateViewHandler(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
+        this.managedFunction = managedFunction;
     }
 
-    public static AlternateViewHandler of(DBMetaData.Factory db, ServersStore serversStore) {
-        return new AlternateViewHandler(db,serversStore);
+    public static AlternateViewHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new AlternateViewHandler(db,serversStore,hintsStore,managedFunction);
     }
 
 
@@ -45,7 +53,7 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
     public RequestHandler of() {
         return CompositeRequestHandler.of(
             // handler            // for URLs of the form
-            CSVHandler.of(db,serversStore),      // /view/CSV/
+            CSVHandler.of(db,serversStore,hintsStore,managedFunction),      // /view/CSV/
             new XLSHandler(),     // /view/XLS/
             new PDFHandler(),     // /view/PDF/
             new JSONHandler(),    // /view/JSON/
@@ -67,8 +75,8 @@ public final class AlternateViewHandler implements RequestHandler.Factory {
 
         // Setup the select
         Select           select = DBURICodec.getSelect(tail.toString());
-        DBConnection connection = serversStore.getConnection(server);
-        Hints             hints = Stores.getHintsStore(db).getHints(select.columns);
+        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        Hints             hints = hintsStore.getHints(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

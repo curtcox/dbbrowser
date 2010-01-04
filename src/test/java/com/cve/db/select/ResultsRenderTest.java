@@ -82,6 +82,6 @@ public class ResultsRenderTest {
         String user = "";
         String password = "";
         ConnectionInfo info = ConnectionInfo.urlUserPassword(url, user, password);
-        return DBConnectionFactory.of(info,null,null);
+        return DBConnectionFactory.getConnection(info,null,null);
     }
 }

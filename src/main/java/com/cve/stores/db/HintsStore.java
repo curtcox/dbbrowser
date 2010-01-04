@@ -1,4 +1,4 @@
-package com.cve.stores;
+package com.cve.stores.db;
 
 import com.cve.db.DBColumn;
 import com.cve.db.Hints;

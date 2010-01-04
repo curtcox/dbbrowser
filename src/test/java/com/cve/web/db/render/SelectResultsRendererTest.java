@@ -14,7 +14,8 @@ import com.cve.db.DBRow;
 import com.cve.db.Select;
 import com.cve.db.Server;
 import com.cve.db.Value;
-import com.cve.stores.ServersStore;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.google.common.collect.ImmutableList;
@@ -33,6 +34,7 @@ import org.junit.Test;
 public class SelectResultsRendererTest {
 
     final ServersStore serversStore = null;
+    final ManagedFunction.Factory managedFunction = null;
 
     public SelectResults onePersonResults() {
         Server           server = Server.uri(URIs.of("server"));
@@ -99,7 +101,7 @@ public class SelectResultsRendererTest {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
 
-        String       rendered = SelectResultsRenderer.of(serversStore).render(results,client).toString();
+        String       rendered = SelectResultsRenderer.of(serversStore,managedFunction).render(results,client).toString();
         return rendered;
     }
 
@@ -183,7 +185,7 @@ public class SelectResultsRendererTest {
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
         ClientInfo     client = ClientInfo.of();
 
-        String         rendered = SelectResultsRenderer.of(serversStore).render(results,client).toString();
+        String         rendered = SelectResultsRenderer.of(serversStore, managedFunction).render(results,client).toString();
         return rendered;
     }
 

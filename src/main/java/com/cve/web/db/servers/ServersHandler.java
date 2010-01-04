@@ -8,8 +8,7 @@ import com.cve.db.Database;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.log.Log;
-import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -53,7 +52,7 @@ final class ServersHandler extends AbstractRequestHandler {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
-            ImmutableList<Server> servers = serversStore.getServers();
+            ImmutableList<Server> servers = serversStore.keySet();
             ImmutableMultimap<Server,Object> databases = getDatabases(servers);
             return new ServersPage(servers,databases);
         }
@@ -104,7 +103,7 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     ImmutableList<DBColumn> allColumns() throws SQLException {
         List<DBColumn> columns = Lists.newArrayList();
-        ImmutableList<Server> servers = Stores.getServerStore(null).getServers();
+        ImmutableList<Server> servers = serversStore.keySet();
         for (Server server : servers) {
             for (DBColumn column : db.of(server).getColumnsFor(server).value) {
                 columns.add(column);

@@ -6,7 +6,7 @@ import com.cve.db.JDBCURL;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.ServersStore;
 import com.cve.util.URIs;
 import java.sql.Driver;
 import com.cve.util.Check;

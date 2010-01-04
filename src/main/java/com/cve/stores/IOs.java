@@ -1,6 +1,5 @@
 package com.cve.stores;
 
-import com.cve.db.DBTable;
 
 /**
  *
@@ -8,6 +7,7 @@ import com.cve.db.DBTable;
  */
 public final class IOs {
 
+    /*
     public static MapIO tableListToColumnList() {
         return MapIO.of(ListIO.of(TableIO.of()),ListIO.of(ColumnIO.of()));
     }
@@ -35,4 +35,6 @@ public final class IOs {
     public static MapIO stringToString() {
         return MapIO.of(StringIO.of(),StringIO.of());
     }
+
+     */
 }

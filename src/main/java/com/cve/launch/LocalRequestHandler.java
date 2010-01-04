@@ -1,9 +1,16 @@
-package com.cve.web;
+package com.cve.launch;
 
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.dbio.LocalDBMetaDataFactory;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ServersStore;
+import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.ServersStore;
+import com.cve.web.CompositeRequestHandler;
+import com.cve.web.CompressedURIHandler;
+import com.cve.web.CoreServerHandler;
+import com.cve.web.DebugHandler;
+import com.cve.web.ErrorReportHandler;
+import com.cve.web.RequestHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
@@ -18,18 +25,21 @@ final class LocalRequestHandler {
 
     final ServersStore serversStore;
 
+    final HintsStore hintsStore;
+
     final DBMetaData.Factory db;
 
     final ManagedFunction.Factory managedFunction;
 
-    private LocalRequestHandler(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    private LocalRequestHandler(ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.serversStore = serversStore;
+        this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
-        db = LocalDBMetaDataFactory.of(serversStore);
+        db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
     }
 
-    static LocalRequestHandler of(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new LocalRequestHandler(serversStore,managedFunction);
+    static LocalRequestHandler of(ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new LocalRequestHandler(serversStore, hintsStore, managedFunction);
     }
 
     RequestHandler of() {
@@ -42,10 +52,10 @@ final class LocalRequestHandler {
                 DebugHandler.of(
                     CompressedURIHandler.of(
                         CompositeRequestHandler.of(
-                            CoreServerHandler.newInstance(),
-                            AlternateViewHandler.of(db,serversStore).of(),
+                            CoreServerHandler.of(),
+                            AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction).of(),
                             LogBrowserHandler.newInstance(),
-                            DBBrowserHandler.of(db,serversStore,managedFunction).of()
+                            DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction).of()
                        )
                  )
             )

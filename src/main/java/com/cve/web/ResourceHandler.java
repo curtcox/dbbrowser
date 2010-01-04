@@ -21,7 +21,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
 
     private ResourceHandler() { super("^" + PREFIX); }
 
-    static ResourceHandler newInstance() {
+    static ResourceHandler of() {
         return HANDLER;
     }
 
