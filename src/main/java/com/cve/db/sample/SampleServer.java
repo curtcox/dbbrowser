@@ -8,8 +8,8 @@ import com.cve.db.SQL;
 import com.cve.db.Server;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
+import com.cve.stores.ManagedFunction;
 import com.cve.stores.ServersStore;
-import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,6 +32,9 @@ public final class SampleServer {
      */
     private static final DBConnection connection = getConnection();
 
+    private static final ServersStore serversStore = null;
+
+    private static final ManagedFunction.Factory managedFunction = null;
     /**
      * The static initializer does all the work -- once.
      */
@@ -44,7 +47,7 @@ public final class SampleServer {
 
     static DBConnection getConnection() {
         final ConnectionInfo info = getConnectionInfo();
-        return DBConnectionFactory.of(info);
+        return DBConnectionFactory.of(info,serversStore,managedFunction);
     }
 
     /**
@@ -62,7 +65,7 @@ public final class SampleServer {
      * Add the server to the store of servers.
      */
     static void addToStore() {
-        Stores.getServerStore().addServer(SAMPLE, getConnectionInfo());
+        serversStore.addServer(SAMPLE, getConnectionInfo());
     }
 
     /**

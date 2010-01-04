@@ -1,6 +1,9 @@
 package com.cve.web;
 
+import com.cve.db.dbio.DBMetaData;
 import com.cve.db.sample.SampleServer;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
@@ -30,10 +33,13 @@ public final class Main {
     }
 
     static void startGrizzly() throws IOException {
+        DBMetaData.Factory db = null;
+        ServersStore serversStore = null;
+        ManagedFunction.Factory managedFunction = null;
         ServletAdapter adapter = new ServletAdapter(
             RequestRouterServlet.of(SimpleWebApp.of(
-                LocalRequestHandler.of(),
-                DefaultModelHtmlRenderers.RENDERERS)
+                LocalRequestHandler.of(serversStore,managedFunction).of(),
+                DefaultModelHtmlRenderers.of(db,serversStore))
             )
         );
         GrizzlyWebServer    server = new GrizzlyWebServer(PORT,"/");
@@ -43,7 +49,8 @@ public final class Main {
 
     static void loadServers() {
         SampleServer.load();
-        Stores.getServerStore().load();
+        ManagedFunction.Factory factory = null;
+        Stores.getServerStore(factory).load();
     }
 
     static void openBrowser() throws IOException {

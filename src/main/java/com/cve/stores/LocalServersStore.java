@@ -182,7 +182,7 @@ final class LocalServersStore implements ServersStore {
                 ".  Connection available for " + CONNECTIONS.keySet();
             throw new IllegalArgumentException(message);
         }
-        return DBConnectionFactory.of(info,managedFunction);
+        return DBConnectionFactory.of(info,this,managedFunction);
     }
 
 }

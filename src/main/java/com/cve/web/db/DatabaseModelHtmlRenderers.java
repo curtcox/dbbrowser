@@ -25,9 +25,11 @@ public final class DatabaseModelHtmlRenderers {
         this.serversStore = serversStore;
     }
 
-    public static final ImmutableMap<Class,ModelHtmlRenderer> RENDERERS = load();
+    public static ImmutableMap<Class,ModelHtmlRenderer> of(DBMetaData.Factory db, ServersStore serversStore) {
+        return new DatabaseModelHtmlRenderers(db,serversStore).get();
+    }
 
-    public ImmutableMap<Class,ModelHtmlRenderer> load() {
+    private ImmutableMap<Class,ModelHtmlRenderer> get() {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(TablesPage.class,                 PageDecorator.of(new TablesPageRenderer()));
         map.put(TablesSearchPage.class,           PageDecorator.of(new TablesSearchPageRenderer()));

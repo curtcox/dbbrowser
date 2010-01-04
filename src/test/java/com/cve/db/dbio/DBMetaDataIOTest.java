@@ -26,7 +26,7 @@ public class DBMetaDataIOTest {
         ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
         Stores.getServerStore(null).addServer(server, info);
         DBConnection connection = DefaultDBConnection.info(info,null,null);
-        DBMetaData meta = DefaultDBMetaData.getDbmd(connection);
+        DBMetaData meta = DefaultDBMetaData.getDbmd(connection,null,null);
         assertEquals(0,meta.getTablesOn(database).value.size());
     }
 

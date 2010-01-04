@@ -55,9 +55,9 @@ public class DefaultDBMetaData implements DBMetaData {
         this.serversStore = serversStore;
     }
 
-    public static DBMetaData getDbmd(DBConnection connection) {
+    public static DBMetaData getDbmd(DBConnection connection, ManagedFunction.Factory managedFunction, ServersStore serversStore) {
         args(connection);
-        DBMetaData meta = getDbmd0(connection);
+        DBMetaData meta = getDbmd0(connection,managedFunction,serversStore);
         meta = DBMetaDataLogger.of(System.out,meta);
         meta = DBMetaDataCache.of(meta);
         meta = DBMetaDataTimer.of(meta);
@@ -65,7 +65,7 @@ public class DefaultDBMetaData implements DBMetaData {
         return meta;
     }
 
-    private static DBMetaData getDbmd0(DBConnection connection) {
+    private static DBMetaData getDbmd0(DBConnection connection, ManagedFunction.Factory managedFunction, ServersStore serversStore) {
         Check.notNull(connection);
         DBDriver driver = connection.getInfo().driver;
         DBMetaData meta = driver.getDBMetaData(managedFunction,serversStore);

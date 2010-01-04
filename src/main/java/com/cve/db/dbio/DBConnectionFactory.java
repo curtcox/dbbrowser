@@ -3,6 +3,7 @@ package com.cve.db.dbio;
 import com.cve.db.ConnectionInfo;
 import com.cve.db.Server;
 import com.cve.stores.ManagedFunction;
+import com.cve.stores.ManagedFunction.Factory;
 import com.cve.stores.ServersStore;
 import com.cve.stores.Stores;
 import java.sql.SQLException;
@@ -33,4 +34,5 @@ public final class DBConnectionFactory {
         DefaultDBConnection connection = getConnection(server,managedFunction);
         return connection.getJDBCMetaData();
     }
+
 }
