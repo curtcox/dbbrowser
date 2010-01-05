@@ -24,7 +24,7 @@ public class FilterTest {
     }
 
     void assertEquality(Object object) {
-        Server   server = Server.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"));
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
@@ -43,7 +43,7 @@ public class FilterTest {
     }
 
     void assertUnequality(Object a, Object b) {
-        Server   server = Server.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"));
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
@@ -52,7 +52,7 @@ public class FilterTest {
     }
 
     private void assertRenderedFilterParses(Object value) {
-        Server   server = Server.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"));
         DBTable   table = server.databaseName("db").tableName("foo");
         Filter filter = table
                 .columnName("bar")

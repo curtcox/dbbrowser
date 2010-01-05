@@ -7,7 +7,7 @@ import com.cve.db.Database;
 import com.cve.db.Filter;
 import com.cve.db.Join;
 import com.cve.db.Order;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.db.Select;
@@ -25,7 +25,7 @@ public class DBURIParserTest {
     @Test
     public void getAllFull() {
         String uri = "//server/db/db.t1+db.t2/db.t1.c1+db.t2.c2+count(c1)/db.t1.c1=db.t2.c2/db.t1.c1=only/db.t1.c1=ASC/db.t1.c1/";
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
@@ -52,7 +52,7 @@ public class DBURIParserTest {
     @Test
     public void getAllShortened() {
         String uri = "//server/db/db.t1+db.t2/c1+0c2+count(c1)/c1=0c2/c1=only/c1=ASC/c1/";
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
@@ -79,7 +79,7 @@ public class DBURIParserTest {
     @Test
     public void getServerWhenOnlyServer() {
         String uri = "//server/";
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         assertEquals(server,  DBURICodec.getServer(uri));
     }
 
@@ -99,7 +99,7 @@ public class DBURIParserTest {
     public void getWithEmptyGroupBy() {
         String uri = "//SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE/////20+20/";
         Select select = DBURICodec.getSelect(uri);
-        Server     server = Server.uri(URIs.of("SAMPLE"));
+        DBServer     server = DBServer.uri(URIs.of("SAMPLE"));
         Database database = server.databaseName("PUBLIC");
         assertEquals(database,select.databases.get(0));
         assertEquals(server,select.databases.get(0).server);

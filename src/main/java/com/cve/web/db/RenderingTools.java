@@ -3,7 +3,7 @@ package com.cve.web.db;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.html.CSS;
 import com.cve.ui.UIDetail;
 import java.util.Collection;
@@ -14,7 +14,7 @@ import java.util.Collection;
  */
 public final class RenderingTools {
 
-    public static UIDetail cell(Server server,int height) {
+    public static UIDetail cell(DBServer server,int height) {
         return UIDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height);
     }
 

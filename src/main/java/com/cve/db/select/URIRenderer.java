@@ -6,7 +6,7 @@ import com.cve.db.Filter;
 import com.cve.db.Join;
 import com.cve.db.Limit;
 import com.cve.db.Order;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.Select;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
@@ -59,7 +59,7 @@ public final class URIRenderer {
         notNull(select);
         validate(select);
         StringBuilder out = new StringBuilder();
-        Server server = select.server;
+        DBServer server = select.server;
         out.append(DBURICodec.encode(search));
         out.append(server.uri + "/");
         ImmutableList<DBTable> tables = select.tables;

@@ -1,6 +1,6 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.util.Check;
 import com.cve.web.*;
 import javax.annotation.concurrent.Immutable;
@@ -15,7 +15,7 @@ final class AddServerPage implements Model {
      * To the user
      */
     final String message;
-    final Server server;
+    final DBServer server;
     final String jdbcurl;
     final String user;
     final String password;
@@ -30,11 +30,11 @@ final class AddServerPage implements Model {
 
     static final AddServerPage SAMPLE = new AddServerPage(
        "Specify the server you want to connect to",
-        Server.NULL, "user", "password", "jdbcurl"
+        DBServer.NULL, "user", "password", "jdbcurl"
     );
 
 
-    private AddServerPage(String message, Server server, String user, String password, String jdbcurl) {
+    private AddServerPage(String message, DBServer server, String user, String password, String jdbcurl) {
         this.message  = Check.notNull(message);
         this.server   = Check.notNull(server);
         this.user     = Check.notNull(user);
@@ -43,7 +43,7 @@ final class AddServerPage implements Model {
     }
 
     static AddServerPage messageServerUserPasswordJdbcUrl(
-        String message, Server server, String user, String password, String jdbcurl)
+        String message, DBServer server, String user, String password, String jdbcurl)
     {
         return new AddServerPage(message,server,user,password,jdbcurl);
     }

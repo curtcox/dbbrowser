@@ -4,7 +4,7 @@ import com.cve.db.dbio.*;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.SchemaInfo;
@@ -12,10 +12,9 @@ import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -24,18 +23,18 @@ import java.util.List;
  */
 final class H2MetaData extends DefaultDBMetaData {
 
-    private H2MetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    private H2MetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         super(managedFunction,serversStore);
     }
 
-    static DBMetaData of(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    static DBMetaData of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         return new H2MetaData(managedFunction,serversStore);
     }
 
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         String           catalog = null;
@@ -60,8 +59,8 @@ final class H2MetaData extends DefaultDBMetaData {
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
-        Server server = database.server;
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
+        DBServer server = database.server;
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         String          catalog = null;
@@ -85,9 +84,9 @@ final class H2MetaData extends DefaultDBMetaData {
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         Database       database = table.database;
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = null;
         String    schemaPattern = database.name;
@@ -108,8 +107,8 @@ final class H2MetaData extends DefaultDBMetaData {
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
-        Server           server = database.server;
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
+        DBServer           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = null;
         String    schemaPattern = database.name;
@@ -127,7 +126,7 @@ final class H2MetaData extends DefaultDBMetaData {
     }
 
     @Override
-    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         DBMetaDataIO  dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
         for (SchemaInfo info : dbmd.getSchemas().value) {

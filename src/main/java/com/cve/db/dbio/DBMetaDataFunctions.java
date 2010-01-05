@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.IO;
@@ -75,7 +75,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
             }
         );
     @Override
-    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  {
         try {
             return joins.apply(tables);
         } catch (Exception e) {
@@ -83,17 +83,17 @@ public final class DBMetaDataFunctions implements DBMetaData {
         }
     }
 
-    private final ManagedFunction<Server,ImmutableList<DBColumn>> columnsForServer =
+    private final ManagedFunction<DBServer,ImmutableList<DBColumn>> columnsForServer =
         of(
             "columnsForServer", null, new SQLFunction() {
                 @Override
-                public CurrentValue<ImmutableList<DBColumn>> apply(Object from) throws SQLException {
-                    return meta.getColumnsFor((Server)from);
+                public CurrentValue<ImmutableList<DBColumn>> apply(Object from) {
+                    return meta.getColumnsFor((DBServer)from);
                 }
             }
         );
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         try {
             return columnsForServer.apply(server);
         } catch (Exception e) {
@@ -111,7 +111,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
             }
         );
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         try {
             return columnsForDatabase.apply(database);
         } catch (Exception e) {
@@ -130,7 +130,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
         );
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         try {
             return columnsForTable.apply(table);
         } catch (Exception e) {
@@ -138,17 +138,17 @@ public final class DBMetaDataFunctions implements DBMetaData {
         }
     }
 
-    private final ManagedFunction<Server,ImmutableList<Database>> databases =
+    private final ManagedFunction<DBServer,ImmutableList<Database>> databases =
         of(
             "databases", null, new SQLFunction() {
                 @Override
                 public CurrentValue<ImmutableList<Database>> apply(Object from) throws SQLException {
-                    return meta.getDatabasesOn((Server)from);
+                    return meta.getDatabasesOn((DBServer)from);
                 }
             }
         );
     @Override
-    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         try {
             return databases.apply(server);
         } catch (Exception e) {
@@ -166,7 +166,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
             }
         );
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
         try {
             return columnsForTables.apply(tables);
         } catch (Exception e) {
@@ -184,7 +184,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
             }
         );
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  {
         try {
             return tables.apply(database);
         } catch (Exception e) {
@@ -202,7 +202,7 @@ public final class DBMetaDataFunctions implements DBMetaData {
             }
         );
     @Override
-    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) {
         try {
             return rowCounts.apply(table);
         } catch (Exception e) {

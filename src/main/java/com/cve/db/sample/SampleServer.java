@@ -1,15 +1,15 @@
 package com.cve.db.sample;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.JDBCURL;
 import com.cve.db.SQL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,14 +25,14 @@ public final class SampleServer {
     /**
      * Our sample server.
      */
-    static final Server SAMPLE = Server.uri(URIs.of("SAMPLE"));
+    static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
     /**
      * How we connect to it.
      */
     private static final DBConnection connection = getConnection();
 
-    private static final ServersStore serversStore = null;
+    private static final DBServersStore serversStore = null;
 
     private static final ManagedFunction.Factory managedFunction = null;
     /**
@@ -46,19 +46,19 @@ public final class SampleServer {
     }
 
     static DBConnection getConnection() {
-        final ConnectionInfo info = getConnectionInfo();
+        final DBConnectionInfo info = getConnectionInfo();
         return DBConnectionFactory.getConnection(info,serversStore,managedFunction);
     }
 
     /**
      * See http://www.h2database.com/html/features.html#database_url
      */
-    static ConnectionInfo getConnectionInfo() {
+    static DBConnectionInfo getConnectionInfo() {
         final String url = "jdbc:h2:mem:" + SAMPLE.toString();
         final String user = "";
         final String password = "";
         final JDBCURL jdbcURL = JDBCURL.uri(URIs.of(url));
-        return ConnectionInfo.urlUserPassword(jdbcURL, user, password);
+        return DBConnectionInfo.urlUserPassword(jdbcURL, user, password);
     }
 
     /**
@@ -147,7 +147,7 @@ public final class SampleServer {
     }
 
     static void update(SQL sql) throws SQLException {
-        final ConnectionInfo info = getConnectionInfo();
+        final DBConnectionInfo info = getConnectionInfo();
         Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
         statement.execute(sql.toString());

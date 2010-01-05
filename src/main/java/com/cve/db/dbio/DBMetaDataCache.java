@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.CurrentValue;
 import com.cve.util.Check;
 import com.cve.util.SimpleCache;
@@ -30,7 +30,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<ImmutableList<DBTable>,CurrentValue<ImmutableList<DBColumn>>> primaryKeys = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables)  {
         if (primaryKeys.containsKey(tables)) {
             return primaryKeys.get(tables);
         }
@@ -41,7 +41,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<ImmutableList<DBTable>,CurrentValue<ImmutableList<Join>>> joins = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) {
         if (joins.containsKey(tables)) {
             return joins.get(tables);
         }
@@ -50,9 +50,9 @@ public final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Server,CurrentValue<ImmutableList<DBColumn>>> columnsForServer = SimpleCache.of();
+    private final Map<DBServer,CurrentValue<ImmutableList<DBColumn>>> columnsForServer = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         if (columnsForServer.containsKey(server)) {
             return columnsForServer.get(server);
         }
@@ -63,7 +63,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<Database,CurrentValue<ImmutableList<DBColumn>>> columnsForDatabase = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         if (columnsForDatabase.containsKey(database)) {
             return columnsForDatabase.get(database);
         }
@@ -74,7 +74,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<DBTable,CurrentValue<ImmutableList<DBColumn>>> columnsForTable = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         if (columnsForTable.containsKey(table)) {
             return columnsForTable.get(table);
         }
@@ -83,9 +83,9 @@ public final class DBMetaDataCache implements DBMetaData {
         return result;
     }
 
-    private final Map<Server,CurrentValue<ImmutableList<Database>>> databases = SimpleCache.of();
+    private final Map<DBServer,CurrentValue<ImmutableList<Database>>> databases = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         if (databases.containsKey(server)) {
             return databases.get(server);
         }
@@ -96,7 +96,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<ImmutableList<DBTable>,CurrentValue<ImmutableList<DBColumn>>> columnsForTables = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
         if (columnsForTables.containsKey(tables)) {
             return columnsForTables.get(tables);
         }
@@ -107,7 +107,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<Database,CurrentValue<ImmutableList<DBTable>>> tables = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
         if (tables.containsKey(database)) {
             return tables.get(database);
         }
@@ -118,7 +118,7 @@ public final class DBMetaDataCache implements DBMetaData {
 
     private final Map<DBTable,CurrentValue<Long>> rowCounts = SimpleCache.of();
     @Override
-    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) {
         if (rowCounts.containsKey(table)) {
             return rowCounts.get(table);
         }

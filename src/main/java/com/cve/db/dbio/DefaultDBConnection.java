@@ -3,13 +3,13 @@ package com.cve.db.dbio;
 
 import com.cve.db.dbio.driver.DefaultDBMetaData;
 import com.cve.db.dbio.driver.DefaultDBResultSetMetaDataFactory;
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.SQL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.stores.UnpredictableFunction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -39,14 +39,14 @@ final class DefaultDBConnection implements DBConnection {
     /**
      * How we generate connections
      */
-    public final ConnectionInfo info;
+    public final DBConnectionInfo info;
 
     /**
      * For getting info about the database.
      */
     public final DBMetaData dbMetaData;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
     final ManagedFunction.Factory managedFunction;
 
@@ -55,7 +55,7 @@ final class DefaultDBConnection implements DBConnection {
     private static final Log LOG = Log.of(DBConnection.class);
 
     private DefaultDBConnection(
-        ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction)
+        DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
         this.info = notNull(info);
         this.serversStore = serversStore;
@@ -64,7 +64,7 @@ final class DefaultDBConnection implements DBConnection {
         resultSets = managedFunction.of(new ExecuteSQL());
     }
 
-    static DefaultDBConnection of(ConnectionInfo info, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         return new DefaultDBConnection(info,serversStore,managedFunction);
     }
 
@@ -76,7 +76,7 @@ final class DefaultDBConnection implements DBConnection {
     }
 
     @Override
-    public synchronized DBResultSetMetaData getMetaData(Server server, DBResultSetIO results) throws SQLException {
+    public synchronized DBResultSetMetaData getMetaData(DBServer server, DBResultSetIO results)  {
         args(server,results);
         return DefaultDBResultSetMetaDataFactory.of(server,this,results);
     }
@@ -110,12 +110,12 @@ final class DefaultDBConnection implements DBConnection {
      * Execute the given SQL.
      */
     @Override
-    public synchronized CurrentValue<DBResultSetIO> select(final SQL sql) throws SQLException {
+    public synchronized CurrentValue<DBResultSetIO> select(final SQL sql) {
         return resultSets.apply(sql);
     }
 
     @Override
-    public ConnectionInfo getInfo() {
+    public DBConnectionInfo getInfo() {
         return info;
     }
 
@@ -124,7 +124,7 @@ final class DefaultDBConnection implements DBConnection {
         return dbMetaData;
     }
 
-    DBMetaData getDbmd(Server server) {
+    DBMetaData getDbmd(DBServer server) {
         DefaultDBConnection connection = (DefaultDBConnection) DBConnectionFactory.getConnection(info, serversStore, managedFunction);
         DBMetaData   dbmd = connection.dbMetaData;
         return dbmd;

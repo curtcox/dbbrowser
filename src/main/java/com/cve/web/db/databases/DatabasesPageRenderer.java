@@ -2,7 +2,7 @@ package com.cve.web.db.databases;
 
 import com.cve.web.*;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.util.Replace;
@@ -21,7 +21,7 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         DatabasesPage page = (DatabasesPage) model;
-        Server server = page.server;
+        DBServer server = page.server;
         String title = "Available Databases on " + server.toString();
         String guts  = tableOfDatabases(page);
         String nav[] = new String[] {

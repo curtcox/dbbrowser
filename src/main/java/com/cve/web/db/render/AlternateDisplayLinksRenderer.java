@@ -6,7 +6,7 @@ import com.cve.html.Link;
 import com.cve.db.SelectResults;
 import com.cve.db.select.URIRenderer;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.CompressedURIHandler;
 import com.cve.web.Search;
@@ -30,22 +30,22 @@ public final class AlternateDisplayLinksRenderer {
 
     private final Search search;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
     final ManagedFunction.Factory managedFunction;
 
-    private AlternateDisplayLinksRenderer(SelectResults results, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    private AlternateDisplayLinksRenderer(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.select  = notNull(results.select);
         this.search  = notNull(results.search);
         this.serversStore = serversStore;
         this.managedFunction = managedFunction;
     }
 
-    static AlternateDisplayLinksRenderer results(SelectResults results, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         return new AlternateDisplayLinksRenderer(results,serversStore,managedFunction);
     }
 
-    public static String render(SelectResults results, ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    public static String render(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore, managedFunction);
         return renderer.viewLinks();
    }

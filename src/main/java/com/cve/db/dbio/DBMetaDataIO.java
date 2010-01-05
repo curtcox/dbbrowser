@@ -190,19 +190,19 @@ public interface DBMetaDataIO {
     }
 
     // Wrappers for all of the DBMD functions we use
-    CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException;
+    CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier);
 
-    CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) throws SQLException;
+    CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier);
 
-    CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) throws SQLException;
+    CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier);
 
-    CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) throws SQLException;
+    CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier);
 
-    CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) throws SQLException;
+    CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier);
 
-    CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException;
+    CurrentValue<ImmutableList<CatalogInfo>> getCatalogs();
 
-    CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException;
+    CurrentValue<ImmutableList<SchemaInfo>> getSchemas();
 
     /**
      * Return the raw meta data.  This is mostly for debugging.

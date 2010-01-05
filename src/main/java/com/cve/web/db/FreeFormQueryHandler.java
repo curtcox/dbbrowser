@@ -10,7 +10,7 @@ import com.cve.db.Database;
 import com.cve.db.Limit;
 import com.cve.db.SQL;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
@@ -19,7 +19,7 @@ import com.cve.db.dbio.driver.DBDriver;
 import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.stores.Stores;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
@@ -51,16 +51,16 @@ import static com.cve.log.Log.args;
  */
 public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
     final ManagedFunction.Factory managedFunction;
 
-    private FreeFormQueryHandler(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.serversStore = serversStore;
         this.managedFunction = managedFunction;
     }
 
-    public static FreeFormQueryHandler of(ServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         return new FreeFormQueryHandler(serversStore,managedFunction);
     }
     
@@ -89,7 +89,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
             return page(sql,results,meta,message,null);
         }
         String uri = request.requestURI;
-        Server server = DBURICodec.getServer(uri);
+        DBServer server = DBURICodec.getServer(uri);
         if (isServerOnlyQuery(uri)) {
             try {
                 DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
@@ -119,7 +119,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         return new FreeFormQueryModel(sql,results,meta,message,trace);
     }
 
-    static ResultsAndMore exec(Server server, SQL sql, DBConnection connection) throws SQLException {
+    static ResultsAndMore exec(DBServer server, SQL sql, DBConnection connection) throws SQLException {
         args(server,sql,connection);
         DBResultSetIO               results = connection.select(sql).value;
         DBResultSetMetaData            meta = connection.getMetaData(server,results);
@@ -189,7 +189,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      */
     public URI linkTo(Select select, Search search) {
         args(select);
-        Server server = select.server;
+        DBServer server = select.server;
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
         DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);

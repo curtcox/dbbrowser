@@ -1,9 +1,9 @@
 package com.cve.web.db;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.SQLException;
@@ -19,9 +19,9 @@ public class SelectBuilderHandlerTest {
 
     @Test
     public void getResults() throws SQLException {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
         Stores stores = null;
         stores.getStore(null).put(server, info);
 

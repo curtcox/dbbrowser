@@ -3,7 +3,7 @@ package com.cve.web.db;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.web.*;
@@ -34,7 +34,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         Search     search = page.search;
         String     target = search.target;
         Database database = page.database;
-        Server     server = database.server;
+        DBServer     server = database.server;
         String title = "Occurences of " + target + " on "+ server.uri + "/" + database.name;
         String[] nav = new String[] {
             Replace.bracketQuote(

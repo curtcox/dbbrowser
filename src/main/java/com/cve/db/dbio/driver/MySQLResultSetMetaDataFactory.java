@@ -4,12 +4,11 @@ import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBResultSetMetaDataIO;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -19,12 +18,12 @@ import java.util.Set;
  */
 final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MySQLResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
+    public MySQLResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 
     @Override
-    public ImmutableList<Database> getDatabases() throws SQLException {
+    public ImmutableList<Database> getDatabases() {
         int count = meta.getColumnCount();
         Set<Database> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
@@ -36,7 +35,7 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
     }
 
     @Override
-    public ImmutableList<DBTable> getTables() throws SQLException {
+    public ImmutableList<DBTable> getTables() {
         int count = meta.getColumnCount();
         Set<DBTable> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
@@ -49,7 +48,7 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
     }
 
     @Override
-    public ImmutableList<DBColumn> getColumns() throws SQLException {
+    public ImmutableList<DBColumn> getColumns() {
         int count = meta.getColumnCount();
         List<DBColumn> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
@@ -63,7 +62,7 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
     }
 
     @Override
-    public ImmutableList<AggregateFunction> getFunctions() throws SQLException {
+    public ImmutableList<AggregateFunction> getFunctions() {
         int count = meta.getColumnCount();
         List<AggregateFunction> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {

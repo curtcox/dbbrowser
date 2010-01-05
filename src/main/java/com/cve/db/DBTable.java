@@ -47,7 +47,7 @@ public final class DBTable {
         return canonical(new DBTable(database,name));
     }
 
-    public static DBTable parse(Server server, String fullTableName) {
+    public static DBTable parse(DBServer server, String fullTableName) {
         args(server,fullTableName);
         notNull(server);
         notNull(fullTableName);

@@ -4,7 +4,7 @@ import com.cve.stores.db.JoinIO;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -19,7 +19,7 @@ public class JoinIOTest {
 
     @Test
     public void both() {
-        Database db = Server.uri(URIs.of("one")).databaseName("db");
+        Database db = DBServer.uri(URIs.of("one")).databaseName("db");
         DBColumn c1 = db.tableName("t1").columnName("c1");
         DBColumn c2 = db.tableName("t2").columnName("c2");
         Join join = Join.of(c1, c2);

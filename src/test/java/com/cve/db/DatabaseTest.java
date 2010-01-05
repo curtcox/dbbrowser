@@ -17,7 +17,7 @@ public class DatabaseTest {
      */
     @Test
     public void equality() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         assertEquals(server.databaseName("foo"), server.databaseName("foo"));
     }
 
@@ -25,14 +25,14 @@ public class DatabaseTest {
      */
     @Test
     public void notEqualWhenServersDiffer() {
-        Server           server1 = Server.uri(URIs.of("server1"));
-        Server           server2 = Server.uri(URIs.of("server2"));
+        DBServer           server1 = DBServer.uri(URIs.of("server1"));
+        DBServer           server2 = DBServer.uri(URIs.of("server2"));
         assertNotEquals(server1.databaseName("foo"), server2.databaseName("foo"));
     }
 
     @Test
     public void notEqualWhenNamesDiffer() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         assertNotEquals(server.databaseName("foo"), server.databaseName("bar"));
     }
 

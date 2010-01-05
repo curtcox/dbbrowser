@@ -3,8 +3,8 @@ package com.cve.web.db;
 import com.cve.db.SelectResults;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.HintsStore;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.web.db.render.SelectResultsRenderer;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.PageDecorator;
@@ -20,18 +20,18 @@ import java.util.Map;
 public final class DatabaseModelHtmlRenderers {
 
     final DBMetaData.Factory db;
-    final ServersStore serversStore;
-    final HintsStore hintsStore;
+    final DBServersStore serversStore;
+    final DBHintsStore hintsStore;
     final ManagedFunction.Factory managedFunction;
 
-    private DatabaseModelHtmlRenderers(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    private DatabaseModelHtmlRenderers(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
     }
 
-    public static ImmutableMap<Class,ModelHtmlRenderer> of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    public static ImmutableMap<Class,ModelHtmlRenderer> of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         return new DatabaseModelHtmlRenderers(db,serversStore,hintsStore,managedFunction).get();
     }
 

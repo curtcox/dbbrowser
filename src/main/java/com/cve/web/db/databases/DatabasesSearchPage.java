@@ -3,7 +3,7 @@ package com.cve.web.db.databases;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.web.*;
 
 import com.google.common.collect.ImmutableList;
@@ -20,7 +20,7 @@ final class DatabasesSearchPage implements Model {
 
     final Search search;
 
-    final Server server;
+    final DBServer server;
 
     /**
      * The servers on the page
@@ -34,7 +34,7 @@ final class DatabasesSearchPage implements Model {
     final ImmutableMultimap<DBTable,DBColumn> columns;
 
 
-    DatabasesSearchPage(Search search, Server server,
+    DatabasesSearchPage(Search search, DBServer server,
         List<Database> databases,
         Multimap<Database,DBTable> tables,
         Multimap<DBTable,DBColumn> columns) {

@@ -9,7 +9,7 @@ import com.cve.db.Limit;
 import com.cve.db.Order;
 import com.cve.db.SQL;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.Value;
 import com.cve.util.Replace;
@@ -28,7 +28,7 @@ public class SQLRenderTest {
 
     @Test
     public void renderSelectPerson() {
-        Server      server = Server.uri(URIs.of("server"));
+        DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -45,7 +45,7 @@ public class SQLRenderTest {
 
     @Test
     public void renderSelectPersonAccount() {
-        Server        server = Server.uri(URIs.of("server"));
+        DBServer        server = DBServer.uri(URIs.of("server"));
         Database    database = server.databaseName("customer");
         DBTable         person = database.tableName("person");
         DBTable        account = database.tableName("account");

@@ -24,7 +24,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) {
         Stopwatch watch = Stopwatch.start();
         CurrentValue<ImmutableList<TableInfo>> result = io.getTables(specifier);
         watch.stop();
@@ -32,7 +32,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) {
         Stopwatch watch = Stopwatch.start(specifier);
         CurrentValue<ImmutableList<ColumnInfo>> result = io.getColumns(specifier);
         watch.stop();
@@ -40,7 +40,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) {
         Stopwatch watch = Stopwatch.start(specifier);
         CurrentValue<ImmutableList<ReferencedKeyInfo>> result = io.getImportedKeys(specifier);
         watch.stop();
@@ -48,7 +48,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) {
         Stopwatch watch = Stopwatch.start(specifier);
         CurrentValue<ImmutableList<PrimaryKeyInfo>> result = io.getPrimaryKeys(specifier);
         watch.stop();
@@ -56,7 +56,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) {
         Stopwatch watch = Stopwatch.start(specifier);
         CurrentValue<ImmutableList<ReferencedKeyInfo>> result = io.getExportedKeys(specifier);
         watch.stop();
@@ -64,7 +64,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
+    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() {
         Stopwatch watch = Stopwatch.start();
         CurrentValue<ImmutableList<CatalogInfo>> result = io.getCatalogs();
         watch.stop();
@@ -72,7 +72,7 @@ final class DBMetaDataIOTimer implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
+    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() {
         Stopwatch watch = Stopwatch.start();
         CurrentValue<ImmutableList<SchemaInfo>> result = io.getSchemas();
         watch.stop();

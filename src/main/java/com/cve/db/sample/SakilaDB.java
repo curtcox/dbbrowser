@@ -1,6 +1,6 @@
 package com.cve.db.sample;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.Database;
 import com.cve.db.SQL;
 import com.cve.db.dbio.DBConnection;
@@ -88,7 +88,7 @@ public final class SakilaDB {
     }
 
     static void update(SQL sql) throws SQLException {
-        ConnectionInfo info = connection.getInfo();
+        DBConnectionInfo info = connection.getInfo();
         Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
         statement.execute(sql.toString());

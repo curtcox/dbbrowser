@@ -12,10 +12,10 @@ import com.cve.db.Limit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.Value;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.google.common.collect.ImmutableList;
@@ -33,11 +33,11 @@ import org.junit.Test;
  */
 public class SelectResultsRendererTest {
 
-    final ServersStore serversStore = null;
+    final DBServersStore serversStore = null;
     final ManagedFunction.Factory managedFunction = null;
 
     public SelectResults onePersonResults() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -52,7 +52,7 @@ public class SelectResultsRendererTest {
     }
 
     public SelectResults resultsForShowTable() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -68,7 +68,7 @@ public class SelectResultsRendererTest {
     }
 
     SelectResults multiPersonResults(int first, int last, Limit limit, boolean hasMore) {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -161,7 +161,7 @@ public class SelectResultsRendererTest {
      * @return
      */
     private String renderedCityStateTables() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("geography");
         DBTable              city = database.tableName("city");
         DBTable             state = database.tableName("state");

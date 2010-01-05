@@ -12,7 +12,7 @@ public final class LogBrowserHandler {
         // handler                         // for URLs of the form
         new ObjectBrowserHandler());       // /object/
 
-    public static RequestHandler newInstance() {
+    public static RequestHandler of() {
         return handler;
     }
 

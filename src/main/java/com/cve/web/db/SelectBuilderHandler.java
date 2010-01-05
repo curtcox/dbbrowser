@@ -1,21 +1,21 @@
 package com.cve.web.db;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.web.*;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.DBColumn;
 import com.cve.db.Hints;
 import com.cve.db.Select;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.SelectContext;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.db.select.URIRenderer;
-import com.cve.stores.db.ServersStore;
-import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.net.URI;
@@ -36,18 +36,18 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    final HintsStore hintsStore;
+    final DBHintsStore hintsStore;
 
     private SelectBuilderHandler(
-        DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore) {
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore) {
         this.db = db;
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
     }
 
-    static SelectBuilderHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore) {
+    static SelectBuilderHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore) {
         return new SelectBuilderHandler(db,serversStore,hintsStore);
     }
 
@@ -113,13 +113,13 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = DBURICodec.getServer(uri);
+        DBServer         server = DBURICodec.getServer(uri);
 
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
         Search           search = DBURICodec.getSearch(uri);
         DBConnection connection = DBConnectionFactory.getConnection(server, serversStore, null);
-        Hints             hints = hintsStore.getHints(select.columns);
+        Hints             hints = hintsStore.get(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

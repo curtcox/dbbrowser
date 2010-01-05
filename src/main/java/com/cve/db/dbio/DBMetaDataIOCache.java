@@ -26,13 +26,13 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) {
         return io.getTables(specifier);
     }
 
     private final Map<ColumnSpecifier,CurrentValue<ImmutableList<ColumnInfo>>> columns = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier)  {
         CurrentValue<ImmutableList<ColumnInfo>> info = columns.get(specifier);
         if (info!=null) {
             return info;
@@ -44,7 +44,7 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
 
     private final Map<KeySpecifier,CurrentValue<ImmutableList<ReferencedKeyInfo>>> importedKeys = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier)  {
         CurrentValue<ImmutableList<ReferencedKeyInfo>> info = importedKeys.get(specifier);
         if (info!=null) {
             return info;
@@ -56,7 +56,7 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
 
     private final Map<KeySpecifier,CurrentValue<ImmutableList<PrimaryKeyInfo>>> primaryKeys = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) {
         CurrentValue<ImmutableList<PrimaryKeyInfo>> info = primaryKeys.get(specifier);
         if (info!=null) {
             return info;
@@ -68,7 +68,7 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
 
     private final Map<KeySpecifier,CurrentValue<ImmutableList<ReferencedKeyInfo>>> exportedKeys = SimpleCache.of();
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) {
         CurrentValue<ImmutableList<ReferencedKeyInfo>> info = exportedKeys.get(specifier);
         if (info!=null) {
             return info;
@@ -79,12 +79,12 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
+    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() {
         return io.getCatalogs();
     }
 
     @Override
-    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
+    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() {
         return io.getSchemas();
     }
 

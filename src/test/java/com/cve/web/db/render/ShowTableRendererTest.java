@@ -12,7 +12,7 @@ import com.cve.db.Limit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.Value;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
@@ -34,7 +34,7 @@ public class ShowTableRendererTest {
 
 
     public SelectResults onePersonResults() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -49,7 +49,7 @@ public class ShowTableRendererTest {
     }
 
     public SelectResults resultsForShowTable() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -65,7 +65,7 @@ public class ShowTableRendererTest {
     }
 
     SelectResults multiPersonResults(int first, int last, Limit limit, boolean hasMore) {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);

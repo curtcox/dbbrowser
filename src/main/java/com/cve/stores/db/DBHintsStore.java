@@ -2,8 +2,8 @@ package com.cve.stores.db;
 
 import com.cve.db.DBColumn;
 import com.cve.db.Hints;
+import com.cve.stores.Store;
 import com.google.common.collect.ImmutableList;
-import java.sql.SQLException;
 
 /**
  * The {@link Hints} we know about.
@@ -18,8 +18,4 @@ import java.sql.SQLException;
  *    </ol>
  * </ol>
  */
-public interface HintsStore {
-
-    Hints getHints(ImmutableList<DBColumn> columns) throws SQLException;
-
-}
+public interface DBHintsStore extends Store<ImmutableList<DBColumn>,Hints> {}

@@ -2,7 +2,7 @@ package com.cve.db;
 
 import com.cve.db.Database;
 import com.cve.db.DBColumn;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.util.URIs;
 import org.junit.Test;
@@ -18,7 +18,7 @@ public class ColumnTest {
 
     @Test
     public void equality() {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         assertEquals(DBColumn.tableNameType(table,"bar", String.class),
@@ -28,7 +28,7 @@ public class ColumnTest {
 
     @Test
     public void unequality() {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn bar = DBColumn.tableName(table,"bar");

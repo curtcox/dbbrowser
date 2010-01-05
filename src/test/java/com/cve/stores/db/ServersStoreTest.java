@@ -1,8 +1,8 @@
 package com.cve.stores.db;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.JDBCURL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.Store;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
@@ -19,15 +19,15 @@ public class ServersStoreTest {
     @Test
     public void getServers() {
         Stores stores = null;
-        ImmutableList<Server> servers = stores.getStore(null).keySet();
+        ImmutableList<DBServer> servers = stores.getStore(null).keySet();
         assertNotNull(servers);
     }
 
     @Test
     public void getConnection() {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db1"));
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL,"","");
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL,"","");
         Stores stores = null;
         stores.getStore(null).put(server, info);
         Store store = stores.getStore(null);

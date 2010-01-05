@@ -1,11 +1,10 @@
 
 package com.cve.db.dbio;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.SQL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.CurrentValue;
-import java.sql.SQLException;
 
 /**
  * A database connection.
@@ -20,7 +19,7 @@ public interface DBConnection {
     /**
      * Return information about this connection.
      */
-    ConnectionInfo getInfo();
+    DBConnectionInfo getInfo();
 
     /**
      * Return information about the database this is connected to.
@@ -30,14 +29,14 @@ public interface DBConnection {
     /**
      * Return information about the given result set.
      */
-    DBResultSetMetaData getMetaData(Server server, DBResultSetIO results) throws SQLException;
+    DBResultSetMetaData getMetaData(DBServer server, DBResultSetIO results);
 
 
     /**
      * Execute the given SQL.  In the future, this should be changed to return
      * an immutable value class
      */
-    CurrentValue<DBResultSetIO> select(final SQL sql) throws SQLException;
+    CurrentValue<DBResultSetIO> select(final SQL sql);
 
 
 }

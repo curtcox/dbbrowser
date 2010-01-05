@@ -13,28 +13,28 @@ import static com.cve.util.Check.notNull;
  * A {@link Database} server.
  */
 @Immutable
-public final class Server {
+public final class DBServer {
 
     /**
      * How the server is represented in URLs.
      */
     public final URI uri;
 
-    private static final Canonicalizer<Server> CANONICALIZER = Canonicalizer.of();
+    private static final Canonicalizer<DBServer> CANONICALIZER = Canonicalizer.of();
 
-    public static Server NULL = new Server(URIs.of(""));
+    public static DBServer NULL = new DBServer(URIs.of(""));
 
 
-    private static Server canonical(Server server) {
+    private static DBServer canonical(DBServer server) {
         return CANONICALIZER.canonical(server);
     }
 
-    private Server(URI uri) {
+    private DBServer(URI uri) {
         this.uri = notNull(uri);
     }
 
-    public static Server uri(URI uri) {
-        return canonical(new Server(uri));
+    public static DBServer uri(URI uri) {
+        return canonical(new DBServer(uri));
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class Server {
         if (o==this) {
             return true;
         }
-        Server server = (Server) o;
+        DBServer server = (DBServer) o;
         return uri.equals(server.uri);
     }
 

@@ -9,14 +9,14 @@ import com.cve.db.Hints;
 import com.cve.db.Select;
 import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
-import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
@@ -36,14 +36,14 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    final HintsStore hintsStore;
+    final DBHintsStore hintsStore;
 
     final ManagedFunction.Factory managedFunction;
 
     private ColumnValueDistributionHandler(
-        DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction)
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction)
     {
         this.db = db;
         this.serversStore = serversStore;
@@ -52,7 +52,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     }
 
     static ColumnValueDistributionHandler of(
-        DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         return new ColumnValueDistributionHandler(db,serversStore,hintsStore, managedFunction);
     }
 
@@ -95,7 +95,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     SelectResults getResultsFromDB(String uri) throws SQLException {
         // The server out of the URL
-        Server         server = DBURICodec.getServer(uri);
+        DBServer         server = DBURICodec.getServer(uri);
 
         // Setup the select
         Select           select = DBURICodec.getSelect(uri);
@@ -103,7 +103,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
-        Hints hints = hintsStore.getHints(select.columns);
+        Hints hints = hintsStore.get(select.columns);
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

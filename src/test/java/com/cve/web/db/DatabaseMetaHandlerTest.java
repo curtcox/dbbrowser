@@ -1,9 +1,9 @@
 
 package com.cve.web.db;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.JDBCURL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.SQLException;
@@ -17,10 +17,10 @@ import static com.cve.html.HTML.*;
  */
 public class DatabaseMetaHandlerTest {
 
-    private Server getStoreServer() {
-        Server server = Server.uri(URIs.of("server"));
+    private DBServer getStoreServer() {
+        DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, "", "");
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
         Stores stores = null;
         stores.getStore(null).put(server, info);
         return server;
@@ -28,7 +28,7 @@ public class DatabaseMetaHandlerTest {
 
     @Test
     public void getCatalogs() throws SQLException {
-        Server server = getStoreServer();
+        DBServer server = getStoreServer();
         String unnamed = borderTable(tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
         String db1 = borderTable(tr(th("CATALOG_NAME")) + tr(td("DB1")) );
         String actual = DatabaseMetaHandler.of(null,null,null).getCatalogs(server);
@@ -51,6 +51,6 @@ public class DatabaseMetaHandlerTest {
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
         DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null,null);
-        handler.tryPage(Server.uri(URIs.of("server")), "bad method name");
+        handler.tryPage(DBServer.uri(URIs.of("server")), "bad method name");
     }
 }

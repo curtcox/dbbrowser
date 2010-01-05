@@ -38,7 +38,7 @@ public final class SelectResults implements Model {
     /**
      * The server these results are from.
      */
-    public final Server server;
+    public final DBServer server;
 
     /**
      * The select used to generate the results
@@ -78,7 +78,7 @@ public final class SelectResults implements Model {
     public final Type type;
 
 
-    private SelectResults(Server server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
+    private SelectResults(DBServer server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
         this.server    = notNull(server);
         this.type      = notNull(type);
         this.select    = notNull(select);
@@ -89,9 +89,9 @@ public final class SelectResults implements Model {
         this.hasMore   = hasMore;
     }
 
-    static Server check(Select select, DBResultSet resultSet) {
-        Server a = select.databases.get(0).server;
-        Server b = resultSet.databases.get(0).server;
+    static DBServer check(Select select, DBResultSet resultSet) {
+        DBServer a = select.databases.get(0).server;
+        DBServer b = resultSet.databases.get(0).server;
         if (a.equals(b)) {
             return a;
         }
@@ -101,7 +101,7 @@ public final class SelectResults implements Model {
     public static SelectResults selectResultsHintsMore(
         Select select, DBResultSet resultSet, Hints hints, boolean hasMore)
     {
-        Server server = check(select,resultSet);
+        DBServer server = check(select,resultSet);
         Search search = Search.EMPTY;
         return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,100,hasMore);
     }
@@ -109,7 +109,7 @@ public final class SelectResults implements Model {
     public static SelectResults selectResultsHintsCountMore(
         Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
     {
-        Server server = check(select,resultSet);
+        DBServer server = check(select,resultSet);
         Search search = Search.EMPTY;
         return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,count,hasMore);
     }
@@ -117,7 +117,7 @@ public final class SelectResults implements Model {
     public static SelectResults typeSelectSearchResultsHintsCountMore(
         Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
     {
-        Server server = check(select,resultSet);
+        DBServer server = check(select,resultSet);
         return new SelectResults(server,type,select,search,resultSet,hints,count,hasMore);
     }
 

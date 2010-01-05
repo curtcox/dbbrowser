@@ -4,14 +4,14 @@ import com.cve.db.dbio.*;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
 import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -23,18 +23,18 @@ import java.util.List;
  */
 final class MsSQLTdsMetaData extends DefaultDBMetaData {
 
-    private MsSQLTdsMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    private MsSQLTdsMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         super(managedFunction,serversStore);
     }
 
-    static DBMetaData of(ManagedFunction.Factory managedFunction,ServersStore serversStore) {
+    static DBMetaData of(ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
         return new MsSQLTdsMetaData(managedFunction,serversStore);
     }
 
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         for (Database database : getDatabasesOn(server).value) {
@@ -59,9 +59,9 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
      * Simple cache
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         Database       database = table.database;
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -83,8 +83,8 @@ final class MsSQLTdsMetaData extends DefaultDBMetaData {
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
-        Server           server = database.server;
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
+        DBServer           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;

@@ -6,7 +6,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.SQL;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBResultSetMetaData;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -41,7 +41,7 @@ public class SelectParserTest {
         List<DBTable>              tables = Lists.newArrayList();
         List<DBColumn>            columns = Lists.newArrayList();
         List<AggregateFunction> functions = Lists.newArrayList();
-        Database database = Server.uri(URIs.of("server")).databaseName("database");
+        Database database = DBServer.uri(URIs.of("server")).databaseName("database");
         databases.add(database);
         DBTable table = database.tableName("table");
         tables.add(table);

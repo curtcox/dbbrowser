@@ -10,7 +10,7 @@ import com.cve.db.Join;
 import com.cve.db.Limit;
 import com.cve.db.Order;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.log.Log;
@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
 
@@ -30,10 +29,10 @@ import static com.cve.util.Check.notNull;
  * <p>
  * What is the special format?
  * The URL space hierarcy is mapped onto URLs like:
- * http://webserver/dbserver/databases/tables/columns/joins/filters/orders/groups/limit
+ * http://webserver/search/dbserver/databases/tables/columns/joins/filters/orders/groups/limit
  * Empty parts are preserved as an empty path element like filters, orders, and
  * groups in the following:
- * http://webserver/dbserver/databases/tables/columns/joins////limit
+ * http://webserver/+/dbserver/databases/tables/columns/joins////limit
  *
  */
 public final class DBURICodec {
@@ -45,7 +44,7 @@ public final class DBURICodec {
     enum Position {
 
         /**
-         * The database server.
+         * The optional search text.
          */
         SEARCH(1),
 
@@ -141,16 +140,16 @@ public final class DBURICodec {
         return Search.parse(search);
     }
 
-    public static Server getServer(String uri) {
+    public static DBServer getServer(String uri) {
         args(uri);
         notNull(uri);
         String name = at(uri,Position.SERVER);
-        return Server.uri(URIs.of(name));
+        return DBServer.uri(URIs.of(name));
     }
 
     public static Database getDatabase(String uri) {
         args(uri);
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
@@ -168,7 +167,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Database> list = Lists.newArrayList();
         for (String databaseName : at(uri,Position.DBS).split("\\+")) {
             list.add(server.databaseName(databaseName));
@@ -181,7 +180,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBTable> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.TABLES).split("\\+")) {
             DBTable        table = DBTable.parse(server,fullTableName);
@@ -198,7 +197,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBColumn> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[1];
@@ -246,7 +245,7 @@ public final class DBURICodec {
         if (joinParts.length()==0) {
             return ImmutableList.of();
         }
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Join> list = Lists.newArrayList();
         for (String fullJoinName : joinParts.split("\\+")) {
             Join join = Join.parse(server,tables,fullJoinName);
@@ -265,7 +264,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Filter> list = Lists.newArrayList();
         for (String fullFilterName : filterParts.split("\\+")) {
             Filter filter = Filter.parse(server,tables,fullFilterName);
@@ -284,7 +283,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Order> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Order order = Order.parse(server,tables,fullOrderName);
@@ -303,7 +302,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        Server server = Server.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Group> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Group group = Group.parse(server,tables,fullOrderName);
@@ -369,7 +368,7 @@ public final class DBURICodec {
     /**
      * Return a URI for browsing the given server.
      */
-    public static URI encode(Server server) {
+    public static URI encode(DBServer server) {
         Search search = Search.EMPTY;
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
@@ -377,7 +376,7 @@ public final class DBURICodec {
     /**
      * Return a URI for browsing the given server.
      */
-    public static URI encode(Search search, Server server) {
+    public static URI encode(Search search, DBServer server) {
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
@@ -386,7 +385,7 @@ public final class DBURICodec {
     }
 
     public static URI encode(Search search, Database database) {
-        Server server = database.server;
+        DBServer server = database.server;
         return URIs.of(encode(search,server) + database.name + "/");
     }
 

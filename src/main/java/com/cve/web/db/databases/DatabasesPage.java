@@ -2,7 +2,7 @@ package com.cve.web.db.databases;
 
 import com.cve.web.*;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 
 import com.google.common.collect.ImmutableList;
@@ -20,7 +20,7 @@ final class DatabasesPage implements Model {
     /**
      * The server that all of the databases come from.
      */
-    final Server server;
+    final DBServer server;
 
     /**
      * The databases on the server.
@@ -32,7 +32,7 @@ final class DatabasesPage implements Model {
      */
     final ImmutableMultimap<Database,DBTable> tables;
 
-    DatabasesPage(Server server, ImmutableList<Database> databases, ImmutableMultimap<Database,DBTable> tables) {
+    DatabasesPage(DBServer server, ImmutableList<Database> databases, ImmutableMultimap<Database,DBTable> tables) {
         this.server    = notNull(server);
         this.databases = notNull(databases);
         this.tables    = notNull(tables);

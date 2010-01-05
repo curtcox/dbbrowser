@@ -1,9 +1,9 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.JDBCURL;
-import com.cve.db.Server;
-import com.cve.stores.db.ServersStore;
+import com.cve.db.DBServer;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractFormHandler;
 import com.cve.web.PageRequest;
@@ -19,13 +19,13 @@ import static com.cve.web.db.servers.AddServerPage.*;
  */
 final class AddServerHandler extends AbstractFormHandler {
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    private AddServerHandler(ServersStore serversStore) {
+    private AddServerHandler(DBServersStore serversStore) {
         this.serversStore = serversStore;
     }
 
-    public static AddServerHandler of(ServersStore serversStore) {
+    public static AddServerHandler of(DBServersStore serversStore) {
         return new AddServerHandler(serversStore);
     }
 
@@ -48,8 +48,8 @@ final class AddServerHandler extends AbstractFormHandler {
         String   serverName = params.get(SERVER);
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
-        Server       server = Server.uri(URIs.of(serverName));
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcurl, user, password);
+        DBServer       server = DBServer.uri(URIs.of(serverName));
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password);
         if (serversStore.keySet().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(

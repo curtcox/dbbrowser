@@ -3,7 +3,7 @@ package com.cve.web.db;
 import com.cve.db.DBColumn;
 import com.cve.web.*;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 
 import com.google.common.collect.ImmutableList;
@@ -20,7 +20,7 @@ public final class TablesPage implements Model {
     /**
      * The server the tables come from.
      */
-    final Server server;
+    final DBServer server;
 
     /**
      * The database the tables come from.
@@ -33,7 +33,7 @@ public final class TablesPage implements Model {
 
     final ImmutableMap<DBTable,Long> rows;
 
-    TablesPage(Server server, Database database,
+    TablesPage(DBServer server, Database database,
         ImmutableList<DBTable> tables, ImmutableMap<DBTable,Long> rows,
         ImmutableMultimap<DBTable,DBColumn> columns)
     {

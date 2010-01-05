@@ -2,7 +2,7 @@ package com.cve.stores.db;
 
 import com.cve.stores.db.DatabaseIO;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,8 +17,8 @@ public class DatabaseIOTest {
 
     @Test
     public void both() {
-        both(Server.uri(URIs.of("one")).databaseName("db"));
-        both(Server.uri(URIs.of("two")).databaseName("db"));
+        both(DBServer.uri(URIs.of("one")).databaseName("db"));
+        both(DBServer.uri(URIs.of("two")).databaseName("db"));
     }
 
     void both(Database db) {

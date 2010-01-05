@@ -2,7 +2,7 @@ package com.cve.stores.db;
 
 import com.cve.db.DBColumn;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;
@@ -28,11 +28,11 @@ final class JoinIO implements IO<Join> {
     public Join read(byte[] bytes) {
         String line = stringIO.read(bytes);
         String[] parts = Check.notNull(line).split(".");
-        DBColumn source = Server.uri(URIs.of(parts[0]))
+        DBColumn source = DBServer.uri(URIs.of(parts[0]))
                 .databaseName(line)
                 .tableName(line)
                 .columnName(line);
-        DBColumn dest = Server.uri(URIs.of(parts[0]))
+        DBColumn dest = DBServer.uri(URIs.of(parts[0]))
                 .databaseName(line)
                 .tableName(line)
                 .columnName(line);

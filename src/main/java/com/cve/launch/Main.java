@@ -7,12 +7,14 @@ package com.cve.launch;
  */
 public final class Main {
 
-    public static void localServerOnly() {
+    static final String[] NO_ARGS = new String[0];
 
+    public static void localServerOnly() {
+        LaunchLocalServer.main(NO_ARGS);
     }
 
     public static void localMirrorOnly() {
-
+        LaunchLocalMirror.main(NO_ARGS);
     }
     
     public static void appEngineOnly() {
@@ -32,6 +34,6 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-
+        localServerOnly();
     }
 }

@@ -5,10 +5,10 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.web.*;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.log.Log;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -34,16 +34,16 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
     private static final Log log = Log.of(ServersHandler.class);
 
-    private ServersHandler(DBMetaData.Factory db, ServersStore serversStore) {
+    private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore) {
         this.db = db;
         this.serversStore = serversStore;
     }
 
-    static ServersHandler of(DBMetaData.Factory db, ServersStore serversStore) {
+    static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore) {
         return new ServersHandler(db,serversStore);
     }
 
@@ -52,8 +52,8 @@ final class ServersHandler extends AbstractRequestHandler {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
-            ImmutableList<Server> servers = serversStore.keySet();
-            ImmutableMultimap<Server,Object> databases = getDatabases(servers);
+            ImmutableList<DBServer> servers = serversStore.keySet();
+            ImmutableMultimap<DBServer,Object> databases = getDatabases(servers);
             return new ServersPage(servers,databases);
         }
         return newSearchPage(search);
@@ -65,15 +65,15 @@ final class ServersHandler extends AbstractRequestHandler {
     ServersSearchPage newSearchPage(Search search) throws SQLException {
         args(search);
         ImmutableList<DBColumn> columns = allColumns();
-        Set<Server> filteredServers = Sets.newHashSet();
-        Multimap<Server,Database> filteredDatabases = HashMultimap.create();
+        Set<DBServer> filteredServers = Sets.newHashSet();
+        Multimap<DBServer,Database> filteredDatabases = HashMultimap.create();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();
         Multimap<DBTable,DBColumn> filteredColumns = HashMultimap.create();
         String     target = search.target;
         for (DBColumn column : columns) {
             DBTable     table = column.table;
             Database database = table.database;
-            Server     server = database.server;
+            DBServer     server = database.server;
             if (isMatch(column.name,target)) {
                 filteredServers.add(server);
                 filteredDatabases.put(server,database);
@@ -103,8 +103,8 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     ImmutableList<DBColumn> allColumns() throws SQLException {
         List<DBColumn> columns = Lists.newArrayList();
-        ImmutableList<Server> servers = serversStore.keySet();
-        for (Server server : servers) {
+        ImmutableList<DBServer> servers = serversStore.keySet();
+        for (DBServer server : servers) {
             for (DBColumn column : db.of(server).getColumnsFor(server).value) {
                 columns.add(column);
             }
@@ -130,9 +130,9 @@ final class ServersHandler extends AbstractRequestHandler {
      * @param servers
      * @return
      */
-    ImmutableMultimap<Server,Object> getDatabases(ImmutableList<Server> servers) {
-        Multimap<Server,Object> databases = HashMultimap.create();
-        for (Server server : servers) {
+    ImmutableMultimap<DBServer,Object> getDatabases(ImmutableList<DBServer> servers) {
+        Multimap<DBServer,Object> databases = HashMultimap.create();
+        for (DBServer server : servers) {
             try {
                 for (Database database : db.of(server).getDatabasesOn(server).value) {
                     databases.put(server, database);

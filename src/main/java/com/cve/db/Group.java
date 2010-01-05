@@ -40,7 +40,7 @@ public final class Group {
         return "column=" + column;
     }
 
-    public static Group parse(Server server, ImmutableList<DBTable> tables, String fullOrderName) {
+    public static Group parse(DBServer server, ImmutableList<DBTable> tables, String fullOrderName) {
         String[]  nameParts = fullOrderName.split("\\=");
         DBColumn     column = DBColumn.parse(server,tables,nameParts[0]);
         Group         group = Group.of(column);

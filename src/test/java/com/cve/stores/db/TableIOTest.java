@@ -2,7 +2,7 @@ package com.cve.stores.db;
 
 import com.cve.stores.db.TableIO;
 import com.cve.db.DBTable;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,8 +17,8 @@ public class TableIOTest {
 
     @Test
     public void both() {
-        both(Server.uri(URIs.of("one")).databaseName("db").tableName("t1"));
-        both(Server.uri(URIs.of("two")).databaseName("db").tableName("t2"));
+        both(DBServer.uri(URIs.of("one")).databaseName("db").tableName("t1"));
+        both(DBServer.uri(URIs.of("two")).databaseName("db").tableName("t2"));
     }
 
     void both(DBTable t) {

@@ -5,13 +5,12 @@ import com.cve.db.Filter;
 import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBTable;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaData;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.log.Log.args;
@@ -29,7 +28,7 @@ import static com.cve.log.Log.args;
  *    </ol>
  * </ol>
  */
-final class LocalHintsStore implements HintsStore {
+final class LocalHintsStore implements DBHintsStore {
 
     /**
      * How we access databases.
@@ -67,7 +66,7 @@ final class LocalHintsStore implements HintsStore {
     }
 
     @Override
-    public Hints getHints(ImmutableList<DBColumn> columns) throws SQLException {
+    public Hints get(ImmutableList<DBColumn> columns) {
         args(columns);
         Set<Join>      joinSet = Sets.newHashSet();
         Set<Filter>  filterSet = Sets.newHashSet();
@@ -76,7 +75,7 @@ final class LocalHintsStore implements HintsStore {
             filterSet.addAll(filters.get(column));
         }
         ImmutableList<DBTable> tables = spanningTables(columns);
-        Server                 server = tables.get(0).database.server;
+        DBServer                 server = tables.get(0).database.server;
         DBMetaData               meta = db.of(server);
         joinSet.addAll(meta.getJoinsFor(tables).value);
         return Hints.of(
@@ -93,5 +92,15 @@ final class LocalHintsStore implements HintsStore {
             tables.add(column.table);
         }
         return ImmutableList.copyOf(tables);
+    }
+
+    @Override
+    public void put(ImmutableList<DBColumn> key, Hints value) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public ImmutableList<ImmutableList<DBColumn>> keySet() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -20,13 +20,13 @@ public final class SelectContext {
 
     public final Search search;
 
-    public final Server server;
+    public final DBServer server;
 
     public final Hints hints;
 
     public final DBConnection connection;
 
-    private SelectContext(Select select, Search search, Server server, DBConnection connection, Hints hints) {
+    private SelectContext(Select select, Search search, DBServer server, DBConnection connection, Hints hints) {
         this.select = Check.notNull(select);
         this.search = Check.notNull(search);
         this.server = Check.notNull(server);
@@ -35,7 +35,7 @@ public final class SelectContext {
         
     }
 
-    public static SelectContext of(Select select, Search search, Server server, DBConnection connection, Hints hints) {
+    public static SelectContext of(Select select, Search search, DBServer server, DBConnection connection, Hints hints) {
         return new SelectContext(select,search,server,connection,hints);
     }
 

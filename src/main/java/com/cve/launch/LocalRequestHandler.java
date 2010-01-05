@@ -2,9 +2,13 @@ package com.cve.launch;
 
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.dbio.LocalDBMetaDataFactory;
+import com.cve.web.PageRequest;
+import com.cve.web.PageResponse;
+import com.cve.web.fs.FSBrowserHandler;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.HintsStore;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.fs.FSServersStore;
 import com.cve.web.CompositeRequestHandler;
 import com.cve.web.CompressedURIHandler;
 import com.cve.web.CoreServerHandler;
@@ -14,6 +18,8 @@ import com.cve.web.RequestHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * A request handler for resources accessible via the local machine.
@@ -21,45 +27,35 @@ import com.cve.web.log.LogBrowserHandler;
  * machine that serves the replicated data.
  * @author curt
  */
-final class LocalRequestHandler {
+final class LocalRequestHandler implements RequestHandler {
 
-    final ServersStore serversStore;
+    final RequestHandler handler;
 
-    final HintsStore hintsStore;
-
-    final DBMetaData.Factory db;
-
-    final ManagedFunction.Factory managedFunction;
-
-    private LocalRequestHandler(ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        this.serversStore = serversStore;
-        this.hintsStore = hintsStore;
-        this.managedFunction = managedFunction;
-        db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    }
-
-    static LocalRequestHandler of(ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new LocalRequestHandler(serversStore, hintsStore, managedFunction);
-    }
-
-    RequestHandler of() {
-        return of(db);
-    }
-
-    RequestHandler of(DBMetaData.Factory db) {
-       return
-           ErrorReportHandler.of(
+    private LocalRequestHandler(
+        DBServersStore dbServersStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        final DBMetaData.Factory db = LocalDBMetaDataFactory.of(dbServersStore,managedFunction);
+        handler = ErrorReportHandler.of(
                 DebugHandler.of(
                     CompressedURIHandler.of(
                         CompositeRequestHandler.of(
                             CoreServerHandler.of(),
-                            AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction).of(),
-                            LogBrowserHandler.newInstance(),
-                            DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction).of()
+                            AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction),
+                            LogBrowserHandler.of(),
+                            FSBrowserHandler.of(fsServersStore,managedFunction),
+                            DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction)
                        )
                  )
             )
         );
+    }
+
+    static LocalRequestHandler of(DBServersStore serversStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new LocalRequestHandler(serversStore, fsServersStore, hintsStore, managedFunction);
+    }
+
+    @Override
+    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+        return handler.produce(request);
     }
 
 }

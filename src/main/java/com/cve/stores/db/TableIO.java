@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
 import com.cve.db.DBTable;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;
@@ -32,7 +32,7 @@ final class TableIO implements IO<DBTable> {
     public DBTable read(byte[] bytes) {
         String line = stringIO.read(bytes);
         String[]    parts = Check.notNull(line).split(".");
-        return Server.uri(URIs.of(parts[0]))
+        return DBServer.uri(URIs.of(parts[0]))
                 .databaseName(parts[1])
                 .tableName(parts[2]);
     }

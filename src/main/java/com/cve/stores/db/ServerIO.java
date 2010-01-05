@@ -1,6 +1,6 @@
 package com.cve.stores.db;
 
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;
@@ -10,7 +10,7 @@ import com.cve.util.URIs;
  * For parsing strings into strings.
  * @author Curt
  */
-final class ServerIO implements IO<Server> {
+final class ServerIO implements IO<DBServer> {
 
     final IO<String> stringIO = StringIO.of();
 
@@ -23,12 +23,12 @@ final class ServerIO implements IO<Server> {
     }
     
     @Override
-    public Server read(byte[] bytes) {
-        return Server.uri(URIs.of(Check.notNull(stringIO.read(bytes))));
+    public DBServer read(byte[] bytes) {
+        return DBServer.uri(URIs.of(Check.notNull(stringIO.read(bytes))));
     }
 
     @Override
-    public byte[] write(Server value) {
+    public byte[] write(DBServer value) {
         return stringIO.write(value.toString());
     }
 

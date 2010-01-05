@@ -22,13 +22,13 @@ public final class Database {
     /**
      * The server the database is on
      */
-    public final Server server;
+    public final DBServer server;
 
     private static final Canonicalizer<Database> CANONICALIZER = Canonicalizer.of();
 
-    public static final Database NULL = new Database(Server.NULL,"");
+    public static final Database NULL = new Database(DBServer.NULL,"");
 
-    private Database(Server server, String name) {
+    private Database(DBServer server, String name) {
         this.server = notNull(server);
         this.name   = notNull(name);
     }
@@ -37,7 +37,7 @@ public final class Database {
         return CANONICALIZER.canonical(database);
     }
 
-    public static Database serverName(Server server, String name) {
+    public static Database serverName(DBServer server, String name) {
         return canonical(new Database(server,name));
     }
 

@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.web.*;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 
 import com.google.common.collect.ImmutableList;
 
@@ -23,9 +23,9 @@ final class ServersSearchPage implements Model {
     /**
      * The servers on the page
      */
-    final ImmutableList<Server> servers;
+    final ImmutableList<DBServer> servers;
 
-    final ImmutableMultimap<Server,Database> databases;
+    final ImmutableMultimap<DBServer,Database> databases;
 
     /**
      */
@@ -34,8 +34,8 @@ final class ServersSearchPage implements Model {
     final ImmutableMultimap<Database,DBTable> tables;
 
     ServersSearchPage(Search search,
-        List<Server> servers,
-        Multimap<Server,Database> databases,
+        List<DBServer> servers,
+        Multimap<DBServer,Database> databases,
         Multimap<Database,DBTable> tables,
         Multimap<DBTable,DBColumn> columns) {
         this.search    = notNull(search);

@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.CurrentValue;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
@@ -41,47 +41,47 @@ public final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
         CurrentValue<ImmutableList<DBColumn>> result = meta.getPrimaryKeysFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) {
         CurrentValue<ImmutableList<Join>> result = meta.getJoinsFor(tables);
         queueJoins(result);
         return result;
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(server);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(database);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  {
         CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(table);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) {
         return meta.getRowCountFor(table);
     }
 
     @Override
-    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server) throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         CurrentValue<ImmutableList<Database>> result = meta.getDatabasesOn(server);
         queueServer(server);
         queueDatabases(result);
@@ -89,14 +89,14 @@ public final class DBMetaDataProactive implements DBMetaData {
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
         CurrentValue<ImmutableList<DBColumn>> result = meta.getColumnsFor(tables);
         queueColumns(result);
         return result;
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
         CurrentValue<ImmutableList<DBTable>> result = meta.getTablesOn(database);
         queueTables(result);
         return result;
@@ -106,31 +106,19 @@ public final class DBMetaDataProactive implements DBMetaData {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    meta.getColumnsFor(tables.value);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                meta.getColumnsFor(tables.value);
             }
         });
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    meta.getJoinsFor(tables.value);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                meta.getJoinsFor(tables.value);
             }
         });
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    meta.getPrimaryKeysFor(tables.value);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                meta.getPrimaryKeysFor(tables.value);
             }
         });
     }
@@ -140,25 +128,17 @@ public final class DBMetaDataProactive implements DBMetaData {
             executor.execute(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        meta.getTablesOn(database);
-                    } catch (SQLException e) {
-                        e.printStackTrace();
-                    }
+                    meta.getTablesOn(database);
                 }
             });
         }
     }
 
-    void queueServer(final Server server) {
+    void queueServer(final DBServer server) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    meta.getColumnsFor(server);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                meta.getColumnsFor(server);
             }
         });
     }

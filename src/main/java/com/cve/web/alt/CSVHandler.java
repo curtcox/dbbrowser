@@ -7,8 +7,8 @@ import com.cve.db.SelectResults;
 import com.cve.db.Value;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.HintsStore;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.Strings;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
@@ -30,13 +30,13 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    final HintsStore hintsStore;
+    final DBHintsStore hintsStore;
 
     final ManagedFunction.Factory managedFunction;
 
-    private CSVHandler(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    private CSVHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         super("^/view/CSV/",ContentType.TEXT);
         this.db = db;
         this.serversStore = serversStore;
@@ -44,7 +44,7 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
         this.managedFunction = managedFunction;
     }
 
-    static CSVHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    static CSVHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         return new CSVHandler(db,serversStore,hintsStore,managedFunction);
     }
 

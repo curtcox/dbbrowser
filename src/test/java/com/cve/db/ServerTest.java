@@ -17,8 +17,8 @@ public class ServerTest {
      */
     @Test
     public void equality() {
-        Server server1 = Server.uri(URIs.of("server"));
-        Server server2 = Server.uri(URIs.of("server"));
+        DBServer server1 = DBServer.uri(URIs.of("server"));
+        DBServer server2 = DBServer.uri(URIs.of("server"));
         assertEquals(server1,server2);
     }
 

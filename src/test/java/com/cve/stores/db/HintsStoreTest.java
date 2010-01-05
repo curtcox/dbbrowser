@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.Database;
 import com.cve.db.Hints;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.stores.Store;
 import com.cve.stores.Stores;
@@ -22,7 +22,7 @@ public class HintsStoreTest {
 
     @Test
     public void findsHintsWithJoin() throws SQLException {
-        Server         server = Server.uri(URIs.of("server"));
+        DBServer         server = DBServer.uri(URIs.of("server"));
 
         Database         database = server.databaseName("DB1");
         DBTable             account = database.tableName("ACCOUNT");

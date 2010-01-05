@@ -3,12 +3,12 @@ package com.cve.web.db;
 import com.cve.web.*;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.HintsStore;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.Search.Space;
 import com.google.common.collect.HashMultimap;
@@ -35,20 +35,20 @@ public final class TablesHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    final HintsStore hintsStore;
+    final DBHintsStore hintsStore;
 
     final ManagedFunction.Factory managedFunction;
 
-    private TablesHandler(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    private TablesHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
     }
 
-    static TablesHandler of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    static TablesHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         return new TablesHandler(db,serversStore,hintsStore,managedFunction);
     }
     
@@ -68,7 +68,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         args(request);
         String                    uri = request.requestURI;
         Search                 search = DBURICodec.getSearch(uri);
-        Server                 server = DBURICodec.getServer(uri);
+        DBServer                 server = DBURICodec.getServer(uri);
         Database             database = DBURICodec.getDatabase(uri);
         if (search.isEmpty()) {
             DBMetaData               meta = db.of(server);
@@ -97,7 +97,7 @@ public final class TablesHandler extends AbstractRequestHandler {
     ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) throws SQLException {
         Multimap<DBTable,DBColumn> columns = HashMultimap.create();
         for (DBTable table : tables) {
-            Server      server = table.database.server;
+            DBServer      server = table.database.server;
             DBMetaData    meta = db.of(server);
             for (DBColumn column : meta.getColumnsFor(table).value) {
                 columns.put(table, column);
@@ -112,7 +112,7 @@ public final class TablesHandler extends AbstractRequestHandler {
     ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) throws SQLException {
         Map<DBTable,Long> rows = Maps.newHashMap();
         for (DBTable table : tables) {
-            Server      server = table.database.server;
+            DBServer      server = table.database.server;
             DBMetaData    meta = db.of(server);
             rows.put(table, meta.getRowCountFor(table).value);
         }

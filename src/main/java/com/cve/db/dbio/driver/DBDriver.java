@@ -1,12 +1,12 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.db.dbio.*;
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.JDBCURL;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import java.sql.Driver;
 import com.cve.util.Check;
@@ -25,7 +25,7 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return new MySQLMetaData(managedFunction,serversStore);
         }
         @Override
@@ -55,7 +55,7 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return DBMetaDataExceptionEater.of(MsSQLTdsMetaData.of(managedFunction,serversStore));
         }
         @Override
@@ -87,7 +87,7 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
@@ -104,7 +104,7 @@ public enum DBDriver {
                 return JDBCURL.uri(URIs.of(url));
             }
         @Override
-        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
@@ -121,7 +121,7 @@ public enum DBDriver {
             return JDBCURL.uri(URIs.of(url));
         }
         @Override
-        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+        public DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return H2MetaData.of(managedFunction,serversStore);
         }
         @Override
@@ -156,7 +156,7 @@ public enum DBDriver {
     /**
      * Return the mechanism for getting metadta from databases using this driver.
      */
-    public abstract DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore);
+    public abstract DBMetaData getDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore);
 
     /**
      * Return how to turn Selct objects to SQL.
@@ -182,9 +182,9 @@ public enum DBDriver {
      * Return the proper connection info for this driver, given server machine
      * name, user name and password.
      */
-    public ConnectionInfo getConnectionInfo(String name, String user, String password) {
+    public DBConnectionInfo getConnectionInfo(String name, String user, String password) {
         JDBCURL     jdbcURL = getJDBCURL(name);
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(jdbcURL, user, password);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, user, password);
         return         info;
     }
 

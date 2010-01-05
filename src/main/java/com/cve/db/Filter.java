@@ -44,7 +44,7 @@ public final class Filter {
      * Parses a filter that has previously been rendered as a URL fragment.
      * See toURrlFragment.
      */
-    public static Filter parse(Server server, ImmutableList<DBTable> tables, String fullFilterName) {
+    public static Filter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
         args(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);

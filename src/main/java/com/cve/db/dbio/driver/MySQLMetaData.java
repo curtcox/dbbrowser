@@ -1,7 +1,7 @@
 package com.cve.db.dbio.driver;
 
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 
 /**
  *
@@ -9,7 +9,7 @@ import com.cve.stores.db.ServersStore;
  */
 final class MySQLMetaData extends DefaultDBMetaData {
 
-    public MySQLMetaData(ManagedFunction.Factory managedFunction,ServersStore serversStore) {
+    public MySQLMetaData(ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
         super(managedFunction,serversStore);
     }
 

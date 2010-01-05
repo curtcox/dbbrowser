@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;
@@ -32,7 +32,7 @@ final class DatabaseIO implements IO<Database> {
     public Database read(byte[] bytes) {
         String line = stringIO.read(bytes);
         String[] parts = Check.notNull(line).split(".");
-        Server server = Server.uri(URIs.of(parts[0]));
+        DBServer server = DBServer.uri(URIs.of(parts[0]));
         return server.databaseName(parts[1]);
     }
 

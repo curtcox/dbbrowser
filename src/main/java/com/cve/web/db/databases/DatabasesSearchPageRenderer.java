@@ -4,7 +4,7 @@ import com.cve.web.db.*;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.web.*;
 
 import com.cve.ui.UIDetail;
@@ -32,7 +32,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
         args(model,client);
         DatabasesSearchPage page = (DatabasesSearchPage) model;
         String target = page.search.target;
-        Server server = page.server;
+        DBServer server = page.server;
         String title = "Occurences of " + target + " on " + server.toString();
         String nav[] = new String[] {
             Replace.bracketQuote("Occurences of " + target + " on <a href=[/]>server</a> ") + server,

@@ -12,7 +12,7 @@ import com.cve.db.Limit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.Value;
 import static com.cve.util.Replace.bracketQuote;
 import com.cve.util.URIs;
@@ -37,7 +37,7 @@ public class PagingLinksRendererTest {
     private static final String BIGGER = PagingLinksRenderer.BIGGER;
 
     public SelectResults onePersonResults() {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -52,7 +52,7 @@ public class PagingLinksRendererTest {
     }
 
     SelectResults multiPersonResults(int first, int last, Limit limit, boolean hasMore) {
-        Server           server = Server.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);

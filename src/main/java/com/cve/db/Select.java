@@ -22,7 +22,7 @@ public final class Select {
     /**
      * The server this select will execute on.
      */
-    public final Server server;
+    public final DBServer server;
 
     /**
      * The databases this select uses.
@@ -49,7 +49,7 @@ public final class Select {
     public final Limit                              limit;
 
     private Select(
-        Server server,
+        DBServer server,
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<AggregateFunction> functions,
@@ -80,7 +80,7 @@ public final class Select {
         ImmutableList<Order> orders,  ImmutableList<Group> groups,
         Limit limit)
     {
-        Server server = databases.get(0).server;
+        DBServer server = databases.get(0).server;
         return new Select(server,databases,tables,columns,functions,joins,filters,orders,groups,limit);
     }
 
@@ -178,22 +178,22 @@ public final class Select {
     }
 
     public static Select from(Database database, DBTable table, DBColumn column) {
-        Server server = database.server;
+        DBServer server = database.server;
         return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable table, DBColumn column, Filter filter) {
-        Server server = database.server;
+        DBServer server = database.server;
         return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(filter),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBColumn... columns) {
-        Server server = database.server;
+        DBServer server = database.server;
         return new Select(server,list(database),list(t1),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBTable t2, DBColumn... columns) {
-        Server server = database.server;
+        DBServer server = database.server;
         return new Select(server,list(database),list(t1,t2),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
     }
 

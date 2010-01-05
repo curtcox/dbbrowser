@@ -44,7 +44,7 @@ public final class Join {
         return canonical(new Join(source,dest));
     }
 
-    public static Join parse(Server server, ImmutableList<DBTable> tables, String fullJoinName) {
+    public static Join parse(DBServer server, ImmutableList<DBTable> tables, String fullJoinName) {
         notNull(server);
         notNull(fullJoinName);
         String[]  nameParts = fullJoinName.split("\\=");

@@ -5,7 +5,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.web.*;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -64,7 +64,7 @@ static final class Helper {
     String render() {
         UITableBuilder out = new UITableBuilder();
         out.add(UIRow.of(detail("Database Server"),detail("Database"),detail("Table"),detail("Columns")));
-        for (Server server : page.servers) {
+        for (DBServer server : page.servers) {
             if (isLeaf(server)) {
                 out.add(row(server));
             } else {
@@ -90,7 +90,7 @@ static final class Helper {
      * Return true if there are no databases (which implies no tables, etc...)
      * under this server in the search results.
      */
-    boolean isLeaf(Server server) {
+    boolean isLeaf(DBServer server) {
         return !page.databases.containsKey(server);
     }
 
@@ -102,7 +102,7 @@ static final class Helper {
         return !page.columns.containsKey(table);
     }
 
-    int height(Server server) {
+    int height(DBServer server) {
         if (isLeaf(server)) {
             return 1;
         }
@@ -120,8 +120,8 @@ static final class Helper {
         return page.tables.get(database).size();
     }
 
-    final Set<Server> serversOut = Sets.newHashSet();
-    UIDetail cell(Server server) {
+    final Set<DBServer> serversOut = Sets.newHashSet();
+    UIDetail cell(DBServer server) {
         if (serversOut.contains(server)) {
             return EMPTY_CELL;
         }
@@ -140,7 +140,7 @@ static final class Helper {
         return RenderingTools.cell(database,height);
     }
 
-    UIRow row(Server server) {
+    UIRow row(DBServer server) {
         return UIRow.of(cell(server));
     }
 
@@ -154,7 +154,7 @@ static final class Helper {
 
     UIRow row(DBTable table) {
         Database database = table.database;
-        Server server     = database.server;
+        DBServer server     = database.server;
         UIDetail serverCell = cell(server);
         UIDetail databaseCell = cell(database);
         if (databaseCell==EMPTY_CELL) {
@@ -172,7 +172,7 @@ static final class Helper {
         DBColumn   column = columns.iterator().next();
         DBTable     table = column.table;
         Database database = table.database;
-        Server server     = database.server;
+        DBServer server     = database.server;
         UIDetail serverCell = cell(server);
         UIDetail databaseCell = cell(database);
         UIDetail tableCell = cell(table);

@@ -7,7 +7,7 @@ import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
 import com.cve.db.SQL;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaDataIO.CatalogInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnInfo;
 import com.cve.db.dbio.DBMetaDataIO.ColumnSpecifier;
@@ -18,7 +18,7 @@ import com.cve.db.dbio.DBMetaDataIO.TableInfo;
 import com.cve.db.dbio.DBMetaDataIO.TableSpecifier;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -48,14 +48,14 @@ public class DefaultDBMetaData implements DBMetaData {
 
     final ManagedFunction.Factory managedFunction;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    protected DefaultDBMetaData(ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    protected DefaultDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.managedFunction = managedFunction;
         this.serversStore = serversStore;
     }
 
-    public static DBMetaData getDbmd(DBConnection connection, ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    public static DBMetaData getDbmd(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         args(connection);
         DBMetaData meta = getDbmd0(connection,managedFunction,serversStore);
         meta = DBMetaDataLogger.of(System.out,meta);
@@ -65,7 +65,7 @@ public class DefaultDBMetaData implements DBMetaData {
         return meta;
     }
 
-    private static DBMetaData getDbmd0(DBConnection connection, ManagedFunction.Factory managedFunction, ServersStore serversStore) {
+    private static DBMetaData getDbmd0(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         Check.notNull(connection);
         DBDriver driver = connection.getInfo().driver;
         DBMetaData meta = driver.getDBMetaData(managedFunction,serversStore);
@@ -74,7 +74,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
         args(tables);
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
@@ -86,10 +86,10 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getPrimaryKeys(java.lang.String,%20java.lang.String,%20java.lang.String)
      */
-    private ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) throws SQLException {
+    private ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) {
         args(table);
         Database     database = table.database;
-        Server         server = database.server;
+        DBServer         server = database.server;
         DBMetaDataIO     dbmd = getDbmdIO(server);
         String        catalog = database.name;
         String         schema = null;
@@ -108,7 +108,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * Return all the potential joins from the columns in the given tables.
      */
     @Override
-    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) {
         args(tables);
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
@@ -121,7 +121,7 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
         args(tables);
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
@@ -132,9 +132,9 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     @Override
-    public CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException {
+    public CurrentValue<Long> getRowCountFor(DBTable table) {
         args(table);
-        Server           server = table.database.server;
+        DBServer           server = table.database.server;
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         DBResultSetIO results = connection.select(sql).value;
@@ -144,7 +144,7 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         args(server);
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
@@ -171,9 +171,9 @@ public class DefaultDBMetaData implements DBMetaData {
         /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         args(database);
-        Server server = database.server;
+        DBServer server = database.server;
         DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         String          catalog = database.name;
@@ -198,10 +198,10 @@ public class DefaultDBMetaData implements DBMetaData {
      * Simple cache
      */
     @Override
-    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException {
+    public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
         args(table);
         Database       database = table.database;
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -225,7 +225,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * Right now 2009/09/15 the driver H2 has a bug that prevents this from working.
      * It works with MySQL.
      */
-    public Keyness keyness(DBTable table, String columnName) throws SQLException {
+    public Keyness keyness(DBTable table, String columnName) {
         for (DBColumn column : getPrimaryKeysFor(table)) {
             if (columnName.equals(column.name)) {
                 return Keyness.PRIMARY;
@@ -241,7 +241,7 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     @Override
-    public CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException {
+    public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         args(server);
         DBMetaDataIO     dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
@@ -256,9 +256,9 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      */
     @Override
-    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException {
+    public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
         args(database);
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO           dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -273,17 +273,17 @@ public class DefaultDBMetaData implements DBMetaData {
         return CurrentValue.of(tables);
     }
 
-    DBMetaDataIO getDbmdIO(Server server) {
+    DBMetaDataIO getDbmdIO(DBServer server) {
         args(server);
         return DBConnectionFactory.getDbmdIO(server,serversStore,managedFunction);
     }
 
     /**
      */
-    public ImmutableList<Join> getImportedKeysFor(DBTable table)  throws SQLException {
+    public ImmutableList<Join> getImportedKeysFor(DBTable table) {
         args(table);
         Database       database = table.database;
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
         String   catalog = database.name;
         String    schema = null;
@@ -305,10 +305,10 @@ public class DefaultDBMetaData implements DBMetaData {
 
     /**
      */
-    public ImmutableList<Join> getExportedKeysFor(DBTable table)  throws SQLException {
+    public ImmutableList<Join> getExportedKeysFor(DBTable table) {
         args(table);
         Database       database = table.database;
-        Server           server = database.server;
+        DBServer           server = database.server;
         DBMetaDataIO    dbmd = getDbmdIO(server);
         String   catalog = database.name;
         String    schema = null;
@@ -333,10 +333,10 @@ public class DefaultDBMetaData implements DBMetaData {
      * A join is reasonable, if both columns are on the same server and
      * have the same name.
      */
-    private ImmutableList<Join> getReasonableJoinsFor(DBTable table)  throws SQLException {
+    private ImmutableList<Join> getReasonableJoinsFor(DBTable table) {
         args(table);
         Database database = table.database;
-        Server     server = database.server;
+        DBServer     server = database.server;
 
         Multimap<String,DBColumn> columns = HashMultimap.create();
         for (DBColumn column : getColumnsFor(server).value) {

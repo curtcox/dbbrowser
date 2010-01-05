@@ -3,9 +3,9 @@ package com.cve.launch;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.sample.SampleServer;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.ServersStore;
-import com.cve.stores.Stores;
-import com.cve.stores.db.HintsStore;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.fs.FSServersStore;
 import com.cve.util.URIs;
 import com.cve.web.DefaultModelHtmlRenderers;
 import com.cve.web.WebApp;
@@ -19,7 +19,7 @@ import java.io.IOException;
  */
 public final class LaunchLocalServer {
 
-    static final int PORT = 8888;
+    static final int PORT = PortFinder.findFree();
 
     public static void main(String[] args) {
         try {
@@ -35,20 +35,19 @@ public final class LaunchLocalServer {
 
     static void startGrizzly() throws IOException {
         DBMetaData.Factory db = null;
-        ServersStore serversStore = null;
-        HintsStore hintsStore = null;
+        DBServersStore dbServersStore = null;
+        FSServersStore fsServersStore = null;
+        DBHintsStore hintsStore = null;
         ManagedFunction.Factory managedFunction = null;
         WebApp webApp = WebApp.of(
-            LocalRequestHandler.of(serversStore,hintsStore,managedFunction).of(),
-            DefaultModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction)
+            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction),
+            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction)
         );
         Grizzly.start(webApp, PORT);
     }
 
     static void loadServers() {
         SampleServer.load();
-        Stores stores = null;
-        ManagedFunction.Factory factory = null;
     }
 
     /**

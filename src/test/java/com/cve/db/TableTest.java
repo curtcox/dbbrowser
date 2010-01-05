@@ -14,7 +14,7 @@ public class TableTest {
 
     @Test
     public void equality() {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table1 = db.tableName("foo");
         DBTable   table2 = db.tableName("foo");

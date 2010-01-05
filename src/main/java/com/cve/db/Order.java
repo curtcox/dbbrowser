@@ -94,7 +94,7 @@ public final class Order {
         return "column=" + column + " " + direction;
     }
 
-    public static Order parse(Server server, ImmutableList<DBTable> tables, String fullOrderName) {
+    public static Order parse(DBServer server, ImmutableList<DBTable> tables, String fullOrderName) {
         String[]  nameParts = fullOrderName.split("\\=");
         DBColumn             column = DBColumn.parse(server,tables,nameParts[0]);
         Order.Direction direction = Order.Direction.valueOf(nameParts[1]);

@@ -17,6 +17,7 @@ import static com.cve.util.Check.notNull;
        <li> extra -- !  *   "   '  (  ) ,
        <li> reserved -- =  ;  /  #  ? : space
  * </ol>
+ * So, the characters listed above as reserved can't be put in a URI.
  * See http://www.w3.org/Addressing/URL/url-spec.txt
  */
 public final class URIs {

@@ -5,12 +5,11 @@ import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
@@ -22,23 +21,23 @@ import static com.cve.log.Log.args;
  */
 public class DefaultDBResultSetMetaDataFactory {
 
-    final Server server;
+    final DBServer server;
 
     final DBResultSetMetaDataIO meta;
 
-    DefaultDBResultSetMetaDataFactory(Server server, DBResultSetMetaDataIO meta) {
+    DefaultDBResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
         this.server = Check.notNull(server);
         this.meta = Check.notNull(meta);
     }
 
-    public static DBResultSetMetaData of(Server server, DBConnection connection, DBResultSetIO results) throws SQLException {
+    public static DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {
         args(server,connection,results);
         DefaultDBResultSetMetaDataFactory factory = factory(server,connection,results);
         DBResultSetMetaData meta = DBResultSetMetaData.of(factory.getDatabases(),factory.getTables(),factory.getColumns(),factory.getFunctions());
         return meta;
     }
 
-    private static DefaultDBResultSetMetaDataFactory factory(Server server, DBConnection connection, DBResultSetIO results) throws SQLException {
+    private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results) {
         args(server,connection,results);
         DBDriver driver = connection.getInfo().driver;
         DBResultSetMetaDataIO meta = results.meta;
@@ -60,7 +59,7 @@ public class DefaultDBResultSetMetaDataFactory {
         throw new UnsupportedOperationException("" + driver);
     }
 
-    public ImmutableList<Database> getDatabases() throws SQLException {
+    public ImmutableList<Database> getDatabases() {
         int count = meta.getColumnCount();
         Set<Database> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
@@ -71,7 +70,7 @@ public class DefaultDBResultSetMetaDataFactory {
         return ImmutableList.copyOf(set);
     }
 
-    public ImmutableList<DBTable> getTables() throws SQLException {
+    public ImmutableList<DBTable> getTables() {
         int count = meta.getColumnCount();
         Set<DBTable> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
@@ -83,7 +82,7 @@ public class DefaultDBResultSetMetaDataFactory {
         return ImmutableList.copyOf(set);
     }
 
-    public ImmutableList<DBColumn> getColumns() throws SQLException {
+    public ImmutableList<DBColumn> getColumns() {
         int count = meta.getColumnCount();
         List<DBColumn> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
@@ -96,7 +95,7 @@ public class DefaultDBResultSetMetaDataFactory {
         return ImmutableList.copyOf(list);
     }
 
-    public ImmutableList<AggregateFunction> getFunctions() throws SQLException {
+    public ImmutableList<AggregateFunction> getFunctions() {
         int count = meta.getColumnCount();
         List<AggregateFunction> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {

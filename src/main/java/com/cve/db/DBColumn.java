@@ -101,7 +101,7 @@ public final class DBColumn {
         return Filter.of(this, value);
     }
 
-    public static DBColumn parse(Server server, ImmutableList<DBTable> tables, String fullColumnName) {
+    public static DBColumn parse(DBServer server, ImmutableList<DBTable> tables, String fullColumnName) {
         notNull(server,fullColumnName);
         String[]  nameParts = fullColumnName.split("\\.");
         if (nameParts.length!=1 && nameParts.length!=3) {

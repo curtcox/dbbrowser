@@ -8,14 +8,14 @@ import com.cve.db.Hints;
 import com.cve.db.Select;
 import com.cve.db.SelectContext;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.SelectExecutor;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.db.HintsStore;
-import com.cve.stores.db.ServersStore;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
 import com.cve.web.Search;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
@@ -32,20 +32,20 @@ final class DatabaseContentsSearchPageCreator {
      */
     final DBMetaData.Factory db;
 
-    final ServersStore serversStore;
+    final DBServersStore serversStore;
 
-    final HintsStore hintsStore;
+    final DBHintsStore hintsStore;
 
     final ManagedFunction.Factory managedFunction;
 
-    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         this.db = db;
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
     }
 
-    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, ServersStore serversStore, HintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         return new DatabaseContentsSearchPageCreator(db,serversStore,hintsStore, managedFunction);
     }
 
@@ -71,14 +71,14 @@ final class DatabaseContentsSearchPageCreator {
      * Return the results of the select that corresponds to the given URI.
      */
     SelectResults getResultsFromTable(DBMetaData meta ,Search search, DBTable table) throws SQLException {
-        Server         server = table.database.server;
+        DBServer         server = table.database.server;
 
         // Setup the select
         Database database = table.database;
         DBColumn[] columns = meta.getColumnsFor(table).value.toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
-        Hints hints = hintsStore.getHints(select.columns);
+        Hints hints = hintsStore.get(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 

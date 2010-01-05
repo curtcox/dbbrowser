@@ -64,7 +64,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     // Wrappers for all of the DBMD functions we use
     @Override
-    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) {
         DBResultSetIO results = tables.apply(specifier).value;
         List<TableInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
@@ -77,7 +77,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
 
     @Override
-    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(final ColumnSpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ColumnInfo>> getColumns(final ColumnSpecifier specifier) {
         DBResultSetIO results = columns.apply(specifier).value;
         List<ColumnInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
@@ -94,7 +94,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
 
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(final KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(final KeySpecifier specifier)  {
         DBResultSetIO results = importedKeys.apply(specifier).value;
         List<ReferencedKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
@@ -111,7 +111,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(final KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(final KeySpecifier specifier) {
         DBResultSetIO results = primaryKeys.apply(specifier).value;
         List<PrimaryKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
@@ -124,7 +124,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
 
     @Override
-    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(final KeySpecifier specifier) throws SQLException {
+    public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(final KeySpecifier specifier) {
         DBResultSetIO results = exportedKeys.apply(specifier).value;
         List<ReferencedKeyInfo> list = Lists.newArrayList();
         for (int r=0; r<results.rows.size(); r++) {
@@ -142,7 +142,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
 
     @Override
-    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() throws SQLException {
+    public CurrentValue<ImmutableList<CatalogInfo>> getCatalogs() {
         DBResultSetIO results = catalogs.apply(null).value;
         List<CatalogInfo> list = Lists.newArrayList();
         // Due to a H2 driver bug, we can't use the column name
@@ -154,7 +154,7 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     }
 
     @Override
-    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() throws SQLException {
+    public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() {
         DBResultSetIO results = schemas.apply(null).value;
         List<SchemaInfo> list = Lists.newArrayList();
         // Due to a H2 driver bug, we can't use the column name

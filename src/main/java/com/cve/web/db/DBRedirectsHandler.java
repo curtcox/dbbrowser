@@ -2,7 +2,7 @@ package com.cve.web.db;
 
 import com.cve.web.*;
 import com.cve.db.Select;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.select.URIRenderer;
 import java.io.IOException;
@@ -78,7 +78,7 @@ public final class DBRedirectsHandler implements RequestHandler {
         String upToLastSlash = path.substring(0,lastSlash);
         String action = path.substring(lastSlash + 1);
         final Select select = DBURICodec.getSelect(upToLastSlash);
-        Server server = DBURICodec.getServer(upToLastSlash);
+        DBServer server = DBURICodec.getServer(upToLastSlash);
         Select newSelect = SelectBuilderAction.doAction(action,select,server,db,query);
         Search search = DBURICodec.getSearch(upToLastSlash);
         URI dest = URIRenderer.render(newSelect,search);

@@ -20,7 +20,7 @@ public class SelectTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        Server server = Server.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"));
         ImmutableList<Database>   databases = ImmutableList.of(server.databaseName("database"));
         ImmutableList<DBTable>       tables = ImmutableList.of();
         ImmutableList<DBColumn>     columns = ImmutableList.of();

@@ -5,7 +5,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.Database;
 import com.cve.db.Filter;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.Value;
 import com.cve.util.Replace;
@@ -25,7 +25,7 @@ public class ColumnNameTooltipTest {
     public ColumnNameTooltipTest() {}
 
     private Join getJoin() {
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
@@ -35,7 +35,7 @@ public class ColumnNameTooltipTest {
     }
 
     private Filter getFilter() {
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
@@ -45,7 +45,7 @@ public class ColumnNameTooltipTest {
     }
 
     private HTML getTip() {
-        Server     server = Server.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);

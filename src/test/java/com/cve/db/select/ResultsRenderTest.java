@@ -2,7 +2,7 @@ package com.cve.db.select;
 
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.Cell;
-import com.cve.db.ConnectionInfo;
+import com.cve.db.DBConnectionInfo;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
 import com.cve.db.Hints;
@@ -10,7 +10,7 @@ import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Select;
 import com.cve.db.SelectResults;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.JDBCURL;
 import com.cve.db.SelectContext;
@@ -39,7 +39,7 @@ public class ResultsRenderTest {
     public void renderSelectPerson() throws SQLException, ClassNotFoundException {
         DBConnection connection = newMemoryDB();
 
-        Server         server = Server.uri(URIs.of("server"));
+        DBServer         server = DBServer.uri(URIs.of("server"));
         Hints           hints = Hints.NONE;
 
         Database       database = server.databaseName("INFORMATION_SCHEMA");
@@ -81,7 +81,7 @@ public class ResultsRenderTest {
         JDBCURL url = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         String user = "";
         String password = "";
-        ConnectionInfo info = ConnectionInfo.urlUserPassword(url, user, password);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password);
         return DBConnectionFactory.getConnection(info,null,null);
     }
 }

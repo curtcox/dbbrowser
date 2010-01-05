@@ -5,10 +5,9 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
 import com.cve.db.Join;
-import com.cve.db.Server;
+import com.cve.db.DBServer;
 import com.cve.stores.CurrentValue;
 import com.google.common.collect.ImmutableList;
-import java.sql.SQLException;
 
 
 /**
@@ -18,6 +17,9 @@ import java.sql.SQLException;
  * It is needed as an abstraction layer, because
  * different drivers use differenent semantics.  The meaning and content of
  * "Catalog" and "Schema" columns are inconsistent.
+ * <p>
+ * Also important is that it enables asynchronous semantics through use of
+ * CurrentValueS.
  * @author Curt
  */
 public interface DBMetaData {
@@ -26,33 +28,33 @@ public interface DBMetaData {
      * For making DBMetaDataS.
      */
     public interface Factory {
-        DBMetaData of(Server server);
+        DBMetaData of(DBServer server);
     }
 
-    CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables);
 
 
     /**
      * Return all the potential joins from the columns in the given tables.
      */
-    CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables);
 
 
-    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Server server)  throws SQLException;
+    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server);
 
-    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database)  throws SQLException;
+    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database);
 
-    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table)  throws SQLException;
-
-
-    CurrentValue<ImmutableList<Database>> getDatabasesOn(Server server)  throws SQLException;
+    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table);
 
 
-    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables)  throws SQLException;
+    CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server);
 
 
-    CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database)  throws SQLException;
+    CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables);
 
-    CurrentValue<Long> getRowCountFor(DBTable table) throws SQLException;
+
+    CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database);
+
+    CurrentValue<Long> getRowCountFor(DBTable table);
 
 }
