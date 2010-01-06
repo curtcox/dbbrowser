@@ -2,6 +2,8 @@ package com.cve.launch;
 
 import com.cve.db.dbio.DBMetaData;
 import com.cve.db.dbio.LocalDBMetaDataFactory;
+import com.cve.fs.fsio.FSMetaData;
+import com.cve.fs.fsio.LocalFSMetaDataFactory;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.fs.FSBrowserHandler;
@@ -18,8 +20,6 @@ import com.cve.web.RequestHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
-import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * A request handler for resources accessible via the local machine.
@@ -34,6 +34,7 @@ final class LocalRequestHandler implements RequestHandler {
     private LocalRequestHandler(
         DBServersStore dbServersStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
         final DBMetaData.Factory db = LocalDBMetaDataFactory.of(dbServersStore,managedFunction);
+        final FSMetaData.Factory fs = LocalFSMetaDataFactory.of(fsServersStore,managedFunction);
         handler = ErrorReportHandler.of(
                 DebugHandler.of(
                     CompressedURIHandler.of(
@@ -41,7 +42,7 @@ final class LocalRequestHandler implements RequestHandler {
                             CoreServerHandler.of(),
                             AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction),
                             LogBrowserHandler.of(),
-                            FSBrowserHandler.of(fsServersStore,managedFunction),
+                            FSBrowserHandler.of(fs,fsServersStore,managedFunction),
                             DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction)
                        )
                  )
@@ -54,7 +55,7 @@ final class LocalRequestHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         return handler.produce(request);
     }
 

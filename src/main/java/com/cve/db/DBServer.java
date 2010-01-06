@@ -17,6 +17,8 @@ public final class DBServer {
 
     /**
      * How the server is represented in URLs.
+     * This isn't the URI that the server is at, but rather the URI fragment
+     * that represents the server in our URIs.
      */
     public final URI uri;
 

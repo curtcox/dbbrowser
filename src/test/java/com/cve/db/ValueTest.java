@@ -1,6 +1,6 @@
 package com.cve.db;
 
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,17 +15,17 @@ public class ValueTest {
 
     @Test
     public void firstEqualsFirst() {
-        assertEquals(Value.of("first"), Value.of("first"));
+        assertEquals(DBValue.of("first"), DBValue.of("first"));
     }
 
     @Test
     public void oneNotEqualTwo() {
-        assertFalse(Value.of(1).equals(Value.of(2)));
+        assertFalse(DBValue.of(1).equals(DBValue.of(2)));
     }
 
     @Test
     public void oneEqualsOne() {
-        assertEquals(Value.of(1),Value.of(1));
+        assertEquals(DBValue.of(1),DBValue.of(1));
     }
 
 }

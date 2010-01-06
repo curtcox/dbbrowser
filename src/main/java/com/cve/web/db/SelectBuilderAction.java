@@ -1,9 +1,9 @@
 package com.cve.web.db;
 
 import com.cve.db.DBColumn;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
 import com.cve.db.DBTable;
@@ -37,7 +37,7 @@ public enum SelectBuilderAction {
         @Override
         public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
             int   pages = Integer.parseInt(query);
-            Limit limit = select.limit;
+            DBLimit limit = select.limit;
             select = select.with(limit.next(pages));
             return select;
         }
@@ -50,7 +50,7 @@ public enum SelectBuilderAction {
         @Override
         public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
             int   pages = Integer.parseInt(query);
-            Limit limit = select.limit;
+            DBLimit limit = select.limit;
             select = select.with(limit.back(pages));
             return select;
         }
@@ -63,7 +63,7 @@ public enum SelectBuilderAction {
         @Override
         public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
             int   factor = Integer.parseInt(query);
-            Limit limit = select.limit;
+            DBLimit limit = select.limit;
             select = select.with(limit.bigger(factor));
             return select;
         }
@@ -76,7 +76,7 @@ public enum SelectBuilderAction {
         @Override
         public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
             int   factor = Integer.parseInt(query);
-            Limit limit = select.limit;
+            DBLimit limit = select.limit;
             select = select.with(limit.smaller(factor));
             return select;
         }
@@ -108,7 +108,7 @@ public enum SelectBuilderAction {
     FILTER("filter") {
         @Override
         public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
-            return select.with(Filter.parse(server,select.tables,query));
+            return select.with(DBRowFilter.parse(server,select.tables,query));
         }
     },
 

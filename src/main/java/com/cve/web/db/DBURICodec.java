@@ -5,9 +5,9 @@ import com.cve.util.*;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Order;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
@@ -254,7 +254,7 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<Filter> getFilters(ImmutableList<DBTable> tables,String uri) {
+    public static ImmutableList<DBRowFilter> getFilters(ImmutableList<DBTable> tables,String uri) {
         args(tables,uri);
         if (!exists(uri,Position.FILTERS)) {
             return ImmutableList.of();
@@ -265,9 +265,9 @@ public final class DBURICodec {
         }
 
         DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
-        List<Filter> list = Lists.newArrayList();
+        List<DBRowFilter> list = Lists.newArrayList();
         for (String fullFilterName : filterParts.split("\\+")) {
-            Filter filter = Filter.parse(server,tables,fullFilterName);
+            DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName);
             list.add(filter);
         }
         return ImmutableList.copyOf(list);
@@ -311,14 +311,14 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    static Limit getLimit(String uri) {
+    static DBLimit getLimit(String uri) {
         if (!exists(uri,Position.LIMIT)) {
-            return Limit.DEFAULT;
+            return DBLimit.DEFAULT;
         }
         String[] limitParts = at(uri,Position.LIMIT).split("\\+");
         int  limit = Integer.parseInt(limitParts[0]);
         int offest = Integer.parseInt(limitParts[1]);
-        return Limit.limitOffset(limit, offest);
+        return DBLimit.limitOffset(limit, offest);
     }
 
     public static Select getSelect(String uri) {
@@ -329,10 +329,10 @@ public final class DBURICodec {
         ImmutableList<DBColumn>            columns = getColumns(tables,uri);
         ImmutableList<AggregateFunction> functions = getFunctions(tables,uri);
         ImmutableList<Join>                  joins = getJoins(tables,uri);
-        ImmutableList<Filter>              filters = getFilters(tables,uri);
+        ImmutableList<DBRowFilter>              filters = getFilters(tables,uri);
         ImmutableList<Order>                orders = getOrders(tables,uri);
         ImmutableList<Group>                groups = getGroups(tables,uri);
-        Limit                                limit = getLimit(uri);
+        DBLimit                                limit = getLimit(uri);
         validateRequest(databases,tables,columns,joins,filters,orders);
 
         // Setup the select
@@ -346,7 +346,7 @@ public final class DBURICodec {
      */
     static void validateRequest(ImmutableList<Database> databases,
         ImmutableList<DBTable>       tables,  ImmutableList<DBColumn>     columns,
-        ImmutableList<Join>         joins,  ImmutableList<Filter>     filters,
+        ImmutableList<Join>         joins,  ImmutableList<DBRowFilter>     filters,
         ImmutableList<Order>       orders)
     {
         validateMinimumSize(databases,1);

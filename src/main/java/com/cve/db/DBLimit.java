@@ -8,7 +8,7 @@ import static com.cve.util.Check.notNegative;
  * @author curt
  */
 @Immutable
-public final class Limit {
+public final class DBLimit {
 
     /**
      * Maximum number of rows to return.
@@ -20,46 +20,46 @@ public final class Limit {
      */
     public final int offset;
 
-    public static final Limit DEFAULT = limit(20);
+    public static final DBLimit DEFAULT = limit(20);
 
-    private Limit(int limit, int offset) {
+    private DBLimit(int limit, int offset) {
         this.limit  = notNegative(limit);
         this.offset = notNegative(offset);
     }
 
-    public static Limit limitOffset(int limit, int offset) {
-        return new Limit(limit,offset);
+    public static DBLimit limitOffset(int limit, int offset) {
+        return new DBLimit(limit,offset);
     }
 
-    public static Limit limit(int limit) {
-        return new Limit(limit,0);
+    public static DBLimit limit(int limit) {
+        return new DBLimit(limit,0);
     }
 
     /**
      * Get a new limit by paging this one forward.
      */
-    public Limit next(int pages) {
+    public DBLimit next(int pages) {
         return limitOffset(limit,offset + (pages * limit));
     }
 
     /**
      * Get a new limit by paging this one backward.
      */
-    public Limit back(int pages) {
+    public DBLimit back(int pages) {
         return limitOffset(limit,offset - (pages * limit));
     }
 
     /**
      * Get a new bigger limit.
      */
-    public Limit bigger(int factor) {
+    public DBLimit bigger(int factor) {
         return limitOffset(limit * factor,offset);
     }
 
     /**
      * Get a new samller limit.
      */
-    public Limit smaller(int factor) {
+    public DBLimit smaller(int factor) {
         return limitOffset(limit / factor,offset);
     }
 
@@ -67,7 +67,7 @@ public final class Limit {
     public int hashCode() { return limit ^ offset; }
 
     public boolean equals(Object o) {
-        Limit other = (Limit) o;
+        DBLimit other = (DBLimit) o;
         return limit  == other.limit &&
                offset == other.offset;
     }

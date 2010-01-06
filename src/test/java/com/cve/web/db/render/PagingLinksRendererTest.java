@@ -8,12 +8,12 @@ import com.cve.db.DBTable;
 import com.cve.db.DBColumn;
 import com.cve.db.Hints;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import static com.cve.util.Replace.bracketQuote;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -43,7 +43,7 @@ public class PagingLinksRendererTest {
         DBColumn             name = person.columnNameType("name",String.class);
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
-        Value             value = Value.of("Smith");
+        DBValue             value = DBValue.of("Smith");
         DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
@@ -51,15 +51,15 @@ public class PagingLinksRendererTest {
         return results;
     }
 
-    SelectResults multiPersonResults(int first, int last, Limit limit, boolean hasMore) {
+    SelectResults multiPersonResults(int first, int last, DBLimit limit, boolean hasMore) {
         DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
         List<DBRow>          rows = Lists.newArrayList();
-        Map<Cell,Value>  values = Maps.newHashMap();
+        Map<Cell,DBValue>  values = Maps.newHashMap();
         DBRow      row = DBRow.FIRST;
-        Value  value = Value.of("Smith");
+        DBValue  value = DBValue.of("Smith");
         for (int i=first; i<last; i++) {
             Cell cell = Cell.at(row, name);
             rows.add(row);
@@ -87,7 +87,7 @@ public class PagingLinksRendererTest {
             "<a href=[next?1]><img alt=[Next rows] title=[Next rows] src=[/resource/icons/actions/go-next.png]></a>" +
             " <a href=[bigger?10]><img alt=[More rows] title=[More rows] src=[/resource/icons/actions/list-add.png]></a> "
         );
-        Limit limit = Limit.DEFAULT;
+        DBLimit limit = DBLimit.DEFAULT;
         String rendered = PagingLinksRenderer.results(multiPersonResults(0,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);
     }
@@ -96,7 +96,7 @@ public class PagingLinksRendererTest {
     public void personPagingLinksWhenMoreBackButNotForward() {
         String expected = bracketQuote(
             "<a href=[back?1]><img alt=[Previous rows] title=[Previous rows] src=[/resource/icons/actions/go-previous.png]></a> ");
-        Limit limit = Limit.limitOffset(10,5);
+        DBLimit limit = DBLimit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,false)).pagingLinks();
         assertEquals(expected,rendered);
     }
@@ -108,7 +108,7 @@ public class PagingLinksRendererTest {
             " <a href=[next?1]><img alt=[Next rows] title=[Next rows] src=[/resource/icons/actions/go-next.png]></a> <a href=[bigger?10]>"+
             "<img alt=[More rows] title=[More rows] src=[/resource/icons/actions/list-add.png]></a> "
             );
-        Limit limit = Limit.limitOffset(10,5);
+        DBLimit limit = DBLimit.limitOffset(10,5);
         String rendered = PagingLinksRenderer.results(multiPersonResults(5,25,limit,true)).pagingLinks();
         assertEquals(expected,rendered);
     }

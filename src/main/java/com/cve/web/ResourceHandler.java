@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.sql.SQLException;
 import static com.cve.util.Check.notNull;
 import static com.cve.log.Log.args;
 
@@ -26,7 +25,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
@@ -36,15 +35,19 @@ public final class ResourceHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public Model get(PageRequest request) throws IOException {
+    public Model get(PageRequest request) {
         throw new UnsupportedOperationException("We overrode produce, so this should never happen.");
     }
 
-    static byte[] serveResource(PageRequest request) throws IOException {
+    static byte[] serveResource(PageRequest request) {
         String       uri = request.requestURI;
         String  resource = uri.substring("/resource".length());
         InputStream   in = notNull(ResourceHandler.class.getResourceAsStream(resource),resource);
-        return copyStream(in);
+        try {
+            return copyStream(in);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     static byte[] copyStream(InputStream in) throws IOException {

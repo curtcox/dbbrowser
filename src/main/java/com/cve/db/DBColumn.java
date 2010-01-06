@@ -97,8 +97,8 @@ public final class DBColumn {
         return canonical(new DBColumn(table,name,Void.class,Keyness.FOREIGN));
     }
 
-    public Filter filterValue(Value value) {
-        return Filter.of(this, value);
+    public DBRowFilter filterValue(DBValue value) {
+        return DBRowFilter.of(this, value);
     }
 
     public static DBColumn parse(DBServer server, ImmutableList<DBTable> tables, String fullColumnName) {

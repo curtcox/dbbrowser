@@ -43,19 +43,19 @@ public final class Select {
      */
     public final ImmutableList<AggregateFunction>   functions;
     public final ImmutableList<Join>                joins;
-    public final ImmutableList<Filter>              filters;
+    public final ImmutableList<DBRowFilter>              filters;
     public final ImmutableList<Order>               orders;
     public final ImmutableList<Group>               groups;
-    public final Limit                              limit;
+    public final DBLimit                              limit;
 
     private Select(
         DBServer server,
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<AggregateFunction> functions,
-        ImmutableList<Join> joins, ImmutableList<Filter> filters,
+        ImmutableList<Join> joins, ImmutableList<DBRowFilter> filters,
         ImmutableList<Order> orders, ImmutableList<Group> groups,
-        Limit limit)
+        DBLimit limit)
     {
         this.server    = notNull(server);
         this.databases = notNull(databases);
@@ -76,9 +76,9 @@ public final class Select {
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<AggregateFunction> functions,
-        ImmutableList<Join> joins, ImmutableList<Filter> filters,
+        ImmutableList<Join> joins, ImmutableList<DBRowFilter> filters,
         ImmutableList<Order> orders,  ImmutableList<Group> groups,
-        Limit limit)
+        DBLimit limit)
     {
         DBServer server = databases.get(0).server;
         return new Select(server,databases,tables,columns,functions,joins,filters,orders,groups,limit);
@@ -100,7 +100,7 @@ public final class Select {
     /**
      * Return a similar select, but with the given join added.
      */
-    public Select with(Filter filter) {
+    public Select with(DBRowFilter filter) {
         notNull(filter);
         if (filters.contains(filter)) {
             return this;
@@ -151,7 +151,7 @@ public final class Select {
     /**
      * Return a similar select, but with the given limit.
      */
-    public Select with(Limit limit) {
+    public Select with(DBLimit limit) {
         return new Select(server,databases,tables,columns,functions,joins,filters,orders,groups,limit);
     }
 
@@ -179,22 +179,22 @@ public final class Select {
 
     public static Select from(Database database, DBTable table, DBColumn column) {
         DBServer server = database.server;
-        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),Limit.DEFAULT);
+        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(),list(),list(),DBLimit.DEFAULT);
     }
 
-    public static Select from(Database database, DBTable table, DBColumn column, Filter filter) {
+    public static Select from(Database database, DBTable table, DBColumn column, DBRowFilter filter) {
         DBServer server = database.server;
-        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(filter),list(),list(),Limit.DEFAULT);
+        return new Select(server,list(database),list(table),list(column),identityFunctions(1),list(),list(filter),list(),list(),DBLimit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBColumn... columns) {
         DBServer server = database.server;
-        return new Select(server,list(database),list(t1),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
+        return new Select(server,list(database),list(t1),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),DBLimit.DEFAULT);
     }
 
     public static Select from(Database database, DBTable t1, DBTable t2, DBColumn... columns) {
         DBServer server = database.server;
-        return new Select(server,list(database),list(t1,t2),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),Limit.DEFAULT);
+        return new Select(server,list(database),list(t1,t2),list(columns),identityFunctions(columns.length),list(),list(),list(),list(),DBLimit.DEFAULT);
     }
 
     private static ImmutableList<AggregateFunction> identityFunctions(int count) {

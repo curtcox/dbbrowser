@@ -40,7 +40,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public Model get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) {
         args(request);
         String uri = request.requestURI;
 
@@ -70,7 +70,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
                DBURICodec.getDatabases(uri).isEmpty();
     }
 
-    ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) throws SQLException {
+    ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) {
         Multimap<Database,DBTable> tables = HashMultimap.create();
         for (Database database : databases) {
             DBMetaData  meta = db.of(database.server);
@@ -84,7 +84,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
     /**
      * Perform the requested search and return a results page.
      */
-    DatabasesSearchPage newSearchPage(DBServer server,Search search) throws SQLException {
+    DatabasesSearchPage newSearchPage(DBServer server,Search search) {
         args(server,search);
         ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server).value;
         Set<Database> filteredDatabases = Sets.newHashSet();

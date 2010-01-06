@@ -7,11 +7,11 @@ import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.db.dbio.DBResultSetIO;
@@ -74,7 +74,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public FreeFormQueryModel get(PageRequest request) throws IOException {
+    public FreeFormQueryModel get(PageRequest request) {
         args(request);
         ImmutableMap<String,String> params = request.parameters;
         String        query = params.get(Q);
@@ -127,23 +127,23 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         ImmutableList<DBTable>       tables = meta.tables;
         ImmutableList<DBColumn>     columns = meta.columns;
         List<DBRow>                    rows = Lists.newArrayList();
-        Map<Cell,Value>              values = Maps.newHashMap();
+        Map<Cell,DBValue>              values = Maps.newHashMap();
         ImmutableList<AggregateFunction> functions = meta.functions;
         int cols = columns.size();
-        Limit limit = Limit.DEFAULT;
+        DBLimit limit = DBLimit.DEFAULT;
         for (int r=0; r<(limit.limit - 1); r++) {
             DBRow row = DBRow.number(r);
             rows.add(row);
             r++;
             for (int c=1; c<=cols; c++) {
                 Object v = results.rows.get(r).get(c);
-                Value value = Value.of(v);
+                DBValue value = DBValue.of(v);
                 values.put(Cell.at(row, columns.get(c-1),functions.get(c-1)), value);
             }
         }
         boolean more = results.rows.size() > limit.limit;
         ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
-        ImmutableMap<Cell,Value>   fixedValues = ImmutableMap.copyOf(values);
+        ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
         return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),meta,more);
     }
 

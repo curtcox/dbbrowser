@@ -9,14 +9,14 @@ import com.cve.ui.UIDetail;
 import com.cve.db.DBColumn;
 import com.cve.db.DBColumn.Keyness;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.DBTable;
 import com.cve.db.Order;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.html.HTML;
 import com.cve.ui.UIRow;
@@ -100,7 +100,7 @@ public final class DBResultSetRenderer {
             List<UIDetail> details = Lists.newArrayList();
             for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
-                Value value = results.getValue(row, column);
+                DBValue value = results.getValue(row, column);
                 details.add(UIDetail.of(valueCell(cell,value)));
             }
             out.add(UIRow.of(details, cssClass));
@@ -192,7 +192,7 @@ public final class DBResultSetRenderer {
             out.append("<tr class=\"" + cssClass + "\">");
             for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
-                Value value = results.getValue(row, column);
+                DBValue value = results.getValue(row, column);
                 out.append(td(valueCell(cell,value)));
             }
             out.append("</tr>\r");
@@ -242,7 +242,7 @@ public final class DBResultSetRenderer {
         Label                    text = Label.of(columnName);
         URI                    target = column.linkTo().getTarget();
         ImmutableList<DBColumn> joins = destinationColumns(column,hints.getJoinsFor(column));
-        ImmutableList<Filter> filters = hints.getFiltersFor(column);
+        ImmutableList<DBRowFilter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
         String link = Link.textTargetTip(text, target, tooltip).toString();
         Keyness keyness = column.keyness;
@@ -307,12 +307,12 @@ public final class DBResultSetRenderer {
         return Link.textTargetTipImage(text, target, tip,image).toString();
     }
 
-    static String valueCell(Cell cell, Value value) {
+    static String valueCell(Cell cell, DBValue value) {
         Object       object = value.value;
         String  valueString = "" + object;
         Label          text = Label.of(valueString);
         DBColumn     column = cell.column;
-        Filter       filter = Filter.of(column, value);
+        DBRowFilter       filter = DBRowFilter.of(column, value);
         URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
         return Link.textTarget(text, target).toString();
     }

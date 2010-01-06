@@ -8,7 +8,7 @@ import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
 import com.cve.db.DBTable;
 import com.cve.db.Order;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -103,7 +103,7 @@ public final class ResultsTableRenderer {
             details.add(UIDetail.of(actionCell(column,direction(column)),CSS.ACTIONS));
             for (DBRow row : resultSet.rows) {
                 Cell cell = Cell.at(row, column);
-                Value value = resultSet.getValue(row, column);
+                DBValue value = resultSet.getValue(row, column);
                 details.add(UIDetail.of(valueCell(cell,value)));
             }
             out.add(UIRow.of(details));

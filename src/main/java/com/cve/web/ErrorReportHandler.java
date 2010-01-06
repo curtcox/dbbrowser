@@ -25,7 +25,7 @@ public final class ErrorReportHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         try {
             return handler.produce(request);

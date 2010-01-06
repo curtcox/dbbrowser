@@ -6,9 +6,9 @@ import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.db.DBTable;
 import com.cve.db.Join;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Group;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Order;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
@@ -92,7 +92,7 @@ public class SimpleSelectRenderer implements SelectRenderer {
     }
 
     public String where(
-        ImmutableList<Join> joins, ImmutableList<Filter> filters,
+        ImmutableList<Join> joins, ImmutableList<DBRowFilter> filters,
         Search search, ImmutableList<DBColumn> columns)
     {
         boolean   hasJoins =   joins.size() > 0;
@@ -123,9 +123,9 @@ public class SimpleSelectRenderer implements SelectRenderer {
         return separated(list,AND);
     }
 
-    public String filters(ImmutableList<Filter> filters) {
+    public String filters(ImmutableList<DBRowFilter> filters) {
         List<String> list = Lists.newArrayList();
-        for (Filter filter : filters) {
+        for (DBRowFilter filter : filters) {
             list.add(fullName(filter.column) + "=" + singleQuote(filter.value.toString()));
         }
         return separated(list,AND);
@@ -164,7 +164,7 @@ public class SimpleSelectRenderer implements SelectRenderer {
         return GROUP_BY + separated(list,AND);
     }
 
-    public String limit(Limit limit) {
+    public String limit(DBLimit limit) {
         // Use limit + 1, so we can see if there is more data to get,
         // without the risk of accidentally getting way too much.
         return LIMIT + ( limit.limit + 1 ) + OFFSET + limit.offset;

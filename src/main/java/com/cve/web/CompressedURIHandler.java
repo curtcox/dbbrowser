@@ -2,10 +2,8 @@ package com.cve.web;
 
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -36,7 +34,7 @@ public final class CompressedURIHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         String uri = request.requestURI;
         if (uri.startsWith(PREFIX)) {

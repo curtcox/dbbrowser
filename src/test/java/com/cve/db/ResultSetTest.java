@@ -25,7 +25,7 @@ public class ResultSetTest {
         ImmutableList<DBTable>       tables = ImmutableList.of();
         ImmutableList<DBColumn>     columns = ImmutableList.of();
         ImmutableList<DBRow>           rows = ImmutableList.of();
-        ImmutableMap<Cell,Value>   values = ImmutableMap.of();
+        ImmutableMap<Cell,DBValue>   values = ImmutableMap.of();
         DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values);
         assertEquals(tables, resultSet.tables);
         assertEquals(columns,resultSet.columns);
@@ -40,16 +40,16 @@ public class ResultSetTest {
         DBTable            tables = database.tableName("TABLES");
         DBColumn     tableCatalog = DBColumn.tableNameType(tables,"TABLE_CATALOG",String.class);
         List<DBRow>          rows = Lists.newArrayList();
-        Map<Cell,Value>  values = Maps.newHashMap();
-        Value value = Value.of("TEST");
+        Map<Cell,DBValue>  values = Maps.newHashMap();
+        DBValue value = DBValue.of("TEST");
         for (int i=0; i<28; i++) {
             DBRow row = DBRow.number(i);
             rows.add(row);
             values.put(Cell.at(row, tableCatalog), value);
         }
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
-        ImmutableMap<Cell,Value> fixedValues1 = ImmutableMap.copyOf(values);
-        ImmutableMap<Cell,Value> fixedValues2 = ImmutableMap.copyOf(values);
+        ImmutableMap<Cell,DBValue> fixedValues1 = ImmutableMap.copyOf(values);
+        ImmutableMap<Cell,DBValue> fixedValues2 = ImmutableMap.copyOf(values);
         DBResultSet     resultSet1 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues1);
         DBResultSet     resultSet2 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues2);
         assertEquals(resultSet1,resultSet2);

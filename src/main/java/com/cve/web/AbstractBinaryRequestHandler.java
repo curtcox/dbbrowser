@@ -51,7 +51,7 @@ public abstract class AbstractBinaryRequestHandler
      * overriding get is the right thing to do instead.
      */
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
@@ -68,6 +68,6 @@ public abstract class AbstractBinaryRequestHandler
     /**
      * Usually, implementors will just provide this method, plus constructor args.
      */
-    public abstract byte[] get(PageRequest request) throws IOException, SQLException;
+    public abstract byte[] get(PageRequest request);
     
 }

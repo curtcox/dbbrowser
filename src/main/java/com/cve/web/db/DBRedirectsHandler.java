@@ -49,7 +49,7 @@ public final class DBRedirectsHandler implements RequestHandler {
      * Poduce a response with the appropriate redirect, or null if this
      * request should not be redirected.
      */
-    public PageResponse produce(PageRequest request) throws IOException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         notNull(request);
 

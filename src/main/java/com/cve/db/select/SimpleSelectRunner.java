@@ -5,7 +5,7 @@ import com.cve.db.Cell;
 import com.cve.db.DBColumn;
 import com.cve.db.DBResultSet;
 import com.cve.db.Database;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.DBRow;
 import com.cve.db.SQL;
 import com.cve.db.Select;
@@ -13,7 +13,7 @@ import com.cve.db.SelectResults;
 import com.cve.db.DBTable;
 import com.cve.db.Hints;
 import com.cve.db.SelectContext;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.db.dbio.DBConnection;
 import com.cve.db.dbio.DBResultSetIO;
 import com.cve.db.dbio.DBResultSetMetaDataIO;
@@ -100,24 +100,24 @@ final class SimpleSelectRunner implements SelectRunner {
         ImmutableList<DBTable>       tables = select.tables;
         ImmutableList<DBColumn>     columns = select.columns;
         List<DBRow>                    rows = Lists.newArrayList();
-        Map<Cell,Value>              values = Maps.newHashMap();
+        Map<Cell,DBValue>              values = Maps.newHashMap();
         DBResultSetMetaDataIO          meta = results.meta;
         ImmutableList<AggregateFunction> functions = select.functions;
         int cols = meta.getColumnCount();
-        Limit limit = select.limit;
+        DBLimit limit = select.limit;
         for (int r=0; r<(limit.limit - 1); r++) {
             DBRow row = DBRow.number(r);
             rows.add(row);
             r++;
             for (int c=1; c<=cols; c++) {
                 Object v = results.rows.get(r).get(c);
-                Value value = Value.of(v);
+                DBValue value = DBValue.of(v);
                 values.put(Cell.at(row, columns.get(c-1),functions.get(c-1)), value);
             }
         }
         boolean more = results.rows.size() > limit.limit;
         ImmutableList<DBRow>           fixedRows = ImmutableList.copyOf(rows);
-        ImmutableMap<Cell,Value>   fixedValues = ImmutableMap.copyOf(values);
+        ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
         return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
     }
 

@@ -6,7 +6,7 @@ import com.cve.html.Tooltip;
 import com.cve.html.HTML;
 import com.cve.db.DBColumn;
 import com.cve.db.DBColumn.Keyness;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.ui.UICascadingMenu;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
@@ -29,7 +29,7 @@ public final class ColumnNameTooltip
 {
 
     public static Tooltip columnJoinsFilters(
-        DBColumn column, ImmutableList<DBColumn> joins, ImmutableList<Filter> filters)
+        DBColumn column, ImmutableList<DBColumn> joins, ImmutableList<DBRowFilter> filters)
     {
         String info =
             //info(column).toString() +
@@ -71,7 +71,7 @@ public final class ColumnNameTooltip
         return link;
     }
 
-    static UIElement info(Filter filter) {
+    static UIElement info(DBRowFilter filter) {
         notNull(filter);
         DBColumn column = filter.column;
         String value  = filter.value.toString();
@@ -94,10 +94,10 @@ public final class ColumnNameTooltip
         return list;
     }
 
-    static List<UIElement> filterInfo(ImmutableList<Filter> filters) {
+    static List<UIElement> filterInfo(ImmutableList<DBRowFilter> filters) {
         notNull(filters);
         List<UIElement> list = Lists.newArrayList();
-        for (Filter filter : filters) {
+        for (DBRowFilter filter : filters) {
             list.add(info(filter));
         }
         return list;

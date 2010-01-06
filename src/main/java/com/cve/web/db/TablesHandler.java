@@ -18,8 +18,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -64,7 +62,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      * Get the response (list of tables) for this request.
      */
     @Override
-    public Model get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) {
         args(request);
         String                    uri = request.requestURI;
         Search                 search = DBURICodec.getSearch(uri);
@@ -94,7 +92,7 @@ public final class TablesHandler extends AbstractRequestHandler {
     /**
      * Return a map from the given tables to the columns they contain.
      */
-    ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) throws SQLException {
+    ImmutableMultimap<DBTable,DBColumn> columnsFor(ImmutableList<DBTable> tables) {
         Multimap<DBTable,DBColumn> columns = HashMultimap.create();
         for (DBTable table : tables) {
             DBServer      server = table.database.server;
@@ -109,7 +107,7 @@ public final class TablesHandler extends AbstractRequestHandler {
         /**
      * Return a map from the given tables to the columns they contain.
      */
-    ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) throws SQLException {
+    ImmutableMap<DBTable,Long> rowsFor(ImmutableList<DBTable> tables) {
         Map<DBTable,Long> rows = Maps.newHashMap();
         for (DBTable table : tables) {
             DBServer      server = table.database.server;
@@ -123,7 +121,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      * Perform the requested search of the table, column, database
      * and server names.  Return a results page.
      */
-    TablesSearchPage newNamesSearchPage(Database database,Search search) throws SQLException {
+    TablesSearchPage newNamesSearchPage(Database database,Search search) {
         args(database,search);
         DBMetaData               meta = db.of(database.server);
         ImmutableList<DBColumn> columns = meta.getColumnsFor(database).value;

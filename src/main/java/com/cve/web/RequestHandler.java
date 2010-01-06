@@ -1,8 +1,5 @@
 package com.cve.web;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 /**
  * Something that handles {@link PageRequest}S and produces
  * {@link URIResponse}S.  Generally, new pages will require a
@@ -18,7 +15,14 @@ public interface RequestHandler {
     /**
      * Return a response for this request, or null if this isn't the sort
      * of request we prodcuce responses for.
+     * <p>
+     * Note that this method doesn't declare any exceptions being thrown.
+     * That's not because we expect everything to always be fine.
+     * It is quite the opposite in fact.  Handlers should use CurrentValueS
+     * to handle things like timeouts and connection failures gracefully.
+     * Generally, that means using the most recent available data and noting
+     * any error conditions known to exist.
      */
-    PageResponse produce(PageRequest request) throws IOException, SQLException;
+    PageResponse produce(PageRequest request);
 
 }

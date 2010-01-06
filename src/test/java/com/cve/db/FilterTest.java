@@ -28,8 +28,8 @@ public class FilterTest {
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
-        assertEquals(column.filterValue(Value.of(object)),
-                     column.filterValue(Value.of(object)));
+        assertEquals(column.filterValue(DBValue.of(object)),
+                     column.filterValue(DBValue.of(object)));
     }
 
     @Test
@@ -47,16 +47,16 @@ public class FilterTest {
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
-        assertFalse(column.filterValue(Value.of(a)).equals(
-                    column.filterValue(Value.of(b))));
+        assertFalse(column.filterValue(DBValue.of(a)).equals(
+                    column.filterValue(DBValue.of(b))));
     }
 
     private void assertRenderedFilterParses(Object value) {
         DBServer   server = DBServer.uri(URIs.of("server"));
         DBTable   table = server.databaseName("db").tableName("foo");
-        Filter filter = table
+        DBRowFilter filter = table
                 .columnName("bar")
-                .filterValue(Value.of(value));
+                .filterValue(DBValue.of(value));
         ImmutableList<DBTable> tables = ImmutableList.of(table);
         String fragment = filter.toUrlFragment();
         System.out.println("value   =" + value);
@@ -64,7 +64,7 @@ public class FilterTest {
         // We use "+" to separate filters in URLs, so the fragments can't
         // contain them
         assertFalse("Should not contain + : " + fragment,fragment.contains("+"));
-        Filter parsed = Filter.parse(server, tables, fragment);
+        DBRowFilter parsed = DBRowFilter.parse(server, tables, fragment);
         System.out.println("filter=" + filter);
         System.out.println("parsed=" + parsed);
         assertEquals(filter,parsed);

@@ -1,8 +1,6 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
 import static com.cve.log.Log.args;
 
@@ -41,7 +39,7 @@ public abstract class AbstractRequestHandler
      * overriding get is the right thing to do instead.
      */
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
@@ -58,6 +56,6 @@ public abstract class AbstractRequestHandler
     /**
      * Usually, implementors will just provide this method, plus constructor args.
      */
-    public abstract Model get(PageRequest request) throws IOException, SQLException;
+    public abstract Model get(PageRequest request);
     
 }

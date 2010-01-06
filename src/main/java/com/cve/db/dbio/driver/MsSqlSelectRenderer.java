@@ -3,7 +3,7 @@ package com.cve.db.dbio.driver;
 import com.cve.db.dbio.*;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.util.Check;
@@ -44,7 +44,7 @@ final class MsSqlSelectRenderer extends SimpleSelectRenderer {
      * SELECT TOP 10 START AT 20 * FROM T
      */
     @Override
-    public String limit(Limit limit) {
+    public String limit(DBLimit limit) {
         // Use limit + 1, so we can see if there is more data to get,
         // without the risk of accidentally getting way too much.
         return TOP + ( limit.limit + 1 ) + " ";

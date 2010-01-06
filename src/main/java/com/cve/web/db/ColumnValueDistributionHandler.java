@@ -57,7 +57,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public SelectResults get(PageRequest request) throws IOException, SQLException {
+    public SelectResults get(PageRequest request) {
         String uri = request.requestURI;
         return  getResultsFromDB(uri);
     }
@@ -93,7 +93,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    SelectResults getResultsFromDB(String uri) throws SQLException {
+    SelectResults getResultsFromDB(String uri) {
         // The server out of the URL
         DBServer         server = DBURICodec.getServer(uri);
 

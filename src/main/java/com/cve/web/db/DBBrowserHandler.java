@@ -7,8 +7,6 @@ import com.cve.stores.db.DBServersStore;
 import com.cve.web.db.databases.DatabasesHandler;
 import com.cve.web.*;
 import com.cve.web.db.servers.DBServersHandler;
-import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * The {@link RequestHandler} for browsing databases.
@@ -26,7 +24,7 @@ public final class DBBrowserHandler implements RequestHandler {
             FreeFormQueryHandler.of(serversStore, managedFunction),                        // /server/select... & /server/database/select...
             SearchRedirectsHandler.of(),                                                   // search?find=what
             DBRedirectsHandler.of(db),                                                     // action?args
-            DBServersHandler.of(db,serversStore,managedFunction).of(),                     // / , /add , /remove
+            DBServersHandler.of(db,serversStore,managedFunction),                          // / , /add , /remove
             DatabaseMetaHandler.of(db,serversStore,managedFunction),                       // /meta/server/
             DatabasesHandler.of(db),                                                       // /server/
             TablesHandler.of(db,serversStore,hintsStore, managedFunction),                 // /server/databases/
@@ -41,7 +39,7 @@ public final class DBBrowserHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         return handler.produce(request);
     }
 

@@ -4,10 +4,10 @@ import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.DBTable;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Group;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Order;
 import com.cve.db.SQL;
 import com.cve.db.Select;
@@ -36,10 +36,10 @@ public final class SelectParser {
         ImmutableList<DBColumn> columns = ImmutableList.copyOf(meta.columns);
         ImmutableList<AggregateFunction> functions = ImmutableList.copyOf(meta.functions);
         ImmutableList<Join> joins = ImmutableList.of();
-        ImmutableList<Filter> filters = ImmutableList.of();
+        ImmutableList<DBRowFilter> filters = ImmutableList.of();
         ImmutableList<Order> orders = ImmutableList.of();
         ImmutableList<Group> groups = ImmutableList.of();
-        Limit limit = Limit.DEFAULT;
+        DBLimit limit = DBLimit.DEFAULT;
         Select select = Select.from(databases, tables, columns, functions, joins, filters, orders, groups, limit);
         return select;
     }

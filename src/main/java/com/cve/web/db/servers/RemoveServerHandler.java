@@ -2,8 +2,6 @@ package com.cve.web.db.servers;
 
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
-import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  *
@@ -19,7 +17,7 @@ final class RemoveServerHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public RemoveServerPage get(PageRequest request) throws IOException, SQLException {
+    public RemoveServerPage get(PageRequest request) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

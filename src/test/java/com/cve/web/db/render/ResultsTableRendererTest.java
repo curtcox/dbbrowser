@@ -10,13 +10,13 @@ import com.cve.db.DBTable;
 import com.cve.db.DBColumn;
 import com.cve.db.Hints;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.Order;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.html.CSS;
 import static com.cve.util.Replace.bracketQuote;
 import static com.cve.util.Replace.escapeQuotes;
@@ -46,7 +46,7 @@ public class ResultsTableRendererTest {
         DBColumn             name = person.columnNameType("name",String.class);
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
-        Value             value = Value.of("Smith");
+        DBValue             value = DBValue.of("Smith");
         DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
@@ -62,7 +62,7 @@ public class ResultsTableRendererTest {
         DBColumn              age = person.columnNameType("age", Integer.class);
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
-        Value             value = Value.of("Smith");
+        DBValue             value = DBValue.of("Smith");
         DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName),age);
@@ -70,15 +70,15 @@ public class ResultsTableRendererTest {
         return results;
     }
 
-    SelectResults multiPersonResults(int first, int last, Limit limit, boolean hasMore) {
+    SelectResults multiPersonResults(int first, int last, DBLimit limit, boolean hasMore) {
         DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
         List<DBRow>          rows = Lists.newArrayList();
-        Map<Cell,Value>  values = Maps.newHashMap();
+        Map<Cell,DBValue>  values = Maps.newHashMap();
         DBRow      row = DBRow.FIRST;
-        Value  value = Value.of("Smith");
+        DBValue  value = DBValue.of("Smith");
         for (int i=first; i<last; i++) {
             Cell cell = Cell.at(row, name);
             rows.add(row);
@@ -242,7 +242,7 @@ public class ResultsTableRendererTest {
         DBColumn             name = person.columnNameType("name",String.class);
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
-        Value             value = Value.of("Smith");
+        DBValue             value = DBValue.of("Smith");
         DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));

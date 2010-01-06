@@ -13,7 +13,7 @@ import static com.cve.log.Log.args;
  * See also {@link Join}
  */
 @Immutable
-public final class Filter {
+public final class DBRowFilter {
 
     /**
      * The column this filter filters.
@@ -23,12 +23,12 @@ public final class Filter {
     /**
      * The value this filter passes.
      */
-    public final Value value;
+    public final DBValue value;
 
     /**
      * Use the factory.
      */
-    private Filter(DBColumn column, Value value) {
+    private DBRowFilter(DBColumn column, DBValue value) {
         this.column = notNull(column);
         this.value  = notNull(value);
     }
@@ -36,15 +36,15 @@ public final class Filter {
     /**
      * Return a filter for the given column and value.
      */
-    public static Filter of(DBColumn column, Value value) {
-        return new Filter(column,value);
+    public static DBRowFilter of(DBColumn column, DBValue value) {
+        return new DBRowFilter(column,value);
     }
 
     /**
      * Parses a filter that has previously been rendered as a URL fragment.
      * See toURrlFragment.
      */
-    public static Filter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
+    public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
         args(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
@@ -55,8 +55,8 @@ public final class Filter {
         }
         DBColumn       column = DBColumn.parse(server,tables,nameParts[0]);
         String         string = nameParts[1];
-        Value         value = Value.decode(string);
-        Filter       filter = Filter.of(column, value);
+        DBValue         value = DBValue.decode(string);
+        DBRowFilter       filter = DBRowFilter.of(column, value);
         return filter;
     }
 
@@ -75,7 +75,7 @@ public final class Filter {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
-        Filter other = (Filter) o;
+        DBRowFilter other = (DBRowFilter) o;
         return column.equals(other.column) && value.equals(other.value);
     }
 

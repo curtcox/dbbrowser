@@ -190,5 +190,17 @@ public final class FSURICodec {
         throw new IllegalArgumentException(full);
     }
 
+    public static URI encode(FSServer aThis) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static URI encode(FSPath aThis) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static URI encode(FSField aThis) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 
 }

@@ -1,9 +1,7 @@
 package com.cve.web;
 
 import com.google.common.collect.ImmutableList;
-import java.io.*;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -29,7 +27,7 @@ public final class CompositeRequestHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         for (RequestHandler handler : handlers) {
             PageResponse response = handler.produce(request);
             if (response!=null) {

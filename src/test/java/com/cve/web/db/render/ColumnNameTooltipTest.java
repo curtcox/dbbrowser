@@ -3,11 +3,11 @@ package com.cve.web.db.render;
 import com.cve.html.HTML;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
 import com.cve.db.DBServer;
 import com.cve.db.DBTable;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -34,13 +34,13 @@ public class ColumnNameTooltipTest {
         return join;
     }
 
-    private Filter getFilter() {
+    private DBRowFilter getFilter() {
         DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
-        Value       value = Value.of("active");
-        Filter     filter = Filter.of(foo,value);
+        DBValue       value = DBValue.of("active");
+        DBRowFilter     filter = DBRowFilter.of(foo,value);
         return filter;
     }
 
@@ -51,11 +51,11 @@ public class ColumnNameTooltipTest {
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);
-        Value       value = Value.of("active");
-        Filter     filter = Filter.of(foo,value);
+        DBValue       value = DBValue.of("active");
+        DBRowFilter     filter = DBRowFilter.of(foo,value);
 
         ImmutableList<DBColumn>   joins = ImmutableList.of(bar);
-        ImmutableList<Filter> filters = ImmutableList.of(filter);
+        ImmutableList<DBRowFilter> filters = ImmutableList.of(filter);
         return ColumnNameTooltip.columnJoinsFilters(foo,joins,filters).toHTML();
     }
 

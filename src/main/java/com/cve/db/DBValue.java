@@ -7,7 +7,7 @@ import org.h2.table.Column;
  * The typed value of a {@link Column} {@link Cell}, {@link Join}, or {@link Filter}.
  */
 @Immutable
-public final class Value {
+public final class DBValue {
 
     /**
      * The value we hold.
@@ -17,22 +17,22 @@ public final class Value {
     /**
      * Use in place of a null value.
      */
-    private static final Value NULL = new Value(null);
+    private static final DBValue NULL = new DBValue(null);
 
-    public static Value of(Object value) {
+    public static DBValue of(Object value) {
         if (value==null) {
             return NULL;
         }
-        return new Value(value);
+        return new DBValue(value);
     }
 
-    private Value(Object value) {
+    private DBValue(Object value) {
         this.value = value;
     }
 
-    public static Value decode(String string) {
+    public static DBValue decode(String string) {
         string = URLCodec.decode(string);
-        return Value.of(string);
+        return DBValue.of(string);
     }
 
     public String encode() {
@@ -54,7 +54,7 @@ public final class Value {
     @Override
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
-        Value other = (Value) o;
+        DBValue other = (DBValue) o;
         if (this==NULL) {
             return this==o;
         }

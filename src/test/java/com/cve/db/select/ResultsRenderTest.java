@@ -14,7 +14,7 @@ import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.JDBCURL;
 import com.cve.db.SelectContext;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.db.dbio.DBConnectionFactory;
 import com.cve.util.URIs;
 import com.cve.web.Search;
@@ -47,15 +47,15 @@ public class ResultsRenderTest {
         DBColumn     tableCatalog = DBColumn.tableNameType(tables,"TABLE_CATALOG",String.class);
         Select           select = Select.from(database,tables,tableCatalog);
         List<DBRow>          rows = Lists.newArrayList();
-        Map<Cell,Value>  values = Maps.newHashMap();
-        Value value = Value.of("UNNAMED");
+        Map<Cell,DBValue>  values = Maps.newHashMap();
+        DBValue value = DBValue.of("UNNAMED");
         for (int i=0; i<19; i++) {
             DBRow row = DBRow.number(i);
             rows.add(row);
             values.put(Cell.at(row, tableCatalog), value);
         }
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
-        ImmutableMap<Cell,Value> fixedValues = ImmutableMap.copyOf(values);
+        ImmutableMap<Cell,DBValue> fixedValues = ImmutableMap.copyOf(values);
         DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues);
         SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true);
         SelectContext   context = SelectContext.of(select, Search.EMPTY, server, connection, hints);

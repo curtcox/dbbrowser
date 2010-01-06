@@ -4,14 +4,14 @@ import com.cve.util.*;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
 import com.cve.db.Order;
 import com.cve.db.DBServer;
 import com.cve.db.DBTable;
 import com.cve.db.Group;
 import com.cve.db.Select;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ public class DBURIParserTest {
         DBColumn         c1 = t1.columnName("c1");
         DBColumn         c2 = t2.columnName("c2");
         Join         join = Join.of(c1, c2);
-        Filter     filter = Filter.of(c1, Value.of("only"));
+        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"));
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);
@@ -59,7 +59,7 @@ public class DBURIParserTest {
         DBColumn         c1 = t1.columnName("c1");
         DBColumn         c2 = t2.columnName("c2");
         Join         join = Join.of(c1, c2);
-        Filter     filter = Filter.of(c1, Value.of("only"));
+        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"));
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);

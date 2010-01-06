@@ -4,7 +4,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.db.dbio.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
@@ -49,7 +49,7 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
     }
 
     @Override
-    public byte[] get(PageRequest request) throws IOException, SQLException {
+    public byte[] get(PageRequest request) {
         args(request);
         AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction);
         return csv(alt.getResultsFromDB(request.requestURI));
@@ -64,7 +64,7 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
             List<String> values = Lists.newArrayList();
             for (int i=0; i<maxColumn; i++) {
                 DBColumn column = rows.columns.get(i);
-                Value value = rows.getValue(row, column);
+                DBValue value = rows.getValue(row, column);
                 values.add(value.toString());
             }
             out.append(Strings.separated(values, ",") + "\r\n");

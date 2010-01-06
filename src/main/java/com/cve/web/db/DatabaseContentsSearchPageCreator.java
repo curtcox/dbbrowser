@@ -49,12 +49,12 @@ final class DatabaseContentsSearchPageCreator {
         return new DatabaseContentsSearchPageCreator(db,serversStore,hintsStore, managedFunction);
     }
 
-    public DatabaseContentsSearchPage create(Database database, Search search) throws SQLException {
+    public DatabaseContentsSearchPage create(Database database, Search search) {
         List<SelectResults> resultsList = createResultsList(database,search);
         return DatabaseContentsSearchPage.of(search, database, resultsList);
     }
 
-    List<SelectResults> createResultsList(Database database, Search search) throws SQLException {
+    List<SelectResults> createResultsList(Database database, Search search) {
         args(database,search);
         List<SelectResults> resultsList = Lists.newArrayList();
         DBMetaData                 meta = db.of(database.server);
@@ -70,7 +70,7 @@ final class DatabaseContentsSearchPageCreator {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    SelectResults getResultsFromTable(DBMetaData meta ,Search search, DBTable table) throws SQLException {
+    SelectResults getResultsFromTable(DBMetaData meta ,Search search, DBTable table) {
         DBServer         server = table.database.server;
 
         // Setup the select

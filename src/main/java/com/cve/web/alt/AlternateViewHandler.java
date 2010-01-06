@@ -56,7 +56,7 @@ public final class AlternateViewHandler implements RequestHandler {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    SelectResults getResultsFromDB(final String uri) throws SQLException {
+    SelectResults getResultsFromDB(final String uri) {
         args(uri);
         // /view/CSV/foo
         //          ^ start here
@@ -77,7 +77,7 @@ public final class AlternateViewHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         return handler.produce(request);
     }
 }

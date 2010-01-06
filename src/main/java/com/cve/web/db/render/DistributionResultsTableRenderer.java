@@ -6,7 +6,7 @@ import com.cve.db.DBColumn;
 import com.cve.db.DBResultSet;
 import com.cve.db.DBRow;
 import com.cve.db.SelectResults;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -97,11 +97,11 @@ public final class DistributionResultsTableRenderer {
             DBColumn column = resultSet.columns.get(0);
 
             Cell   valueCell = Cell.at(row, column);
-            Value      value = resultSet.getValue(row, column);
+            DBValue      value = resultSet.getValue(row, column);
             details.add(UIDetail.of(valueCell(valueCell,value)));
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
-            Value  countValue = resultSet.values.get(countCell);
+            DBValue  countValue = resultSet.values.get(countCell);
             details.add(UIDetail.of(countValue.value.toString()));
 
             out.add(UIRow.of(details, cssClass));

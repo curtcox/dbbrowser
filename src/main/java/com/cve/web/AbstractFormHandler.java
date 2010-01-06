@@ -1,7 +1,5 @@
 package com.cve.web;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 /**
@@ -28,7 +26,8 @@ public abstract class AbstractFormHandler
      * Return a response for this request, or null if this isn't the sort
      * of request we prodcuce responses for.
      */
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    @Override
+    public PageResponse produce(PageRequest request) {
         String uri = request.requestURI;
         if (!handles(uri)) {
             return null;

@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
 import com.cve.db.DBColumn;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Hints;
 import com.cve.db.Join;
 import com.cve.db.DBTable;
@@ -51,7 +51,7 @@ final class LocalHintsStore implements DBHintsStore {
     /**
      * Columns -> useful filters for that column.
      */
-    private static Multimap<DBColumn,Filter> filters = HashMultimap.create();
+    private static Multimap<DBColumn,DBRowFilter> filters = HashMultimap.create();
 
     /**
      * Add these hints to those in the store.
@@ -60,7 +60,7 @@ final class LocalHintsStore implements DBHintsStore {
         for (Join join : hints.joins) {
             joins.put(join.source, join);
         }
-        for (Filter filter : hints.filters) {
+        for (DBRowFilter filter : hints.filters) {
             filters.put(filter.column, filter);
         }
     }
@@ -69,7 +69,7 @@ final class LocalHintsStore implements DBHintsStore {
     public Hints get(ImmutableList<DBColumn> columns) {
         args(columns);
         Set<Join>      joinSet = Sets.newHashSet();
-        Set<Filter>  filterSet = Sets.newHashSet();
+        Set<DBRowFilter>  filterSet = Sets.newHashSet();
         for (DBColumn column : columns) {
             joinSet.addAll(joins.get(column));
             filterSet.addAll(filters.get(column));

@@ -52,7 +52,7 @@ public final class SelectBuilderHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) throws IOException, SQLException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         PageResponse redirect = redirectedWithAddedColumns(request);
         if (redirect!=null) {
@@ -75,7 +75,7 @@ public final class SelectBuilderHandler implements RequestHandler {
      * Returns a PageResponse if this page should be redirected, or null
      * otherwise.
      */
-    PageResponse redirectedWithAddedColumns(PageRequest request) throws SQLException {
+    PageResponse redirectedWithAddedColumns(PageRequest request) {
         String    uri = request.requestURI;
         //  1     2      3
         // /search/server/db
@@ -111,7 +111,7 @@ public final class SelectBuilderHandler implements RequestHandler {
     /**
      * Return the results of the select that corresponds to the given URI.
      */
-    SelectResults getResultsFromDB(String uri) throws SQLException {
+    SelectResults getResultsFromDB(String uri) {
         // The server out of the URL
         DBServer         server = DBURICodec.getServer(uri);
 

@@ -2,9 +2,9 @@ package com.cve.db.select;
 
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Order;
 import com.cve.db.DBServer;
 import com.cve.db.Select;
@@ -70,7 +70,7 @@ public final class URIRenderer {
         final boolean hasFilter = select.filters.size() > 0;
         final boolean hasOrder  = select.orders.size()  > 0;
         final boolean hasGroups = select.groups.size()  > 0;
-        final boolean hasLimit  = !select.limit.equals(Limit.DEFAULT);
+        final boolean hasLimit  = !select.limit.equals(DBLimit.DEFAULT);
         if (hasJoin || hasFilter || hasOrder || hasGroups || hasLimit) {
             out.append(renderJoins(tables,select.joins)   + "/");
         }
@@ -141,9 +141,9 @@ public final class URIRenderer {
         return separated(list);
     }
 
-    static String renderFilters(ImmutableList<DBTable> tables, ImmutableList<Filter> filters) {
+    static String renderFilters(ImmutableList<DBTable> tables, ImmutableList<DBRowFilter> filters) {
         List<String> list = Lists.newArrayList();
-        for (Filter filter : filters) {
+        for (DBRowFilter filter : filters) {
             list.add(shortName(tables,filter.column) + "=" + filter.value.encode());
         }
         return separated(list);
@@ -165,7 +165,7 @@ public final class URIRenderer {
         return separated(list);
     }
 
-    static String renderLimit(Limit limit) {
+    static String renderLimit(DBLimit limit) {
         return limit.limit + "+" + limit.offset;
     }
 

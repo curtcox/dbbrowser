@@ -3,15 +3,15 @@ package com.cve.db.dbio;
 import com.cve.db.AggregateFunction;
 import com.cve.db.DBColumn;
 import com.cve.db.Database;
-import com.cve.db.Filter;
+import com.cve.db.DBRowFilter;
 import com.cve.db.Join;
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.db.Order;
 import com.cve.db.SQL;
 import com.cve.db.Select;
 import com.cve.db.DBServer;
 import com.cve.db.DBTable;
-import com.cve.db.Value;
+import com.cve.db.DBValue;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.cve.web.Search;
@@ -32,7 +32,7 @@ public class SQLRenderTest {
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
-        Filter      filter = Filter.of(name, Value.of("Smith"));
+        DBRowFilter      filter = DBRowFilter.of(name, DBValue.of("Smith"));
         Select      select = Select.from(database,person,name,filter);
         SQL expected = SQL.of(Replace.bracketSingleQuote(
             "SELECT customer.person.name " +
@@ -53,11 +53,11 @@ public class SQLRenderTest {
         DBColumn  person_email = person.columnNameType("email",String.class);
         DBColumn account_email = account.columnNameType("email",String.class);
         Join            join = Join.of(person_email, account_email);
-        Filter        filter = Filter.of(name, Value.of("Smith"));
+        DBRowFilter        filter = DBRowFilter.of(name, DBValue.of("Smith"));
         Order          order = Order.ascending(name);
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(
-            list(database),list(person,account),list(name),list(self),list(join),list(filter),list(order),list(),Limit.DEFAULT);
+            list(database),list(person,account),list(name),list(self),list(join),list(filter),list(order),list(),DBLimit.DEFAULT);
         SQL expected = SQL.of(Replace.bracketSingleQuote(
             "SELECT customer.person.name " +
             "FROM customer.person,customer.account " +

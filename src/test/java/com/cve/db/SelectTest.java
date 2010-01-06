@@ -26,11 +26,11 @@ public class SelectTest {
         ImmutableList<DBColumn>     columns = ImmutableList.of();
         ImmutableList<AggregateFunction> functions = ImmutableList.of();
         ImmutableList<Join>           joins = ImmutableList.of();
-        ImmutableList<Filter>       filters = ImmutableList.of();
+        ImmutableList<DBRowFilter>       filters = ImmutableList.of();
         ImmutableList<Order>         orders = ImmutableList.of();
         ImmutableList<Group>         groups = ImmutableList.of();
 
-        Select select = Select.from(databases,tables,columns,functions,joins,filters,orders,groups,Limit.DEFAULT);
+        Select select = Select.from(databases,tables,columns,functions,joins,filters,orders,groups,DBLimit.DEFAULT);
         assertEquals(tables,     select.tables);
         assertEquals(columns,    select.columns);
         assertEquals(functions,  select.functions);

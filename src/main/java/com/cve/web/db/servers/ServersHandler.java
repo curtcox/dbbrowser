@@ -48,7 +48,7 @@ final class ServersHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public Model get(PageRequest request) throws IOException, SQLException {
+    public Model get(PageRequest request) {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
@@ -62,7 +62,7 @@ final class ServersHandler extends AbstractRequestHandler {
     /**
      * Perform the requested search and return a results page.
      */
-    ServersSearchPage newSearchPage(Search search) throws SQLException {
+    ServersSearchPage newSearchPage(Search search) {
         args(search);
         ImmutableList<DBColumn> columns = allColumns();
         Set<DBServer> filteredServers = Sets.newHashSet();
@@ -101,7 +101,7 @@ final class ServersHandler extends AbstractRequestHandler {
     /**
      * Return a list of all columns from all servers.
      */
-    ImmutableList<DBColumn> allColumns() throws SQLException {
+    ImmutableList<DBColumn> allColumns() {
         List<DBColumn> columns = Lists.newArrayList();
         ImmutableList<DBServer> servers = serversStore.keySet();
         for (DBServer server : servers) {

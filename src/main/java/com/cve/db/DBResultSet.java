@@ -37,7 +37,7 @@ public final class DBResultSet {
     /**
      * The values in the results
      */
-    public final ImmutableMap<Cell,Value> values;
+    public final ImmutableMap<Cell,DBValue> values;
 
     /**
      * Use this for a null result set.
@@ -47,7 +47,7 @@ public final class DBResultSet {
     private DBResultSet(
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
-        ImmutableList<DBRow> rows, ImmutableMap<Cell,Value> values)
+        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values)
     {
         this.databases = notNull(databases);
         this.tables    = notNull(tables);
@@ -64,7 +64,7 @@ public final class DBResultSet {
         for (DBRow row : rows) {
             for (DBColumn column : columns) {
                 Cell cell = Cell.at(row, column);
-                Value value = values.get(cell);
+                DBValue value = values.get(cell);
                 notNull(value,"Cell " + cell);
             }
         }
@@ -73,13 +73,13 @@ public final class DBResultSet {
     public static DBResultSet of(
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
-        ImmutableList<DBRow> rows, ImmutableMap<Cell,Value> values)
+        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values)
     {
         return new DBResultSet(databases,tables,columns,rows,values);
     }
 
-    public Value getValue(DBRow row, DBColumn column) {
-        Value value = values.get(Cell.at(row,column));
+    public DBValue getValue(DBRow row, DBColumn column) {
+        DBValue value = values.get(Cell.at(row,column));
         return notNull(value);
     }
 
@@ -89,23 +89,23 @@ public final class DBResultSet {
         return new DBResultSet(list(database),list(table),list(column),list(),map());
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, Value value) {
-        ImmutableMap<Cell,Value> values = CellValues.of(row,column,value);
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, DBValue value) {
+        ImmutableMap<Cell,DBValue> values = CellValues.of(row,column,value);
         return new DBResultSet(list(database),list(table),list(column),list(row),values);
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, ImmutableMap<Cell,Value> values) {
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, ImmutableMap<Cell,DBValue> values) {
         return new DBResultSet(list(database),list(table),list(column),list(row),values);
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, ImmutableList<DBRow> rows, ImmutableMap<Cell,Value> values) {
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values) {
         return new DBResultSet(list(database),list(table),list(column),rows,values);
     }
 
     public static DBResultSet of(Database database,
         DBTable t1, DBTable t2,
         DBColumn c1, DBColumn c2, DBColumn c3, DBColumn c4, DBRow r1, DBRow r2,
-        ImmutableMap<Cell,Value> values) {
+        ImmutableMap<Cell,DBValue> values) {
         return new DBResultSet(list(database),list(t1,t2),list(c1,c2,c3,c4),list(r1,r2),values);
     }
 

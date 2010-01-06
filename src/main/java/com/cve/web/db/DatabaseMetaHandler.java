@@ -53,7 +53,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     }
 
     @Override
-    public StringModel get(PageRequest request) throws IOException {
+    public StringModel get(PageRequest request) {
         String uri = request.requestURI;
 
         String suffix = uri.substring(PREFIX.length() - 1);

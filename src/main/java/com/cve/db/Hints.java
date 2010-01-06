@@ -26,7 +26,7 @@ public final class Hints {
     /**
      * Filters that could be applied.
      */
-    public final ImmutableSet<Filter> filters;
+    public final ImmutableSet<DBRowFilter> filters;
 
     /**
      * Columns in the result set tables, but not necessarily in the result set.
@@ -46,7 +46,7 @@ public final class Hints {
     public static final Hints NONE = new Hints(set(),set(),set());
 
     private Hints(
-        Collection<Join> joins, Collection<Filter> filters,
+        Collection<Join> joins, Collection<DBRowFilter> filters,
         Collection<DBColumn> columns)
     {
         this.joins       = ImmutableSet.copyOf(notNull(joins));
@@ -55,7 +55,7 @@ public final class Hints {
     }
 
     public static Hints of(
-        Collection<Join> joins, Collection<Filter> filters, Collection<DBColumn> columns)
+        Collection<Join> joins, Collection<DBRowFilter> filters, Collection<DBColumn> columns)
     {
         return canonical(new Hints(joins,filters,columns));
     }
@@ -85,10 +85,10 @@ public final class Hints {
         return ImmutableList.copyOf(list);
     }
 
-    public ImmutableList<Filter> getFiltersFor(DBColumn column) {
+    public ImmutableList<DBRowFilter> getFiltersFor(DBColumn column) {
         notNull(column);
-        List<Filter> list = Lists.newArrayList();
-        for (Filter filter : filters) {
+        List<DBRowFilter> list = Lists.newArrayList();
+        for (DBRowFilter filter : filters) {
             if (column.equals(filter.column)) {
                 list.add(filter);
             }

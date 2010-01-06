@@ -1,6 +1,6 @@
 package com.cve.web.db.render;
 
-import com.cve.db.Limit;
+import com.cve.db.DBLimit;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -45,7 +45,7 @@ public final class PagingLinksRenderer {
 
     String pagingLinks() {
         StringBuilder out = new StringBuilder();
-        Limit limit = results.select.limit;
+        DBLimit limit = results.select.limit;
         if (limit.offset>0) {
             Label  text = Label.of(BACK);
             URI  target = SelectBuilderAction.BACK.withArgs("1");

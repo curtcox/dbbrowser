@@ -2,7 +2,6 @@ package com.cve.web.db;
 
 import com.cve.util.URIs;
 import com.cve.web.*;
-import java.io.IOException;
 import java.net.URI;
 
 import static com.cve.util.Check.*;
@@ -26,7 +25,7 @@ final class SearchRedirectsHandler implements RequestHandler {
      * Poduce a response with the appropriate redirect, or null if this
      * request should not be redirected.
      */
-    public PageResponse produce(PageRequest request) throws IOException {
+    public PageResponse produce(PageRequest request) {
         args(request);
         notNull(request);
 

@@ -11,35 +11,27 @@ import com.cve.web.*;
  * database server.
  * @author Curt
  */
-public final class DBServersHandler {
+public final class DBServersHandler implements RequestHandler {
 
-    /**
-     * How we access databases.
-     */
-    final DBMetaData.Factory db;
-
-    final DBServersStore serversStore;
-
-    final ManagedFunction.Factory managedFunction;
+    private final RequestHandler handler;
 
     private DBServersHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        this.db = db;
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
-    }
-
-    public static DBServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new DBServersHandler(db,serversStore,managedFunction);
-    }
-
-    public RequestHandler of() {
-        return CompositeRequestHandler.of(
+        handler = CompositeRequestHandler.of(
             // handler                         // for URLs of the form
             ServersHandler.of(db,serversStore),             // /
             AddServerHandler.of(serversStore),            // /add
             new RemoveServerHandler(),         // /remove
             DatabaseMetaHandler.of(db,serversStore,managedFunction)  // /meta/server/
         );
+    }
+
+    public static DBServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new DBServersHandler(db,serversStore,managedFunction);
+    }
+
+    @Override
+    public PageResponse produce(PageRequest request) {
+        return handler.produce(request);
     }
 
 }
