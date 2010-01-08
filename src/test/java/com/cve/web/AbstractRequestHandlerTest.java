@@ -1,7 +1,6 @@
 package com.cve.web;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -13,7 +12,7 @@ public class AbstractRequestHandlerTest {
     static class TestHandler extends AbstractRequestHandler {
         TestHandler(String regexp) { super(regexp); }
         @Override
-        public Model get(PageRequest request) throws IOException, SQLException {
+        public Model get(PageRequest request) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     }

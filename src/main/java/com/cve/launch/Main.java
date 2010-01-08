@@ -10,7 +10,7 @@ public final class Main {
     static final String[] NO_ARGS = new String[0];
 
     public static void localServerOnly() {
-        LaunchLocalServer.main(NO_ARGS);
+        LocalServerLauncher.main(NO_ARGS);
     }
 
     public static void localMirrorOnly() {

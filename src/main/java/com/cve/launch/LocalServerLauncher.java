@@ -6,7 +6,9 @@ import com.cve.db.sample.SampleServer;
 import com.cve.stores.LocalManagedFunctionFactory;
 import com.cve.stores.LocalStoreFactory;
 import com.cve.stores.ManagedFunction;
+import com.cve.stores.MemoryStoreFactory;
 import com.cve.stores.Store;
+import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.fs.FSServersStore;
@@ -21,7 +23,7 @@ import java.io.IOException;
  * For launching a DBBrowser server.
  * This currently uses the Grizzly servlet engine.
  */
-public final class LaunchLocalServer {
+public final class LocalServerLauncher {
 
     final ManagedFunction.Factory managedFunction;
     final DBMetaData.Factory db;
@@ -30,7 +32,7 @@ public final class LaunchLocalServer {
     final DBHintsStore hintsStore;
     final int PORT = PortFinder.findFree();
 
-    private LaunchLocalServer(
+    private LocalServerLauncher(
         ManagedFunction.Factory managedFunction, DBMetaData.Factory db,
         DBServersStore dbServersStore, FSServersStore fsServersStore,
         DBHintsStore hintsStore)
@@ -42,23 +44,37 @@ public final class LaunchLocalServer {
         this.hintsStore = hintsStore;
     }
     
-    static LaunchLocalServer of() {
+    static LocalServerLauncher of() {
         Store.Factory stores = LocalStoreFactory.of();
         ManagedFunction.Factory managedFunction = LocalManagedFunctionFactory.of(stores);
         DBServersStore dbServersStore = stores.of(DBServersStore.class);
         FSServersStore fsServersStore = stores.of(FSServersStore.class);
         DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
         DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction);
-        return new LaunchLocalServer(
+        return new LocalServerLauncher(
            managedFunction,
            db, dbServersStore, fsServersStore,
            hintsStore
         );
     }
-    
+
+    static LocalServerLauncher test() {
+        Store.Factory stores = MemoryStoreFactory.of();
+        ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+        DBServersStore dbServersStore = stores.of(DBServersStore.class);
+        FSServersStore fsServersStore = stores.of(FSServersStore.class);
+        DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
+        DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction);
+        return new LocalServerLauncher(
+           managedFunction,
+           db, dbServersStore, fsServersStore,
+           hintsStore
+        );
+    }
+
     public static void main(String[] args) {
         try {
-            launch();
+            launchTest();
         } catch (Throwable t) {
             t.printStackTrace();
             System.out.println("Exiting");
@@ -67,7 +83,14 @@ public final class LaunchLocalServer {
     }
 
     static void launch() throws IOException {
-        LaunchLocalServer launcher = of();
+        LocalServerLauncher launcher = of();
+        launcher.loadServers();
+        launcher.startGrizzly();
+        launcher.openBrowser();
+    }
+
+    static void launchTest() throws IOException {
+        LocalServerLauncher launcher = test();
         launcher.loadServers();
         launcher.startGrizzly();
         launcher.openBrowser();

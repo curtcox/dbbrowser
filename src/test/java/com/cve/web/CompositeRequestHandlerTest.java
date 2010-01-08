@@ -29,7 +29,7 @@ public class CompositeRequestHandlerTest {
             this.regexp = regexp;
         }
         @Override
-        public StringModel get(PageRequest request) throws IOException, SQLException {
+        public StringModel get(PageRequest request) {
             return new StringModel(regexp);
         }
     }

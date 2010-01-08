@@ -36,4 +36,9 @@ public final class CurrentValue<T> {
         return new CurrentValue(t,meta);
     }
 
+    public static <T> CurrentValue<T> of(Throwable t) {
+        ValueMeta meta = ValueMeta.of(t);
+        return new CurrentValue(null,meta);
+    }
+
 }

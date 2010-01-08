@@ -27,14 +27,14 @@ public final class SakilaDB {
     /**
      * How we connect to it.
      */
-    private final DBConnection connection;
+    private final DBConnectionInfo info;
 
-    private SakilaDB(DBConnection connection) {
-        this.connection = connection;
+    private SakilaDB(DBConnectionInfo info) {
+        this.info = Check.notNull(info);
     }
 
-    public static SakilaDB of(DBConnection connection) {
-        return new SakilaDB(connection);
+    public static SakilaDB of(DBConnectionInfo info) {
+        return new SakilaDB(info);
     }
 
     void loadDatabase() {
@@ -87,15 +87,16 @@ public final class SakilaDB {
     }
 
     private void update(SQL sql) throws SQLException {
-        DBConnectionInfo info = connection.getInfo();
         Connection conn = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = conn.createStatement();
         statement.execute(sql.toString());
     }
 
     public static void main(String[] args) {
-        SakilaDB sakila = SakilaDB.of(null);
+        DBConnectionInfo info = SampleServer.getConnectionInfo();
+        SakilaDB sakila = SakilaDB.of(info);
         sakila.loadDatabase();
+        System.out.println("Done.");
         System.exit(0);
     }
 }

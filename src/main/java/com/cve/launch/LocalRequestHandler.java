@@ -29,7 +29,7 @@ import com.cve.web.log.LogBrowserHandler;
  */
 final class LocalRequestHandler implements RequestHandler {
 
-    final RequestHandler handler;
+    private final RequestHandler handler;
 
     private LocalRequestHandler(
         DBServersStore dbServersStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {

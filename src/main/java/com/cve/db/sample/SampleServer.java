@@ -69,7 +69,7 @@ public final class SampleServer {
      */
     void loadServer() {
         SampleDB.of(this).createAndLoadTables();
-        SakilaDB.of(connection).loadDatabase();
+        SakilaDB.of(getConnectionInfo()).loadDatabase();
     }
 
     static void createSchema(Database database) throws SQLException {
