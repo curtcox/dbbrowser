@@ -1,13 +1,5 @@
 package com.cve.stores;
 
-import com.cve.util.Check;
-import com.google.common.collect.Maps;
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 /**
  * Persistence, cacheing, cache eviction and value computation are all
  * resonably separable concerns.  In practice, however, if you want to do them
@@ -24,7 +16,7 @@ import java.util.concurrent.Executors;
  *
  * @author Curt
  */
-public final class LocalActiveFunction<F,T> implements ManagedFunction<F,T> {
+public final class LocalManagedFunction<F,T> implements ManagedFunction<F,T> {
 
     @Override
     public CurrentValue<T> apply(F from) {

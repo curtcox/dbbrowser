@@ -9,7 +9,7 @@ import org.junit.Test;
 public class SampleServerTest {
 
     @Test
-    public void load() {
-        SampleServer.load();
+    public void of() {
+        SampleServer.of(null, null);
     }
 }

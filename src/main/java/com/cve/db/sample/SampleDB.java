@@ -5,23 +5,24 @@ import com.cve.db.Database;
 import java.sql.SQLException;
 
 /**
- * A tiny sample database of countires, states and cities.
+ * A tiny sample database of countries, states and cities.
  * @author Curt
  */
 public final class SampleDB {
 
+    final SampleServer server;
+
     private static final Database GEO = Database.serverName(SampleServer.SAMPLE, "GEO");
 
-    /**
-     * The static initializer does all the work -- once.
-     */
-    public static void load() {}
-
-    static {
-        loadServer();
+    private SampleDB(SampleServer server) {
+        this.server = server;
     }
 
-    static void loadServer() {
+    static SampleDB of(SampleServer server) {
+        return new SampleDB(server);
+    }
+    
+    void createAndLoadTables() {
         try {
             SampleServer.createSchema(GEO);
             loadCountries();
@@ -32,17 +33,17 @@ public final class SampleDB {
         }
     }
 
-    static void loadCountries() throws SQLException {
+    private void loadCountries() throws SQLException {
         DBTable table = GEO.tableName("countries");
-        SampleServer.makeTable(table, "country_id INT, name VARCHAR(255), population INT")
+        server.makeTable(table, "country_id INT, name VARCHAR(255), population INT")
             .add(1, "USA",   300000000)
             .add(2, "Canada",100000000)
         ;
     }
 
-    static void loadStates() throws SQLException {
+    private void loadStates() throws SQLException {
         DBTable table = GEO.tableName("states");
-        SampleServer.makeTable(table,"state_id INT, name VARCHAR(255), country_id INT, population INT")
+        server.makeTable(table,"state_id INT, name VARCHAR(255), country_id INT, population INT")
             .add(1, "Illinois",  1, 11000000)
             .add(2, "Missouri",  1,  6000000)
             .add(3, "Alabama",   1,  6000000)
@@ -52,9 +53,9 @@ public final class SampleDB {
         ;
     }
 
-    static void loadCities() throws SQLException {
+    private void loadCities() throws SQLException {
         DBTable table = GEO.tableName("cities");
-        SampleServer.makeTable(table,"city_id INT, name VARCHAR(255),state_id INT,population INT")
+        server.makeTable(table,"city_id INT, name VARCHAR(255),state_id INT,population INT")
             .add(1, "Chicago",     1, 3000000)
             .add(2, "Lincoln",     1,   20000)
             .add(3, "Virginia",    1,    1500)

@@ -52,7 +52,7 @@ final class ServersHandler extends AbstractRequestHandler {
         args(request);
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
-            ImmutableList<DBServer> servers = serversStore.keySet();
+            ImmutableList<DBServer> servers = serversStore.keys();
             ImmutableMultimap<DBServer,Object> databases = getDatabases(servers);
             return new ServersPage(servers,databases);
         }
@@ -103,7 +103,7 @@ final class ServersHandler extends AbstractRequestHandler {
      */
     ImmutableList<DBColumn> allColumns() {
         List<DBColumn> columns = Lists.newArrayList();
-        ImmutableList<DBServer> servers = serversStore.keySet();
+        ImmutableList<DBServer> servers = serversStore.keys();
         for (DBServer server : servers) {
             for (DBColumn column : db.of(server).getColumnsFor(server).value) {
                 columns.add(column);

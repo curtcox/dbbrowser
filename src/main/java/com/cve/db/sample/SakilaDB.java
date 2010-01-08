@@ -27,18 +27,17 @@ public final class SakilaDB {
     /**
      * How we connect to it.
      */
-    private static final DBConnection connection = SampleServer.getConnection();
+    private final DBConnection connection;
 
-    /**
-     * The static initializer does all the work -- once.
-     */
-    public static void load() {}
-
-    static {
-        loadDatabase();
+    private SakilaDB(DBConnection connection) {
+        this.connection = connection;
     }
 
-    static void loadDatabase() {
+    public static SakilaDB of(DBConnection connection) {
+        return new SakilaDB(connection);
+    }
+
+    void loadDatabase() {
         try {
             SampleServer.createSchema(SAKILA);
             createTables();
@@ -50,7 +49,7 @@ public final class SakilaDB {
         }
     }
 
-    static void createTables() throws SQLException, IOException {
+    private void createTables() throws SQLException, IOException {
         SQL[] sqls = resource("/h2-sakila/h2-sakila-schema.sql");
         for (SQL sql : sqls) {
             //System.out.print(sql);
@@ -58,7 +57,7 @@ public final class SakilaDB {
         }
     }
 
-    static void loadTables() throws SQLException, IOException {
+    private void loadTables() throws SQLException, IOException {
         SQL[] sqls = resource("/h2-sakila/h2-sakila-data.sql");
         for (SQL sql : sqls) {
             //System.out.print(sql);
@@ -66,7 +65,7 @@ public final class SakilaDB {
         }
     }
 
-    static SQL[] resource(String name) throws IOException {
+    private static SQL[] resource(String name) throws IOException {
         InputStream in = Check.notNull(SakilaDB.class.getResourceAsStream(name),name);
         List<SQL> sqls = Lists.newArrayList();
         BufferedReader lines = new BufferedReader(new InputStreamReader(in));
@@ -87,15 +86,16 @@ public final class SakilaDB {
         return sqls.toArray(new SQL[0]);
     }
 
-    static void update(SQL sql) throws SQLException {
+    private void update(SQL sql) throws SQLException {
         DBConnectionInfo info = connection.getInfo();
-        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
-        Statement statement = connection.createStatement();
+        Connection conn = DriverManager.getConnection(info.url.toString(), info.user, info.password);
+        Statement statement = conn.createStatement();
         statement.execute(sql.toString());
     }
 
     public static void main(String[] args) {
-        load();
+        SakilaDB sakila = SakilaDB.of(null);
+        sakila.loadDatabase();
         System.exit(0);
     }
 }

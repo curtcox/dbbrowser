@@ -100,7 +100,7 @@ final class LocalHintsStore implements DBHintsStore {
     }
 
     @Override
-    public ImmutableList<ImmutableList<DBColumn>> keySet() {
+    public ImmutableList<ImmutableList<DBColumn>> keys() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

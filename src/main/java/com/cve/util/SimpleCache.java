@@ -27,6 +27,11 @@ public final class SimpleCache<K,V> implements Map {
        }
     };
 
+    /**
+     * Use the factory.
+     */
+    private SimpleCache() {}
+
     public static SimpleCache of() {
         return new SimpleCache();
     }

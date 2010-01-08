@@ -30,22 +30,18 @@ public final class SampleServer {
     /**
      * How we connect to it.
      */
-    private static final DBConnection connection = getConnection();
+    private final DBConnection connection;
 
-    private static final DBServersStore serversStore = null;
-
-    private static final ManagedFunction.Factory managedFunction = null;
-    /**
-     * The static initializer does all the work -- once.
-     */
-    public static void load() {}
-
-    static {
-        addToStore();
+    private SampleServer(DBConnection connection) {
+        this.connection = connection;
         loadServer();
     }
 
-    static DBConnection getConnection() {
+    public static SampleServer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new SampleServer(getConnection(serversStore,managedFunction));
+    }
+
+    private static DBConnection getConnection(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         final DBConnectionInfo info = getConnectionInfo();
         return DBConnectionFactory.getConnection(info,serversStore,managedFunction);
     }
@@ -64,16 +60,16 @@ public final class SampleServer {
     /**
      * Add the server to the store of servers.
      */
-    static void addToStore() {
+    public static void addToStore(DBServersStore serversStore) {
         serversStore.put(SAMPLE, getConnectionInfo());
     }
 
     /**
      * Load the databases and tables
      */
-    static void loadServer() {
-        SampleDB.load();
-        SakilaDB.load();
+    void loadServer() {
+        SampleDB.of(this).createAndLoadTables();
+        SakilaDB.of(connection).loadDatabase();
     }
 
     static void createSchema(Database database) throws SQLException {
@@ -129,7 +125,7 @@ public final class SampleServer {
     /**
      * Create the given table and return a way to fill it.
      */
-    static Inserter makeTable(DBTable table, String columns) throws SQLException {
+    Inserter makeTable(DBTable table, String columns) throws SQLException {
         createTable(table,columns);
         return new Inserter(table);
     }
@@ -137,7 +133,7 @@ public final class SampleServer {
     /**
      * Create a new database table.
      */
-    static void createTable(DBTable table, String columns)
+    void createTable(DBTable table, String columns)
         throws SQLException
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";

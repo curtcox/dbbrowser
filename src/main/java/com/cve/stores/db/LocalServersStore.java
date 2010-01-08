@@ -20,7 +20,7 @@ public final class LocalServersStore implements DBServersStore {
     }
 
     @Override
-    public ImmutableList<DBServer> keySet() {
+    public ImmutableList<DBServer> keys() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

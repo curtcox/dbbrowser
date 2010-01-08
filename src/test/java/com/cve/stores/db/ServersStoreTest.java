@@ -19,7 +19,7 @@ public class ServersStoreTest {
     @Test
     public void getServers() {
         Stores stores = null;
-        ImmutableList<DBServer> servers = stores.getStore(null).keySet();
+        ImmutableList<DBServer> servers = stores.getStore(null).keys();
         assertNotNull(servers);
     }
 
