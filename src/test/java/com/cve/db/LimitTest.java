@@ -1,6 +1,6 @@
 package com.cve.db;
 
-import com.cve.db.DBLimit;
+import com.cve.model.db.DBLimit;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

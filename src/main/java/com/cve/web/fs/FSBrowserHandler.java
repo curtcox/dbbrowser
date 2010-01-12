@@ -1,6 +1,6 @@
 package com.cve.web.fs;
 
-import com.cve.fs.fsio.FSMetaData;
+import com.cve.io.fs.FSMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
 import com.cve.web.CompositeRequestHandler;
@@ -20,7 +20,6 @@ public final class FSBrowserHandler implements RequestHandler {
         handler = CompositeRequestHandler.of(
             // handler                                                 // for URLs of the form
             FreeFormPipelineHandler.of(store, managedFunction),        // /server/select... & /server/database/select...
-            SearchRedirectsHandler.of(),                               // search?find=what
             FSRedirectsHandler.of(fs),                                 // action?args
             FSServersHandler.of(fs,store,managedFunction),             // / , /add , /remove
             FSPathHandler.of(fs),                                      // /server/

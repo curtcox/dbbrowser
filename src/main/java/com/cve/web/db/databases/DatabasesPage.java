@@ -1,9 +1,9 @@
 package com.cve.web.db.databases;
 
 import com.cve.web.*;
-import com.cve.db.Database;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;

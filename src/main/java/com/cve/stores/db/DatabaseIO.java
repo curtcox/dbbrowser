@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
-import com.cve.db.Database;
-import com.cve.db.DBServer;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;

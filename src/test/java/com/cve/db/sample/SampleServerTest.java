@@ -1,5 +1,6 @@
 package com.cve.db.sample;
 
+import com.cve.sample.db.SampleServer;
 import org.junit.Test;
 
 /**

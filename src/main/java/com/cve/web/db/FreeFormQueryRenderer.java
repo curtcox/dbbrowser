@@ -1,14 +1,14 @@
 package com.cve.web.db;
 
-import com.cve.db.DBResultSet;
-import com.cve.db.Hints;
-import com.cve.db.Order;
-import com.cve.db.SQL;
-import com.cve.db.Select;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.DBResultSet;
+import com.cve.model.db.Hints;
+import com.cve.model.db.Order;
+import com.cve.model.db.SQL;
+import com.cve.model.db.Select;
+import com.cve.io.db.DBMetaData;
 import com.cve.web.db.render.DBResultSetRenderer;
-import com.cve.db.select.SelectParser;
-import com.cve.db.select.URIRenderer;
+import com.cve.io.db.select.SelectParser;
+import com.cve.io.db.select.URIRenderer;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.Stores;
 import com.cve.ui.UIForm;

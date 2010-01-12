@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.model.db.AggregateFunction;
 import org.junit.Test;
 import static org.junit.Assert.*;
 /**

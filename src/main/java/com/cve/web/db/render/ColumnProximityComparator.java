@@ -1,9 +1,9 @@
 package com.cve.web.db.render;
 
-import com.cve.db.DBColumn;
-import static com.cve.db.DBColumn.Keyness.*;
-import com.cve.db.Database;
-import com.cve.db.DBTable;
+import com.cve.model.db.DBColumn;
+import static com.cve.model.db.DBColumn.Keyness.*;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBTable;
 import java.util.Comparator;
 import static com.cve.util.Check.notNull;
 

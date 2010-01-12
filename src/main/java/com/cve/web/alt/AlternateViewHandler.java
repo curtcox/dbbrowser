@@ -1,14 +1,14 @@
 package com.cve.web.alt;
 
-import com.cve.db.Hints;
-import com.cve.db.Select;
-import com.cve.db.SelectContext;
-import com.cve.db.SelectResults;
-import com.cve.db.DBServer;
-import com.cve.db.dbio.DBConnection;
-import com.cve.db.dbio.DBConnectionFactory;
-import com.cve.db.dbio.DBMetaData;
-import com.cve.db.select.SelectExecutor;
+import com.cve.model.db.Hints;
+import com.cve.model.db.Select;
+import com.cve.model.db.SelectContext;
+import com.cve.model.db.SelectResults;
+import com.cve.model.db.DBServer;
+import com.cve.io.db.DBConnection;
+import com.cve.io.db.DBConnectionFactory;
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.select.SelectExecutor;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;

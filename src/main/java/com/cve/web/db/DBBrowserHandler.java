@@ -1,6 +1,6 @@
 package com.cve.web.db;
 
-import com.cve.db.dbio.DBMetaData;
+import com.cve.io.db.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
@@ -22,7 +22,6 @@ public final class DBBrowserHandler implements RequestHandler {
         handler = CompositeRequestHandler.of(
             // handler                                                                     // for URLs of the form
             FreeFormQueryHandler.of(serversStore, managedFunction),                        // /server/select... & /server/database/select...
-            SearchRedirectsHandler.of(),                                                   // search?find=what
             DBRedirectsHandler.of(db),                                                     // action?args
             DBServersHandler.of(db,serversStore,managedFunction),                          // / , /add , /remove
             DatabaseMetaHandler.of(db,serversStore,managedFunction),                       // /meta/server/

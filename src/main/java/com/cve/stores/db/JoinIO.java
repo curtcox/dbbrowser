@@ -1,8 +1,8 @@
 package com.cve.stores.db;
 
-import com.cve.db.DBColumn;
-import com.cve.db.Join;
-import com.cve.db.DBServer;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.Join;
+import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;

@@ -1,11 +1,11 @@
 package com.cve.stores;
 
-import com.cve.db.DBColumn;
-import com.cve.db.DBConnectionInfo;
-import com.cve.db.DBServer;
-import com.cve.db.Hints;
-import com.cve.fs.FSConnectionInfo;
-import com.cve.fs.FSServer;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBConnectionInfo;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.Hints;
+import com.cve.model.fs.FSConnectionInfo;
+import com.cve.model.fs.FSServer;
 import com.cve.stores.Store.Factory;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;

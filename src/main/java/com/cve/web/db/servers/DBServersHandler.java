@@ -1,6 +1,6 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.dbio.DBMetaData;
+import com.cve.io.db.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.web.db.*;

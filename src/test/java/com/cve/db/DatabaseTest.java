@@ -1,5 +1,6 @@
 package com.cve.db;
 
+import com.cve.model.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;

@@ -1,7 +1,7 @@
 package com.cve.stores.fs;
 
-import com.cve.fs.FSConnectionInfo;
-import com.cve.fs.FSServer;
+import com.cve.model.fs.FSConnectionInfo;
+import com.cve.model.fs.FSServer;
 import com.cve.stores.Store;
 
 /**

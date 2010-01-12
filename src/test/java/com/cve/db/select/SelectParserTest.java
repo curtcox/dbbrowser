@@ -1,13 +1,14 @@
 package com.cve.db.select;
 
-import com.cve.db.AggregateFunction;
-import com.cve.db.DBColumn;
-import com.cve.db.DBTable;
-import com.cve.db.Database;
-import com.cve.db.SQL;
-import com.cve.db.Select;
-import com.cve.db.DBServer;
-import com.cve.db.dbio.DBResultSetMetaData;
+import com.cve.io.db.select.SelectParser;
+import com.cve.model.db.AggregateFunction;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBTable;
+import com.cve.model.db.Database;
+import com.cve.model.db.SQL;
+import com.cve.model.db.Select;
+import com.cve.model.db.DBServer;
+import com.cve.io.db.DBResultSetMetaData;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

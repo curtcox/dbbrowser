@@ -2,17 +2,17 @@
 package com.cve.web.db;
 
 import com.cve.util.*;
-import com.cve.db.AggregateFunction;
-import com.cve.db.DBColumn;
-import com.cve.db.Database;
-import com.cve.db.DBRowFilter;
-import com.cve.db.Join;
-import com.cve.db.DBLimit;
-import com.cve.db.Order;
-import com.cve.db.Select;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
-import com.cve.db.Group;
+import com.cve.model.db.AggregateFunction;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBRowFilter;
+import com.cve.model.db.Join;
+import com.cve.model.db.DBLimit;
+import com.cve.model.db.Order;
+import com.cve.model.db.Select;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
+import com.cve.model.db.Group;
 import com.cve.log.Log;
 import com.cve.web.Search;
 import static com.cve.log.Log.args;

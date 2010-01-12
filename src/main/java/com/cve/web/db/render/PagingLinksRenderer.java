@@ -1,10 +1,10 @@
 package com.cve.web.db.render;
 
-import com.cve.db.DBLimit;
+import com.cve.model.db.DBLimit;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.db.SelectResults;
+import com.cve.model.db.SelectResults;
 import com.cve.web.Icons;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;

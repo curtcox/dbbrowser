@@ -1,6 +1,6 @@
 package com.cve.web.fs;
 
-import com.cve.fs.fsio.FSMetaData;
+import com.cve.io.fs.FSMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
 import com.cve.web.PageRequest;

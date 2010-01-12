@@ -1,9 +1,9 @@
 package com.cve.web.db;
 
-import com.cve.db.DBConnectionInfo;
-import com.cve.db.JDBCURL;
-import com.cve.db.SelectResults;
-import com.cve.db.DBServer;
+import com.cve.model.db.DBConnectionInfo;
+import com.cve.model.db.JDBCURL;
+import com.cve.model.db.SelectResults;
+import com.cve.model.db.DBServer;
 import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import java.sql.SQLException;

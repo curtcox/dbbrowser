@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
-import com.cve.db.DBConnectionInfo;
-import com.cve.db.DBServer;
+import com.cve.model.db.DBConnectionInfo;
+import com.cve.model.db.DBServer;
 import com.google.common.collect.ImmutableList;
 
 /**

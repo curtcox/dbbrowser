@@ -1,10 +1,10 @@
 package com.cve.web.db;
 
 import com.cve.web.*;
-import com.cve.db.DBColumn;
-import com.cve.db.Database;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.util.Replace;
 

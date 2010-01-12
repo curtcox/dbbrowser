@@ -1,8 +1,8 @@
 package com.cve.launch;
 
-import com.cve.db.dbio.DBMetaData;
-import com.cve.db.dbio.LocalDBMetaDataFactory;
-import com.cve.db.sample.SampleServer;
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.sample.db.SampleServer;
 import com.cve.stores.LocalManagedFunctionFactory;
 import com.cve.stores.LocalStoreFactory;
 import com.cve.stores.ManagedFunction;

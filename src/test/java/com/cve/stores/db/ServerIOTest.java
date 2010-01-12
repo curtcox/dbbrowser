@@ -1,7 +1,7 @@
 package com.cve.stores.db;
 
 import com.cve.stores.db.ServerIO;
-import com.cve.db.DBServer;
+import com.cve.model.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;

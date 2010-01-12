@@ -1,7 +1,7 @@
 package com.cve.web.db.databases;
 
-import com.cve.db.Database;
-import com.cve.db.SelectResults;
+import com.cve.model.db.Database;
+import com.cve.model.db.SelectResults;
 import com.cve.web.*;
 
 import com.google.common.collect.ImmutableList;

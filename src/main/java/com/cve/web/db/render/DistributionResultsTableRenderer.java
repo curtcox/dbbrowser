@@ -1,12 +1,12 @@
 package com.cve.web.db.render;
 
-import com.cve.db.AggregateFunction;
-import com.cve.db.Cell;
-import com.cve.db.DBColumn;
-import com.cve.db.DBResultSet;
-import com.cve.db.DBRow;
-import com.cve.db.SelectResults;
-import com.cve.db.DBValue;
+import com.cve.model.db.AggregateFunction;
+import com.cve.model.db.Cell;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBResultSet;
+import com.cve.model.db.DBRow;
+import com.cve.model.db.SelectResults;
+import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;

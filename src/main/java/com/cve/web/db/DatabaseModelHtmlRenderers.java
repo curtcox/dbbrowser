@@ -1,7 +1,7 @@
 package com.cve.web.db;
 
-import com.cve.db.SelectResults;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.SelectResults;
+import com.cve.io.db.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;

@@ -2,29 +2,37 @@ package com.cve.web.fs;
 
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
+import com.cve.web.AbstractRequestHandler;
+import com.cve.web.Model;
 import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
 import com.cve.web.RequestHandler;
+import static com.cve.log.Log.args;
 
 /**
- *
+ * For handling pipelines typed in from the user.
  * @author curt
  */
-final class FreeFormPipelineHandler implements RequestHandler {
-
-    private final RequestHandler handler;
+final class FreeFormPipelineHandler extends AbstractRequestHandler {
 
     private FreeFormPipelineHandler(FSServersStore store, ManagedFunction.Factory managedFunction) {
-        this.handler = null;
     }
 
     public static RequestHandler of(FSServersStore store, ManagedFunction.Factory managedFunction) {
         return new FreeFormPipelineHandler(store,managedFunction);
     }
 
+    /**
+     * Do we handle this URI?
+     */
     @Override
-    public PageResponse produce(PageRequest request) {
-        return handler.produce(request);
+    public boolean handles(String uri) {
+        args(uri);
+        return false;
+    }
+
+    @Override
+    public Model get(PageRequest request) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

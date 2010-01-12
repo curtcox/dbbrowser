@@ -1,8 +1,8 @@
 package com.cve.web.db.render;
 
-import com.cve.db.SelectResults;
-import com.cve.db.SelectResults.Type;
-import com.cve.db.DBServer;
+import com.cve.model.db.SelectResults;
+import com.cve.model.db.SelectResults.Type;
+import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.Replace;

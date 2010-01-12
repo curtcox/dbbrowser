@@ -1,11 +1,11 @@
 
 package com.cve.web.fs;
 
-import com.cve.fs.FSField;
+import com.cve.model.fs.FSField;
 import com.cve.util.*;
-import com.cve.fs.FSPath;
-import com.cve.fs.FSPipeline;
-import com.cve.fs.FSServer;
+import com.cve.model.fs.FSPath;
+import com.cve.model.fs.FSPipeline;
+import com.cve.model.fs.FSServer;
 import com.cve.log.Log;
 import com.cve.web.Search;
 import static com.cve.log.Log.args;

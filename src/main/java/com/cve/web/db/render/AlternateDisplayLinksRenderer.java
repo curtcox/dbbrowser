@@ -1,10 +1,10 @@
 package com.cve.web.db.render;
 
-import com.cve.db.Select;
+import com.cve.model.db.Select;
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.db.SelectResults;
-import com.cve.db.select.URIRenderer;
+import com.cve.model.db.SelectResults;
+import com.cve.io.db.select.URIRenderer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;

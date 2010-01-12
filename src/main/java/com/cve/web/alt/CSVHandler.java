@@ -1,11 +1,11 @@
 package com.cve.web.alt;
 
-import com.cve.db.DBColumn;
-import com.cve.db.DBResultSet;
-import com.cve.db.DBRow;
-import com.cve.db.SelectResults;
-import com.cve.db.DBValue;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBResultSet;
+import com.cve.model.db.DBRow;
+import com.cve.model.db.SelectResults;
+import com.cve.model.db.DBValue;
+import com.cve.io.db.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;

@@ -1,14 +1,14 @@
 package com.cve.web.db;
 
-import com.cve.db.DBColumn;
-import com.cve.db.DBRowFilter;
-import com.cve.db.Join;
-import com.cve.db.DBLimit;
-import com.cve.db.Select;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
-import com.cve.db.Order;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBRowFilter;
+import com.cve.model.db.Join;
+import com.cve.model.db.DBLimit;
+import com.cve.model.db.Select;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
+import com.cve.model.db.Order;
+import com.cve.io.db.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
 import java.net.URI;

@@ -1,9 +1,9 @@
 package com.cve.launch;
 
-import com.cve.db.dbio.DBMetaData;
-import com.cve.db.dbio.LocalDBMetaDataFactory;
-import com.cve.fs.fsio.FSMetaData;
-import com.cve.fs.fsio.LocalFSMetaDataFactory;
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.io.fs.FSMetaData;
+import com.cve.io.fs.LocalFSMetaDataFactory;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.fs.FSBrowserHandler;
@@ -17,6 +17,7 @@ import com.cve.web.CoreServerHandler;
 import com.cve.web.DebugHandler;
 import com.cve.web.ErrorReportHandler;
 import com.cve.web.RequestHandler;
+import com.cve.web.SearchRedirectsHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
@@ -40,6 +41,7 @@ final class LocalRequestHandler implements RequestHandler {
                     CompressedURIHandler.of(
                         CompositeRequestHandler.of(
                             CoreServerHandler.of(),
+                            SearchRedirectsHandler.of(),              // search?find=what
                             AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction),
                             LogBrowserHandler.of(),
                             FSBrowserHandler.of(fs,fsServersStore,managedFunction),

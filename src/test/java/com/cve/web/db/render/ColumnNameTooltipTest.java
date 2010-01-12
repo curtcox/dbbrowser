@@ -1,13 +1,13 @@
 package com.cve.web.db.render;
 
 import com.cve.html.HTML;
-import com.cve.db.DBColumn;
-import com.cve.db.Database;
-import com.cve.db.DBRowFilter;
-import com.cve.db.Join;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
-import com.cve.db.DBValue;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBRowFilter;
+import com.cve.model.db.Join;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
+import com.cve.model.db.DBValue;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;

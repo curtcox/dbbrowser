@@ -1,11 +1,11 @@
 package com.cve.web.db;
 
 import com.cve.web.*;
-import com.cve.db.Database;
-import com.cve.db.DBServer;
-import com.cve.db.DBTable;
-import com.cve.db.dbio.DBConnectionFactory;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBServer;
+import com.cve.model.db.DBTable;
+import com.cve.io.db.DBConnectionFactory;
+import com.cve.io.db.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.stores.ManagedFunction;

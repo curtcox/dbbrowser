@@ -1,8 +1,8 @@
 package com.cve.web.db;
 
-import com.cve.db.DBResultSet;
-import com.cve.db.SQL;
-import com.cve.db.dbio.DBResultSetMetaData;
+import com.cve.model.db.DBResultSet;
+import com.cve.model.db.SQL;
+import com.cve.io.db.DBResultSetMetaData;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
 import com.cve.web.Model;

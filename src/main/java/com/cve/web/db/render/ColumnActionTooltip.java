@@ -1,7 +1,7 @@
 package com.cve.web.db.render;
 
-import com.cve.db.DBColumn;
-import com.cve.db.Order.Direction;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.Order.Direction;
 import com.cve.html.Label;
 import com.cve.html.SimpleTooltip;
 import com.cve.html.Tooltip;

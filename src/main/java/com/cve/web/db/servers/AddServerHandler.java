@@ -1,8 +1,8 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.DBConnectionInfo;
-import com.cve.db.JDBCURL;
-import com.cve.db.DBServer;
+import com.cve.model.db.DBConnectionInfo;
+import com.cve.model.db.JDBCURL;
+import com.cve.model.db.DBServer;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractFormHandler;

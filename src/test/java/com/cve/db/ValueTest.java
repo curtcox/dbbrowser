@@ -1,6 +1,6 @@
 package com.cve.db;
 
-import com.cve.db.DBValue;
+import com.cve.model.db.DBValue;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

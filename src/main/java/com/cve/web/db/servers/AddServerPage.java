@@ -1,6 +1,6 @@
 package com.cve.web.db.servers;
 
-import com.cve.db.DBServer;
+import com.cve.model.db.DBServer;
 import com.cve.util.Check;
 import com.cve.web.*;
 import javax.annotation.concurrent.Immutable;

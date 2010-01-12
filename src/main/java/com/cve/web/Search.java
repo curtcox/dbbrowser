@@ -7,6 +7,8 @@ import java.net.URLEncoder;
  * A textual search, ala Google.
  * This is just a typesafe string.  How to interpret the string is up to
  * whatever is doing the searching.
+ * <p>
+ * See SearchRedirectsHandler
  * @author curt
  */
 public final class Search {

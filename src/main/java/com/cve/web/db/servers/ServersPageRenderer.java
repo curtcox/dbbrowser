@@ -1,8 +1,8 @@
 package com.cve.web.db.servers;
 
 import com.cve.web.*;
-import com.cve.db.Database;
-import com.cve.db.DBServer;
+import com.cve.model.db.Database;
+import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
 
 import com.cve.util.AnnotatedStackTrace;

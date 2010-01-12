@@ -1,10 +1,10 @@
 package com.cve.web.db;
 
 import com.cve.web.*;
-import com.cve.db.Select;
-import com.cve.db.DBServer;
-import com.cve.db.dbio.DBMetaData;
-import com.cve.db.select.URIRenderer;
+import com.cve.model.db.Select;
+import com.cve.model.db.DBServer;
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.select.URIRenderer;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.SQLException;

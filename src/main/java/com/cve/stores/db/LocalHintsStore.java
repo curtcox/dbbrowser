@@ -1,12 +1,12 @@
 package com.cve.stores.db;
 
-import com.cve.db.DBColumn;
-import com.cve.db.DBRowFilter;
-import com.cve.db.Hints;
-import com.cve.db.Join;
-import com.cve.db.DBTable;
-import com.cve.db.DBServer;
-import com.cve.db.dbio.DBMetaData;
+import com.cve.model.db.DBColumn;
+import com.cve.model.db.DBRowFilter;
+import com.cve.model.db.Hints;
+import com.cve.model.db.Join;
+import com.cve.model.db.DBTable;
+import com.cve.model.db.DBServer;
+import com.cve.io.db.DBMetaData;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
