@@ -1,6 +1,7 @@
 package com.cve.html;
 
 import com.cve.util.Replace;
+import com.cve.web.DebugHandler;
 import com.cve.web.PageRequest;
 import java.net.URI;
 import static com.cve.util.Check.notNull;
@@ -39,7 +40,12 @@ public final class HTML {
     public static String     b(String s) { return debug("<b>",s,"</b>\r"); }
     public static String     i(String s) { return debug("<i>",s,"</i>\r"); }
     public static String   pre(String s) { return debug("<pre>\r",s,"\r</pre>\r"); }
-    public static String table(String s) { return debug("<table>",s,"</table>\r"); }
+    public static String table(String s) {
+        if (DebugHandler.isOn()) {
+            return debug("<table border>",s,"</table>\r");
+        }
+        return debug("<table>",s,"</table>\r");
+    }
     public static String borderTable(String s) { return debug("<table border>",s,"</table>\r"); }
 
     public static String    td(String s, CSS css, int width, int height) {
@@ -83,6 +89,6 @@ public final class HTML {
     }
 
     private static String debug(String open, String body, String close) {
-        return open + body + close;
+        return open + body + DebugHandler.debugLink() + close;
     }
 }

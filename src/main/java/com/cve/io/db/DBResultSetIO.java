@@ -3,10 +3,12 @@ package com.cve.io.db;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.sql.ResultSetMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -38,7 +40,33 @@ public final class DBResultSetIO {
         return new DBResultSetIO(meta,rows);
     }
 
-    public final class Getter {
+    /**
+     * For getting values out of result sets
+     */
+    public static final class Getter {
+        public enum Type {
+            OBJECT,STRING,INT
+        }
+
+        /**
+         * Column value type
+         */
+        public final Type type;
+
+        /**
+         * Column name or index
+         */
+        public final Object key;
+
+        private Getter(Type type, Object key) {
+            this.type = type;
+            this.key = key;
+        }
+
+        public static Getter integer(int key) { return new Getter(Type.INT,key); }
+        public static Getter integer(String key) { return new Getter(Type.INT,key); }
+        public static Getter string(String key) { return new Getter(Type.STRING,key);     }
+        public static Getter string(int key) { return new Getter(Type.STRING,key);     }
     }
 
     private static class NullResultSet extends NoResultSet {
@@ -66,7 +94,15 @@ public final class DBResultSetIO {
         try {
             DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results);
             ImmutableList<ImmutableMap> rows = readRows(results,meta);
+            int cols = meta.columnCount;
             while (results.next()) {
+                Map row = Maps.newHashMap();
+                for (int c=1; c<=cols; c++) {
+                    Object v = getObject(results,c);
+                    row.put(c,v);
+                    row.put(meta.columnNames.get(c), v);
+                }
+                rows.add(ImmutableMap.copyOf(row));
             }
             return new DBResultSetIO(meta,rows);
         } catch (SQLException e) {
@@ -78,6 +114,10 @@ public final class DBResultSetIO {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public static DBResultSetIO of(ResultSet results, Getter... getters) {
+        return of(results,ImmutableList.of(getters));
     }
 
     public static DBResultSetIO of(ResultSet results, ImmutableList<Getter> getters) {

@@ -10,6 +10,7 @@ import com.cve.util.URIs;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import static com.cve.html.HTML.*;
+import static com.cve.log.Log.args;
 
 import static com.cve.web.db.NavigationButtons.*;
 
@@ -22,6 +23,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
+        args(model,client);
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
@@ -36,6 +38,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      * Return a table of all the available servers.
      */
     static String tableOfServers(ServersPage page) {
+        args(page);
         StringBuilder out = new StringBuilder();
         out.append(tr(th("Database Server") + th("Databases")));
         for (DBServer server : page.servers) {
@@ -44,7 +47,6 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
                     td(server.linkTo().toString(),  CSS.SERVER) +
                     td(databasesOn(page,server),    CSS.DATABASE))
             );
-            server.linkTo();
         }
         
         return borderTable(out.toString());
@@ -55,6 +57,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      * available on the given server.
      */
     static String databasesOn(ServersPage page, DBServer server) {
+        args(page,server);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (Object object : page.databases.get(server)) {

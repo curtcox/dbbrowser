@@ -1,14 +1,25 @@
 package com.cve.web;
 
+import com.cve.log.Log;
+import com.cve.util.AnnotatedStackTrace;
+import com.cve.web.log.ObjectLink;
 import static com.cve.log.Log.args;
 
 import static com.cve.util.Check.notNull;
 
 /**
  * A wrapper for other requests to give debugging.
+ * Note that this handler doesn't add any debugging itself.
+ * It looks for URLs that start with an ampersand as an indicator that debugging
+ * should occur.  The wrapped handler is always given the URL without the
+ * initial ampersand.  It can use the static methods on this class to check
+ * debugging status, or add debugging info.
  */
 public final class DebugHandler implements RequestHandler {
 
+    /**
+     * Only pay attention to requests that start with this.
+     */
     private static final String PREFIX = "/&";
 
     /**
@@ -30,10 +41,16 @@ public final class DebugHandler implements RequestHandler {
      */
     private final RequestHandler handler;
 
+    /**
+     * Use the factory.
+     */
     private DebugHandler(RequestHandler handler) {
         this.handler = notNull(handler);
     }
 
+    /**
+     * Create a new DebugHandler, wrapping the given handler.
+     */
     public static RequestHandler of(RequestHandler handler) {
         return new DebugHandler(handler);
     }
@@ -51,6 +68,10 @@ public final class DebugHandler implements RequestHandler {
         return handler.produce(stripped);
     }
 
+    /**
+     * Is debugging on for this request.
+     * @return
+     */
     public static boolean isOn() {
         Boolean on = debug.get();
         if (on==null) {
@@ -58,4 +79,25 @@ public final class DebugHandler implements RequestHandler {
         }
         return on;
     }
+
+    /**
+     * Return a debugging link, if debugging is on.
+     * @return
+     */
+    public static String debugLink() {
+        if (!DebugHandler.isOn()) {
+            return "";
+        }
+        AnnotatedStackTrace trace = Log.annotatedStackTrace();
+        int max = 200;
+        if (trace.elements.size() > max) {
+            String message = "The maximum stack depth of " + max +
+               " has been passed.  This exception is being thrown to short-circuit" +
+               " what looks like endless recursion."
+            ;
+            throw new IllegalStateException(message);
+        }
+        return ObjectLink.to(".",trace);
+    }
+
 }

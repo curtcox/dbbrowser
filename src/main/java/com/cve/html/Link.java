@@ -81,19 +81,7 @@ public final class Link {
      * @return
      */
     private static String debug() {
-        if (!DebugHandler.isOn()) {
-            return "";
-        }
-        AnnotatedStackTrace trace = Log.annotatedStackTrace();
-        int max = 200;
-        if (trace.elements.size() > max) {
-            String message = "The maximum stack depth of " + max +
-               " has been passed.  This exception is being thrown to short-circuit" +
-               " what looks like endless recursion."
-            ;
-            throw new IllegalStateException(message);
-        }
-        return ObjectLink.to(".",trace);
+        return DebugHandler.debugLink();
     }
 
     public static Link textTarget(Label text, URI target) {

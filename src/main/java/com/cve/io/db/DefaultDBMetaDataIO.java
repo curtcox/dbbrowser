@@ -1,12 +1,14 @@
 
 package com.cve.io.db;
 
+import com.cve.io.db.DBResultSetIO.Getter;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnpredictableFunction;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import java.util.List;
 import static com.cve.util.Check.notNull;
@@ -179,7 +181,9 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     class GetTables implements UnpredictableFunction<TableSpecifier, DBResultSetIO> {
         @Override
         public DBResultSetIO apply(TableSpecifier spec) throws Exception {
-            return DBResultSetIO.of(getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types));
+            ResultSet results = getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types);
+            // return DBResultSetIO.of(results,Getter.string(TABLE_NAME));
+            return DBResultSetIO.of(results);
         }
     }
 
