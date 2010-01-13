@@ -50,7 +50,7 @@ import static com.cve.util.Check.notNull;
  * </ol>
  * @author curt
  */
-public final class URIRenderer {
+public final class DBURIRenderer {
 
     /**
      * Render the given select statement as a URI.

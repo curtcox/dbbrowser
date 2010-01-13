@@ -25,11 +25,8 @@ import java.util.List;
  */
 final class H2MetaData extends DefaultDBMetaData {
 
-    final DBMetaDataIO dbmd;
-
     private H2MetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(managedFunction,serversStore);
-        this.dbmd = dbmd;
+        super(dbmd,managedFunction,serversStore);
     }
 
     static DBMetaData of(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {

@@ -4,7 +4,7 @@ import com.cve.model.db.Select;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.model.db.SelectResults;
-import com.cve.io.db.select.URIRenderer;
+import com.cve.io.db.select.DBURIRenderer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
@@ -65,7 +65,7 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewLink(AlternateView view) {
         Label  text = Label.of(view.toString());
-        URI  target = URIs.of( "/view/" + view + URIRenderer.render(select,search));
+        URI  target = URIs.of( "/view/" + view + DBURIRenderer.render(select,search));
         String tip = view.name();
         URI   image = view.icon;
         return Link.textTargetImageAlt(text, target, image,tip).toString();
@@ -87,7 +87,7 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewZLink() {
         Label  text = Label.of("/z/");
-        URI  target = CompressedURIHandler.shortURI(URIRenderer.render(select,search));
+        URI  target = CompressedURIHandler.shortURI(DBURIRenderer.render(select,search));
         String tip = "Compressed URL";
         URI   image = COMPRESSED.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();

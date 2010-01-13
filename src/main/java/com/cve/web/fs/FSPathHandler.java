@@ -1,20 +1,21 @@
 package com.cve.web.fs;
 
 import com.cve.io.fs.FSMetaData;
+import com.cve.web.AbstractRequestHandler;
+import com.cve.web.Model;
 import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
 import com.cve.web.RequestHandler;
 
 /**
  *
  * @author curt
  */
-final class FSPathHandler implements RequestHandler {
+final class FSPathHandler extends AbstractRequestHandler  {
 
-    private final RequestHandler handler;
+    private final FSMetaData.Factory fs;
 
     private FSPathHandler(FSMetaData.Factory fs) {
-        this.handler = null;
+        this.fs = fs;
     }
 
     public static RequestHandler of(FSMetaData.Factory fs) {
@@ -22,7 +23,12 @@ final class FSPathHandler implements RequestHandler {
     }
 
     @Override
-    public PageResponse produce(PageRequest request) {
-        return handler.produce(request);
+    public boolean handles(String uri) {
+        return false;
+    }
+
+    @Override
+    public Model get(PageRequest request) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

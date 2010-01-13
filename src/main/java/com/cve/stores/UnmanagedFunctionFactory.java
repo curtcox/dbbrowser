@@ -13,22 +13,27 @@ public final class UnmanagedFunctionFactory implements ManagedFunction.Factory {
     }
 
     @Override
-    public ManagedFunction of(UnpredictableFunction f) {
-        return new UnmanagedFunction(f);
+    public ManagedFunction of(UnpredictableFunction f, Object nullValue) {
+        return new UnmanagedFunction(f,nullValue);
     }
 
     private static class UnmanagedFunction implements ManagedFunction {
 
         final UnpredictableFunction f;
 
-        UnmanagedFunction(UnpredictableFunction f) { this.f = f; }
+        final Object nullValue;
+
+        UnmanagedFunction(UnpredictableFunction f, Object nullValue) {
+            this.f = f;
+            this.nullValue = nullValue;
+        }
 
         @Override
         public CurrentValue apply(Object from) {
             try {
                 return CurrentValue.of(f.apply(from));
             } catch (Exception e) {
-                return CurrentValue.of(e);
+                return CurrentValue.of(nullValue,e);
             }
         }
     }

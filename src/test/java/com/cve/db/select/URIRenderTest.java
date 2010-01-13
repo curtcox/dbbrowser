@@ -1,6 +1,6 @@
 package com.cve.db.select;
 
-import com.cve.io.db.select.URIRenderer;
+import com.cve.io.db.select.DBURIRenderer;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
@@ -34,7 +34,7 @@ public class URIRenderTest {
         DBColumn        name = person.columnNameType("name",String.class);
         Select      select = Select.from(database,person,name);
         URI expected = URIs.of("/*/server/customer/customer.person/name/");
-        URI actual = URIRenderer.render(select,Search.EMPTY);
+        URI actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -47,7 +47,7 @@ public class URIRenderTest {
         DBColumn         age = person.columnNameType("age",Integer.class);
         Select      select = Select.from(database,person,name,age);
         URI expected = URIs.of("/*/server/customer/customer.person/name+age/");
-        URI actual = URIRenderer.render(select,Search.EMPTY);
+        URI actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -77,7 +77,7 @@ public class URIRenderTest {
             "sex=F/" + // filter
             "name=ASC/" // order
             );
-        URI actual = URIRenderer.render(select,Search.EMPTY);
+        URI actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 

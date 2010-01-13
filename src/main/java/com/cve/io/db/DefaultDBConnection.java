@@ -1,6 +1,7 @@
 
 package com.cve.io.db;
 
+import com.cve.io.db.DBResultSetIO.Getter;
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.model.db.DBConnectionInfo;
@@ -11,6 +12,7 @@ import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.UnpredictableFunction;
+import com.google.common.collect.ImmutableList;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -27,7 +29,7 @@ import static com.cve.util.Check.notNull;
  * Since connections can timeout, we use a factory that knows how to create them,
  * and then recreate them as needed.
  */
-final class DefaultDBConnection implements DBConnection {
+public final class DefaultDBConnection implements DBConnection {
 
 
     /**
@@ -61,7 +63,7 @@ final class DefaultDBConnection implements DBConnection {
         this.serversStore = serversStore;
         this.managedFunction = managedFunction;
         dbMetaData = DefaultDBMetaData.getDbmd(this,managedFunction,serversStore);
-        resultSets = managedFunction.of(new ExecuteSQL());
+        resultSets = managedFunction.of(new ExecuteSQL(),DBResultSetIO.NULL);
     }
 
     static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {

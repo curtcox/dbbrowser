@@ -1,5 +1,6 @@
 package com.cve.io.db.driver.mysql;
 
+import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -10,8 +11,11 @@ import com.cve.stores.db.DBServersStore;
  */
 final class MySQLMetaData extends DefaultDBMetaData {
 
-    public MySQLMetaData(ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
-        super(managedFunction,serversStore);
+    private MySQLMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
+        super(dbmd,managedFunction,serversStore);
     }
 
+    static MySQLMetaData of(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
+        return new MySQLMetaData(dbmd,managedFunction,serversStore);
+    }
 }

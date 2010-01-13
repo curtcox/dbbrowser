@@ -13,7 +13,7 @@ import com.cve.model.db.SelectContext;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
-import com.cve.io.db.select.URIRenderer;
+import com.cve.io.db.select.DBURIRenderer;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
@@ -95,7 +95,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             }
         }
         Search search = DBURICodec.getSearch(uri);
-        URI dest = URIRenderer.render(select,search);
+        URI dest = DBURIRenderer.render(select,search);
         return PageResponse.newRedirect(dest);
     }
 

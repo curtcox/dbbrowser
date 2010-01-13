@@ -1,8 +1,5 @@
 package com.cve.io.db;
 
-import com.cve.io.db.DBMetaData;
-import com.cve.io.db.DBConnection;
-import com.cve.io.db.DefaultDBConnection;
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
@@ -31,7 +28,7 @@ public class DBMetaDataIOTest {
         Stores stores = null;
         DBServersStore serversStore = null;
         serversStore.put(server, info);
-        DBConnection connection = DefaultDBConnection.of(info,null,null);
+        DefaultDBConnection connection = DefaultDBConnection.of(info,null,null);
         DBMetaData meta = DefaultDBMetaData.getDbmd(connection,null,null);
         assertEquals(0,meta.getTablesOn(database).value.size());
     }

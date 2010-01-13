@@ -103,7 +103,7 @@ final class SimpleSelectRunner implements SelectRunner {
         Map<Cell,DBValue>              values = Maps.newHashMap();
         DBResultSetMetaDataIO          meta = results.meta;
         ImmutableList<AggregateFunction> functions = select.functions;
-        int cols = meta.getColumnCount();
+        int cols = meta.columnCount;
         DBLimit limit = select.limit;
         for (int r=0; r<(limit.limit - 1); r++) {
             DBRow row = DBRow.number(r);

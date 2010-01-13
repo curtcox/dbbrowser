@@ -20,14 +20,14 @@ public final class DBConnectionFactory {
     }
 
     public static DBConnection getConnection(DBServer server, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        DBConnectionInfo info = null;
+        DBConnectionInfo info = serversStore.get(server);
         return DefaultDBConnection.of(info,serversStore,managedFunction);
     }
 
     public static DBMetaDataIO getDbmdIO(DBServer server,DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         args(server);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server,serversStore,managedFunction);
-        DBMetaDataIO   dbmd = DefaultDBMetaDataIO.connection(connection,managedFunction);
+        DBMetaDataIO   dbmd = DefaultDBMetaDataIO.of(connection,managedFunction);
         return dbmd;
     }
     

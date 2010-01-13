@@ -7,7 +7,6 @@ import com.cve.stores.UnpredictableFunction;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 
 import java.util.List;
 import static com.cve.util.Check.notNull;
@@ -18,7 +17,7 @@ import static com.cve.log.Log.args;
  * TODO restore ResultSetRetry logic
  * @author curt
  */
-final class DefaultDBMetaDataIO implements DBMetaDataIO {
+public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     /**
      * How we connect to databases.
@@ -47,16 +46,16 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     private DefaultDBMetaDataIO(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         this.connection = notNull(connection);
         notNull(managedFunction);
-        tables = managedFunction.of(new GetTables());
-        columns = managedFunction.of(new GetColumns());
-        importedKeys = managedFunction.of(new GetImportedKeys());
-        primaryKeys = managedFunction.of( new GetPrimaryKeys());
-        exportedKeys = managedFunction.of( new GetExportedKeys());
-        catalogs = managedFunction.of(new GetCatalogs());
-        schemas = managedFunction.of(new GetSchemas());
+              tables = notNull(managedFunction.of(new GetTables(),       DBResultSetIO.NULL));
+             columns = notNull(managedFunction.of(new GetColumns(),      DBResultSetIO.NULL));
+        importedKeys = notNull(managedFunction.of(new GetImportedKeys(), DBResultSetIO.NULL));
+         primaryKeys = notNull(managedFunction.of(new GetPrimaryKeys(),  DBResultSetIO.NULL));
+        exportedKeys = notNull(managedFunction.of(new GetExportedKeys(), DBResultSetIO.NULL));
+            catalogs = notNull(managedFunction.of(new GetCatalogs(),     DBResultSetIO.NULL));
+             schemas = notNull(managedFunction.of(new GetSchemas(),      DBResultSetIO.NULL));
     }
 
-    static DBMetaDataIO connection(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
+    public static DBMetaDataIO of(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         args(connection);
         return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection,managedFunction)));
     }
@@ -156,6 +155,10 @@ final class DefaultDBMetaDataIO implements DBMetaDataIO {
     @Override
     public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() {
         DBResultSetIO results = schemas.apply(null).value;
+        if (results.rows.size()<1) {
+            ImmutableList<SchemaInfo> empty = ImmutableList.of();
+            return CurrentValue.of(empty);
+        }
         List<SchemaInfo> list = Lists.newArrayList();
         // Due to a H2 driver bug, we can't use the column name
         int SCHEMA_NAME = 1;

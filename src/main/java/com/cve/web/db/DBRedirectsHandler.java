@@ -1,13 +1,14 @@
 package com.cve.web.db;
 
-import com.cve.web.*;
 import com.cve.model.db.Select;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
-import com.cve.io.db.select.URIRenderer;
-import java.io.IOException;
+import com.cve.io.db.select.DBURIRenderer;
+import com.cve.web.PageRequest;
+import com.cve.web.PageResponse;
+import com.cve.web.RequestHandler;
+import com.cve.web.Search;
 import java.net.URI;
-import java.sql.SQLException;
 
 import static com.cve.util.Check.*;
 import static com.cve.log.Log.args;
@@ -44,11 +45,11 @@ public final class DBRedirectsHandler implements RequestHandler {
         return new DBRedirectsHandler(db);
     }
 
-    @Override
     /**
      * Poduce a response with the appropriate redirect, or null if this
      * request should not be redirected.
      */
+    @Override
     public PageResponse produce(PageRequest request) {
         args(request);
         notNull(request);
@@ -57,19 +58,15 @@ public final class DBRedirectsHandler implements RequestHandler {
         if (query.isEmpty()) {
             return null; // we only redirect 
         }
-        try {
-            String  path = request.requestURI;
-            URI   dest = redirectsActionsTo(path, query);
-            return PageResponse.newRedirect(dest);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        String  path = request.requestURI;
+        URI   dest = redirectsActionsTo(path, query);
+        return PageResponse.newRedirect(dest);
     }
 
     /**
      * Given a path and query, produce the URI it should redirect to.
      */
-    URI redirectsActionsTo(String path, String query) throws SQLException {
+    URI redirectsActionsTo(String path, String query) {
         args(path,query);
         notNull(path);
         int lastSlash = path.lastIndexOf("/");
@@ -81,7 +78,7 @@ public final class DBRedirectsHandler implements RequestHandler {
         DBServer server = DBURICodec.getServer(upToLastSlash);
         Select newSelect = SelectBuilderAction.doAction(action,select,server,db,query);
         Search search = DBURICodec.getSearch(upToLastSlash);
-        URI dest = URIRenderer.render(newSelect,search);
+        URI dest = DBURIRenderer.render(newSelect,search);
         return dest;
     }
 

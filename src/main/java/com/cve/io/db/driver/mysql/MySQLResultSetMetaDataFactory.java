@@ -25,10 +25,10 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
 
     @Override
     public ImmutableList<Database> getDatabases() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         Set<Database> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getCatalogName(i);
+            String databaseName = meta.catalogNames.get(i);
             Database database   = server.databaseName(databaseName);
             set.add(database);
         }
@@ -37,11 +37,11 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
 
     @Override
     public ImmutableList<DBTable> getTables() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         Set<DBTable> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getCatalogName(i);
-            String tableName    = meta.getTableName(i);
+            String databaseName = meta.catalogNames.get(i);
+            String tableName    = meta.tableNames.get(i);
             DBTable   table     = server.databaseName(databaseName).tableName(tableName);
             set.add(table);
         }
@@ -50,12 +50,12 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
 
     @Override
     public ImmutableList<DBColumn> getColumns() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         List<DBColumn> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getCatalogName(i);
-            String tableName    = meta.getTableName(i);
-            String columnName   = meta.getColumnName(i);
+            String databaseName = meta.catalogNames.get(i);
+            String tableName    = meta.tableNames.get(i);
+            String columnName   = meta.columnNames.get(i);
             DBColumn column     = server.databaseName(databaseName).tableName(tableName).columnName(columnName);
             list.add(column);
         }
@@ -64,7 +64,7 @@ final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFact
 
     @Override
     public ImmutableList<AggregateFunction> getFunctions() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         List<AggregateFunction> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
             list.add(AggregateFunction.IDENTITY);

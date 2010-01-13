@@ -41,8 +41,8 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
         for (DBServer server : page.servers) {
             out.append(
                 tr(
-                    td(server.linkTo().toString(),CSS.SERVER) +
-                    td(databasesOn(page,server),       CSS.DATABASE))
+                    td(server.linkTo().toString(),  CSS.SERVER) +
+                    td(databasesOn(page,server),    CSS.DATABASE))
             );
             server.linkTo();
         }

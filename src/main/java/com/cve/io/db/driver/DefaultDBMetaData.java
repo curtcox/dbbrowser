@@ -24,6 +24,8 @@ import com.cve.io.db.DBMetaDataIO.PrimaryKeyInfo;
 import com.cve.io.db.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
+import com.cve.io.db.DefaultDBConnection;
+import com.cve.io.db.DefaultDBMetaDataIO;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -39,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 import static com.cve.log.Log.args;
 import static java.sql.Types.*;
+
+import static com.cve.util.Check.notNull;
 
 /**
  * Skeletal implementation of DB meta data reader.
@@ -57,12 +61,15 @@ public class DefaultDBMetaData implements DBMetaData {
 
     final DBServersStore serversStore;
 
-    protected DefaultDBMetaData(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        this.managedFunction = managedFunction;
-        this.serversStore = serversStore;
+    public final DBMetaDataIO dbmd;
+
+    protected DefaultDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        this.dbmd = notNull(dbmd);
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
     }
 
-    public static DBMetaData getDbmd(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+    public static DBMetaData getDbmd(DefaultDBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         args(connection);
         DBMetaData meta = getDbmd0(connection,managedFunction,serversStore);
         meta = DBMetaDataLogger.of(System.out,meta);
@@ -72,10 +79,10 @@ public class DefaultDBMetaData implements DBMetaData {
         return meta;
     }
 
-    private static DBMetaData getDbmd0(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+    private static DBMetaData getDbmd0(DefaultDBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         Check.notNull(connection);
         DBDriver driver = connection.getInfo().driver;
-        DBMetaDataIO io = null;
+        DBMetaDataIO io = DefaultDBMetaDataIO.of(connection, managedFunction);
         DBMetaData meta = driver.getDBMetaData(io,managedFunction,serversStore);
         return meta;
     }
@@ -98,7 +105,6 @@ public class DefaultDBMetaData implements DBMetaData {
         args(table);
         Database     database = table.database;
         DBServer         server = database.server;
-        DBMetaDataIO     dbmd = getDbmdIO(server);
         String        catalog = database.name;
         String         schema = null;
         String      tableName = table.name;
@@ -154,7 +160,6 @@ public class DefaultDBMetaData implements DBMetaData {
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
         args(server);
-        DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         for (Database database : getDatabasesOn(server).value) {
             String          catalog = database.name;
@@ -182,7 +187,6 @@ public class DefaultDBMetaData implements DBMetaData {
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         args(database);
         DBServer server = database.server;
-        DBMetaDataIO   dbmd = getDbmdIO(server);
         List<DBColumn> list = Lists.newArrayList();
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -210,7 +214,6 @@ public class DefaultDBMetaData implements DBMetaData {
         args(table);
         Database       database = table.database;
         DBServer           server = database.server;
-        DBMetaDataIO       dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = table.name;
@@ -267,7 +270,6 @@ public class DefaultDBMetaData implements DBMetaData {
     public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
         args(database);
         DBServer           server = database.server;
-        DBMetaDataIO           dbmd = getDbmdIO(server);
         String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = null;
@@ -292,7 +294,6 @@ public class DefaultDBMetaData implements DBMetaData {
         args(table);
         Database       database = table.database;
         DBServer           server = database.server;
-        DBMetaDataIO    dbmd = getDbmdIO(server);
         String   catalog = database.name;
         String    schema = null;
         String tableName = table.name;
@@ -317,7 +318,6 @@ public class DefaultDBMetaData implements DBMetaData {
         args(table);
         Database       database = table.database;
         DBServer           server = database.server;
-        DBMetaDataIO    dbmd = getDbmdIO(server);
         String   catalog = database.name;
         String    schema = null;
         String tableName = table.name;

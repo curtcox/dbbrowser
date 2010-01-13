@@ -143,7 +143,7 @@ public final class FSURICodec {
         return at(uri,Position.METADATA);
     }
 
-    public static ImmutableList<FSPath> getFiles(String uri) {
+    public static ImmutableList<FSPath> getPaths(String uri) {
         args(uri);
         if (!exists(uri,Position.FILES)) {
             return ImmutableList.of();
@@ -202,5 +202,13 @@ public final class FSURICodec {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    public static FSPipeline getPipeline(String uri) {
+        args(uri);
+        // get everything out of the URL
+        ImmutableList<FSPath>                paths = getPaths(uri);
 
+        // Setup the select
+        FSPipeline pipeline = null;
+        return pipeline;
+    }
 }

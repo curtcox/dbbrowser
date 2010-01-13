@@ -127,7 +127,7 @@ public enum SelectBuilderAction {
      */
     JOIN("join") {
         @Override
-        public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) throws SQLException {
+        public Select goDo(Select select, DBServer server, DBMetaData.Factory db, String query) {
             Join join = Join.parse(server,select.tables,query);
             select = select.with(join);
             DBTable table = join.dest.table;
@@ -161,7 +161,7 @@ public enum SelectBuilderAction {
      * produce another select statement.
      * In loving memory of Harvey Korman.
      */
-    public abstract Select goDo(Select select, DBServer server, DBMetaData.Factory db, String args) throws SQLException;
+    public abstract Select goDo(Select select, DBServer server, DBMetaData.Factory db, String args);
 
     /**
      * Find the relevant action and go do it.
@@ -169,7 +169,6 @@ public enum SelectBuilderAction {
     public static Select doAction(
         String actionString, Select select, DBServer server,
         DBMetaData.Factory db, String query)
-        throws SQLException
     {
         Check.notNull(actionString);
         Check.notNull(select);

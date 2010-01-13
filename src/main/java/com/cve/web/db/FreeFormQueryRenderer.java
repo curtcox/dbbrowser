@@ -8,7 +8,7 @@ import com.cve.model.db.Select;
 import com.cve.io.db.DBMetaData;
 import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.io.db.select.SelectParser;
-import com.cve.io.db.select.URIRenderer;
+import com.cve.io.db.select.DBURIRenderer;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.Stores;
 import com.cve.ui.UIForm;
@@ -66,7 +66,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         SQL sql = page.sql;
         Select select = SelectParser.parse(sql,page.meta);
         Search search = Search.EMPTY;
-        URI uri = URIRenderer.render(select,search);
+        URI uri = DBURIRenderer.render(select,search);
         return uri;
     }
 

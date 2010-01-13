@@ -50,10 +50,10 @@ public class DefaultDBResultSetMetaDataFactory {
     }
 
     public ImmutableList<Database> getDatabases() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         Set<Database> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getSchemaName(i);
+            String databaseName = meta.schemaNames.get(i);
             Database database   = server.databaseName(databaseName);
             set.add(database);
         }
@@ -61,11 +61,11 @@ public class DefaultDBResultSetMetaDataFactory {
     }
 
     public ImmutableList<DBTable> getTables() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         Set<DBTable> set = Sets.newHashSet();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getSchemaName(i);
-            String tableName    = meta.getTableName(i);
+            String databaseName = meta.schemaNames.get(i);
+            String tableName    = meta.tableNames.get(i);
             DBTable   table     = server.databaseName(databaseName).tableName(tableName);
             set.add(table);
         }
@@ -73,12 +73,12 @@ public class DefaultDBResultSetMetaDataFactory {
     }
 
     public ImmutableList<DBColumn> getColumns() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         List<DBColumn> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
-            String databaseName = meta.getSchemaName(i);
-            String tableName    = meta.getTableName(i);
-            String columnName   = meta.getColumnName(i);
+            String databaseName = meta.schemaNames.get(i);
+            String tableName    = meta.tableNames.get(i);
+            String columnName   = meta.columnNames.get(i);
             DBColumn column     = server.databaseName(databaseName).tableName(tableName).columnName(columnName);
             list.add(column);
         }
@@ -86,7 +86,7 @@ public class DefaultDBResultSetMetaDataFactory {
     }
 
     public ImmutableList<AggregateFunction> getFunctions() {
-        int count = meta.getColumnCount();
+        int count = meta.columnCount;
         List<AggregateFunction> list = Lists.newArrayList();
         for (int i=1; i<=count; i++) {
             list.add(AggregateFunction.IDENTITY);

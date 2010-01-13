@@ -32,7 +32,7 @@ public final class MySQLDriver implements DriverIO {
 
     @Override
     public DBMetaData getDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return new MySQLMetaData(managedFunction,serversStore);
+        return MySQLMetaData.of(dbmd,managedFunction,serversStore);
     }
 
     @Override

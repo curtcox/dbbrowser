@@ -1,5 +1,6 @@
 package com.cve.stores;
 
+import com.cve.util.Check;
 import javax.annotation.concurrent.Immutable;
 /**
  * The current value of something -- as far as we know.
@@ -27,8 +28,8 @@ public final class CurrentValue<T> {
     public final ValueMeta meta;
 
     private CurrentValue(T value, ValueMeta meta) {
-        this.value = value;
-        this.meta = meta;
+        this.value = Check.notNull(value);
+        this.meta  = Check.notNull(meta);
     }
 
     public static <T> CurrentValue<T> of(T t) {
@@ -36,9 +37,9 @@ public final class CurrentValue<T> {
         return new CurrentValue(t,meta);
     }
 
-    public static <T> CurrentValue<T> of(Throwable t) {
+    public static <T> CurrentValue<T> of(T value, Throwable t) {
         ValueMeta meta = ValueMeta.of(t);
-        return new CurrentValue(null,meta);
+        return new CurrentValue(value,meta);
     }
 
 }
