@@ -15,6 +15,8 @@ import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
+
 /**
  * Renders the results of a database select as HTML.
  * The parts of this are:
@@ -35,8 +37,8 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
     private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
+           this.serversStore = notNull(serversStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     public static SelectResultsRenderer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {

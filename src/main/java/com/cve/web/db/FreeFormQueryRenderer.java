@@ -10,7 +10,6 @@ import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.io.db.select.SelectParser;
 import com.cve.io.db.select.DBURIRenderer;
 import com.cve.stores.db.DBHintsStore;
-import com.cve.stores.Stores;
 import com.cve.ui.UIForm;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;

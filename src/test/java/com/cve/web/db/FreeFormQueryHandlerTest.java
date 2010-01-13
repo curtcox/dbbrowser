@@ -1,5 +1,9 @@
 package com.cve.web.db;
 
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.UnmanagedFunctionFactory;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,7 +14,10 @@ import static org.junit.Assert.*;
  */
 public class FreeFormQueryHandlerTest {
 
-    final FreeFormQueryHandler handler = FreeFormQueryHandler.of(null,null);
+    final DBServersStore serversStore = MemoryDBServersStore.of();
+    final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+
+    final FreeFormQueryHandler handler = FreeFormQueryHandler.of(serversStore,managedFunction);
 
     @Test
     public void doesntHandleServerWithNoQuery() {

@@ -1,5 +1,13 @@
 package com.cve.web.db;
 
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.model.db.DBConnectionInfo;
+import com.cve.model.db.DBServer;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.UnmanagedFunctionFactory;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.web.*;
 import com.cve.util.URIs;
 import java.io.IOException;
@@ -13,9 +21,17 @@ import static org.junit.Assert.*;
  */
 public class DBRedirectsHandlerTest {
 
+    final DBServersStore serversStore = MemoryDBServersStore.of();
+    final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    final DBRedirectsHandler   handler = DBRedirectsHandler.of(db);
+    {
+        DBServer server = DBServer.uri(URIs.of("server"));
+        serversStore.put(server, DBConnectionInfo.NULL);
+    }
+
     @Test
     public void handled() throws IOException {
-        DBRedirectsHandler   handler = DBRedirectsHandler.of(null);
         PageRequest   request = PageRequest.path("/");
         PageResponse response = handler.produce(request);
         assertNull(response);
@@ -37,6 +53,6 @@ public class DBRedirectsHandlerTest {
     }
 
     private void assertRedirected(String path, String query, String dest) throws SQLException {
-        assertEquals(URIs.of(dest),DBRedirectsHandler.of(null).redirectsActionsTo(path,query));
+        assertEquals(URIs.of(dest),handler.redirectsActionsTo(path,query));
     }
 }

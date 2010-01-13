@@ -12,6 +12,7 @@ import java.net.URI;
 
 import static com.cve.util.Check.*;
 import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * For handling HTTP redirects.
@@ -38,7 +39,7 @@ public final class DBRedirectsHandler implements RequestHandler {
     final DBMetaData.Factory db;
 
     private DBRedirectsHandler(DBMetaData.Factory db) {
-        this.db = db;
+        this.db = notNull(db);
     }
 
     public static DBRedirectsHandler of(DBMetaData.Factory db) {

@@ -35,10 +35,10 @@ public final class AlternateDisplayLinksRenderer {
     final ManagedFunction.Factory managedFunction;
 
     private AlternateDisplayLinksRenderer(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        this.select  = notNull(results.select);
-        this.search  = notNull(results.search);
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
+                this.select  = notNull(results.select);
+                this.search  = notNull(results.search);
+           this.serversStore = notNull(serversStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {

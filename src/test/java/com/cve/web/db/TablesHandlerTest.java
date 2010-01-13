@@ -1,5 +1,14 @@
 package com.cve.web.db;
 
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.sample.db.SampleH2Server;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.UnmanagedFunctionFactory;
+import com.cve.stores.db.DBHintsStore;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBHintsStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.web.*;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,10 +22,18 @@ import static org.junit.Assert.*;
  */
 public class TablesHandlerTest {
 
+    final DBHintsStore hintsStore = MemoryDBHintsStore.of();
+    final DBServersStore serversStore = MemoryDBServersStore.of();
+    final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    final TablesHandler handler = TablesHandler.of(db,serversStore,hintsStore,managedFunction);
+    {
+        SampleH2Server.addToStore(serversStore);
+    }
+
     @Test
     public void handlesTablesOnlyRequest() throws IOException, SQLException {
-        TablesHandler handler = TablesHandler.of(null,null,null,null);
-        PageRequest   request = PageRequest.path("//server/db/");
+        PageRequest   request = PageRequest.path("//SAMPLE/db/");
         assertNotNull(handler.produce(request));
     }
 

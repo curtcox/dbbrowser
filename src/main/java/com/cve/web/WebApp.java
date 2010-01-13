@@ -1,21 +1,20 @@
 package com.cve.web;
 
-import com.cve.stores.ManagedFunction;
-import com.cve.stores.Stores;
-
 /**
- *
+ * A web application
  * @author Curt
  */
-public class WebApp {
+public final class WebApp {
 
+    /**
+     * Turns requests into models.
+     */
     final RequestHandler handler;
-    final ModelHtmlRenderer renderer;
 
-    interface Context {
-        ManagedFunction.Factory getManagedFunctionFactory();
-        Stores getStores();
-    }
+    /**
+     * Turns models into pages.
+     */
+    final ModelHtmlRenderer renderer;
 
     /**
      * Use the factory.

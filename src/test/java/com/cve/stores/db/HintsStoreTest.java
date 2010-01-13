@@ -6,8 +6,6 @@ import com.cve.model.db.Hints;
 import com.cve.model.db.Join;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
-import com.cve.stores.Store;
-import com.cve.stores.Stores;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import java.sql.SQLException;
@@ -34,9 +32,8 @@ public class HintsStoreTest {
 
         Hints expected = Hints.of(Join.of(account_product_id, product_product_id));
 
-        Stores stores = null;
-        Store<ImmutableList<DBColumn>,Hints> store = stores.getStore(null);
-        // store.putHints(expected);
+        DBHintsStore store = MemoryDBHintsStore.of();
+        store.put(columns,expected);
 
         Hints actual = store.get(columns);
         assertEquals(expected,actual);

@@ -1,6 +1,5 @@
 package com.cve.stores.db;
 
-import com.cve.stores.db.JoinIO;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.Join;

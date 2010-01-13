@@ -22,7 +22,7 @@ import java.util.List;
  */
 public final class SakilaDB {
 
-    static final Database SAKILA = Database.serverName(SampleServer.SAMPLE, "SAKILA");
+    static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
 
     /**
      * How we connect to it.
@@ -39,7 +39,7 @@ public final class SakilaDB {
 
     void loadDatabase() {
         try {
-            SampleServer.createSchema(SAKILA);
+            SampleH2Server.createSchema(SAKILA);
             createTables();
             loadTables();
         } catch (IOException e) {
@@ -93,7 +93,7 @@ public final class SakilaDB {
     }
 
     public static void main(String[] args) {
-        DBConnectionInfo info = SampleServer.getConnectionInfo();
+        DBConnectionInfo info = SampleH2Server.getConnectionInfo();
         SakilaDB sakila = SakilaDB.of(info);
         sakila.loadDatabase();
         System.out.println("Done.");

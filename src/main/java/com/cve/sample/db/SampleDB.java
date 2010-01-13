@@ -3,6 +3,7 @@ package com.cve.sample.db;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import java.sql.SQLException;
+import static com.cve.util.Check.notNull;
 
 /**
  * A tiny sample database of countries, states and cities.
@@ -10,21 +11,21 @@ import java.sql.SQLException;
  */
 public final class SampleDB {
 
-    final SampleServer server;
+    final SampleH2Server server;
 
-    private static final Database GEO = Database.serverName(SampleServer.SAMPLE, "GEO");
+    private static final Database GEO = Database.serverName(SampleH2Server.SAMPLE, "GEO");
 
-    private SampleDB(SampleServer server) {
-        this.server = server;
+    private SampleDB(SampleH2Server server) {
+        this.server = notNull(server);
     }
 
-    static SampleDB of(SampleServer server) {
+    static SampleDB of(SampleH2Server server) {
         return new SampleDB(server);
     }
     
     void createAndLoadTables() {
         try {
-            SampleServer.createSchema(GEO);
+            SampleH2Server.createSchema(GEO);
             loadCountries();
             loadStates();
             loadCities();

@@ -12,7 +12,6 @@ import com.cve.io.db.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.Arrays;
 import static com.cve.util.Check.notNull;
 /**

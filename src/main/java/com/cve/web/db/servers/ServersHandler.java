@@ -16,13 +16,12 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * For picking a database server.
@@ -39,8 +38,8 @@ final class ServersHandler extends AbstractRequestHandler {
     private static final Log log = Log.of(ServersHandler.class);
 
     private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore) {
-        this.db = db;
-        this.serversStore = serversStore;
+        this.db = notNull(db);
+        this.serversStore = notNull(serversStore);
     }
 
     static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore) {
@@ -54,7 +53,7 @@ final class ServersHandler extends AbstractRequestHandler {
         if (search.isEmpty()) {
             ImmutableList<DBServer> servers = serversStore.keys();
             ImmutableMultimap<DBServer,Object> databases = getDatabases(servers);
-            return new ServersPage(servers,databases);
+            return ServersPage.of(servers,databases);
         }
         return newSearchPage(search);
     }
@@ -133,13 +132,8 @@ final class ServersHandler extends AbstractRequestHandler {
     ImmutableMultimap<DBServer,Object> getDatabases(ImmutableList<DBServer> servers) {
         Multimap<DBServer,Object> databases = HashMultimap.create();
         for (DBServer server : servers) {
-            try {
-                for (Database database : db.of(server).getDatabasesOn(server).value) {
-                    databases.put(server, database);
-                }
-            } catch (Throwable t) {
-                databases.put(server, Log.annotatedStackTrace(t));
-                log.warn(t);
+            for (Database database : db.of(server).getDatabasesOn(server).value) {
+                databases.put(server, database);
             }
         }
         return ImmutableMultimap.copyOf(databases);

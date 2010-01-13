@@ -1,10 +1,15 @@
 
 package com.cve.web.db;
 
+import com.cve.io.db.DBMetaData;
+import com.cve.io.db.LocalDBMetaDataFactory;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
-import com.cve.stores.Stores;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.UnmanagedFunctionFactory;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.util.URIs;
 import java.sql.SQLException;
 import org.junit.Test;
@@ -21,8 +26,6 @@ public class DatabaseMetaHandlerTest {
         DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
-        Stores stores = null;
-        stores.getStore(null).put(server, info);
         return server;
     }
 
@@ -31,13 +34,13 @@ public class DatabaseMetaHandlerTest {
         DBServer server = getStoreServer();
         String unnamed = borderTable(tr(th("CATALOG_NAME")) + tr(td("UNNAMED")) );
         String db1 = borderTable(tr(th("CATALOG_NAME")) + tr(td("DB1")) );
-        String actual = DatabaseMetaHandler.of(null,null,null).getCatalogs(server);
+        String actual = newHandler().getCatalogs(server);
         assertTrue(actual.equals(unnamed) || actual.equals(db1));
     }
 
     @Test
     public void isDatabaseMetaRequest() {
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null,null);
+        DatabaseMetaHandler handler = newHandler();
         assertFalse(handler.isDatabaseMetaRequest("/server/"));
         assertFalse(handler.isDatabaseMetaRequest("/server:8080/"));
         assertFalse(handler.isDatabaseMetaRequest("/server/db/"));
@@ -50,7 +53,15 @@ public class DatabaseMetaHandlerTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(null,null,null);
+        DatabaseMetaHandler handler = newHandler();
         handler.tryPage(DBServer.uri(URIs.of("server")), "bad method name");
+    }
+
+    DatabaseMetaHandler newHandler() {
+        DBServersStore serversStore = MemoryDBServersStore.of();
+        ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+        DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction);
+        return handler;
     }
 }

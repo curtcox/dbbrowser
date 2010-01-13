@@ -2,7 +2,7 @@ package com.cve.launch;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
-import com.cve.sample.db.SampleServer;
+import com.cve.sample.db.SampleH2Server;
 import com.cve.stores.LocalManagedFunctionFactory;
 import com.cve.stores.LocalStoreFactory;
 import com.cve.stores.ManagedFunction;
@@ -105,8 +105,8 @@ public final class LocalServerLauncher {
     }
 
     void loadServers() {
-        SampleServer.of(dbServersStore, managedFunction);
-        SampleServer.addToStore(dbServersStore);
+        SampleH2Server.of(dbServersStore, managedFunction);
+        SampleH2Server.addToStore(dbServersStore);
     }
 
     /**

@@ -30,7 +30,7 @@ final class ServersPage implements Model {
      */
     final ImmutableMultimap<DBServer,Object> databases;
 
-    ServersPage(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Object> databases) {
+    private ServersPage(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Object> databases) {
         this.servers   = notNull(servers);
         this.databases = notNull(databases);
         for (Object value : databases.values()) {
@@ -41,5 +41,9 @@ final class ServersPage implements Model {
                 throw new IllegalArgumentException(message);
             }
         }
+    }
+
+    static ServersPage of(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Object> databases) {
+        return new ServersPage(servers,databases);
     }
 }

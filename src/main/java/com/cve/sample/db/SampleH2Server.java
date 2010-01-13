@@ -10,6 +10,7 @@ import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
+import com.cve.util.Check;
 import com.cve.util.URIs;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +21,7 @@ import java.sql.Statement;
  * Creates and loads a sample H2 server.
  * @author Curt
  */
-public final class SampleServer {
+public final class SampleH2Server {
 
     /**
      * Our sample server.
@@ -32,13 +33,13 @@ public final class SampleServer {
      */
     private final DBConnection connection;
 
-    private SampleServer(DBConnection connection) {
-        this.connection = connection;
+    private SampleH2Server(DBConnection connection) {
+        this.connection = Check.notNull(connection);
         loadServer();
     }
 
-    public static SampleServer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new SampleServer(getConnection(serversStore,managedFunction));
+    public static SampleH2Server of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new SampleH2Server(getConnection(serversStore,managedFunction));
     }
 
     private static DBConnection getConnection(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {

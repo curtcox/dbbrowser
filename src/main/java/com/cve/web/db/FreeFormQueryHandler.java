@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.log.Log.args;
-
+import static com.cve.util.Check.notNull;
 /**
  * Handles "free-form" SQL select queries.
  * The queries are run against the server specified in the request URL.
@@ -54,8 +54,8 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
     final ManagedFunction.Factory managedFunction;
 
     private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
+        this.serversStore = notNull(serversStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
@@ -186,7 +186,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      * given select statement.
      */
     public URI linkTo(Select select, Search search) {
-        args(select);
+        args(select,search);
         DBServer server = select.server;
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
         DBDriver driver = connection.getInfo().driver;

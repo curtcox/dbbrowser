@@ -14,7 +14,6 @@ import com.cve.util.Throwables;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.io.IOException;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -22,6 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static com.cve.html.HTML.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * For showing about a server.
@@ -41,9 +41,9 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     private DatabaseMetaHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         super("^" + PREFIX);
-        this.db = db;
-        this.managedFunction = managedFunction;
-        this.serversStore = serversStore;
+        this.db = notNull(db);
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
     }
 
     public static DatabaseMetaHandler of(

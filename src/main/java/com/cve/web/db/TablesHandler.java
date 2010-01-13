@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
+
 /**
  * For picking a table.
  */
@@ -40,10 +42,10 @@ public final class TablesHandler extends AbstractRequestHandler {
     final ManagedFunction.Factory managedFunction;
 
     private TablesHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        this.db = db;
-        this.serversStore = serversStore;
-        this.hintsStore = hintsStore;
-        this.managedFunction = managedFunction;
+        this.db = notNull(db);
+        this.serversStore = notNull(serversStore);
+        this.hintsStore = notNull(hintsStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     static TablesHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {

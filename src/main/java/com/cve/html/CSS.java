@@ -86,7 +86,7 @@ public enum CSS {
         return "{" + value + " }";
     }
 
-    public static String TABLE_COLORING =
+    public static final String TABLE_COLORING =
         rowColoring(SERVER) +
         rowColoring(DATABASE) +
         rowColoring(TABLE) +

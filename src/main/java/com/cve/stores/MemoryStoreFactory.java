@@ -1,5 +1,8 @@
 package com.cve.stores;
 
+import com.cve.stores.fs.MemoryFSServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
+import com.cve.stores.db.MemoryDBHintsStore;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
@@ -34,13 +37,13 @@ public final class MemoryStoreFactory implements Store.Factory {
     @Override
     public <T> T of(Class<T> t) {
         if (t.equals(DBServersStore.class)) {
-            return t.cast(new DBServers());
+            return t.cast(MemoryDBServersStore.of());
         }
         if (t.equals(DBHintsStore.class)) {
-            return t.cast(new DBHints());
+            return t.cast(MemoryDBHintsStore.of());
         }
         if (t.equals(FSServersStore.class)) {
-            return t.cast(new FSServers());
+            return t.cast(new MemoryFSServersStore());
         }
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -51,27 +54,6 @@ public final class MemoryStoreFactory implements Store.Factory {
         @Override public Object get(Object key) { return map.get(key); }
         @Override public void put(Object key, Object value) { map.put(key, value); }
         @Override public ImmutableList keys() { return ImmutableList.copyOf(map.keySet()); }
-    }
-
-    private static class DBServers implements DBServersStore {
-        final Map<DBServer,DBConnectionInfo> map = Maps.newHashMap();
-        @Override public DBConnectionInfo get(DBServer key) { return map.get(key); }
-        @Override public void put(DBServer key, DBConnectionInfo value) { map.put(key, value); }
-        @Override public ImmutableList<DBServer> keys() { return ImmutableList.copyOf(map.keySet()); }
-    }
-
-    private static class DBHints implements DBHintsStore {
-        final Map<ImmutableList<DBColumn>,Hints> map = Maps.newHashMap();
-        @Override public Hints get(ImmutableList<DBColumn> key) { return map.get(key); }
-        @Override public void put(ImmutableList<DBColumn> key, Hints value) { map.put(key, value); }
-        @Override public ImmutableList<ImmutableList<DBColumn>> keys() { return ImmutableList.copyOf(map.keySet()); }
-    }
-
-        private static class FSServers implements FSServersStore {
-        final Map<FSServer,FSConnectionInfo> map = Maps.newHashMap();
-        @Override public FSConnectionInfo get(FSServer key) { return map.get(key); }
-        @Override public void put(FSServer key, FSConnectionInfo value) { map.put(key, value); }
-        @Override public ImmutableList<FSServer> keys() { return ImmutableList.copyOf(map.keySet()); }
     }
 
 }

@@ -60,8 +60,8 @@ public final class DefaultDBConnection implements DBConnection {
         DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
         this.info = notNull(info);
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
+        this.serversStore = notNull(serversStore);
+        this.managedFunction = notNull(managedFunction);
         dbMetaData = DefaultDBMetaData.getDbmd(this,managedFunction,serversStore);
         resultSets = managedFunction.of(new ExecuteSQL(),DBResultSetIO.NULL);
     }

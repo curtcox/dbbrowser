@@ -17,7 +17,10 @@ public class RequestRouterServletTest {
 
     @Test
     public void doGetServer() throws IOException {
-        RequestRouterServlet servlet = RequestRouterServlet.of(null);
+        RequestHandler handler = mock(RequestHandler.class);
+        ModelHtmlRenderer renderer = mock(ModelHtmlRenderer.class);
+        WebApp webapp = WebApp.of(handler, renderer);
+        RequestRouterServlet servlet = RequestRouterServlet.of(webapp);
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
         PrintWriter printWriter = new PrintWriter(new ByteArrayOutputStream());

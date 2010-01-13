@@ -17,6 +17,10 @@ import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SelectContext;
 import com.cve.model.db.DBValue;
 import com.cve.io.db.DBConnectionFactory;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.UnmanagedFunctionFactory;
+import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
@@ -83,6 +87,9 @@ public class ResultsRenderTest {
         String user = "";
         String password = "";
         DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password);
-        return DBConnectionFactory.getConnection(info,null,null);
+        DBServersStore serversStore = MemoryDBServersStore.of();
+        ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+
+        return DBConnectionFactory.getConnection(info,serversStore,managedFunction);
     }
 }

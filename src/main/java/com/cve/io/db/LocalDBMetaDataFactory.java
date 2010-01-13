@@ -3,6 +3,7 @@ package com.cve.io.db;
 import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
+import static com.cve.util.Check.notNull;
 
 /**
  * For "direct" access to databases.
@@ -15,8 +16,8 @@ public final class LocalDBMetaDataFactory implements DBMetaData.Factory {
     final ManagedFunction.Factory managedFunction;
 
     private LocalDBMetaDataFactory(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        this.serversStore = serversStore;
-        this.managedFunction = managedFunction;
+        this.serversStore = notNull(serversStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     public static LocalDBMetaDataFactory of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
