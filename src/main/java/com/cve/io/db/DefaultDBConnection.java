@@ -1,7 +1,6 @@
 
 package com.cve.io.db;
 
-import com.cve.io.db.DBResultSetIO.Getter;
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.model.db.DBConnectionInfo;
@@ -12,10 +11,10 @@ import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.UnpredictableFunction;
-import com.google.common.collect.ImmutableList;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import static com.cve.log.Log.args;
@@ -63,10 +62,10 @@ public final class DefaultDBConnection implements DBConnection {
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
         dbMetaData = DefaultDBMetaData.getDbmd(this,managedFunction,serversStore);
-        resultSets = managedFunction.of(new ExecuteSQL(),DBResultSetIO.NULL);
+        resultSets = managedFunction.of(new ExecuteSQL(),SQL.class,DBResultSetIO.class,DBResultSetIO.NULL);
     }
 
-    static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    public static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         return new DefaultDBConnection(info,serversStore,managedFunction);
     }
 
@@ -113,7 +112,8 @@ public final class DefaultDBConnection implements DBConnection {
      */
     @Override
     public synchronized CurrentValue<DBResultSetIO> select(final SQL sql) {
-        return resultSets.apply(sql);
+        CurrentValue<DBResultSetIO> value = resultSets.apply(sql);
+        return value;
     }
 
     @Override
@@ -127,8 +127,8 @@ public final class DefaultDBConnection implements DBConnection {
     }
 
     DBMetaData getDbmd(DBServer server) {
-        DefaultDBConnection connection = (DefaultDBConnection) DBConnectionFactory.getConnection(info, serversStore, managedFunction);
-        DBMetaData   dbmd = connection.dbMetaData;
+        DefaultDBConnection dbConnection = (DefaultDBConnection) DBConnectionFactory.getConnection(info, serversStore, managedFunction);
+        DBMetaData   dbmd = dbConnection.dbMetaData;
         return dbmd;
     }
     
@@ -140,7 +140,11 @@ public final class DefaultDBConnection implements DBConnection {
         LOG.warn(t);
     }
 
-    private final class ExecuteSQL implements UnpredictableFunction<SQL,DBResultSetIO> {
+    private final class ExecuteSQL extends SQLFunction<SQL,DBResultSetIO> {
+
+        ExecuteSQL() {
+            super(SQL.class,DBResultSetIO.class);
+        }
 
         @Override
         public DBResultSetIO apply(SQL sql) throws Exception {
@@ -148,7 +152,9 @@ public final class DefaultDBConnection implements DBConnection {
             String sqlString = sql.toString();
             info(sqlString);
             statement.execute(sqlString);
-            return DBResultSetIO.of(ResultSetWrapper.of(statement.getResultSet()));
+            ResultSet resultSet = ResultSetWrapper.of(statement.getResultSet());
+            DBResultSetIO io = DBResultSetIO.of(resultSet);
+            return io;
         }
 
    }

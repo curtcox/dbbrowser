@@ -1,4 +1,4 @@
-package com.cve.db.select;
+package com.cve.io.db.select;
 
 import com.cve.io.db.select.SelectExecutor;
 import com.cve.io.db.DBConnection;

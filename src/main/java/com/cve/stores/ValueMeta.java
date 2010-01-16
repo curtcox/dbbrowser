@@ -28,4 +28,11 @@ public final class ValueMeta {
         return new ValueMeta(t);
     }
 
+    @Override
+    public String toString() {
+        return "<ValueMeta>" +
+                  " problem=" + problem +
+                  " timeStamp=" + timeStamp +
+               "</ValueMeta>";
+    }
 }

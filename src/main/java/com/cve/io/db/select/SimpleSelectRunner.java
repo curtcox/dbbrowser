@@ -5,7 +5,6 @@ import com.cve.model.db.Cell;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBResultSet;
 import com.cve.model.db.Database;
-import com.cve.model.db.DBLimit;
 import com.cve.model.db.DBRow;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
@@ -55,7 +54,7 @@ final class SimpleSelectRunner implements SelectRunner {
         Search search = context.search;
         DBDriver driver = connection.getInfo().driver;
         SQL         sql = driver.render(select,search);
-        int       count = determineRowCount(context);
+        long      count = determineRowCount(context);
         DBResultSetIO results = connection.select(sql).value;
         SelectResults.Type  type = determineResultsType(select);
         ResultsAndMore immutable = transform(select,results);
@@ -66,14 +65,14 @@ final class SimpleSelectRunner implements SelectRunner {
     /**
      * Return the number of rows that would be returned if no limit was used.
      */
-    static int determineRowCount(SelectContext context) throws SQLException {
+    static long determineRowCount(SelectContext context) throws SQLException {
         DBConnection connection = context.connection;
         DBDriver driver = connection.getInfo().driver;
         Select select = context.select;
         Search search = context.search;
         SQL sql = driver.renderCount(select,search);
         DBResultSetIO results = connection.select(sql).value;
-        return results.getInt(0,1);
+        return results.getLong(0,1);
     }
 
     /**
@@ -104,18 +103,16 @@ final class SimpleSelectRunner implements SelectRunner {
         DBResultSetMetaDataIO          meta = results.meta;
         ImmutableList<AggregateFunction> functions = select.functions;
         int cols = meta.columnCount;
-        DBLimit limit = select.limit;
-        for (int r=0; r<(limit.limit - 1); r++) {
+        for (int r=0; r<results.rows.size() - 1; r++) {
             DBRow row = DBRow.number(r);
-            rows.add(row);
-            r++;
-            for (int c=1; c<=cols; c++) {
+            for (int c=0; c<cols - 1; c++) {
                 Object v = results.rows.get(r).get(c);
                 DBValue value = DBValue.of(v);
-                values.put(Cell.at(row, columns.get(c-1),functions.get(c-1)), value);
+                values.put(Cell.at(row, columns.get(c),functions.get(c)), value);
             }
+            rows.add(row);
         }
-        boolean more = results.rows.size() > limit.limit;
+        boolean more = results.rows.size() > select.limit.limit;
         ImmutableList<DBRow>           fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
         return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);

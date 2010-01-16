@@ -1,4 +1,4 @@
-package com.cve.db;
+package com.cve.model.db;
 
 import com.cve.model.db.AggregateFunction;
 import org.junit.Test;

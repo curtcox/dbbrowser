@@ -1,5 +1,6 @@
 package com.cve.io.db;
 
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -34,8 +35,13 @@ public final class DBResultSetIO {
      */
     public static final DBResultSetIO NULL = newNull();
 
+    /**
+     * Where we log to.
+     */
+    private static final Log LOG = Log.of(DBResultSetIO.class);
+
     private static DBResultSetIO newNull() {
-        DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(new NullResultSet());
+        DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(new NullResultSetMetaData());
         ImmutableList<ImmutableMap> rows = ImmutableList.of();
         return new DBResultSetIO(meta,rows);
     }
@@ -72,11 +78,20 @@ public final class DBResultSetIO {
     private static class NullResultSet extends NoResultSet {
         @Override public void close() throws SQLException {}
         @Override public ResultSetMetaData getMetaData() {
-            return new NoResultSetMetaData() {
-                @Override  public int getColumnCount() { return 0; }
-            };
+            return new NullResultSetMetaData();
         }
+
     }
+
+    private static class NullResultSetMetaData extends NoResultSetMetaData {
+
+            NullResultSetMetaData() {}
+
+            @Override
+            public int getColumnCount() {
+                return 0;
+            }
+        }
 
     /**
      * Use the factory.
@@ -92,65 +107,79 @@ public final class DBResultSetIO {
 
     public static DBResultSetIO of(ResultSet results) {
         try {
-            DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results);
-            ImmutableList<ImmutableMap> rows = readRows(results,meta);
-            int cols = meta.columnCount;
-            while (results.next()) {
-                Map row = Maps.newHashMap();
-                for (int c=1; c<=cols; c++) {
-                    Object v = getObject(results,c);
-                    row.put(c,v);
-                    row.put(meta.columnNames.get(c), v);
-                }
-                rows.add(ImmutableMap.copyOf(row));
-            }
-            return new DBResultSetIO(meta,rows);
+            DBResultSetIO resultsIO = doOf(results);
+            return resultsIO;
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            try {
-                results.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
-    public static DBResultSetIO of(ResultSet results, Getter... getters) {
-        return of(results,ImmutableList.of(getters));
+    private static DBResultSetIO doOf(ResultSet results) throws SQLException {
+        try {
+            DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results.getMetaData());
+            ImmutableList<ImmutableMap> rows = readRows(results,meta);
+            return new DBResultSetIO(meta,rows);
+        } finally {
+            results.close();
+        }
     }
 
-    public static DBResultSetIO of(ResultSet results, ImmutableList<Getter> getters) {
+    public static DBResultSetIO ofUsing(ResultSet results, Getter... getters) {
+        return ofUsing(results,ImmutableList.of(getters));
+    }
+
+    public static DBResultSetIO ofUsing(ResultSet results, ImmutableList<Getter> getters) {
         try {
-            DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results);
+            DBResultSetIO resultsIO = doOfUsing(results,getters);
+            return resultsIO;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static DBResultSetIO doOfUsing(ResultSet results, ImmutableList<Getter> getters) throws SQLException {
+        try {
+            DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results.getMetaData());
             ImmutableList<ImmutableMap> rows = readRows(results,meta);
             while (results.next()) {
                 for (Getter getter : getters) {
                 }
             }
             return new DBResultSetIO(meta,rows);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
         } finally {
-            try {
-                results.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            results.close();
         }
     }
 
-    private static ImmutableList<ImmutableMap> readRows(ResultSet results, DBResultSetMetaDataIO meta) {
+    private static ImmutableList<ImmutableMap> readRows(ResultSet results, DBResultSetMetaDataIO meta) throws SQLException {
         List rows = Lists.newArrayList();
+        int cols = meta.columnCount;
+        for (boolean more = true; more; more=results.next() ) {
+            Map row = Maps.newHashMap();
+            for (int c=1; c<=cols; c++) {
+                Object v = getObject(results,c);
+                if (v!=null) {
+                    row.put(c,v);
+                    row.put(meta.columnNames.get(c-1), v);
+                }
+            }
+            rows.add(ImmutableMap.copyOf(row));
+        }
         return ImmutableList.copyOf(rows);
     }
 
-    public int getInt(int rowNumber, int columnNumber) {
-        return (Integer) rows.get(rowNumber).get(columnNumber);
+    public long getLong(int rowNumber, int columnNumber) {
+        Object value = rows.get(rowNumber).get(columnNumber);
+        if (value instanceof Long)    { return (Long)    value; }
+        if (value instanceof Integer) { return (Integer) value; }
+        throw new IllegalArgumentException(value + " can't be converted to a long");
     }
 
-    int getInt(int rowNumber, String columnName) {
-        return (Integer) rows.get(rowNumber).get(columnName);
+    long getLong(int rowNumber, String columnName) {
+        Object value = rows.get(rowNumber).get(columnName);
+        if (value instanceof Long)    { return (Long)    value; }
+        if (value instanceof Integer) { return (Integer) value; }
+        throw new IllegalArgumentException(value + " can't be converted to a long");
     }
 
     String getString(int rowNumber, String columnName) {
@@ -172,9 +201,18 @@ public final class DBResultSetIO {
             ResultSetMetaData meta = results.getMetaData();
             String        typeName = meta.getColumnTypeName(c);
             String       className = meta.getColumnClassName(c);
-            return "Error converting " + typeName + "/" + className;
+            String message = "Error converting " + typeName + "/" + className;
+            e.printStackTrace();
+            LOG.warn(e);
+            return message;
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "<DBResultSetIO>" +
+                " meta=" + meta +
+                " rows=" + rows +
+               "</DBResultSetIO>";
+    }
 }

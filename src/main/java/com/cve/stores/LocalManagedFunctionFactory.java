@@ -17,7 +17,7 @@ public final class LocalManagedFunctionFactory implements ManagedFunction.Factor
     }
 
     @Override
-    public ManagedFunction of(UnpredictableFunction f, Object nullValue) {
+    public ManagedFunction of(UnpredictableFunction f, Class domain, Class range, Object nullValue) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

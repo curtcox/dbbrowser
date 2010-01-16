@@ -9,29 +9,25 @@ import static com.cve.util.Check.notNull;
  * A tiny sample database of countries, states and cities.
  * @author Curt
  */
-public final class SampleDB {
+public final class SampleGeoDB {
 
     final SampleH2Server server;
 
-    private static final Database GEO = Database.serverName(SampleH2Server.SAMPLE, "GEO");
+    public static final Database GEO = Database.serverName(SampleH2Server.SAMPLE, "GEO");
 
-    private SampleDB(SampleH2Server server) {
+    private SampleGeoDB(SampleH2Server server) {
         this.server = notNull(server);
     }
 
-    static SampleDB of(SampleH2Server server) {
-        return new SampleDB(server);
+    static SampleGeoDB of(SampleH2Server server) {
+        return new SampleGeoDB(server);
     }
     
-    void createAndLoadTables() {
-        try {
-            SampleH2Server.createSchema(GEO);
-            loadCountries();
-            loadStates();
-            loadCities();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    void createAndLoadTables() throws SQLException {
+        SampleH2Server.createSchema(GEO);
+        loadCountries();
+        loadStates();
+        loadCities();
     }
 
     private void loadCountries() throws SQLException {

@@ -1,7 +1,6 @@
 
 package com.cve.io.db;
 
-import com.cve.io.db.DBResultSetIO.Getter;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnpredictableFunction;
@@ -48,18 +47,18 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     private DefaultDBMetaDataIO(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         this.connection = notNull(connection);
         notNull(managedFunction);
-              tables = notNull(managedFunction.of(new GetTables(),       DBResultSetIO.NULL));
-             columns = notNull(managedFunction.of(new GetColumns(),      DBResultSetIO.NULL));
-        importedKeys = notNull(managedFunction.of(new GetImportedKeys(), DBResultSetIO.NULL));
-         primaryKeys = notNull(managedFunction.of(new GetPrimaryKeys(),  DBResultSetIO.NULL));
-        exportedKeys = notNull(managedFunction.of(new GetExportedKeys(), DBResultSetIO.NULL));
-            catalogs = notNull(managedFunction.of(new GetCatalogs(),     DBResultSetIO.NULL));
-             schemas = notNull(managedFunction.of(new GetSchemas(),      DBResultSetIO.NULL));
+              tables = notNull(managedFunction.of(new GetTables(),       TableSpecifier.class,  DBResultSetIO.class, DBResultSetIO.NULL));
+             columns = notNull(managedFunction.of(new GetColumns(),      ColumnSpecifier.class, DBResultSetIO.class, DBResultSetIO.NULL));
+        importedKeys = notNull(managedFunction.of(new GetImportedKeys(), KeySpecifier.class,    DBResultSetIO.class, DBResultSetIO.NULL));
+         primaryKeys = notNull(managedFunction.of(new GetPrimaryKeys(),  KeySpecifier.class,    DBResultSetIO.class, DBResultSetIO.NULL));
+        exportedKeys = notNull(managedFunction.of(new GetExportedKeys(), KeySpecifier.class,    DBResultSetIO.class, DBResultSetIO.NULL));
+            catalogs = notNull(managedFunction.of(new GetCatalogs(),     Void.class,            DBResultSetIO.class, DBResultSetIO.NULL));
+             schemas = notNull(managedFunction.of(new GetSchemas(),      Void.class,            DBResultSetIO.class, DBResultSetIO.NULL));
     }
 
     public static DBMetaDataIO of(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
         args(connection);
-        return DBMetaDataIOCache.of(DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection,managedFunction)));
+        return DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection,managedFunction));
     }
 
 
@@ -72,8 +71,8 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             String tableName = results.getString(r,TABLE_NAME);
             list.add(new TableInfo(tableName));
         }
-        ImmutableList<TableInfo> tables = ImmutableList.copyOf(list);
-        return CurrentValue.of(tables);
+        ImmutableList<TableInfo> tableList = ImmutableList.copyOf(list);
+        return CurrentValue.of(tableList);
     }
 
 
@@ -85,7 +84,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             String schemaName = results.getString(r,TABLE_SCHEM);
             String  tableName = results.getString(r,TABLE_NAME);
             String columnName = results.getString(r,COLUMN_NAME);
-            int          type = results.getInt(r,DATA_TYPE);
+            int          type = (int) results.getLong(r,DATA_TYPE);
             ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
             list.add(column);
         }
@@ -156,7 +155,8 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     @Override
     public CurrentValue<ImmutableList<SchemaInfo>> getSchemas() {
-        DBResultSetIO results = schemas.apply(null).value;
+        CurrentValue<DBResultSetIO> current = schemas.apply(null);
+        DBResultSetIO results = current.value;
         if (results.rows.size()<1) {
             ImmutableList<SchemaInfo> empty = ImmutableList.of();
             return CurrentValue.of(empty);

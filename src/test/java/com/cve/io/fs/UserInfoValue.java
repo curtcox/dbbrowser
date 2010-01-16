@@ -1,4 +1,4 @@
-package com.cve.fs;
+package com.cve.io.fs;
 
 import com.jcraft.jsch.UserInfo;
 

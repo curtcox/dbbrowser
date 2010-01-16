@@ -13,8 +13,8 @@ public final class UnmanagedFunctionFactory implements ManagedFunction.Factory {
     }
 
     @Override
-    public ManagedFunction of(UnpredictableFunction f, Object nullValue) {
-        return new UnmanagedFunction(f,nullValue);
+    public ManagedFunction of(UnpredictableFunction f, Class domain, Class range, Object nullValue) {
+        return UnmanagedFunction.of(f,domain,range,nullValue);
     }
 
 }

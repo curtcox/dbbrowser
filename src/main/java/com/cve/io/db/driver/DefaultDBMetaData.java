@@ -73,9 +73,9 @@ public class DefaultDBMetaData implements DBMetaData {
         args(connection);
         DBMetaData meta = getDbmd0(connection,managedFunction,serversStore);
         meta = DBMetaDataLogger.of(System.out,meta);
-        meta = DBMetaDataCache.of(meta);
-        meta = DBMetaDataTimer.of(meta);
-        meta = DBMetaDataLocked.of(meta);
+        //meta = DBMetaDataCache.of(meta);
+        //meta = DBMetaDataTimer.of(meta);
+        //meta = DBMetaDataLocked.of(meta);
         return meta;
     }
 
@@ -152,7 +152,7 @@ public class DefaultDBMetaData implements DBMetaData {
         DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         DBResultSetIO results = connection.select(sql).value;
-        return CurrentValue.of(new Long(results.getInt(0,1)));
+        return CurrentValue.of(new Long(results.getLong(0,1)));
     }
 
     /**
@@ -186,7 +186,6 @@ public class DefaultDBMetaData implements DBMetaData {
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
         args(database);
-        DBServer server = database.server;
         List<DBColumn> list = Lists.newArrayList();
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -254,7 +253,6 @@ public class DefaultDBMetaData implements DBMetaData {
     @Override
     public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
         args(server);
-        DBMetaDataIO     dbmd = getDbmdIO(server);
         List<Database> list = Lists.newArrayList();
         for (CatalogInfo info : dbmd.getCatalogs().value) {
             String databaseName = info.databaseName;
@@ -269,7 +267,6 @@ public class DefaultDBMetaData implements DBMetaData {
     @Override
     public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
         args(database);
-        DBServer           server = database.server;
         String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = null;

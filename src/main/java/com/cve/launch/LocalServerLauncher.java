@@ -17,6 +17,7 @@ import com.cve.web.DefaultModelHtmlRenderers;
 import com.cve.web.WebApp;
 import java.awt.Desktop;
 import java.io.IOException;
+import java.sql.SQLException;
 
 
 /**
@@ -82,14 +83,14 @@ public final class LocalServerLauncher {
         }
     }
 
-    static void launch() throws IOException {
+    static void launch() throws IOException, SQLException {
         LocalServerLauncher launcher = of();
         launcher.loadServers();
         launcher.startGrizzly();
         launcher.openBrowser();
     }
 
-    static void launchTest() throws IOException {
+    static void launchTest() throws IOException, SQLException {
         LocalServerLauncher launcher = test();
         launcher.loadServers();
         launcher.startGrizzly();
@@ -104,8 +105,8 @@ public final class LocalServerLauncher {
         Grizzly.start(webApp, PORT);
     }
 
-    void loadServers() {
-        SampleH2Server.of(dbServersStore, managedFunction);
+    void loadServers() throws SQLException {
+        SampleH2Server.of();
         SampleH2Server.addToStore(dbServersStore);
     }
 

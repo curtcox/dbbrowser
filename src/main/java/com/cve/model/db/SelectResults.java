@@ -64,7 +64,7 @@ public final class SelectResults implements Model {
      * The total number of rows that would be in the result set if no limit
      * were used.
      */
-    public final int count;
+    public final long count;
 
     /**
      * True if there are more rows available for the select, after the ones
@@ -78,7 +78,7 @@ public final class SelectResults implements Model {
     public final Type type;
 
 
-    private SelectResults(DBServer server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore) {
+    private SelectResults(DBServer server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, long count, boolean hasMore) {
         this.server    = notNull(server);
         this.type      = notNull(type);
         this.select    = notNull(select);
@@ -115,7 +115,7 @@ public final class SelectResults implements Model {
     }
 
     public static SelectResults typeSelectSearchResultsHintsCountMore(
-        Type type, Select select, Search search, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
+        Type type, Select select, Search search, DBResultSet resultSet, Hints hints, long count, boolean hasMore)
     {
         DBServer server = check(select,resultSet);
         return new SelectResults(server,type,select,search,resultSet,hints,count,hasMore);

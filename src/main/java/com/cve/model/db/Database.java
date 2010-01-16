@@ -7,6 +7,7 @@ import com.cve.web.db.DBURICodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * A relational database on a {@link Server}.
@@ -29,6 +30,7 @@ public final class Database {
     public static final Database NULL = new Database(DBServer.NULL,"");
 
     private Database(DBServer server, String name) {
+        args(server,name);
         this.server = notNull(server);
         this.name   = notNull(name);
     }

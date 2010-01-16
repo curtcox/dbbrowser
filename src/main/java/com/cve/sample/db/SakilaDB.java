@@ -3,7 +3,6 @@ package com.cve.sample.db;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.SQL;
-import com.cve.io.db.DBConnection;
 import com.cve.util.Check;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;

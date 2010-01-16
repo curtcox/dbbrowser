@@ -28,9 +28,9 @@ final class ServersPage implements Model {
      * Keeping the throwable allows us to diagnose and troubleshoot the
      * reason more easily.
      */
-    final ImmutableMultimap<DBServer,Object> databases;
+    final ImmutableMultimap<DBServer,Database> databases;
 
-    private ServersPage(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Object> databases) {
+    private ServersPage(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Database> databases) {
         this.servers   = notNull(servers);
         this.databases = notNull(databases);
         for (Object value : databases.values()) {
@@ -43,7 +43,14 @@ final class ServersPage implements Model {
         }
     }
 
-    static ServersPage of(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Object> databases) {
+    static ServersPage of(ImmutableList<DBServer> servers, ImmutableMultimap<DBServer,Database> databases) {
         return new ServersPage(servers,databases);
+    }
+
+    @Override
+    public String toString() {
+        return "<ServersPage>" +
+                  " servers=" + servers +
+               "</ServersPage>";
     }
 }

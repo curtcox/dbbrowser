@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
+import static com.cve.log.Log.args;
 
 /**
  * The immutable results of running a {@link Select}.
@@ -75,6 +76,7 @@ public final class DBResultSet {
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values)
     {
+        args(databases,tables,columns,rows,values);
         return new DBResultSet(databases,tables,columns,rows,values);
     }
 

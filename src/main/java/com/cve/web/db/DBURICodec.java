@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
-
+import static com.cve.log.Log.args;
 /**
  * Tools for converting between objects and the specially formatted database
  * {@link URI}S we work with.
@@ -381,10 +381,12 @@ public final class DBURICodec {
     }
 
     public static URI encode(Database database) {
+        args(database);
         return encode(Search.EMPTY,database);
     }
 
     public static URI encode(Search search, Database database) {
+        args(search,database);
         DBServer server = database.server;
         return URIs.of(encode(search,server) + database.name + "/");
     }

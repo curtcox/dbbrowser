@@ -29,7 +29,7 @@ public class SelectBuilderHandlerTest {
     DBHintsStore hintsStore = MemoryDBHintsStore.of();
     ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore);
+    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction);
     {
         DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);

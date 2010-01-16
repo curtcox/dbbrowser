@@ -5,7 +5,6 @@ import com.cve.util.Check;
 import com.cve.util.Stopwatch;
 import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 
 /**
  *

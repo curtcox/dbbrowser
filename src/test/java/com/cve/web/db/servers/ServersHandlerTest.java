@@ -8,6 +8,7 @@ import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.web.*;
+import com.cve.sample.db.DBSampleServerTestObjects;
 import java.io.IOException;
 import java.sql.SQLException;
 import org.junit.Test;
@@ -20,14 +21,7 @@ import static org.junit.Assert.*;
  */
 public class ServersHandlerTest {
 
-    final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBServersStore serversStore = MemoryDBServersStore.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    final ServersHandler handler = ServersHandler.of(db,serversStore);
-    {
-        SampleH2Server.of(serversStore, managedFunction);
-        SampleH2Server.addToStore(serversStore);
-    }
+    static final ServersHandler handler = ServersHandler.of(DBSampleServerTestObjects.db,DBSampleServerTestObjects.serversStore);
 
     @Test
     public void producesServersOnlyRequest() throws IOException, SQLException {

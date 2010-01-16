@@ -8,7 +8,6 @@ import com.cve.model.db.DBServer;
 import com.cve.stores.CurrentValue;
 import com.google.common.collect.ImmutableList;
 import java.io.PrintStream;
-import java.sql.SQLException;
 
 /**
  * For wrapping a DBMetaData and adding logging.
@@ -16,7 +15,14 @@ import java.sql.SQLException;
  */
 public final class DBMetaDataLogger implements DBMetaData {
 
+    /**
+     * Log to this
+     */
     final PrintStream out;
+
+    /**
+     * Defer to this
+     */
     final DBMetaData meta;
 
     private DBMetaDataLogger(PrintStream out, DBMetaData meta) {

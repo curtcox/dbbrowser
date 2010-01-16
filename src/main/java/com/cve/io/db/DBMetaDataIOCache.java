@@ -20,7 +20,7 @@ final class DBMetaDataIOCache implements DBMetaDataIO {
         this.io = Check.notNull(io);
     }
 
-    public static DBMetaDataIO of(DBMetaDataIO io) {
+    private static DBMetaDataIO of(DBMetaDataIO io) {
         return new DBMetaDataIOCache(io);
     }
 

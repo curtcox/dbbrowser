@@ -6,11 +6,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SQL;
 import com.cve.model.db.DBServer;
-import com.cve.io.db.DBConnection;
-import com.cve.io.db.DBConnectionFactory;
-import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
-import com.cve.util.Check;
 import com.cve.util.URIs;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -26,31 +22,21 @@ public final class SampleH2Server {
     /**
      * Our sample server.
      */
-    static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
+    public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
-    /**
-     * How we connect to it.
-     */
-    private final DBConnection connection;
 
-    private SampleH2Server(DBConnection connection) {
-        this.connection = Check.notNull(connection);
+    private SampleH2Server() throws SQLException {
         loadServer();
     }
 
-    public static SampleH2Server of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new SampleH2Server(getConnection(serversStore,managedFunction));
-    }
-
-    private static DBConnection getConnection(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        final DBConnectionInfo info = getConnectionInfo();
-        return DBConnectionFactory.getConnection(info,serversStore,managedFunction);
+    public static SampleH2Server of() throws SQLException {
+        return new SampleH2Server();
     }
 
     /**
      * See http://www.h2database.com/html/features.html#database_url
      */
-    static DBConnectionInfo getConnectionInfo() {
+    public static DBConnectionInfo getConnectionInfo() {
         final String url = "jdbc:h2:mem:" + SAMPLE.toString();
         final String user = "";
         final String password = "";
@@ -68,8 +54,8 @@ public final class SampleH2Server {
     /**
      * Load the databases and tables
      */
-    void loadServer() {
-        SampleDB.of(this).createAndLoadTables();
+    void loadServer() throws SQLException {
+        SampleGeoDB.of(this).createAndLoadTables();
         SakilaDB.of(getConnectionInfo()).loadDatabase();
     }
 
@@ -139,8 +125,8 @@ public final class SampleH2Server {
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";
         update(SQL.of(sql));
-        connection.select(SQL.of("SELECT COUNT(*) FROM " + table));
-        connection.select(SQL.of("SELECT * FROM " + table));
+        select(SQL.of("SELECT COUNT(*) FROM " + table));
+        select(SQL.of("SELECT * FROM " + table));
     }
 
     static void update(SQL sql) throws SQLException {
@@ -149,4 +135,12 @@ public final class SampleH2Server {
         Statement statement = connection.createStatement();
         statement.execute(sql.toString());
     }
+
+    static void select(SQL sql) throws SQLException {
+        final DBConnectionInfo info = getConnectionInfo();
+        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
+        Statement statement = connection.createStatement();
+        statement.execute(sql.toString());
+    }
+
 }

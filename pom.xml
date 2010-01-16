@@ -98,7 +98,7 @@
         <dependency>
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
-            <version>1.0-rc2</version>
+            <version>1.0</version>
             <type>jar</type>
         </dependency>
 
@@ -134,7 +134,7 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.1.118</version>
+            <version>1.2.126</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>

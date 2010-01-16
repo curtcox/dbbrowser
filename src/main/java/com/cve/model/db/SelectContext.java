@@ -1,13 +1,13 @@
 package com.cve.model.db;
 
 import com.cve.io.db.DBConnection;
-import com.cve.util.Check;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
+import static com.cve.util.Check.notNull;
 
 /**
  * A select statement, plus the context it is run in.
@@ -27,11 +27,11 @@ public final class SelectContext {
     public final DBConnection connection;
 
     private SelectContext(Select select, Search search, DBServer server, DBConnection connection, Hints hints) {
-        this.select = Check.notNull(select);
-        this.search = Check.notNull(search);
-        this.server = Check.notNull(server);
-        this.connection = Check.notNull(connection);
-        this.hints = Check.notNull(hints);
+        this.select = notNull(select);
+        this.search = notNull(search);
+        this.server = notNull(server);
+        this.connection = notNull(connection);
+        this.hints = notNull(hints);
         
     }
 

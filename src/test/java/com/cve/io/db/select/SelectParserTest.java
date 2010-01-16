@@ -1,4 +1,4 @@
-package com.cve.db.select;
+package com.cve.io.db.select;
 
 import com.cve.io.db.select.SelectParser;
 import com.cve.model.db.AggregateFunction;

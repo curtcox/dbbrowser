@@ -18,7 +18,11 @@ public final class MemoryDBHintsStore implements DBHintsStore {
 
     @Override
     public Hints get(ImmutableList<DBColumn> key) {
-        return map.get(key);
+        Hints hints = map.get(key);
+        if (hints==null) {
+            return Hints.NONE;
+        }
+        return hints;
     }
 
     @Override

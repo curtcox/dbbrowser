@@ -1,4 +1,4 @@
-package com.cve.fs;
+package com.cve.io.fs;
 
 import java.io.IOException;
 import java.io.InputStream;

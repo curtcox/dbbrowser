@@ -1,15 +1,18 @@
 package com.cve.web.db.servers;
 
-import com.cve.web.db.*;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
-import com.cve.web.*;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
+import com.cve.web.AbstractRequestHandler;
+import com.cve.web.Model;
+import com.cve.web.PageRequest;
+import com.cve.web.Search;
+import com.cve.web.db.DBURICodec;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
@@ -52,7 +55,7 @@ final class ServersHandler extends AbstractRequestHandler {
         Search search = DBURICodec.getSearch(request.requestURI);
         if (search.isEmpty()) {
             ImmutableList<DBServer> servers = serversStore.keys();
-            ImmutableMultimap<DBServer,Object> databases = getDatabases(servers);
+            ImmutableMultimap<DBServer,Database> databases = getDatabases(servers);
             return ServersPage.of(servers,databases);
         }
         return newSearchPage(search);
@@ -129,8 +132,8 @@ final class ServersHandler extends AbstractRequestHandler {
      * @param servers
      * @return
      */
-    ImmutableMultimap<DBServer,Object> getDatabases(ImmutableList<DBServer> servers) {
-        Multimap<DBServer,Object> databases = HashMultimap.create();
+    ImmutableMultimap<DBServer,Database> getDatabases(ImmutableList<DBServer> servers) {
+        Multimap<DBServer,Database> databases = HashMultimap.create();
         for (DBServer server : servers) {
             for (Database database : db.of(server).getDatabasesOn(server).value) {
                 databases.put(server, database);

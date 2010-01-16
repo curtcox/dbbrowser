@@ -22,8 +22,7 @@ import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
-import java.io.IOException;
-import java.sql.SQLException;
+import static com.cve.util.Check.notNull;
 
 /**
  *
@@ -45,10 +44,10 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
     private ColumnValueDistributionHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction)
     {
-        this.db = db;
-        this.serversStore = serversStore;
-        this.hintsStore = hintsStore;
-        this.managedFunction = managedFunction;
+        this.db = notNull(db);
+        this.serversStore = notNull(serversStore);
+        this.hintsStore = notNull(hintsStore);
+        this.managedFunction = notNull(managedFunction);
     }
 
     static ColumnValueDistributionHandler of(

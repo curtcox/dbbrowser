@@ -2,7 +2,6 @@ package com.cve.stores;
 
 import com.cve.util.Timestamp;
 import com.google.common.collect.ImmutableMap;
-import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -10,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
  * @author curt
  */
 @Immutable
-public final class ActiveFunctionState<K,V> {
+public final class ManagedFunctionState<K,V> {
 
     final Timestamp timestamp;
 
@@ -18,7 +17,7 @@ public final class ActiveFunctionState<K,V> {
 
     final ImmutableMap<K,Timestamp> timestamps;
 
-    private ActiveFunctionState(
+    private ManagedFunctionState(
         ImmutableMap<K,V> values, Timestamp timestamp, ImmutableMap<K,Timestamp> timestamps)
     {
         this.values = values;
