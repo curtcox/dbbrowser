@@ -154,12 +154,12 @@ public final class DBResultSetIO {
     private static ImmutableList<ImmutableMap> readRows(ResultSet results, DBResultSetMetaDataIO meta) throws SQLException {
         List rows = Lists.newArrayList();
         int cols = meta.columnCount;
-        for (boolean more = true; more; more=results.next() ) {
+        while (results.next()) {
             Map row = Maps.newHashMap();
             for (int c=1; c<=cols; c++) {
                 Object v = getObject(results,c);
                 if (v!=null) {
-                    row.put(c,v);
+                    row.put(c-1,v);
                     row.put(meta.columnNames.get(c-1), v);
                 }
             }
@@ -201,8 +201,9 @@ public final class DBResultSetIO {
             ResultSetMetaData meta = results.getMetaData();
             String        typeName = meta.getColumnTypeName(c);
             String       className = meta.getColumnClassName(c);
-            String message = "Error converting " + typeName + "/" + className;
+            String message = "Error converting column " + c + " type/class="+ typeName + "/" + className;
             e.printStackTrace();
+            LOG.info(message);
             LOG.warn(e);
             return message;
         }

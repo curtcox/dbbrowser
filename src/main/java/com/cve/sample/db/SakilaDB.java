@@ -1,6 +1,5 @@
 package com.cve.sample.db;
 
-import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.SQL;
 import com.cve.util.Check;
@@ -9,10 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
 
 /**
@@ -21,31 +17,19 @@ import java.util.List;
  */
 public final class SakilaDB {
 
-    static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
+    public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
 
-    /**
-     * How we connect to it.
-     */
-    private final DBConnectionInfo info;
 
-    private SakilaDB(DBConnectionInfo info) {
-        this.info = Check.notNull(info);
+    private SakilaDB() {}
+
+    public static SakilaDB of() {
+        return new SakilaDB();
     }
 
-    public static SakilaDB of(DBConnectionInfo info) {
-        return new SakilaDB(info);
-    }
-
-    void loadDatabase() {
-        try {
-            SampleH2Server.createSchema(SAKILA);
-            createTables();
-            loadTables();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    void createAndLoadTables() throws SQLException, IOException {
+        SampleH2Server.createSchema(SAKILA);
+        createTables();
+        loadTables();
     }
 
     private void createTables() throws SQLException, IOException {
@@ -86,16 +70,7 @@ public final class SakilaDB {
     }
 
     private void update(SQL sql) throws SQLException {
-        Connection conn = DriverManager.getConnection(info.url.toString(), info.user, info.password);
-        Statement statement = conn.createStatement();
-        statement.execute(sql.toString());
+        SampleH2Server.update(sql);
     }
 
-    public static void main(String[] args) {
-        DBConnectionInfo info = SampleH2Server.getConnectionInfo();
-        SakilaDB sakila = SakilaDB.of(info);
-        sakila.loadDatabase();
-        System.out.println("Done.");
-        System.exit(0);
-    }
 }

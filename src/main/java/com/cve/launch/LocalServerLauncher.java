@@ -105,7 +105,7 @@ public final class LocalServerLauncher {
         Grizzly.start(webApp, PORT);
     }
 
-    void loadServers() throws SQLException {
+    void loadServers() throws SQLException, IOException {
         SampleH2Server.of();
         SampleH2Server.addToStore(dbServersStore);
     }

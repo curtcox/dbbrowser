@@ -8,8 +8,10 @@ import com.cve.model.db.SQL;
 import com.cve.model.db.DBServer;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -24,13 +26,23 @@ public final class SampleH2Server {
      */
     public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
+    private static final SampleH2Server SERVER = newSampleH2Server();
 
-    private SampleH2Server() throws SQLException {
-        loadServer();
+    private static SampleH2Server newSampleH2Server() {
+        try {
+            SampleH2Server server = new SampleH2Server();
+            server.loadServer();
+            return server;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
-    public static SampleH2Server of() throws SQLException {
-        return new SampleH2Server();
+    private SampleH2Server() {}
+
+    public static SampleH2Server of() {
+        return SERVER;
     }
 
     /**
@@ -54,9 +66,9 @@ public final class SampleH2Server {
     /**
      * Load the databases and tables
      */
-    void loadServer() throws SQLException {
-        SampleGeoDB.of(this).createAndLoadTables();
-        SakilaDB.of(getConnectionInfo()).loadDatabase();
+    void loadServer() throws SQLException, IOException {
+        SampleGeoDB.of().createAndLoadTables();
+        SakilaDB.of().createAndLoadTables();
     }
 
     static void createSchema(Database database) throws SQLException {
@@ -112,7 +124,7 @@ public final class SampleH2Server {
     /**
      * Create the given table and return a way to fill it.
      */
-    Inserter makeTable(DBTable table, String columns) throws SQLException {
+    static Inserter makeTable(DBTable table, String columns) throws SQLException {
         createTable(table,columns);
         return new Inserter(table);
     }
@@ -120,7 +132,7 @@ public final class SampleH2Server {
     /**
      * Create a new database table.
      */
-    void createTable(DBTable table, String columns)
+    static void createTable(DBTable table, String columns)
         throws SQLException
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";
@@ -133,14 +145,35 @@ public final class SampleH2Server {
         final DBConnectionInfo info = getConnectionInfo();
         Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
-        statement.execute(sql.toString());
+        info(sql.toString());
+        boolean isResultSet = statement.execute(sql.toString());
+        statement.close();
+        info("Result Set? " + isResultSet);
     }
 
-    static void select(SQL sql) throws SQLException {
+    public static ResultSet select(SQL sql) throws SQLException {
         final DBConnectionInfo info = getConnectionInfo();
         Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
-        statement.execute(sql.toString());
+        info(sql.toString());
+        boolean isResultSet = statement.execute(sql.toString());
+        ResultSet results = statement.getResultSet();
+        info("Result Set? " + isResultSet);
+        return results;
+    }
+
+    static void info(String message) {
+        // System.out.println(message);
+    }
+
+    public static void main(String[] args) throws SQLException, IOException {
+        SampleH2Server.of();
+        SQL sql = SQL.of("SELECT COUNT(*) FROM GEO.CITIES");
+        ResultSet results = SampleH2Server.select(sql);
+        results.next();
+        System.out.println(results.getObject(1));
+        System.out.println("Done.");
+        System.exit(0);
     }
 
 }
