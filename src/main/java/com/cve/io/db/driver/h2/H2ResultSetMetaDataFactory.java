@@ -10,8 +10,11 @@ import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
  */
 final class H2ResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public H2ResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
+    private H2ResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
         super(server,meta);
     }
 
+    static H2ResultSetMetaDataFactory of(DBServer server, DBResultSetMetaDataIO meta) {
+        return new H2ResultSetMetaDataFactory(server, meta);
+    }
 }

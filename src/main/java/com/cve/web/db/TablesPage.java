@@ -9,12 +9,14 @@ import com.cve.model.db.DBTable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
+import javax.annotation.concurrent.Immutable;
 
 import static com.cve.util.Check.notNull;
 
 /**
  * For picking a table.
  */
+@Immutable
 public final class TablesPage implements Model {
 
     /**
@@ -45,5 +47,16 @@ public final class TablesPage implements Model {
         if (!rows.keySet().equals(columns.keySet())) {
             throw new IllegalArgumentException();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "<TablesPage>" +
+                  " server=" + server +
+                  " database=" + database +
+                  " tables=" + tables +
+                  " columns=" + columns +
+                  " rows=" + rows +
+               "</TablesPage>";
     }
 }

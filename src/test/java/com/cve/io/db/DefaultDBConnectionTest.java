@@ -1,6 +1,7 @@
 package com.cve.io.db;
 
 import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.io.db.driver.h2.H2Driver;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.JDBCURL;
@@ -38,7 +39,8 @@ public class DefaultDBConnectionTest {
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
         DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
-        DBMetaData meta = DefaultDBMetaData.getDbmd(connection,managedFunction,serversStore);
+        DBMetaData meta = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore);
+
         return meta;
     }
 

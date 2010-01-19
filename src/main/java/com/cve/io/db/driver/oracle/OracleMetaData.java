@@ -1,5 +1,6 @@
 package com.cve.io.db.driver.oracle;
 
+import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.model.db.DBColumn;
@@ -25,12 +26,13 @@ import java.util.List;
  */
 final class OracleMetaData extends DefaultDBMetaData {
 
-    private OracleMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(dbmd,managedFunction,serversStore);
+    private OracleMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
     }
 
-    static DBMetaData of(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return new OracleMetaData(dbmd,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = OracleMetaDataIO.of(connection,managedFunction);
+        return new OracleMetaData(io,managedFunction,serversStore);
     }
 
     /**

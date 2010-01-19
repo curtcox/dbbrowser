@@ -3,7 +3,7 @@ package com.cve.sample.db;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DefaultDBConnection;
 import com.cve.io.db.LocalDBMetaDataFactory;
-import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.io.db.driver.h2.H2Driver;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnmanagedFunctionFactory;
@@ -21,7 +21,7 @@ public final class DBSampleServerTestObjects {
     public static final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
     public static final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
     public static final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
-    public static final DBMetaData meta = DefaultDBMetaData.getDbmd(connection,managedFunction,serversStore);
+    public static final DBMetaData meta = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore);
 
     static {
         try {

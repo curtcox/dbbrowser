@@ -1,7 +1,7 @@
 
 package com.cve.io.db;
 
-import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.SQL;
@@ -10,7 +10,6 @@ import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
-import com.cve.stores.UnpredictableFunction;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -42,31 +41,29 @@ public final class DefaultDBConnection implements DBConnection {
      */
     public final DBConnectionInfo info;
 
-    /**
-     * For getting info about the database.
-     */
-    public final DBMetaData dbMetaData;
+    public final DBDriver driver;
 
-    final DBServersStore serversStore;
+    private final DBServersStore serversStore;
 
-    final ManagedFunction.Factory managedFunction;
+    private final ManagedFunction.Factory managedFunction;
 
     private final ManagedFunction<SQL,DBResultSetIO> resultSets;
 
     private static final Log LOG = Log.of(DBConnection.class);
 
     private DefaultDBConnection(
-        DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
+        DBDriver driver, DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
+        this.driver = notNull(driver);
         this.info = notNull(info);
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        dbMetaData = DefaultDBMetaData.getDbmd(this,managedFunction,serversStore);
         resultSets = managedFunction.of(new ExecuteSQL(),SQL.class,DBResultSetIO.class,DBResultSetIO.NULL);
     }
 
     public static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new DefaultDBConnection(info,serversStore,managedFunction);
+        DBDriver driver = DBDriver.url(info.url);
+        return new DefaultDBConnection(driver,info,serversStore,managedFunction);
     }
 
     synchronized private Connection getConnection() throws SQLException {
@@ -123,15 +120,9 @@ public final class DefaultDBConnection implements DBConnection {
 
     @Override
     public DBMetaData getMetaData() {
-        return dbMetaData;
+        return driver.getDBMetaData(this, managedFunction, serversStore);
     }
 
-    DBMetaData getDbmd(DBServer server) {
-        DefaultDBConnection dbConnection = (DefaultDBConnection) DBConnectionFactory.getConnection(info, serversStore, managedFunction);
-        DBMetaData   dbmd = dbConnection.dbMetaData;
-        return dbmd;
-    }
-    
     static void info(String message) {
         LOG.info(message);
     }

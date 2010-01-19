@@ -69,25 +69,6 @@ public class DefaultDBMetaData implements DBMetaData {
         this.serversStore = notNull(serversStore);
     }
 
-    public static DBMetaData getDbmd(DefaultDBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        args(connection);
-        DBMetaData meta = getDbmd0(connection,managedFunction,serversStore);
-        meta = DBMetaDataLogger.of(System.out,meta);
-        //meta = DBMetaDataCache.of(meta);
-        //meta = DBMetaDataTimer.of(meta);
-        //meta = DBMetaDataLocked.of(meta);
-        return meta;
-    }
-
-    private static DBMetaData getDbmd0(DefaultDBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        Check.notNull(connection);
-        DBDriver driver = connection.getInfo().driver;
-        DBMetaDataIO io = DefaultDBMetaDataIO.of(connection, managedFunction);
-        DBMetaData meta = driver.getDBMetaData(io,managedFunction,serversStore);
-        return meta;
-    }
-
-
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
         args(tables);

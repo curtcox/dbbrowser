@@ -1,5 +1,6 @@
 package com.cve.io.db.driver.derby;
 
+import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.model.db.DBColumn;
@@ -25,13 +26,15 @@ import java.util.List;
  */
 final class DerbyMetaData extends DefaultDBMetaData {
 
-    private DerbyMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(dbmd,managedFunction,serversStore);
+    private DerbyMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
     }
 
-    static DBMetaData of(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return new DerbyMetaData(dbmd,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = DerbyMetaDataIO.of(connection,managedFunction);
+        return new DerbyMetaData(io,managedFunction,serversStore);
     }
+
 
     /**
      */

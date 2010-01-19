@@ -1,14 +1,16 @@
 package com.cve.io.db.driver.mssql;
 
+import com.cve.io.db.DBConnection;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
 import com.cve.io.db.DBMetaData;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.ManagedFunction.Factory;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DriverIO;
-import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 
@@ -44,8 +46,8 @@ public final class MsSQLDriver implements DriverIO {
     }
 
     @Override
-    public DBMetaData getDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return MsSQLTdsMetaData.of(dbmd,managedFunction,serversStore);
+    public DBMetaData getDBMetaData(DBConnection connection,ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        return MsSQLTdsMetaData.of(connection,managedFunction,serversStore);
     }
 
     @Override
@@ -56,5 +58,10 @@ public final class MsSQLDriver implements DriverIO {
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
         return new MsSqlTdsResultSetMetaDataFactory(server, meta);
+    }
+
+    @Override
+    public DBMetaDataIO getDBMetaDataIO(DBConnection connection, Factory managedFunction) {
+        return MsSQLTdsMetaDataIO.of(connection, managedFunction);
     }
 }

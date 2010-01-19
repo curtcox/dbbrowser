@@ -1,5 +1,6 @@
 package com.cve.io.db.driver.h2;
 
+import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.model.db.DBColumn;
@@ -12,31 +13,36 @@ import com.cve.io.db.DBMetaDataIO.SchemaInfo;
 import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
 import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
-
+import static com.cve.log.Log.notNullArgs;
 /**
  * Meta data driver for H2 database.
  * @author curt
  */
 final class H2MetaData extends DefaultDBMetaData {
 
-    private H2MetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(dbmd,managedFunction,serversStore);
+
+    private H2MetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
     }
 
-    static DBMetaData of(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return new H2MetaData(dbmd,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = H2MetaDataIO.of(connection,managedFunction);
+        return new H2MetaData(io,managedFunction,serversStore);
     }
+
 
     /**
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
+        notNullArgs(server);
         List<DBColumn> list = Lists.newArrayList();
         String           catalog = null;
         String     schemaPattern = null;
@@ -44,6 +50,7 @@ final class H2MetaData extends DefaultDBMetaData {
         String columnNamePattern = null;
         ColumnSpecifier specifier = ColumnSpecifier.of(catalog, schemaPattern, tableNamePattern, columnNamePattern);
         for (ColumnInfo info : dbmd.getColumns(specifier).value ) {
+            debug(specifier + " -> " + info);
             String    tableName = info.tableName;
             String   columnName = info.columnName;
             String databaseName = info.tableSchema;
@@ -107,7 +114,6 @@ final class H2MetaData extends DefaultDBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
-        DBServer           server = database.server;
         String          catalog = null;
         String    schemaPattern = database.name;
         String tableNamePattern = null;
@@ -133,4 +139,12 @@ final class H2MetaData extends DefaultDBMetaData {
         ImmutableList<Database> databases = ImmutableList.copyOf(list);
         return CurrentValue.of(databases);
     }
+
+    /**
+     * Logging stuff.
+     */
+    static final Log LOG = Log.of(DefaultDBMetaData.class);
+    private static void info(String mesage) { LOG.info(mesage);  }
+    private static void debug(String mesage) { LOG.debug(mesage);  }
+
 }

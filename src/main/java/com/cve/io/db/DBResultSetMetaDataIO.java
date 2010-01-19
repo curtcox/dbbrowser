@@ -56,7 +56,7 @@ public final class DBResultSetMetaDataIO {
         return string;
     }
 
-    static DBResultSetMetaDataIO of(ResultSetMetaData meta) {
+    public static DBResultSetMetaDataIO of(ResultSetMetaData meta) {
         try {
             int count = meta.getColumnCount();
             List<String> schemas  = Lists.newArrayList();

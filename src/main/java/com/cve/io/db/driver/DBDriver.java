@@ -1,9 +1,11 @@
 package com.cve.io.db.driver;
 
+import com.cve.io.db.DBConnection;
+import com.cve.io.db.DBMetaDataIO;
+import com.cve.io.db.DefaultDBConnection;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBResultSetMetaDataIO;
-import com.cve.io.db.DBMetaDataIO;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
@@ -15,6 +17,7 @@ import com.cve.io.db.driver.mssql.MsSQLDriver;
 import com.cve.io.db.driver.mysql.MySQLDriver;
 import com.cve.io.db.driver.oracle.OracleDriver;
 import com.cve.stores.ManagedFunction;
+import com.cve.stores.ManagedFunction.Factory;
 import com.cve.stores.db.DBServersStore;
 import java.sql.Driver;
 import com.cve.util.Check;
@@ -62,8 +65,12 @@ public enum DBDriver {
     /**
      * Return the mechanism for getting metadta from databases using this driver.
      */
-    public final DBMetaData getDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return io.getDBMetaData(dbmd,managedFunction, serversStore);
+    public final DBMetaData getDBMetaData(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        return io.getDBMetaData(connection,managedFunction, serversStore);
+    }
+
+    public DBMetaDataIO getDBMetaDataIO(DefaultDBConnection connection, Factory managedFunction) {
+        return io.getDBMetaDataIO(connection,managedFunction);
     }
 
     /**
@@ -131,5 +138,6 @@ public enum DBDriver {
             }
         }
     }
+
 
 }

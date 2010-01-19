@@ -45,4 +45,9 @@ public class TablesHandlerTest {
         assertFalse(TablesHandler.isTablesOnlyRequest("//server/db/table/"));
     }
 
+    @Test
+    public void get() {
+        PageRequest request = null;
+        handler.get(request);
+    }
 }

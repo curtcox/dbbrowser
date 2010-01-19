@@ -1,5 +1,6 @@
 package com.cve.io.db.driver.mssql;
 
+import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.model.db.DBColumn;
@@ -24,12 +25,13 @@ import java.util.List;
  */
 final class MsSQLTdsMetaData extends DefaultDBMetaData {
 
-    private MsSQLTdsMetaData(DBMetaDataIO dbmd,ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(dbmd,managedFunction,serversStore);
+    private MsSQLTdsMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
     }
 
-    static DBMetaData of(DBMetaDataIO dbmd,ManagedFunction.Factory managedFunction,DBServersStore serversStore) {
-        return new MsSQLTdsMetaData(dbmd,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = MsSQLTdsMetaDataIO.of(connection,managedFunction);
+        return new MsSQLTdsMetaData(io,managedFunction,serversStore);
     }
 
     /**

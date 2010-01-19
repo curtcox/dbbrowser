@@ -1,6 +1,7 @@
 package com.cve.io.db;
 
 import com.cve.log.Log;
+import com.cve.util.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -14,7 +15,7 @@ import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
 /**
- * Low-level object for interacting with a result set.
+ * Immutable low-level value object for interacting with a result set.
  * @author curt
  */
 @Immutable
@@ -34,11 +35,6 @@ public final class DBResultSetIO {
      * Use this in place of null.
      */
     public static final DBResultSetIO NULL = newNull();
-
-    /**
-     * Where we log to.
-     */
-    private static final Log LOG = Log.of(DBResultSetIO.class);
 
     private static DBResultSetIO newNull() {
         DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(new NullResultSetMetaData());
@@ -158,6 +154,7 @@ public final class DBResultSetIO {
             Map row = Maps.newHashMap();
             for (int c=1; c<=cols; c++) {
                 Object v = getObject(results,c);
+                debug(c + "->" + v);
                 if (v!=null) {
                     row.put(c-1,v);
                     row.put(meta.columnNames.get(c-1), v);
@@ -175,18 +172,18 @@ public final class DBResultSetIO {
         throw new IllegalArgumentException(value + " can't be converted to a long");
     }
 
-    long getLong(int rowNumber, String columnName) {
+    public long getLong(int rowNumber, String columnName) {
         Object value = rows.get(rowNumber).get(columnName);
         if (value instanceof Long)    { return (Long)    value; }
         if (value instanceof Integer) { return (Integer) value; }
         throw new IllegalArgumentException(value + " can't be converted to a long");
     }
 
-    String getString(int rowNumber, String columnName) {
+    public String getString(int rowNumber, String columnName) {
         return (String) rows.get(rowNumber).get(columnName);
     }
 
-    String getString(int rowNumber, int columnNumber) {
+    public String getString(int rowNumber, int columnNumber) {
         return (String) rows.get(rowNumber).get(columnNumber);
     }
 
@@ -212,8 +209,15 @@ public final class DBResultSetIO {
     @Override
     public String toString() {
         return "<DBResultSetIO>" +
-                " meta=" + meta +
-                " rows=" + rows +
+                " <meta>" + Strings.first(1000,meta.toString()) + "</meta>" +
+                " <rows>" + Strings.first(1000,rows.toString()) + "</rows>" +
                "</DBResultSetIO>";
     }
+
+    /**
+     * Logging stuff.
+     */
+    static final Log LOG = Log.of(DBResultSetIO.class);
+    private static void info(String mesage) { LOG.info(mesage);  }
+    private static void debug(String mesage) { LOG.debug(mesage);  }
 }

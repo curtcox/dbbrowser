@@ -2,6 +2,7 @@ package com.cve.stores;
 
 import com.cve.log.Log;
 import com.cve.util.Check;
+import com.cve.util.Strings;
 import javax.annotation.concurrent.Immutable;
 /**
  * The current value of something -- as far as we know.
@@ -53,8 +54,8 @@ public final class CurrentValue<T> {
     @Override
     public String toString() {
         return "<CurrentValue>" +
-                    " value=" + value +
-                    " meta=" + meta +
+                    " <meta>" + meta + "</meta>" +
+                    " <value>" + Strings.first(1000, value + "") + "</value>" +
                "</CurrentValue>";
     }
 }

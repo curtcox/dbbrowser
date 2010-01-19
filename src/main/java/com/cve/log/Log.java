@@ -49,12 +49,33 @@ public final class Log {
         // System.out.println(element + " " + Arrays.asList(objects));
     }
 
+    /**
+     * Note the given arguments for the method being executed.
+     * Throw an exception if any are null.
+     */
+    public static void notNullArgs(Object... objects) {
+        for (Object o : objects) {
+            Check.notNull(o);
+        }
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        StackTraceElement element = elements[3];
+        args.put(element,objects);
+        for (Object o : objects) {
+            ObjectRegistry.put(o);
+        }
+        // System.out.println(element + " " + Arrays.asList(objects));
+    }
+
+    public void debug(String message) {
+        //System.out.println(clazz + ":" + message);
+    }
+
     public void info(String message) {
-        System.out.println(message);
+        System.out.println(clazz + ":" + message);
     }
 
     public void warn(String message) {
-        System.out.println(message);
+        System.out.println(clazz + ":" + message);
     }
 
     public void warn(Throwable t) {
@@ -62,7 +83,7 @@ public final class Log {
     }
 
     public void severe(String message) {
-        System.out.println(message);
+        System.out.println(clazz + ":" + message);
     }
 
 }

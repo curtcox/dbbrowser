@@ -41,4 +41,19 @@ public final class Strings {
         }
         return out.toString();
     }
+
+    /**
+     * Return the given string, up to the given number of characters.
+     * Return "null" instead of null, if given a null value.
+     * Return a string ending with "..." if it needs to be truncated.
+     */
+    public static String first(int count, String s) {
+        if (s==null) {
+            return "null";
+        }
+        if (s.length() <= count) {
+            return s;
+        }
+        return s.substring(0,count) + "...";
+    }
 }

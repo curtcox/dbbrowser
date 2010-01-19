@@ -12,6 +12,8 @@ import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
 import static com.cve.web.db.NavigationButtons.*;
+import static com.cve.log.Log.notNullArgs;
+
 /**
  * For picking a table.
  */
@@ -21,6 +23,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
+        notNullArgs(model,client);
         TablesPage page = (TablesPage) model;
         DBServer     server = page.server;
         Database database = page.database;
@@ -36,6 +39,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
     }
 
     static String tableOfTables(TablesPage page) {
+        notNullArgs(page);
         StringBuilder out = new StringBuilder();
         out.append(th("Table") + th("Rows") + th("Columns"));
         for (DBTable table : page.tables) {
@@ -49,6 +53,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
     }
 
     static String columnsFor(TablesPage page, DBTable table) {
+        notNullArgs(page,table);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (DBColumn column : page.columns.get(table)) {

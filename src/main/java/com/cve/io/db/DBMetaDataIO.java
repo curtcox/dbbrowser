@@ -127,11 +127,22 @@ public interface DBMetaDataIO {
         public final int dataType;
         // Due to a H2 driver bug, we can't use the column name
         static int TABLE_SCHEMA = 2;
-    ColumnInfo(String tableSchema, String tableName, String columnName, int dataType) {
+
+        private ColumnInfo(String tableSchema, String tableName, String columnName, int dataType) {
             this.tableSchema = tableSchema;
             this.tableName   = tableName;
             this.columnName  = columnName;
             this.dataType    = dataType;
+        }
+
+        public static ColumnInfo of(String tableSchema, String tableName, String columnName, int dataType) {
+            return new ColumnInfo(tableSchema,tableName,columnName,dataType);
+        }
+
+        @Override public String toString() {
+            return " tableSchema=" + tableSchema +
+                   " tableName=" + tableName +
+                   " columnName=" + columnName;
         }
     }
 
@@ -141,6 +152,9 @@ public interface DBMetaDataIO {
         CatalogInfo(String databaseName) {
             this.databaseName = databaseName;
         }
+        @Override public String toString() {
+            return "databaseName=" + databaseName;
+        }
     }
 
     @Immutable
@@ -149,6 +163,9 @@ public interface DBMetaDataIO {
 
         SchemaInfo(String schemaName) {
             this.schemaName = schemaName;
+        }
+        @Override public String toString() {
+            return "schemaName=" + schemaName;
         }
     }
 
@@ -169,6 +186,14 @@ public interface DBMetaDataIO {
             this.pkColumn   = pkColumn;
             this.fkColumn   = fkColumn;
         }
+        @Override public String toString() {
+            return " pkDatabase=" + pkDatabase +
+                   " fkDatabase=" + fkDatabase +
+                   " pkTable=" + pkTable +
+                   " fkTable=" + fkTable +
+                   " pkColumn=" + pkColumn +
+                   " fkColumn=" + fkColumn;
+        }
     }
 
     @Immutable
@@ -185,6 +210,12 @@ public interface DBMetaDataIO {
         }
         public static TableSpecifier of(String catalog, String schemaPattern, String tableNamePattern, String[] types) {
             return new TableSpecifier(catalog,schemaPattern,tableNamePattern,types);
+        }
+        @Override public String toString() {
+            return " catalog=" + catalog +
+                   " schemaPattern=" + schemaPattern +
+                   " tableNamePattern=" + tableNamePattern +
+                   " types=" + types;
         }
     }
 

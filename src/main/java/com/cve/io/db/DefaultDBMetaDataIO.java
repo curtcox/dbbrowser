@@ -1,6 +1,7 @@
 
 package com.cve.io.db;
 
+import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnpredictableFunction;
@@ -18,12 +19,12 @@ import static com.cve.log.Log.args;
  * TODO restore ResultSetRetry logic
  * @author curt
  */
-public final class DefaultDBMetaDataIO implements DBMetaDataIO {
+public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
     /**
      * How we connect to databases.
      */
-    private final DefaultDBConnection connection;
+    private final DBConnection connection;
 
     private final ManagedFunction<TableSpecifier,DBResultSetIO> tables;
     private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns;
@@ -33,18 +34,18 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     private final ManagedFunction<KeySpecifier,DBResultSetIO> catalogs;
     private final ManagedFunction<KeySpecifier,DBResultSetIO> schemas;
 
-    private static final String TABLE_NAME    = "TABLE_NAME";
-    private static final String TABLE_SCHEM   = "TABLE_SCHEM";
-    private static final String DATA_TYPE     = "DATA_TYPE";
-    private static final String COLUMN_NAME   = "COLUMN_NAME";
-    private static final String PKTABLE_CAT   = "PKTABLE_CAT";
-    private static final String FKTABLE_CAT   = "FKTABLE_CAT";
-    private static final String PKTABLE_NAME  = "PKTABLE_NAME";
-    private static final String FKTABLE_NAME  = "FKTABLE_NAME";
-    private static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
-    private static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
+    public static final String TABLE_NAME    = "TABLE_NAME";
+    public static final String TABLE_SCHEM   = "TABLE_SCHEM";
+    public static final String DATA_TYPE     = "DATA_TYPE";
+    public static final String COLUMN_NAME   = "COLUMN_NAME";
+    public static final String PKTABLE_CAT   = "PKTABLE_CAT";
+    public static final String FKTABLE_CAT   = "FKTABLE_CAT";
+    public static final String PKTABLE_NAME  = "PKTABLE_NAME";
+    public static final String FKTABLE_NAME  = "FKTABLE_NAME";
+    public static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
+    public static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
 
-    private DefaultDBMetaDataIO(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
+    protected DefaultDBMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
         this.connection = notNull(connection);
         notNull(managedFunction);
               tables = notNull(managedFunction.of(new GetTables(),       TableSpecifier.class,  DBResultSetIO.class, DBResultSetIO.NULL));
@@ -55,12 +56,6 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             catalogs = notNull(managedFunction.of(new GetCatalogs(),     Void.class,            DBResultSetIO.class, DBResultSetIO.NULL));
              schemas = notNull(managedFunction.of(new GetSchemas(),      Void.class,            DBResultSetIO.class, DBResultSetIO.NULL));
     }
-
-    public static DBMetaDataIO of(DefaultDBConnection connection, ManagedFunction.Factory managedFunction) {
-        args(connection);
-        return DBMetaDataIOTimer.of(new DefaultDBMetaDataIO(connection,managedFunction));
-    }
-
 
     // Wrappers for all of the DBMD functions we use
     @Override
@@ -76,6 +71,12 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
     }
 
 
+    /**
+     * See
+     * http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getColumns%28java.lang.String,%20java.lang.String,%20java.lang.String,%20java.lang.String%29
+     * @param specifier
+     * @return
+     */
     @Override
     public CurrentValue<ImmutableList<ColumnInfo>> getColumns(final ColumnSpecifier specifier) {
         DBResultSetIO results = columns.apply(specifier).value;
@@ -85,7 +86,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
             String  tableName = results.getString(r,TABLE_NAME);
             String columnName = results.getString(r,COLUMN_NAME);
             int          type = (int) results.getLong(r,DATA_TYPE);
-            ColumnInfo column = new ColumnInfo(schemaName,tableName,columnName,type);
+            ColumnInfo column = ColumnInfo.of(schemaName,tableName,columnName,type);
             list.add(column);
         }
         ImmutableList<ColumnInfo> infos = ImmutableList.copyOf(list);
@@ -175,10 +176,10 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
      */
     @Override
     public DatabaseMetaData getMetaData() {
-        return connection.getJDBCMetaData();
+        return ((DefaultDBConnection) connection).getJDBCMetaData();
     }
 
-    class GetTables implements UnpredictableFunction<TableSpecifier, DBResultSetIO> {
+    private final class GetTables implements UnpredictableFunction<TableSpecifier, DBResultSetIO> {
         @Override
         public DBResultSetIO apply(TableSpecifier spec) throws Exception {
             ResultSet results = getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types);
@@ -187,7 +188,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetColumns implements UnpredictableFunction<ColumnSpecifier, DBResultSetIO> {
+    private final class GetColumns implements UnpredictableFunction<ColumnSpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
@@ -195,7 +196,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetImportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+    private final class GetImportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
@@ -203,7 +204,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetPrimaryKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+    private final class GetPrimaryKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
@@ -211,7 +212,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetExportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+    private final class GetExportedKeys implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
@@ -219,7 +220,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetCatalogs implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+    private final class GetCatalogs implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
@@ -227,7 +228,7 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
-    class GetSchemas implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
+    private final class GetSchemas implements UnpredictableFunction<KeySpecifier, DBResultSetIO> {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
@@ -235,4 +236,10 @@ public final class DefaultDBMetaDataIO implements DBMetaDataIO {
         }
     }
 
+    /**
+     * Logging stuff.
+     */
+    static final Log LOG = Log.of(DefaultDBMetaDataIO.class);
+    private static void info(String mesage) { LOG.info(mesage);  }
+    private static void debug(String mesage) { LOG.debug(mesage);  }
 }
