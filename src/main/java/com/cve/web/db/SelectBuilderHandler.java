@@ -13,12 +13,12 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
 import com.cve.io.db.select.DBURIRenderer;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -40,21 +40,32 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
+    final Log log;
+
+    final DBURICodec codec;
+
     private SelectBuilderHandler(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
-    static SelectBuilderHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new SelectBuilderHandler(db,serversStore,hintsStore,managedFunction);
+    static SelectBuilderHandler of(
+         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+         ManagedFunction.Factory managedFunction, Log log)
+    {
+        return new SelectBuilderHandler(db,serversStore,hintsStore,managedFunction,log);
     }
 
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.args(request);
         PageResponse redirect = redirectedWithAddedColumns(request);
         if (redirect!=null) {
             return redirect;
@@ -83,7 +94,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         if (URIs.slashCount(uri)<3) {
             return null;
         }
-        Select select = DBURICodec.getSelect(uri);
+        Select select = codec.getSelect(uri);
         if (select.columns.size()>0) {
             return null;
         }
@@ -95,7 +106,7 @@ public final class SelectBuilderHandler implements RequestHandler {
                 select = select.with(column);
             }
         }
-        Search search = DBURICodec.getSearch(uri);
+        Search search = codec.getSearch(uri);
         URI dest = DBURIRenderer.render(select,search);
         return PageResponse.newRedirect(dest);
     }
@@ -114,11 +125,11 @@ public final class SelectBuilderHandler implements RequestHandler {
      */
     SelectResults getResultsFromDB(String uri) {
         // The server out of the URL
-        DBServer         server = DBURICodec.getServer(uri);
+        DBServer         server = codec.getServer(uri);
 
         // Setup the select
-        Select           select = DBURICodec.getSelect(uri);
-        Search           search = DBURICodec.getSearch(uri);
+        Select           select = codec.getSelect(uri);
+        Search           search = codec.getSearch(uri);
         DBConnection connection = DBConnectionFactory.getConnection(server, serversStore, managedFunction);
         Hints             hints = hintsStore.get(select.columns);
 

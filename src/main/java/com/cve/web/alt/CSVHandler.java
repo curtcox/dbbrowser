@@ -6,6 +6,7 @@ import com.cve.model.db.DBRow;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBValue;
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
@@ -14,10 +15,8 @@ import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
 import com.cve.web.PageRequest;
 import com.google.common.collect.Lists;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * For handling requests to view a result set as CSV.
@@ -36,27 +35,30 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
-    private CSVHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        super("^/view/CSV/",ContentType.TEXT);
-        this.db = db;
+    final Log log;
+
+    private CSVHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
+        super("^/view/CSV/",ContentType.TEXT,log);
+        this.db = notNull(db);
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
+        this.log = notNull(log);
     }
 
-    static CSVHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new CSVHandler(db,serversStore,hintsStore,managedFunction);
+    static CSVHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new CSVHandler(db,serversStore,hintsStore,managedFunction,log);
     }
 
     @Override
     public byte[] get(PageRequest request) {
-        args(request);
-        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction);
+        log.notNullArgs(request);
+        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction,log);
         return csv(alt.getResultsFromDB(request.requestURI));
     }
 
-    public static byte[] csv(SelectResults results) {
-        args(results);
+    public byte[] csv(SelectResults results) {
+        log.notNullArgs(results);
         DBResultSet  rows = results.resultSet;
         StringBuilder out = new StringBuilder();
         int maxColumn = rows.columns.size();

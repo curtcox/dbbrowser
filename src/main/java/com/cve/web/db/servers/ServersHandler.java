@@ -23,7 +23,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -38,21 +37,26 @@ final class ServersHandler extends AbstractRequestHandler {
 
     final DBServersStore serversStore;
 
-    private static final Log log = Log.of(ServersHandler.class);
+    final DBURICodec codec;
 
-    private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore) {
+    private final Log log;
+
+    private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore, Log log) {
+        super(log);
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
-    static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore) {
-        return new ServersHandler(db,serversStore);
+    static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, Log log) {
+        return new ServersHandler(db,serversStore,log);
     }
 
     @Override
     public Model get(PageRequest request) {
-        args(request);
-        Search search = DBURICodec.getSearch(request.requestURI);
+        log.notNullArgs(request);
+        Search search = codec.getSearch(request.requestURI);
         if (search.isEmpty()) {
             ImmutableList<DBServer> servers = serversStore.keys();
             ImmutableMultimap<DBServer,Database> databases = getDatabases(servers);
@@ -65,7 +69,7 @@ final class ServersHandler extends AbstractRequestHandler {
      * Perform the requested search and return a results page.
      */
     ServersSearchPage newSearchPage(Search search) {
-        args(search);
+        log.notNullArgs(search);
         ImmutableList<DBColumn> columns = allColumns();
         Set<DBServer> filteredServers = Sets.newHashSet();
         Multimap<DBServer,Database> filteredDatabases = HashMultimap.create();
@@ -142,7 +146,7 @@ final class ServersHandler extends AbstractRequestHandler {
         return ImmutableMultimap.copyOf(databases);
     }
 
-    static void info(String message) {
+    void info(String message) {
         log.info(message);
     }
 }

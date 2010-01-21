@@ -1,11 +1,8 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import com.cve.util.Check;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.regex.Pattern;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * Something that handles {@link PageRequest}S and produces
@@ -29,17 +26,19 @@ public abstract class AbstractBinaryRequestHandler
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(AbstractRequestHandler.class);
+    private final Log log;
 
-    public AbstractBinaryRequestHandler(String regexp, ContentType type) {
-        Check.notNull(regexp);
-        Check.notNull(type);
+    public AbstractBinaryRequestHandler(String regexp, ContentType type, Log log) {
+        notNull(regexp);
+        notNull(type);
+        this.log = notNull(log);
         pattern = Pattern.compile(regexp);
         this.type = type;
     }
 
-    public AbstractBinaryRequestHandler(ContentType type) {
-        this.type = Check.notNull(type);
+    public AbstractBinaryRequestHandler(ContentType type, Log log) {
+        this.log = notNull(log);
+        this.type = notNull(type);
         pattern = Pattern.compile("");
     }
 
@@ -52,7 +51,7 @@ public abstract class AbstractBinaryRequestHandler
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
             return PageResponse.of(get(request),type);
@@ -61,7 +60,7 @@ public abstract class AbstractBinaryRequestHandler
     }
 
     public boolean handles(String uri) {
-        args(uri);
+        log.args(uri);
         return pattern.matcher(uri).find();
     }
 

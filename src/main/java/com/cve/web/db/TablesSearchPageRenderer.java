@@ -6,6 +6,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.web.*;
 
 import com.cve.ui.UIDetail;
@@ -14,22 +15,30 @@ import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
-import com.cve.web.Search.Space;
 import java.net.URI;
 import java.util.Collection;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * For finding stuff in a database server.
  */
 public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
 
+    private final DBURICodec codec;
+
+    private final Log log;
+
     private static URI HELP = URIs.of("/resource/help/TablesSearch.html");
+
+    private TablesSearchPageRenderer(Log log) {
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         TablesSearchPage page = (TablesSearchPage) model;
         Search     search = page.search;
         String     target = search.target;
@@ -42,16 +51,16 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
                 server.linkTo() + "/" + database.linkTo()
             ), search(page.search)
         };
-        String guts  = Helper.render(page) + searchContentsLink(page);
+        String guts  = Helper.of(page,log).render(page) + searchContentsLink(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
-    static String searchContentsLink(TablesSearchPage page) {
+    String searchContentsLink(TablesSearchPage page) {
         Search     search = Search.contents(page.search.target);
         Database database = page.database;
         String    alt = "Search the table rows";
         Label    text = Label.of(alt);
-        URI    target = DBURICodec.encode(search.ofContents(),database);
+        URI    target = codec.encode(search.ofContents(),database);
         URI     image = Icons.PLUS;
         return Link.textTargetImageAlt(text, target, image, alt).toString();
     }
@@ -63,15 +72,22 @@ static final class Helper {
 
     final TablesSearchPage page;
 
+    final Log log;
+
     static final UIDetail EMPTY_CELL = UIDetail.of("");
 
-    Helper(TablesSearchPage page) {
+    Helper(TablesSearchPage page, Log log) {
         this.page = page;
+        this.log = log;
     }
 
-    static String render(TablesSearchPage page) {
-        args(page);
-        return new Helper(page).render();
+    static Helper of(TablesSearchPage page, Log log) {
+        return new Helper(page,log);
+    }
+
+    String render(TablesSearchPage page) {
+        log.notNullArgs(page);
+        return new Helper(page,log).render();
     }
     
     /**

@@ -1,8 +1,8 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import com.google.common.collect.Maps;
 import java.util.Map;
-import static com.cve.log.Log.args;
 
 /**
  * For injecting debugging into an HTML page.
@@ -11,6 +11,7 @@ import static com.cve.log.Log.args;
  */
 final class DebugPageInjector {
 
+     final Log log;
 
     /**
       Return JavaScript that will launch appropriate pages on keypress.
@@ -91,8 +92,8 @@ String script =
     /**
       Log this page request.
     */
-    public static void logThisPage(Map pageDescription) {
-        args(pageDescription);
+    public void logThisPage(Map pageDescription) {
+        log.notNullArgs(pageDescription);
     }
 
     static boolean isDebugEnabled() {

@@ -13,14 +13,14 @@ import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
 import com.cve.web.Search;
 import com.google.common.collect.Lists;
-import java.sql.SQLException;
 import java.util.List;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 /**
  * For creating a database contents search page.
  * @author curt
@@ -38,24 +38,27 @@ final class DatabaseContentsSearchPageCreator {
 
     final ManagedFunction.Factory managedFunction;
 
-    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    final Log log;
+
+    private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
         this.db = db;
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
+        this.log = notNull(log);
     }
 
-    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new DatabaseContentsSearchPageCreator(db,serversStore,hintsStore, managedFunction);
+    static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new DatabaseContentsSearchPageCreator(db,serversStore,hintsStore, managedFunction,log);
     }
 
     public DatabaseContentsSearchPage create(Database database, Search search) {
         List<SelectResults> resultsList = createResultsList(database,search);
-        return DatabaseContentsSearchPage.of(search, database, resultsList);
+        return DatabaseContentsSearchPage.of(search, database, resultsList,log);
     }
 
     List<SelectResults> createResultsList(Database database, Search search) {
-        args(database,search);
+        log.notNullArgs(database,search);
         List<SelectResults> resultsList = Lists.newArrayList();
         DBMetaData                 meta = db.of(database.server);
         for (DBTable table : meta.getTablesOn(database).value) {

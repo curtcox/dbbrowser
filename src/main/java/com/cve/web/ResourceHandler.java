@@ -1,11 +1,11 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * A {@link RequestHandler} for serving resource files.
@@ -14,19 +14,22 @@ import static com.cve.log.Log.args;
  */
 public final class ResourceHandler extends AbstractRequestHandler {
 
+    private final Log log;
+
     public static final String PREFIX = "/resource/";
 
-    private static final ResourceHandler HANDLER = new ResourceHandler();
+    private ResourceHandler(Log log) {
+        super("^" + PREFIX,log);
+        this.log = notNull(log);
+    }
 
-    private ResourceHandler() { super("^" + PREFIX); }
-
-    static ResourceHandler of() {
-        return HANDLER;
+    static ResourceHandler of(Log log) {
+        return new ResourceHandler(log);
     }
 
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.notNullArgs(request);
         String uri = request.requestURI;
         if (handles(uri)) {
             return PageResponse.of(serveResource(request),ContentType.guessByExtension(uri));

@@ -1,8 +1,8 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import com.cve.util.Check;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
+import com.cve.log.Log;
 
 import java.sql.SQLException;
 import javax.servlet.http.*;
@@ -42,7 +42,7 @@ public final class RequestRouterServlet extends HttpServlet {
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(RequestRouterServlet.class);
+    final Log log;
 
     /**
      * Renders models into HTML, JPG, PNG, etc...
@@ -57,22 +57,24 @@ public final class RequestRouterServlet extends HttpServlet {
     public static RequestRouterServlet of(WebApp webapp) {
         RequestHandler      router = webapp.handler;
         ModelHtmlRenderer renderer = webapp.renderer;
-        return new RequestRouterServlet(router, renderer);
+        Log                    log = null;
+        return new RequestRouterServlet(router, renderer,log);
     }
 
     /**
      * Use the factory.
      */
-    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer) {
-        this.router = Check.notNull(router);
-        this.renderer = Check.notNull(renderer);
+    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer, Log log) {
+        this.router = notNull(router);
+        this.renderer = notNull(renderer);
+        this.log = notNull(log);
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
-        args(request,response);
+        log.args(request,response);
         try {
             route(request,response);
         } catch (Throwable t) {
@@ -85,7 +87,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
-        args(request,response);
+        log.args(request,response);
         try {
             route(request,response);
         } catch (Throwable t) {
@@ -137,7 +139,7 @@ public final class RequestRouterServlet extends HttpServlet {
     void route(HttpServletRequest request, HttpServletResponse response)
         throws IOException, SQLException
     {
-        args(request,response);
+        log.args(request,response);
         String uri = request.getRequestURI();
         // You can dump any request by sticking a ! on the beginning or end.
         if (uri.startsWith("/!") || uri.endsWith("!")) {

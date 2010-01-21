@@ -19,6 +19,7 @@ import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.html.HTML;
+import com.cve.log.Log;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.ClientInfo;
@@ -33,7 +34,6 @@ import java.util.Set;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * Tools for rendering result sets as HTML.
@@ -62,17 +62,20 @@ public final class DBResultSetRenderer {
      */
     private final ClientInfo client;
 
-    private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
+    final Log log;
+
+    private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
         this.results = notNull(results);
         this.orders  = notNull(orders);
         this.hints   = notNull(hints);
         this.client  = notNull(client);
+        this.log = notNull(log);
     }
 
-    public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
+    public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
         notNull(results);
         notNull(client);
-        return new DBResultSetRenderer(results,orders,hints,client);
+        return new DBResultSetRenderer(results,orders,hints,client,log);
     }
 
     public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
@@ -208,8 +211,8 @@ public final class DBResultSetRenderer {
     /**
      * Return a string to go in a database name cell.
      */
-    static String nameCell(Database database) {
-        args(database);
+    String nameCell(Database database) {
+        log.notNullArgs(database);
         Label  text = Label.of(database.name);
         URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
@@ -218,8 +221,8 @@ public final class DBResultSetRenderer {
     /**
      * Return a string to go in a table name cell.
      */
-    static String nameCell(DBTable table) {
-        args(table);
+    String nameCell(DBTable table) {
+        log.notNullArgs(table);
         Label  text = Label.of(table.name);
         URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
@@ -232,7 +235,7 @@ public final class DBResultSetRenderer {
      * for relevant hints (joins and filters);
      */
     String nameCell(DBColumn column) {
-        args(column);
+        log.notNullArgs(column);
         int                     width = maxWidth(column);
         String             columnName = breakUp(column.name);
 

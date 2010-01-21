@@ -2,7 +2,7 @@ package com.cve.io.db;
 
 import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
-import com.cve.util.Check;
+import static com.cve.util.Check.notNull;
 import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
 
@@ -14,12 +14,13 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
 
     private final DBMetaDataIO io;
 
-    private DBMetaDataIOLogger(DBMetaDataIO io) {
-        this.io = Check.notNull(io);
+    private DBMetaDataIOLogger(DBMetaDataIO io, Log log) {
+        this.io = notNull(io);
+        this.log = notNull(log);
     }
 
-    public static DBMetaDataIO of(DBMetaDataIO io) {
-        return new DBMetaDataIOLogger(io);
+    public static DBMetaDataIO of(DBMetaDataIO io, Log log) {
+        return new DBMetaDataIOLogger(io,log);
     }
 
     @Override
@@ -70,7 +71,7 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
     /**
      * Logging stuff.
      */
-    static final Log LOG = Log.of(DBMetaDataIOLogger.class);
-    private static void info(String mesage) { LOG.info(mesage);  }
-    private static void debug(String mesage) { LOG.debug(mesage);  }
+    final Log log;
+    private void info(String mesage) { log.info(mesage);  }
+    private void debug(String mesage) { log.debug(mesage);  }
 }

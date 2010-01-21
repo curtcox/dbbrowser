@@ -15,14 +15,12 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Group;
 import com.cve.log.Log;
 import com.cve.web.Search;
-import static com.cve.log.Log.args;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 /**
  * Tools for converting between objects and the specially formatted database
  * {@link URI}S we work with.
@@ -115,24 +113,31 @@ public final class DBURICodec {
 
     }
 
-    /**
-     * Where we log to.
-     */
-    static final Log LOG = Log.of(DBURICodec.class);
+    final Log log;
 
-    static String at(String uri, Position pos) {
-        args(uri);
+    /**
+     * Use the factory.
+     */
+    private DBURICodec(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static DBURICodec of(Log log) {
+        return new DBURICodec(log);
+    }
+
+    String at(String uri, Position pos) {
+        log.args(uri);
         return uri.split("/")[pos.index];
     }
 
-    static boolean exists(String uri, Position pos) {
+    boolean exists(String uri, Position pos) {
         String[] parts = uri.split("/");
         return parts.length > pos.index;
     }
 
-    public static Search getSearch(String uri) {
-        args(uri);
-        notNull(uri);
+    public Search getSearch(String uri) {
+        log.notNullArgs(uri);
         if (uri.equals("/")) {
             return Search.EMPTY;
         }
@@ -140,30 +145,29 @@ public final class DBURICodec {
         return Search.parse(search);
     }
 
-    public static DBServer getServer(String uri) {
-        args(uri);
-        notNull(uri);
+    public DBServer getServer(String uri) {
+        log.notNullArgs(uri);
         String name = at(uri,Position.SERVER);
         return DBServer.uri(URIs.of(name));
     }
 
-    public static Database getDatabase(String uri) {
-        args(uri);
+    public Database getDatabase(String uri) {
+        log.notNullArgs(uri);
         DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
 
-    public static String getMetaDataMethod(String uri) {
-        args(uri);
+    public String getMetaDataMethod(String uri) {
+        log.notNullArgs(uri);
         if (!exists(uri,Position.METADATA)) {
             return "";
         }
         return at(uri,Position.METADATA);
     }
 
-    public static ImmutableList<Database> getDatabases(String uri) {
-        args(uri);
+    public ImmutableList<Database> getDatabases(String uri) {
+        log.notNullArgs(uri);
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
@@ -175,8 +179,8 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<DBTable> getTables(String uri) {
-        args(uri);
+    public ImmutableList<DBTable> getTables(String uri) {
+        log.notNullArgs(uri);
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
@@ -193,7 +197,7 @@ public final class DBURICodec {
      * Get columns from
      * /server/dbs/tables/columns
      */
-    public static ImmutableList<DBColumn> getColumns(ImmutableList<DBTable> tables, String uri) {
+    public ImmutableList<DBColumn> getColumns(ImmutableList<DBTable> tables, String uri) {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
@@ -222,8 +226,8 @@ public final class DBURICodec {
         throw new IllegalArgumentException(full);
     }
 
-    public static ImmutableList<AggregateFunction> getFunctions(ImmutableList<DBTable> tables, String uri) {
-        args(tables,uri);
+    public ImmutableList<AggregateFunction> getFunctions(ImmutableList<DBTable> tables, String uri) {
+        log.notNullArgs(tables,uri);
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
@@ -236,8 +240,8 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<Join> getJoins(ImmutableList<DBTable> tables,String uri) {
-        args(tables,uri);
+    public ImmutableList<Join> getJoins(ImmutableList<DBTable> tables,String uri) {
+        log.notNullArgs(tables,uri);
         if (!exists(uri,Position.JOINS)) {
             return ImmutableList.of();
         }
@@ -254,8 +258,8 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<DBRowFilter> getFilters(ImmutableList<DBTable> tables,String uri) {
-        args(tables,uri);
+    public ImmutableList<DBRowFilter> getFilters(ImmutableList<DBTable> tables,String uri) {
+        log.notNullArgs(tables,uri);
         if (!exists(uri,Position.FILTERS)) {
             return ImmutableList.of();
         }
@@ -273,8 +277,8 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<Order> getOrders(ImmutableList<DBTable> tables,String uri) {
-        args(tables,uri);
+    public ImmutableList<Order> getOrders(ImmutableList<DBTable> tables,String uri) {
+        log.notNullArgs(tables,uri);
         if (!exists(uri,Position.ORDERS)) {
             return ImmutableList.of();
         }
@@ -292,8 +296,8 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    public static ImmutableList<Group> getGroups(ImmutableList<DBTable> tables,String uri) {
-        args(tables,uri);
+    public ImmutableList<Group> getGroups(ImmutableList<DBTable> tables,String uri) {
+        log.notNullArgs(tables,uri);
         if (!exists(uri,Position.GROUPS)) {
             return ImmutableList.of();
         }
@@ -311,7 +315,7 @@ public final class DBURICodec {
         return ImmutableList.copyOf(list);
     }
 
-    static DBLimit getLimit(String uri) {
+    DBLimit getLimit(String uri) {
         if (!exists(uri,Position.LIMIT)) {
             return DBLimit.DEFAULT;
         }
@@ -321,8 +325,8 @@ public final class DBURICodec {
         return DBLimit.limitOffset(limit, offest);
     }
 
-    public static Select getSelect(String uri) {
-        args(uri);
+    public Select getSelect(String uri) {
+        log.notNullArgs(uri);
         // get everything out of the URL
         ImmutableList<Database>          databases = getDatabases(uri);
         ImmutableList<DBTable>              tables = getTables(uri);
@@ -380,30 +384,30 @@ public final class DBURICodec {
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
-    public static URI encode(Database database) {
-        args(database);
+    public URI encode(Database database) {
+        log.notNullArgs(database);
         return encode(Search.EMPTY,database);
     }
 
-    public static URI encode(Search search, Database database) {
-        args(search,database);
+    public URI encode(Search search, Database database) {
+        log.notNullArgs(search,database);
         DBServer server = database.server;
         return URIs.of(encode(search,server) + database.name + "/");
     }
 
-    public static URI encode(Search search, DBTable table) {
+    public URI encode(Search search, DBTable table) {
         return URIs.of(encode(search,table.database) + table.fullName() + "/");
     }
 
-    public static URI encode(DBTable table) {
+    public URI encode(DBTable table) {
         return encode(Search.EMPTY,table);
     }
 
-    public static URI encode(Search search, DBColumn column) {
+    public URI encode(Search search, DBColumn column) {
         return URIs.of(encode(search,column.table) + column.fullName() + "/");
     }
 
-    public static URI encode(DBColumn column) {
+    public URI encode(DBColumn column) {
         return encode(Search.EMPTY,column);
     }
 

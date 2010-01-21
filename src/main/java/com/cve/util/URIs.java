@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * Tools for working with {@link URI}S.
@@ -24,7 +23,6 @@ import static com.cve.log.Log.args;
 public final class URIs {
 
     public static URI of(String target) {
-        args(target);
         try {
             return new URI(target);
         } catch (URISyntaxException e) {

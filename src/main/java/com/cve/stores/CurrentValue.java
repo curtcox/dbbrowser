@@ -1,6 +1,5 @@
 package com.cve.stores;
 
-import com.cve.log.Log;
 import com.cve.util.Check;
 import com.cve.util.Strings;
 import javax.annotation.concurrent.Immutable;
@@ -29,11 +28,6 @@ public final class CurrentValue<T> {
      */
     public final ValueMeta meta;
 
-    /**
-     * Where we log to.
-     */
-    private static final Log LOG = Log.of(CurrentValue.class);
-
     private CurrentValue(T value, ValueMeta meta) {
         this.value = Check.notNull(value);
         this.meta  = Check.notNull(meta);
@@ -47,7 +41,6 @@ public final class CurrentValue<T> {
     public static <T> CurrentValue<T> of(T value, Throwable t) {
         ValueMeta meta = ValueMeta.of(t);
         t.printStackTrace();
-        LOG.warn(t);
         return new CurrentValue(value,meta);
     }
 

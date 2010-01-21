@@ -9,6 +9,7 @@ import com.cve.io.db.DBMetaData;
 import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.io.db.select.SelectParser;
 import com.cve.io.db.select.DBURIRenderer;
+import com.cve.log.Log;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.ui.UIForm;
 import com.cve.util.AnnotatedStackTrace;
@@ -24,7 +25,6 @@ import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
 import java.sql.SQLException;
-import static com.cve.log.Log.args;
 
 
 /**
@@ -40,6 +40,8 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
     final DBHintsStore hintsStore;
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Select.html");
 
     private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore) {
@@ -53,7 +55,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         try {
             return render((FreeFormQueryModel) model,client);
         } catch (SQLException e) {

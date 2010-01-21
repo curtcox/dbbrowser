@@ -1,6 +1,7 @@
 package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
@@ -14,31 +15,31 @@ import static com.cve.util.Check.notNull;
  */
 public final class DBBrowserHandler implements RequestHandler {
 
+    final Log log;
+
     private final RequestHandler handler;
 
     private DBBrowserHandler(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction)
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log)
     {
-        notNull(db);
-        notNull(serversStore);
-        notNull(hintsStore);
-        notNull(managedFunction);
+        log.notNullArgs(db,serversStore,hintsStore,managedFunction);
+        this.log = notNull(log);
         handler = CompositeRequestHandler.of(
             // handler                                                                     // for URLs of the form
-            FreeFormQueryHandler.of(serversStore, managedFunction),                        // /server/select... & /server/database/select...
-            DBRedirectsHandler.of(db),                                                     // action?args
+            FreeFormQueryHandler.of(serversStore, managedFunction,log),                        // /server/select... & /server/database/select...
+            DBRedirectsHandler.of(db,log),                                                     // action?args
             DBServersHandler.of(db,serversStore,managedFunction),                          // / , /add , /remove
             DatabaseMetaHandler.of(db,serversStore,managedFunction),                       // /meta/server/
             DatabasesHandler.of(db),                                                       // /server/
-            TablesHandler.of(db,serversStore,hintsStore, managedFunction),                 // /server/databases/
-            ColumnValueDistributionHandler.of(db,serversStore,hintsStore,managedFunction), // server/database/table/column
-            SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction)            // /server/databases/tables/...
+            TablesHandler.of(db,serversStore,hintsStore, managedFunction,log),                 // /server/databases/
+            ColumnValueDistributionHandler.of(db,serversStore,hintsStore,managedFunction,log), // server/database/table/column
+            SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction,log)            // /server/databases/tables/...
         );
     }
 
     public static DBBrowserHandler of(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new DBBrowserHandler(db,serversStore,hintsStore,managedFunction);
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new DBBrowserHandler(db,serversStore,hintsStore,managedFunction,log);
     }
 
     @Override

@@ -6,24 +6,32 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
+import com.cve.log.Log;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import java.net.URI;
 import static com.cve.html.HTML.*;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.notNullArgs;
+import static com.cve.util.Check.notNull;
 
 /**
  * For picking a table.
  */
 public final class TablesPageRenderer implements ModelHtmlRenderer {
 
+    private final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Tables.html");
+
+    private TablesPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
+
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        notNullArgs(model,client);
+        log.notNullArgs(model,client);
         TablesPage page = (TablesPage) model;
         DBServer     server = page.server;
         Database database = page.database;
@@ -38,8 +46,8 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
-    static String tableOfTables(TablesPage page) {
-        notNullArgs(page);
+    String tableOfTables(TablesPage page) {
+        log.notNullArgs(page);
         StringBuilder out = new StringBuilder();
         out.append(th("Table") + th("Rows") + th("Columns"));
         for (DBTable table : page.tables) {
@@ -52,8 +60,8 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         return table(out.toString());
     }
 
-    static String columnsFor(TablesPage page, DBTable table) {
-        notNullArgs(page,table);
+    String columnsFor(TablesPage page, DBTable table) {
+        log.notNullArgs(page,table);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (DBColumn column : page.columns.get(table)) {

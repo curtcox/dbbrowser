@@ -14,6 +14,7 @@ import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -41,18 +42,31 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
+    final DBURICodec codec;
+
+    final Log log;
+
+    final DBConnectionFactory connections;
+
     private ColumnValueDistributionHandler(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction)
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
     {
+        super(log);
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
+        connections = DBConnectionFactory.of();
+        codec = DBURICodec.of(log);
     }
 
     static ColumnValueDistributionHandler of(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new ColumnValueDistributionHandler(db,serversStore,hintsStore, managedFunction);
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
+        return new ColumnValueDistributionHandler(db,serversStore,hintsStore, managedFunction,log);
     }
 
     @Override
@@ -71,19 +85,19 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      * @param uri
      * @return
      */
-    static boolean isColumnValueDist(String uri) {
+    boolean isColumnValueDist(String uri) {
         int slashes = URIs.slashCount(uri);
         if (slashes!=5 && slashes!=6) {
             return false;
         }
-        if (DBURICodec.getDatabases(uri).size() !=1){
+        if (codec.getDatabases(uri).size() !=1){
             return false;
         }
-        ImmutableList<DBTable> tables = DBURICodec.getTables(uri);
+        ImmutableList<DBTable> tables = codec.getTables(uri);
         if (tables.size()!=1){
             return false;
         }
-        if (DBURICodec.getColumns(tables, uri).size()!=1) {
+        if (codec.getColumns(tables, uri).size()!=1) {
             return false;
         }
         return true;
@@ -94,14 +108,14 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
      */
     SelectResults getResultsFromDB(String uri) {
         // The server out of the URL
-        DBServer         server = DBURICodec.getServer(uri);
+        DBServer         server = codec.getServer(uri);
 
         // Setup the select
-        Select           select = DBURICodec.getSelect(uri);
+        Select           select = codec.getSelect(uri);
         DBColumn column = select.columns.get(0);
         select = select.with(column, AggregateFunction.COUNT);
         select = select.with(Group.of(column));
-        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        DBConnection connection = connections.getConnection(server);
         Hints hints = hintsStore.get(select.columns);
 
         // run the select

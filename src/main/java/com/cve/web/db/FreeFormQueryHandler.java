@@ -17,7 +17,6 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBResultSetIO;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.io.db.DBResultSetMetaData;
-import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.AnnotatedStackTrace;
@@ -35,7 +34,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import static com.cve.web.db.FreeFormQueryModel.*;
-import static com.cve.log.Log.args;
+import com.cve.log.Log;
 import static com.cve.util.Check.notNull;
 /**
  * Handles "free-form" SQL select queries.
@@ -53,13 +52,23 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
-    private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    final DBURICodec codec;
+
+    final DBConnectionFactory connections;
+
+    final Log log;
+
+    private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        super(log);
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
     }
 
-    public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new FreeFormQueryHandler(serversStore,managedFunction);
+    public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new FreeFormQueryHandler(serversStore,managedFunction,log);
     }
     
     /**
@@ -67,13 +76,13 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      */
     @Override
     public boolean handles(String uri) {
-        args(uri);
+        log.args(uri);
         return isFreeFormQueryRequest(uri);
     }
 
     @Override
     public FreeFormQueryModel get(PageRequest request) {
-        args(request);
+        log.args(request);
         ImmutableMap<String,String> params = request.parameters;
         String        query = params.get(Q);
         if (query==null) {
@@ -87,10 +96,10 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
             return page(sql,results,meta,message,null);
         }
         String uri = request.requestURI;
-        DBServer server = DBURICodec.getServer(uri);
+        DBServer server = codec.getServer(uri);
         if (isServerOnlyQuery(uri)) {
             try {
-                DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+                DBConnection connection = connections.getConnection(server);
                 ResultsAndMore results = exec(server,sql,connection);
                 String      message = "Type SQL select statement to be executed.";
                 return page(sql,results.resultSet,results.meta,message,null);
@@ -98,9 +107,9 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
                 return page(sql,DBResultSet.NULL,DBResultSetMetaData.NULL,e.getMessage(),e);
             }
         }
-        Database database = DBURICodec.getDatabase(uri);
+        Database database = codec.getDatabase(uri);
         try {
-            DBConnection connection = DBConnectionFactory.getConnection(server,database,serversStore,managedFunction);
+            DBConnection connection = connections.getConnection(server,database);
             ResultsAndMore results = exec(server,sql,connection);
             String      message = "Type SQL select statement to be executed.";
             return page(sql,results.resultSet,results.meta,message,null);
@@ -109,16 +118,16 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         }
     }
 
-    static FreeFormQueryModel page(SQL sql, DBResultSet results, DBResultSetMetaData meta, String message, SQLException e) {
-        args(sql,results,message,e);
+    FreeFormQueryModel page(SQL sql, DBResultSet results, DBResultSetMetaData meta, String message, SQLException e) {
+        log.args(sql,results,message,e);
         AnnotatedStackTrace trace = (e==null)
             ? AnnotatedStackTrace.NULL
-            : Log.annotatedStackTrace(e);
+            : log.annotatedStackTrace(e);
         return new FreeFormQueryModel(sql,results,meta,message,trace);
     }
 
-    static ResultsAndMore exec(DBServer server, SQL sql, DBConnection connection) throws SQLException {
-        args(server,sql,connection);
+    ResultsAndMore exec(DBServer server, SQL sql, DBConnection connection) throws SQLException {
+        log.args(server,sql,connection);
         DBResultSetIO               results = connection.select(sql).value;
         DBResultSetMetaData            meta = connection.getMetaData(server,results);
         ImmutableList<Database>   databases = meta.databases;
@@ -186,9 +195,9 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
      * given select statement.
      */
     public URI linkTo(Select select, Search search) {
-        args(select,search);
+        log.args(select,search);
         DBServer server = select.server;
-        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        DBConnection connection = connections.getConnection(server);
         DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);
         URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));

@@ -1,5 +1,6 @@
 package com.cve.web.db.databases;
 
+import com.cve.log.Log;
 import com.cve.web.db.*;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
@@ -18,18 +19,19 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.args;
 
 /**
  * For finding stuff in a database server.
  */
 final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         DatabasesSearchPage page = (DatabasesSearchPage) model;
         String target = page.search.target;
         DBServer server = page.server;
@@ -50,14 +52,16 @@ static final class Helper {
 
     final DatabasesSearchPage page;
 
+    final Log log;
+
     static final UIDetail EMPTY_CELL = UIDetail.of("");
 
-    Helper(DatabasesSearchPage page) {
+    Helper(DatabasesSearchPage page, Log log) {
         this.page = page;
     }
 
     static String render(DatabasesSearchPage page) {
-        args(page);
+        log.notNullArgs(page);
         return new Helper(page).render();
     }
     

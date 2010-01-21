@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 
 import java.util.List;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * Low level access to database meta data.
@@ -25,6 +24,8 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
      * How we connect to databases.
      */
     private final DBConnection connection;
+
+    private final Log log;
 
     private final ManagedFunction<TableSpecifier,DBResultSetIO> tables;
     private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns;
@@ -45,8 +46,9 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
     public static final String PKCOLUMN_NAME = "PKCOLUMN_NAME";
     public static final String FKCOLUMN_NAME = "FKCOLUMN_NAME";
 
-    protected DefaultDBMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+    protected DefaultDBMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
         this.connection = notNull(connection);
+        this.log = notNull(log);
         notNull(managedFunction);
               tables = notNull(managedFunction.of(new GetTables(),       TableSpecifier.class,  DBResultSetIO.class, DBResultSetIO.NULL));
              columns = notNull(managedFunction.of(new GetColumns(),      ColumnSpecifier.class, DBResultSetIO.class, DBResultSetIO.NULL));
@@ -184,7 +186,7 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
         public DBResultSetIO apply(TableSpecifier spec) throws Exception {
             ResultSet results = getMetaData().getTables(spec.catalog, spec.schemaPattern, spec.tableNamePattern, spec.types);
             // return DBResultSetIO.of(results,Getter.string(TABLE_NAME));
-            return DBResultSetIO.of(results);
+            return DBResultSetIO.of(results,log);
         }
     }
 
@@ -192,7 +194,8 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern, specifier.columnNamePattern));
+            return DBResultSetIO.of(getMetaData().getColumns(
+                    specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern, specifier.columnNamePattern),log);
         }
     }
 
@@ -200,7 +203,7 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+            return DBResultSetIO.of(getMetaData().getImportedKeys(specifier.catalog, specifier.schema, specifier.tableName),log);
         }
     }
 
@@ -208,7 +211,7 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName));
+            return DBResultSetIO.of(getMetaData().getPrimaryKeys(specifier.catalog, specifier.schema, specifier.tableName),log);
         }
     }
 
@@ -216,7 +219,7 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName));
+            return DBResultSetIO.of(getMetaData().getExportedKeys(specifier.catalog, specifier.schema, specifier.tableName),log);
         }
     }
 
@@ -224,7 +227,7 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getCatalogs());
+            return DBResultSetIO.of(getMetaData().getCatalogs(),log);
         }
     }
 
@@ -232,14 +235,13 @@ public class DefaultDBMetaDataIO implements DBMetaDataIO {
 
         @Override
         public DBResultSetIO apply(KeySpecifier specifier) throws Exception {
-            return DBResultSetIO.of(getMetaData().getSchemas());
+            return DBResultSetIO.of(getMetaData().getSchemas(),log);
         }
     }
 
     /**
      * Logging stuff.
      */
-    static final Log LOG = Log.of(DefaultDBMetaDataIO.class);
-    private static void info(String mesage) { LOG.info(mesage);  }
-    private static void debug(String mesage) { LOG.debug(mesage);  }
+    private void info(String mesage) { log.info(mesage);  }
+    private void debug(String mesage) { log.debug(mesage);  }
 }

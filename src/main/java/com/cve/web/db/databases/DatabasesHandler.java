@@ -7,18 +7,17 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import java.io.IOException;
-import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Set;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * For picking a database.
@@ -31,21 +30,28 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      */
     final DBMetaData.Factory db;
 
-    private DatabasesHandler(DBMetaData.Factory db) {
-        this.db = db;
+    final DBURICodec codec;
+
+    final Log log;
+
+    private DatabasesHandler(DBMetaData.Factory db, Log log) {
+        super(log);
+        this.db = notNull(db);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
-    public static DatabasesHandler of(DBMetaData.Factory db) {
-        return new DatabasesHandler(db);
+    public static DatabasesHandler of(DBMetaData.Factory db, Log log) {
+        return new DatabasesHandler(db,log);
     }
 
     @Override
     public Model get(PageRequest request) {
-        args(request);
+        log.notNullArgs(request);
         String uri = request.requestURI;
 
-        Search search = DBURICodec.getSearch(uri);
-        DBServer server = DBURICodec.getServer(uri);
+        Search search = codec.getSearch(uri);
+        DBServer server = codec.getServer(uri);
         if (search.isEmpty()) {
             DBMetaData  meta = db.of(server);
             ImmutableList<Database> databases = meta.getDatabasesOn(server).value;
@@ -64,10 +70,10 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      * Return true, if of the form
      * /search/server/
      */
-    static boolean isDatabaseListRequest(String uri) {
+    boolean isDatabaseListRequest(String uri) {
         return URIs.slashCount(uri) > 1 &&
-               DBURICodec.getServer(uri)!=null &&
-               DBURICodec.getDatabases(uri).isEmpty();
+               codec.getServer(uri)!=null &&
+               codec.getDatabases(uri).isEmpty();
     }
 
     ImmutableMultimap<Database,DBTable> tablesOn(ImmutableList<Database> databases) {
@@ -85,7 +91,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      * Perform the requested search and return a results page.
      */
     DatabasesSearchPage newSearchPage(DBServer server,Search search) {
-        args(server,search);
+        log.notNullArgs(server,search);
         ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server).value;
         Set<Database> filteredDatabases = Sets.newHashSet();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();

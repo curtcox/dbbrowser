@@ -8,7 +8,6 @@ import com.cve.model.fs.FSPipeline;
 import com.cve.model.fs.FSServer;
 import com.cve.log.Log;
 import com.cve.web.Search;
-import static com.cve.log.Log.args;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
@@ -106,10 +105,18 @@ public final class FSURICodec {
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(FSURICodec.class);
+    final Log log;
 
-    static String at(String uri, Position pos) {
-        args(uri);
+    private FSURICodec(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static FSURICodec of(Log log) {
+        return new FSURICodec(log);
+    }
+    
+    String at(String uri, Position pos) {
+        log.args(uri);
         return uri.split("/")[pos.index];
     }
 
@@ -118,8 +125,8 @@ public final class FSURICodec {
         return parts.length > pos.index;
     }
 
-    public static Search getSearch(String uri) {
-        args(uri);
+    public Search getSearch(String uri) {
+        log.args(uri);
         notNull(uri);
         if (uri.equals("/")) {
             return Search.EMPTY;
@@ -128,23 +135,22 @@ public final class FSURICodec {
         return Search.parse(search);
     }
 
-    public static FSServer getServer(String uri) {
-        args(uri);
-        notNull(uri);
+    public FSServer getServer(String uri) {
+        log.notNullArgs(uri);
         String name = at(uri,Position.SERVER);
         return FSServer.uri(URIs.of(name));
     }
 
-    public static String getMetaDataMethod(String uri) {
-        args(uri);
+    public String getMetaDataMethod(String uri) {
+        log.notNullArgs(uri);
         if (!exists(uri,Position.METADATA)) {
             return "";
         }
         return at(uri,Position.METADATA);
     }
 
-    public static ImmutableList<FSPath> getPaths(String uri) {
-        args(uri);
+    public ImmutableList<FSPath> getPaths(String uri) {
+        log.notNullArgs(uri);
         if (!exists(uri,Position.FILES)) {
             return ImmutableList.of();
         }
@@ -161,7 +167,7 @@ public final class FSURICodec {
      * Get columns from
      * /server/dbs/tables/columns
      */
-    public static ImmutableList<FSField> getColumns(ImmutableList<FSPath> tables, String uri) {
+    public ImmutableList<FSField> getColumns(ImmutableList<FSPath> tables, String uri) {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
@@ -202,8 +208,8 @@ public final class FSURICodec {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static FSPipeline getPipeline(String uri) {
-        args(uri);
+    public FSPipeline getPipeline(String uri) {
+        log.notNullArgs(uri);
         // get everything out of the URL
         ImmutableList<FSPath>                paths = getPaths(uri);
 

@@ -4,26 +4,33 @@ import com.cve.web.*;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
+import com.cve.log.Log;
 
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 import static com.cve.html.HTML.*;
-import static com.cve.log.Log.args;
 
 import static com.cve.web.db.NavigationButtons.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * For picking a database server.
  */
 final class ServersPageRenderer implements ModelHtmlRenderer {
 
+    private final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Servers.html");
+
+    private ServersPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";
         String[] navigation = new String[] {
@@ -37,8 +44,8 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     /**
      * Return a table of all the available servers.
      */
-    static String tableOfServers(ServersPage page) {
-        args(page);
+    String tableOfServers(ServersPage page) {
+        log.notNullArgs(page);
         StringBuilder out = new StringBuilder();
         out.append(tr(th("Database Server") + th("Databases")));
         for (DBServer server : page.servers) {
@@ -56,8 +63,8 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      * Return a list of all (or at least the first several) databases
      * available on the given server.
      */
-    static String databasesOn(ServersPage page, DBServer server) {
-        args(page,server);
+    String databasesOn(ServersPage page, DBServer server) {
+        log.notNullArgs(page,server);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (Object object : page.databases.get(server)) {

@@ -4,6 +4,7 @@ import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
 import com.cve.io.fs.FSMetaData;
 import com.cve.io.fs.LocalFSMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.fs.FSBrowserHandler;
@@ -21,6 +22,7 @@ import com.cve.web.SearchRedirectsHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
 import com.cve.web.log.LogBrowserHandler;
+import static com.cve.util.Check.notNull;
 
 /**
  * A request handler for resources accessible via the local machine.
@@ -32,8 +34,13 @@ final class LocalRequestHandler implements RequestHandler {
 
     private final RequestHandler handler;
 
+    private final Log log;
+
     private LocalRequestHandler(
-        DBServersStore dbServersStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        DBServersStore dbServersStore, FSServersStore fsServersStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
+        this.log = notNull(log);
         final DBMetaData.Factory db = LocalDBMetaDataFactory.of(dbServersStore,managedFunction);
         final FSMetaData.Factory fs = LocalFSMetaDataFactory.of(fsServersStore,managedFunction);
         handler = ErrorReportHandler.of(
@@ -42,18 +49,21 @@ final class LocalRequestHandler implements RequestHandler {
                         CompositeRequestHandler.of(
                             CoreServerHandler.of(),
                             SearchRedirectsHandler.of(),              // search?find=what
-                            AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction),
+                            AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction,log),
                             LogBrowserHandler.of(),
                             FSBrowserHandler.of(fs,fsServersStore,managedFunction),
-                            DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction)
-                       )
+                            DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction,log)
+                       ),log
                  )
             )
         );
     }
 
-    static LocalRequestHandler of(DBServersStore serversStore, FSServersStore fsServersStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new LocalRequestHandler(serversStore, fsServersStore, hintsStore, managedFunction);
+    static LocalRequestHandler of(
+        DBServersStore serversStore, FSServersStore fsServersStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
+        return new LocalRequestHandler(serversStore, fsServersStore, hintsStore, managedFunction, log);
     }
 
     @Override

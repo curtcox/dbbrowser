@@ -27,18 +27,25 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * Runs {@link Select}S against database connections to produce {@link SelectResults}.
  */
 final class SimpleSelectRunner implements SelectRunner {
 
-    private static final Log log = Log.of(SimpleSelectRunner.class);
+    private final Log log;
 
+    private SimpleSelectRunner(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static SimpleSelectRunner of(Log log) {
+        return new SimpleSelectRunner(log);
+    }
+    
     @Override
     public SelectResults run(SelectContext context) {
-        args(context);
+        log.notNullArgs(context);
         try {
             return tryRun(context.verified());
         } catch (SQLException e) {
@@ -46,8 +53,8 @@ final class SimpleSelectRunner implements SelectRunner {
         }
     }
 
-    static SelectResults tryRun(SelectContext context) throws SQLException {
-        args(context);
+    SelectResults tryRun(SelectContext context) throws SQLException {
+        log.notNullArgs(context);
         notNull(context);
         DBConnection connection = context.connection;
         Select select = context.select;
@@ -78,8 +85,8 @@ final class SimpleSelectRunner implements SelectRunner {
     /**
      * Is the given select normal data or a column value distribution query?
      */
-    static SelectResults.Type determineResultsType(Select select) {
-        args(select);
+    SelectResults.Type determineResultsType(Select select) {
+        log.notNullArgs(select);
         if (select.groups.size()!=1) {
             return SelectResults.Type.NORMAL_DATA;
         }
@@ -93,8 +100,8 @@ final class SimpleSelectRunner implements SelectRunner {
      * Transform a select plus java.sql.ResultSet into a
      * dbmodel.DBResultSet.
      */
-    static ResultsAndMore transform(Select select, DBResultSetIO results) throws SQLException {
-        args(select,results);
+    ResultsAndMore transform(Select select, DBResultSetIO results) throws SQLException {
+        log.notNullArgs(select,results);
         ImmutableList<Database>   databases = select.databases;
         ImmutableList<DBTable>       tables = select.tables;
         ImmutableList<DBColumn>     columns = select.columns;

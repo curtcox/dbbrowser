@@ -16,7 +16,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -49,21 +48,24 @@ public final class DefaultDBConnection implements DBConnection {
 
     private final ManagedFunction<SQL,DBResultSetIO> resultSets;
 
-    private static final Log LOG = Log.of(DBConnection.class);
+    private final Log log;
 
     private DefaultDBConnection(
-        DBDriver driver, DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
+        DBDriver driver, DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
     {
         this.driver = notNull(driver);
         this.info = notNull(info);
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = log;
         resultSets = managedFunction.of(new ExecuteSQL(),SQL.class,DBResultSetIO.class,DBResultSetIO.NULL);
     }
 
-    public static DefaultDBConnection of(DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    public static DefaultDBConnection of(
+        DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+    {
         DBDriver driver = DBDriver.url(info.url);
-        return new DefaultDBConnection(driver,info,serversStore,managedFunction);
+        return new DefaultDBConnection(driver,info,serversStore,managedFunction,log);
     }
 
     synchronized private Connection getConnection() throws SQLException {
@@ -75,7 +77,7 @@ public final class DefaultDBConnection implements DBConnection {
 
     @Override
     public synchronized DBResultSetMetaData getMetaData(DBServer server, DBResultSetIO results)  {
-        args(server,results);
+        log.notNullArgs(server,results);
         return DefaultDBResultSetMetaDataFactory.of(server,this,results);
     }
 
@@ -123,12 +125,12 @@ public final class DefaultDBConnection implements DBConnection {
         return driver.getDBMetaData(this, managedFunction, serversStore);
     }
 
-    static void info(String message) {
-        LOG.info(message);
+    void info(String message) {
+        log.info(message);
     }
 
-    static void warn(Throwable t) {
-        LOG.warn(t);
+    void warn(Throwable t) {
+        log.warn(t);
     }
 
     private final class ExecuteSQL extends SQLFunction<SQL,DBResultSetIO> {
@@ -144,7 +146,7 @@ public final class DefaultDBConnection implements DBConnection {
             info(sqlString);
             statement.execute(sqlString);
             ResultSet resultSet = ResultSetWrapper.of(statement.getResultSet());
-            DBResultSetIO io = DBResultSetIO.of(resultSet);
+            DBResultSetIO io = DBResultSetIO.of(resultSet,log);
             return io;
         }
 

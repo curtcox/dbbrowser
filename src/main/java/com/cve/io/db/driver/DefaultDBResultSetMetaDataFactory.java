@@ -4,12 +4,13 @@ import com.cve.io.db.DBResultSetIO;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.DBResultSetMetaData;
 import com.cve.io.db.DBConnection;
+import com.cve.log.Log;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
-import com.cve.util.Check;
+import static com.cve.util.Check.notNull;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.concurrent.Immutable;
 
-import static com.cve.log.Log.args;
 
 /**
  * For generating result set meta data.
@@ -30,9 +30,12 @@ public class DefaultDBResultSetMetaDataFactory {
 
     public final DBResultSetMetaDataIO meta;
 
-    protected DefaultDBResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        this.server = Check.notNull(server);
-        this.meta = Check.notNull(meta);
+    final Log log;
+
+    protected DefaultDBResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
+        this.server = notNull(server);
+        this.meta = notNull(meta);
+        this.log = notNull(log);
     }
 
     public static DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {

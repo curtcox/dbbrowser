@@ -2,11 +2,11 @@ package com.cve.model.fs;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.util.Canonicalizer;
 import com.cve.web.fs.FSURICodec;
 import java.net.URI;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  *
@@ -44,8 +44,8 @@ public class FSPath {
         return canonical(new FSPath(server,name));
     }
 
-    public static FSPath parse(FSServer server, String path) {
-        args(server,path);
+    public static FSPath parse(FSServer server, String path, Log log) {
+        log.notNullArgs(server,path);
         notNull(server);
         notNull(path);
         return server.path(path);

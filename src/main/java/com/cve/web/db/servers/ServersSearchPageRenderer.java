@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.log.Log;
 import com.cve.web.db.*;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
@@ -17,18 +18,19 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.args;
 
 /**
  * For finding stuff in a database server.
  */
 final class ServersSearchPageRenderer implements ModelHtmlRenderer {
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         ServersSearchPage page = (ServersSearchPage) model;
         Search          search = page.search;
         String title = "Occurences of " + search.target;

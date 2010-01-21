@@ -1,6 +1,7 @@
 package com.cve.launch;
 
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -34,8 +35,9 @@ public final class LaunchLocalMirror {
         FSServersStore fsServersStore = null;
         DBHintsStore hintsStore = null;
         ManagedFunction.Factory managedFunction = null;
+        Log log = null;
         WebApp webApp = WebApp.of(
-            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction),
+            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction,log),
             DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction)
         );
         Grizzly.start(webApp, PORT);

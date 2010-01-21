@@ -1,9 +1,8 @@
 package com.cve.web;
 
-import com.cve.log.Log;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.web.log.ObjectLink;
-import static com.cve.log.Log.args;
+import com.cve.log.Log;
 
 import static com.cve.util.Check.notNull;
 
@@ -16,6 +15,8 @@ import static com.cve.util.Check.notNull;
  * debugging status, or add debugging info.
  */
 public final class DebugHandler implements RequestHandler {
+
+    private Log log;
 
     /**
      * Only pay attention to requests that start with this.
@@ -57,7 +58,7 @@ public final class DebugHandler implements RequestHandler {
 
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.args(request);
         String requestURI = request.requestURI;
         if (!requestURI.startsWith(PREFIX)) {
             debug.set(Boolean.FALSE);
@@ -88,7 +89,7 @@ public final class DebugHandler implements RequestHandler {
         if (!DebugHandler.isOn()) {
             return "";
         }
-        AnnotatedStackTrace trace = Log.annotatedStackTrace();
+        AnnotatedStackTrace trace = log.annotatedStackTrace();
         int max = 200;
         if (trace.elements.size() > max) {
             String message = "The maximum stack depth of " + max +

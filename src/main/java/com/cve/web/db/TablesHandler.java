@@ -6,6 +6,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
@@ -22,7 +23,6 @@ import com.google.common.collect.Sets;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -41,15 +41,27 @@ public final class TablesHandler extends AbstractRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
-    private TablesHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+    final DBURICodec codec;
+
+    final Log log;
+
+    private TablesHandler(
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
+        super(log);
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
-    static TablesHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new TablesHandler(db,serversStore,hintsStore,managedFunction);
+    static TablesHandler of(
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log) {
+        return new TablesHandler(db,serversStore,hintsStore,managedFunction, log);
     }
     
     /**
@@ -65,11 +77,11 @@ public final class TablesHandler extends AbstractRequestHandler {
      */
     @Override
     public Model get(PageRequest request) {
-        args(request);
-        String                    uri = request.requestURI;
-        Search                 search = DBURICodec.getSearch(uri);
-        DBServer                 server = DBURICodec.getServer(uri);
-        Database             database = DBURICodec.getDatabase(uri);
+        log.notNullArgs(request);
+        String        uri = request.requestURI;
+        Search     search = codec.getSearch(uri);
+        DBServer   server = codec.getServer(uri);
+        Database database = codec.getDatabase(uri);
         if (search.isEmpty()) {
             DBMetaData               meta = db.of(server);
             ImmutableList<DBTable> tables = meta.getTablesOn(database).value;
@@ -124,7 +136,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      * and server names.  Return a results page.
      */
     TablesSearchPage newNamesSearchPage(Database database,Search search) {
-        args(database,search);
+        log.notNullArgs(database,search);
         DBMetaData               meta = db.of(database.server);
         ImmutableList<DBColumn> columns = meta.getColumnsFor(database).value;
         Set<DBTable> filteredTables = Sets.newHashSet();

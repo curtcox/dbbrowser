@@ -8,6 +8,7 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.Throwables;
@@ -37,19 +38,25 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final DBServersStore serversStore;
 
+    final Log log;
+
+    final DBURICodec codec;
+
     private static final String PREFIX = "/meta/";
 
-    private DatabaseMetaHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        super("^" + PREFIX);
+    private DatabaseMetaHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        super("^" + PREFIX,log);
         this.db = notNull(db);
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
     public static DatabaseMetaHandler of(
-        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
+        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
     {
-        return new DatabaseMetaHandler(db,serversStore,managedFunction);
+        return new DatabaseMetaHandler(db,serversStore,managedFunction,log);
     }
 
     @Override
@@ -57,8 +64,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         String uri = request.requestURI;
 
         String suffix = uri.substring(PREFIX.length() - 1);
-        DBServer server = DBURICodec.getServer(suffix);
-        String method = DBURICodec.getMetaDataMethod(suffix);
+        DBServer server = codec.getServer(suffix);
+        String method = codec.getMetaDataMethod(suffix);
         return
             new StringModel(
                 h1("Available Metadata for " + server) +

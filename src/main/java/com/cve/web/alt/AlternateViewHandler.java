@@ -9,6 +9,7 @@ import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -19,10 +20,8 @@ import com.cve.util.URIs;
 import com.cve.web.CompositeRequestHandler;
 import com.cve.web.RequestHandler;
 import com.cve.web.Search;
-import java.io.IOException;
 import java.net.URI;
-import java.sql.SQLException;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * The {@link RequestHandler} for alternate views of a select result.
@@ -33,23 +32,33 @@ public final class AlternateViewHandler implements RequestHandler {
     private final DBHintsStore hintsStore;
     private final ManagedFunction.Factory managedFunction;
     private final RequestHandler handler;
+    private final DBURICodec codec;
+    private final DBConnectionFactory connections;
+    private final Log log;
 
-    private AlternateViewHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        this.serversStore = serversStore;
-        this.hintsStore = hintsStore;
-        this.managedFunction = managedFunction;
+    private AlternateViewHandler(
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
+        ManagedFunction.Factory managedFunction, Log log)
+    {
+        this.serversStore = notNull(serversStore);
+        this.hintsStore = notNull(hintsStore);
+        this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
         handler = CompositeRequestHandler.of(
             // handler            // for URLs of the form
-            CSVHandler.of(db,serversStore,hintsStore,managedFunction),      // /view/CSV/
-            new XLSHandler(),     // /view/XLS/
-            new PDFHandler(),     // /view/PDF/
+            CSVHandler.of(db,serversStore,hintsStore,managedFunction,log),      // /view/CSV/
+            XLSHandler.of(log),     // /view/XLS/
+            PDFHandler.of(log),     // /view/PDF/
             new JSONHandler(),    // /view/JSON/
-            new XMLHandler()  // /view/XML/
+            XMLHandler.of(log)  // /view/XML/
         );
+        codec = DBURICodec.of(log);
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
     }
 
-    public static AlternateViewHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
-        return new AlternateViewHandler(db,serversStore,hintsStore,managedFunction);
+    public static AlternateViewHandler of(
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new AlternateViewHandler(db,serversStore,hintsStore,managedFunction,log);
     }
 
 
@@ -57,17 +66,17 @@ public final class AlternateViewHandler implements RequestHandler {
      * Return the results of the select that corresponds to the given URI.
      */
     SelectResults getResultsFromDB(final String uri) {
-        args(uri);
+        log.notNullArgs(uri);
         // /view/CSV/foo
         //          ^ start here
         URI tail = URIs.startingAtSlash(uri,3);
 
         // The server out of the URL
-        DBServer         server = DBURICodec.getServer(tail.toString());
+        DBServer         server = codec.getServer(tail.toString());
 
         // Setup the select
-        Select           select = DBURICodec.getSelect(tail.toString());
-        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        Select           select = codec.getSelect(tail.toString());
+        DBConnection connection = connections.getConnection(server);
         Hints             hints = hintsStore.get(select.columns);
 
         // run the select

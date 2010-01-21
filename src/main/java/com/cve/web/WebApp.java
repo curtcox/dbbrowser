@@ -1,5 +1,8 @@
 package com.cve.web;
 
+import com.cve.log.Log;
+import static com.cve.util.Check.notNull;
+
 /**
  * A web application
  * @author Curt
@@ -17,15 +20,21 @@ public final class WebApp {
     final ModelHtmlRenderer renderer;
 
     /**
+     * Where we log to.
+     */
+    final Log log;
+
+    /**
      * Use the factory.
      */
-    private WebApp(RequestHandler handler, ModelHtmlRenderer renderer) {
-        this.handler = handler;
-        this.renderer = renderer;
+    private WebApp(RequestHandler handler, ModelHtmlRenderer renderer, Log log) {
+        this.handler = notNull(handler);
+        this.renderer = notNull(renderer);
+        this.log = notNull(log);
     }
 
-    public static WebApp of(RequestHandler handler, ModelHtmlRenderer renderer) {
-        return new WebApp(handler,renderer);
+    public static WebApp of(RequestHandler handler, ModelHtmlRenderer renderer, Log log) {
+        return new WebApp(handler,renderer,log);
     }
 
 }

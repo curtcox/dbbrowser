@@ -4,6 +4,7 @@ import com.cve.model.db.Select;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.DBURIRenderer;
+import com.cve.log.Log;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.RequestHandler;
@@ -11,7 +12,6 @@ import com.cve.web.Search;
 import java.net.URI;
 
 import static com.cve.util.Check.*;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -38,12 +38,18 @@ public final class DBRedirectsHandler implements RequestHandler {
 
     final DBMetaData.Factory db;
 
-    private DBRedirectsHandler(DBMetaData.Factory db) {
+    final Log log;
+
+    final DBURICodec codec;
+
+    private DBRedirectsHandler(DBMetaData.Factory db, Log log) {
         this.db = notNull(db);
+        this.log = notNull(log);
+        codec = DBURICodec.of(log);
     }
 
-    public static DBRedirectsHandler of(DBMetaData.Factory db) {
-        return new DBRedirectsHandler(db);
+    public static DBRedirectsHandler of(DBMetaData.Factory db, Log log) {
+        return new DBRedirectsHandler(db,log);
     }
 
     /**
@@ -52,8 +58,7 @@ public final class DBRedirectsHandler implements RequestHandler {
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
-        notNull(request);
+        log.notNullArgs(request);
 
         String query = request.queryString;
         if (query.isEmpty()) {
@@ -68,17 +73,16 @@ public final class DBRedirectsHandler implements RequestHandler {
      * Given a path and query, produce the URI it should redirect to.
      */
     URI redirectsActionsTo(String path, String query) {
-        args(path,query);
-        notNull(path);
+        log.notNullArgs(path,query);
         int lastSlash = path.lastIndexOf("/");
         notNegative(lastSlash);
         // the path up to the last slash
         String upToLastSlash = path.substring(0,lastSlash);
         String action = path.substring(lastSlash + 1);
-        final Select select = DBURICodec.getSelect(upToLastSlash);
-        DBServer server = DBURICodec.getServer(upToLastSlash);
+        final Select select = codec.getSelect(upToLastSlash);
+        DBServer server = codec.getServer(upToLastSlash);
         Select newSelect = SelectBuilderAction.doAction(action,select,server,db,query);
-        Search search = DBURICodec.getSearch(upToLastSlash);
+        Search search = codec.getSearch(upToLastSlash);
         URI dest = DBURIRenderer.render(newSelect,search);
         return dest;
     }

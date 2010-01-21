@@ -1,5 +1,6 @@
 package com.cve.web.db.databases;
 
+import com.cve.log.Log;
 import com.cve.model.db.Database;
 import com.cve.model.db.SelectResults;
 import com.cve.web.db.render.ResultsTableRenderer;
@@ -11,7 +12,7 @@ import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.Search;
 import java.net.URI;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
 
 /**
  * Renders the results of searching the entire database.
@@ -19,11 +20,17 @@ import static com.cve.log.Log.args;
  */
 final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/Servers.html");
+
+    private DatabaseContentsSearchPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         DatabaseContentsSearchPage page = (DatabaseContentsSearchPage) model;
         Database database = page.database;
         Search     search = page.search;

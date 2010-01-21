@@ -9,7 +9,8 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import org.bouncycastle.util.encoders.Base64;
-import static com.cve.log.Log.args;
+import com.cve.log.Log;
+import static com.cve.util.Check.notNull;
 
 /**
  * Wraps another request handler to provide a compressed URI scheme.
@@ -21,21 +22,27 @@ public final class CompressedURIHandler implements RequestHandler {
 
     final RequestHandler handler;
 
+    /**
+     * Where we log to.
+     */
+    private final Log log;
+
     static final String PREFIX = "/z/";
 
     static final Charset charset = Charset.forName("UTF-8");
 
-    private CompressedURIHandler(RequestHandler handler) {
-        this.handler = Check.notNull(handler);
+    private CompressedURIHandler(RequestHandler handler, Log log) {
+        this.handler = notNull(handler);
+        this.log = notNull(log);
     }
     
-    public static RequestHandler of(RequestHandler handler) {
-        return new CompressedURIHandler(handler);
+    public static RequestHandler of(RequestHandler handler, Log log) {
+        return new CompressedURIHandler(handler,log);
     }
 
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.args(request);
         String uri = request.requestURI;
         if (uri.startsWith(PREFIX)) {
             String longUri = longURI(URIs.of(uri)).toString();

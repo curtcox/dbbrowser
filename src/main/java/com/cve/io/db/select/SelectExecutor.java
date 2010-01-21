@@ -1,9 +1,9 @@
 package com.cve.io.db.select;
 
+import com.cve.log.Log;
 import com.cve.model.db.SelectContext;
 import com.cve.model.db.SelectResults;
 import com.cve.util.Stopwatch;
-import static com.cve.log.Log.args;
 
 /**
  * How everyone outside of this package executes selects.
@@ -11,8 +11,10 @@ import static com.cve.log.Log.args;
  */
 public final class SelectExecutor {
 
-    public static SelectResults run(SelectContext context) {
-        args(context);
+    final Log log;
+
+    public SelectResults run(SelectContext context) {
+        log.notNullArgs(context);
         Stopwatch watch = Stopwatch.start(context.select);
         SelectRunner runner = new SimpleSelectRunner();
         SelectResults results = runner.run(context);

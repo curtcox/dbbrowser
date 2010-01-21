@@ -1,8 +1,8 @@
 package com.cve.web;
 
-import com.cve.log.Log;
 import java.util.regex.Pattern;
-import static com.cve.log.Log.args;
+import com.cve.log.Log;
+import static com.cve.util.Check.notNull;
 
 /**
  * Something that handles {@link PageRequest}S and produces
@@ -21,14 +21,15 @@ public abstract class AbstractRequestHandler
     /**
      * Where we log to.
      */
-    static final Log LOG = Log.of(AbstractRequestHandler.class);
+    private final Log log;
 
     /**
      * Create a new handler that services the request types specified by
      * the supplied regular expression string.
      * @param regexp
      */
-    public AbstractRequestHandler(String regexp) {
+    public AbstractRequestHandler(String regexp, Log log) {
+        this.log = notNull(log);
         pattern = Pattern.compile(regexp);
     }
 
@@ -36,7 +37,8 @@ public abstract class AbstractRequestHandler
      * Construct a new handler with no associated regex.
      * If you use this, you should override handles, too.
      */
-    public AbstractRequestHandler() {
+    public AbstractRequestHandler(Log log) {
+        this.log = notNull(log);
         pattern = Pattern.compile("");
     }
 
@@ -49,7 +51,7 @@ public abstract class AbstractRequestHandler
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
             return PageResponse.of(get(request));
@@ -63,7 +65,7 @@ public abstract class AbstractRequestHandler
      * and is used by the supplied implementation of produce.
      */
     public boolean handles(String uri) {
-        args(uri);
+        log.args(uri);
         return pattern.matcher(uri).find();
     }
 

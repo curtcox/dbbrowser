@@ -39,7 +39,8 @@ public final class DBResultSetIO {
     private static DBResultSetIO newNull() {
         DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(new NullResultSetMetaData());
         ImmutableList<ImmutableMap> rows = ImmutableList.of();
-        return new DBResultSetIO(meta,rows);
+        Log log = null;
+        return new DBResultSetIO(meta,rows,log);
     }
 
     /**
@@ -92,69 +93,70 @@ public final class DBResultSetIO {
     /**
      * Use the factory.
      */
-    private DBResultSetIO(DBResultSetMetaDataIO meta, ImmutableList<ImmutableMap> rows) {
+    private DBResultSetIO(DBResultSetMetaDataIO meta, ImmutableList<ImmutableMap> rows, Log log) {
         this.meta = notNull(meta);
         this.rows = notNull(rows);
+        this.log = notNull(log);
     }
 
-    public static DBResultSetIO of(DBResultSetMetaDataIO meta, ImmutableList<ImmutableMap> rows) {
-        return new DBResultSetIO(meta,rows);
+    public static DBResultSetIO of(DBResultSetMetaDataIO meta, ImmutableList<ImmutableMap> rows, Log log) {
+        return new DBResultSetIO(meta,rows,log);
     }
 
-    public static DBResultSetIO of(ResultSet results) {
+    public static DBResultSetIO of(ResultSet results, Log log) {
         try {
-            DBResultSetIO resultsIO = doOf(results);
+            DBResultSetIO resultsIO = doOf(results,log);
             return resultsIO;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static DBResultSetIO doOf(ResultSet results) throws SQLException {
+    private static DBResultSetIO doOf(ResultSet results, Log log) throws SQLException {
         try {
             DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results.getMetaData());
-            ImmutableList<ImmutableMap> rows = readRows(results,meta);
-            return new DBResultSetIO(meta,rows);
+            ImmutableList<ImmutableMap> rows = readRows(results,meta,log);
+            return new DBResultSetIO(meta,rows,log);
         } finally {
             results.close();
         }
     }
 
-    public static DBResultSetIO ofUsing(ResultSet results, Getter... getters) {
-        return ofUsing(results,ImmutableList.of(getters));
+    public static DBResultSetIO ofUsing(ResultSet results, Log log, Getter... getters) {
+        return ofUsing(results,ImmutableList.of(getters),log);
     }
 
-    public static DBResultSetIO ofUsing(ResultSet results, ImmutableList<Getter> getters) {
+    public static DBResultSetIO ofUsing(ResultSet results, ImmutableList<Getter> getters, Log log) {
         try {
-            DBResultSetIO resultsIO = doOfUsing(results,getters);
+            DBResultSetIO resultsIO = doOfUsing(results,getters,log);
             return resultsIO;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static DBResultSetIO doOfUsing(ResultSet results, ImmutableList<Getter> getters) throws SQLException {
+    private static DBResultSetIO doOfUsing(ResultSet results, ImmutableList<Getter> getters, Log log) throws SQLException {
         try {
             DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(results.getMetaData());
-            ImmutableList<ImmutableMap> rows = readRows(results,meta);
+            ImmutableList<ImmutableMap> rows = readRows(results,meta,log);
             while (results.next()) {
                 for (Getter getter : getters) {
                 }
             }
-            return new DBResultSetIO(meta,rows);
+            return new DBResultSetIO(meta,rows,log);
         } finally {
             results.close();
         }
     }
 
-    private static ImmutableList<ImmutableMap> readRows(ResultSet results, DBResultSetMetaDataIO meta) throws SQLException {
+    private static ImmutableList<ImmutableMap> readRows(ResultSet results, DBResultSetMetaDataIO meta, Log log) throws SQLException {
         List rows = Lists.newArrayList();
         int cols = meta.columnCount;
         while (results.next()) {
             Map row = Maps.newHashMap();
             for (int c=1; c<=cols; c++) {
-                Object v = getObject(results,c);
-                debug(c + "->" + v);
+                Object v = getObject(results,c,log);
+                log.debug(c + "->" + v);
                 if (v!=null) {
                     row.put(c-1,v);
                     row.put(meta.columnNames.get(c-1), v);
@@ -191,7 +193,7 @@ public final class DBResultSetIO {
      * Get the object from the specified column.
      * Return a string describing the conversion error if one is encountered.
      */
-    private static Object getObject(ResultSet results, int c) throws SQLException {
+    private static Object getObject(ResultSet results, int c, Log log) throws SQLException {
         try {
             return results.getObject(c);
         } catch (SQLException e) {
@@ -200,8 +202,8 @@ public final class DBResultSetIO {
             String       className = meta.getColumnClassName(c);
             String message = "Error converting column " + c + " type/class="+ typeName + "/" + className;
             e.printStackTrace();
-            LOG.info(message);
-            LOG.warn(e);
+            log.info(message);
+            log.warn(e);
             return message;
         }
     }
@@ -217,7 +219,7 @@ public final class DBResultSetIO {
     /**
      * Logging stuff.
      */
-    static final Log LOG = Log.of(DBResultSetIO.class);
-    private static void info(String mesage) { LOG.info(mesage);  }
-    private static void debug(String mesage) { LOG.debug(mesage);  }
+    final Log log;
+    private void info(String mesage) { log.info(mesage);  }
+    private void debug(String mesage) { log.debug(mesage);  }
 }
