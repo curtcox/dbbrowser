@@ -49,7 +49,7 @@ public final class AlternateViewHandler implements RequestHandler {
             CSVHandler.of(db,serversStore,hintsStore,managedFunction,log),      // /view/CSV/
             XLSHandler.of(log),     // /view/XLS/
             PDFHandler.of(log),     // /view/PDF/
-            new JSONHandler(),    // /view/JSON/
+            JSONHandler.of(log),    // /view/JSON/
             XMLHandler.of(log)  // /view/XML/
         );
         codec = DBURICodec.of(log);
@@ -81,7 +81,7 @@ public final class AlternateViewHandler implements RequestHandler {
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults results = SelectExecutor.run(context);
+        SelectResults results = SelectExecutor.of(log).run(context);
         return results;
     }
 

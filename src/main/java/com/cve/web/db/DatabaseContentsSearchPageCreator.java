@@ -38,6 +38,8 @@ final class DatabaseContentsSearchPageCreator {
 
     final ManagedFunction.Factory managedFunction;
 
+    final DBConnectionFactory connections;
+
     final Log log;
 
     private DatabaseContentsSearchPageCreator(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
@@ -46,6 +48,7 @@ final class DatabaseContentsSearchPageCreator {
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
         this.log = notNull(log);
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
     }
 
     static DatabaseContentsSearchPageCreator of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
@@ -80,13 +83,13 @@ final class DatabaseContentsSearchPageCreator {
         Database database = table.database;
         DBColumn[] columns = meta.getColumnsFor(table).value.toArray(new DBColumn[0]);
         Select           select = Select.from(database,table,columns);
-        DBConnection connection = DBConnectionFactory.getConnection(server,serversStore,managedFunction);
+        DBConnection connection = connections.getConnection(server);
         Hints hints = hintsStore.get(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 
         // run the select
-        SelectResults results = SelectExecutor.run(context);
+        SelectResults results = SelectExecutor.of(log).run(context);
         return results;
     }
 }

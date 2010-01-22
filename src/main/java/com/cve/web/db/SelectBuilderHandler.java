@@ -44,6 +44,8 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     final DBURICodec codec;
 
+    final DBConnectionFactory connections;
+
     private SelectBuilderHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
         ManagedFunction.Factory managedFunction, Log log)
@@ -54,6 +56,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         this.managedFunction = notNull(managedFunction);
         this.log = notNull(log);
         codec = DBURICodec.of(log);
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
     }
 
     static SelectBuilderHandler of(
@@ -76,7 +79,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             return null;
         }
         SelectResults results = getResultsFromDB(uri);
-        return PageResponse.of(results);
+        return PageResponse.of(results,log);
     }
 
     /**
@@ -108,7 +111,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         }
         Search search = codec.getSearch(uri);
         URI dest = DBURIRenderer.render(select,search);
-        return PageResponse.newRedirect(dest);
+        return PageResponse.newRedirect(dest,log);
     }
 
     /**
@@ -130,13 +133,13 @@ public final class SelectBuilderHandler implements RequestHandler {
         // Setup the select
         Select           select = codec.getSelect(uri);
         Search           search = codec.getSearch(uri);
-        DBConnection connection = DBConnectionFactory.getConnection(server, serversStore, managedFunction);
+        DBConnection connection = connections.getConnection(server);
         Hints             hints = hintsStore.get(select.columns);
 
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 
         // run the select
-        SelectResults results = SelectExecutor.run(context);
+        SelectResults results = SelectExecutor.of(log).run(context);
         return results;
     }
 

@@ -1,8 +1,7 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import com.cve.web.log.AnnotatedStackTraceModel;
-import java.io.IOException;
-import static com.cve.log.Log.args;
 
 import static com.cve.util.Check.notNull;
 
@@ -11,26 +10,29 @@ import static com.cve.util.Check.notNull;
  */
 public final class ErrorReportHandler implements RequestHandler {
 
+    final Log log;
+
     /**
      * The thing that handles the requests that go OK.
      */
     private final RequestHandler handler;
 
-    private ErrorReportHandler(RequestHandler handler) {
+    private ErrorReportHandler(RequestHandler handler, Log log) {
         this.handler = notNull(handler);
+        this.log = notNull(log);
     }
 
-    public static RequestHandler of(RequestHandler handler) {
-        return new ErrorReportHandler(handler);
+    public static RequestHandler of(RequestHandler handler, Log log) {
+        return new ErrorReportHandler(handler,log);
     }
 
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.notNullArgs(request);
         try {
             return handler.produce(request);
         } catch (Throwable t) {
-            return PageResponse.of(AnnotatedStackTraceModel.throwable(t));
+            return PageResponse.of(AnnotatedStackTraceModel.throwable(t,log),log);
         }
     }
 

@@ -14,7 +14,7 @@ public class SearchRedirectsHandlerTest {
 
     @Test
     public void handled() throws IOException {
-        SearchRedirectsHandler   handler = SearchRedirectsHandler.of();
+        SearchRedirectsHandler   handler = SearchRedirectsHandler.of(null);
         PageRequest   request = PageRequest.path("/");
         PageResponse response = handler.produce(request);
         assertNull(response);
@@ -51,6 +51,6 @@ public class SearchRedirectsHandlerTest {
     }
 
     private void assertRedirected(String path, String target, String dest) throws SQLException {
-        assertEquals(URIs.of(dest),SearchRedirectsHandler.redirectSearchesTo(path,target));
+        assertEquals(URIs.of(dest),SearchRedirectsHandler.of(null).redirectSearchesTo(path,target));
     }
 }

@@ -151,7 +151,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         boolean more = results.rows.size() > limit.limit;
         ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
-        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),meta,more);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues,log),meta,more);
     }
 
     /**

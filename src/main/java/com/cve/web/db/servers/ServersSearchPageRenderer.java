@@ -18,6 +18,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.web.db.NavigationButtons.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * For finding stuff in a database server.
@@ -28,6 +29,14 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
+    private ServersSearchPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static ServersSearchPageRenderer of(Log log) {
+        return new ServersSearchPageRenderer(log);
+    }
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.notNullArgs(model,client);
@@ -37,7 +46,7 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
         String[] navigation = new String[] {
             ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(search)
         };
-        String guts  = Helper.render(page);
+        String guts  = Helper.render(page,log);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
 
@@ -55,8 +64,8 @@ static final class Helper {
         this.page = page;
     }
 
-    static String render(ServersSearchPage page) {
-        args(page);
+    static String render(ServersSearchPage page, Log log) {
+        log.notNullArgs(page);
         return new Helper(page).render();
     }
     

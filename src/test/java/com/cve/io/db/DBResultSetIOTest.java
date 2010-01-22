@@ -1,5 +1,6 @@
 package com.cve.io.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.SQL;
 import com.cve.sample.db.SampleH2Server;
 import com.google.common.collect.ImmutableList;
@@ -16,6 +17,8 @@ import static org.junit.Assert.*;
  */
 public class DBResultSetIOTest {
 
+    Log log;
+
     /**
         GEO.tableName cities
         city_id INT, name VARCHAR(255), state_id INT, population INT
@@ -31,7 +34,7 @@ public class DBResultSetIOTest {
         SampleH2Server.of();
         SQL sql = SQL.of("SELECT * FROM GEO.CITIES");
         ResultSet results = SampleH2Server.select(sql);
-        DBResultSetIO io = DBResultSetIO.of(results);
+        DBResultSetIO io = DBResultSetIO.of(results,log);
         assertEquals(4,io.meta.columnCount);
 
         ImmutableList<ImmutableMap> rows = io.rows;

@@ -1,13 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
-import com.cve.model.db.DBTable;
-import com.cve.model.db.DBColumn;
-import com.cve.model.db.DBResultSet;
-import com.cve.model.db.DBRow;
-import com.cve.model.db.Cell;
-import com.cve.model.db.Database;
-import com.cve.model.db.DBValue;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -24,6 +17,8 @@ import static org.junit.Assert.*;
  */
 public class ResultSetTest {
 
+    Log log;
+
     public ResultSetTest() {}
 
 
@@ -34,7 +29,7 @@ public class ResultSetTest {
         ImmutableList<DBColumn>     columns = ImmutableList.of();
         ImmutableList<DBRow>           rows = ImmutableList.of();
         ImmutableMap<Cell,DBValue>   values = ImmutableMap.of();
-        DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values);
+        DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values,log);
         assertEquals(tables, resultSet.tables);
         assertEquals(columns,resultSet.columns);
         assertEquals(rows,   resultSet.rows);
@@ -58,8 +53,8 @@ public class ResultSetTest {
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue> fixedValues1 = ImmutableMap.copyOf(values);
         ImmutableMap<Cell,DBValue> fixedValues2 = ImmutableMap.copyOf(values);
-        DBResultSet     resultSet1 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues1);
-        DBResultSet     resultSet2 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues2);
+        DBResultSet     resultSet1 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues1,log);
+        DBResultSet     resultSet2 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues2,log);
         assertEquals(resultSet1,resultSet2);
     }
 

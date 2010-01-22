@@ -187,7 +187,7 @@ public final class DBURICodec {
         DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBTable> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.TABLES).split("\\+")) {
-            DBTable        table = DBTable.parse(server,fullTableName);
+            DBTable        table = DBTable.parse(server,fullTableName,log);
             list.add(table);
         }
         return ImmutableList.copyOf(list);
@@ -271,7 +271,7 @@ public final class DBURICodec {
         DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBRowFilter> list = Lists.newArrayList();
         for (String fullFilterName : filterParts.split("\\+")) {
-            DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName);
+            DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName,log);
             list.add(filter);
         }
         return ImmutableList.copyOf(list);

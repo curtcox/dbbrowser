@@ -28,6 +28,9 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         this.log = notNull(log);
     }
 
+    public static TablesPageRenderer of(Log log) {
+        return new TablesPageRenderer(log);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {

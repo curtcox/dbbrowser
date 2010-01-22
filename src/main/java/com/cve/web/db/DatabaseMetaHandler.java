@@ -42,6 +42,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final DBURICodec codec;
 
+    final DBConnectionFactory connections;
+
     private static final String PREFIX = "/meta/";
 
     private DatabaseMetaHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
@@ -51,6 +53,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         this.serversStore = notNull(serversStore);
         this.log = notNull(log);
         codec = DBURICodec.of(log);
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
     }
 
     public static DatabaseMetaHandler of(
@@ -258,7 +261,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     }
 
     DatabaseMetaData metaFor(DBServer server) throws SQLException {
-        return DBConnectionFactory.metaFor(server,serversStore,managedFunction);
+        return connections.metaFor(server,serversStore,managedFunction);
     }
 
     public static String render(ResultSet results) throws SQLException {

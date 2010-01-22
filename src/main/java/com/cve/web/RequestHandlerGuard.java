@@ -1,6 +1,7 @@
 package com.cve.web;
 
 
+import com.cve.log.Log;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -18,15 +19,18 @@ public abstract class RequestHandlerGuard implements RequestHandler {
      */
     private final RequestHandler handler;
 
-    protected RequestHandlerGuard(RequestHandler handler) {
+    private final Log log;
+
+    protected RequestHandlerGuard(RequestHandler handler, Log log) {
         this.handler = notNull(handler);
+        this.log = notNull(log);
     }
 
     /**
      * Return a new guard that always makes the same decisions.
      */
-    public static RequestHandler of(RequestHandler handler, final boolean pass, final URI denied) {
-        return new RequestHandlerGuard(handler) {
+    public static RequestHandler of(RequestHandler handler, final boolean pass, final URI denied, Log log) {
+        return new RequestHandlerGuard(handler,log) {
             @Override public boolean passes(PageRequest request) {
                 return pass;
             }
@@ -44,7 +48,7 @@ public abstract class RequestHandlerGuard implements RequestHandler {
             return handler.produce(request);
         }
         URI dest = getDeniedURI(request);
-        return PageResponse.newRedirect(dest);
+        return PageResponse.newRedirect(dest,log);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
@@ -21,6 +22,8 @@ import static com.cve.html.HTML.*;
  * @author curt
  */
 public class DatabaseMetaHandlerTest {
+
+    Log log;
 
     private DBServer getStoreServer() {
         DBServer server = DBServer.uri(URIs.of("server"));
@@ -60,8 +63,8 @@ public class DatabaseMetaHandlerTest {
     DatabaseMetaHandler newHandler() {
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-        DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction);
+        DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction,log);
         return handler;
     }
 }

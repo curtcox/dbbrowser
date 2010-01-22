@@ -1,11 +1,11 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
 
 import static com.cve.util.Check.*;
-import static com.cve.log.Log.args;
 
 /**
  * For handling HTTP search redirects.
@@ -21,10 +21,14 @@ import static com.cve.log.Log.args;
  */
 public final class SearchRedirectsHandler implements RequestHandler {
 
-    private SearchRedirectsHandler() {}
+    final Log log;
 
-    public static SearchRedirectsHandler of() {
-        return new SearchRedirectsHandler();
+    private SearchRedirectsHandler(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static SearchRedirectsHandler of(Log log) {
+        return new SearchRedirectsHandler(log);
     }
 
     /**
@@ -33,7 +37,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        args(request);
+        log.notNullArgs(request);
         notNull(request);
 
         String query = request.queryString;
@@ -43,7 +47,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
         }
         String target = request.parameters.get(Search.FIND);
         URI dest = redirectSearchesTo(path,target);
-        return PageResponse.newRedirect(dest);
+        return PageResponse.newRedirect(dest,log);
     }
 
     /**
@@ -55,8 +59,8 @@ public final class SearchRedirectsHandler implements RequestHandler {
      * @param path Where to search.  Note that this path should end with "/search"
      * @param target what to search for
      */
-    static URI redirectSearchesTo(String path, String target) {
-        args(path,target);
+    URI redirectSearchesTo(String path, String target) {
+        log.notNullArgs(path,target);
         int slashes = URIs.slashCount(path);
         if (slashes==1) {
             return URIs.of("/" + target + "/");

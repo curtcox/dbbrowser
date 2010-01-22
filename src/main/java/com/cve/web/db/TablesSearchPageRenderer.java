@@ -36,6 +36,10 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         codec = DBURICodec.of(log);
     }
 
+    public static TablesSearchPageRenderer of(Log log) {
+        return new TablesSearchPageRenderer(log);
+    }
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.notNullArgs(model,client);

@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.log.Log;
 import com.cve.web.db.render.PagingLinksRenderer;
 import com.cve.model.db.Cell;
 import com.cve.model.db.SelectResults;
@@ -31,7 +32,7 @@ import org.junit.Test;
  */
 public class PagingLinksRendererTest {
 
-
+    Log log;
     private static final String BACK = PagingLinksRenderer.BACK;
     private static final String NEXT = PagingLinksRenderer.NEXT;
     private static final String BIGGER = PagingLinksRenderer.BIGGER;
@@ -44,7 +45,7 @@ public class PagingLinksRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -66,7 +67,7 @@ public class PagingLinksRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);

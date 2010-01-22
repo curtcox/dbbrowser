@@ -1,11 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
-import com.cve.model.db.DBTable;
-import com.cve.model.db.DBColumn;
-import com.cve.model.db.DBRowFilter;
-import com.cve.model.db.Database;
-import com.cve.model.db.DBValue;
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 import com.cve.util.URIs;
 import org.junit.Test;
@@ -16,6 +11,8 @@ import static org.junit.Assert.*;
  * @author curt
  */
 public class FilterTest {
+
+    Log log;
 
     public FilterTest() {}
 
@@ -70,7 +67,7 @@ public class FilterTest {
         // We use "+" to separate filters in URLs, so the fragments can't
         // contain them
         assertFalse("Should not contain + : " + fragment,fragment.contains("+"));
-        DBRowFilter parsed = DBRowFilter.parse(server, tables, fragment);
+        DBRowFilter parsed = DBRowFilter.parse(server, tables, fragment,log);
         System.out.println("filter=" + filter);
         System.out.println("parsed=" + parsed);
         assertEquals(filter,parsed);

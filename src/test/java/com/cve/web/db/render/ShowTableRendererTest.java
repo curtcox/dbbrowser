@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.log.Log;
 import com.cve.web.db.render.ShowTableRenderer;
 import com.cve.model.db.Cell;
 import com.cve.model.db.SelectResults;
@@ -32,6 +33,7 @@ import static com.cve.html.HTML.*;
  */
 public class ShowTableRendererTest {
 
+    Log log;
 
     public SelectResults onePersonResults() {
         DBServer           server = DBServer.uri(URIs.of("server"));
@@ -41,7 +43,7 @@ public class ShowTableRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -57,7 +59,7 @@ public class ShowTableRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName),age);
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -79,7 +81,7 @@ public class ShowTableRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);

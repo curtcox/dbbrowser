@@ -1,6 +1,5 @@
 package com.cve.io.db.select;
 
-import com.cve.io.db.select.SelectExecutor;
 import com.cve.io.db.DBConnection;
 import com.cve.model.db.Cell;
 import com.cve.model.db.DBConnectionInfo;
@@ -17,6 +16,7 @@ import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SelectContext;
 import com.cve.model.db.DBValue;
 import com.cve.io.db.DBConnectionFactory;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
@@ -40,6 +40,8 @@ import static org.junit.Assert.*;
  */
 public class ResultsRenderTest {
 
+    Log log;
+
     @Test
     public void renderSelectPerson() throws SQLException, ClassNotFoundException {
         DBConnection connection = newMemoryDB();
@@ -61,10 +63,10 @@ public class ResultsRenderTest {
         }
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue> fixedValues = ImmutableMap.copyOf(values);
-        DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues);
+        DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues,log);
         SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true);
         SelectContext   context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults    actual = SelectExecutor.run(context);
+        SelectResults    actual = SelectExecutor.of(log).run(context);
 
         assertEquals(expected.server          ,actual.server);
         assertEquals(expected.count           ,actual.count);
@@ -80,7 +82,7 @@ public class ResultsRenderTest {
      /**
      * Create a new database.
      */
-    public static DBConnection newMemoryDB()
+    public DBConnection newMemoryDB()
         throws ClassNotFoundException, SQLException
     {
         JDBCURL url = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
@@ -90,6 +92,6 @@ public class ResultsRenderTest {
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
 
-        return DBConnectionFactory.getConnection(info,serversStore,managedFunction);
+        return DBConnectionFactory.of(serversStore, managedFunction, log).getConnection(info);
     }
 }

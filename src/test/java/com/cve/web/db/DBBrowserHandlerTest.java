@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
@@ -24,11 +25,12 @@ import static org.junit.Assert.*;
  */
 public class DBBrowserHandlerTest {
 
+    Log log;
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBHintsStore hintsStore = MemoryDBHintsStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    final RequestHandler handler = DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction);
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
+    final RequestHandler handler = DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction,log);
     {
         DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);

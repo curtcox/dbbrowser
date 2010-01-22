@@ -18,6 +18,7 @@ import com.cve.model.db.Select;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.log.Log;
 import static com.cve.util.Replace.bracketQuote;
 import static com.cve.util.Replace.escapeQuotes;
 import com.cve.util.URIs;
@@ -38,6 +39,7 @@ import static com.cve.html.HTML.*;
  */
 public class ResultsTableRendererTest {
 
+    Log log;
 
     public SelectResults onePersonResults() {
         DBServer           server = DBServer.uri(URIs.of("server"));
@@ -47,7 +49,7 @@ public class ResultsTableRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -63,7 +65,7 @@ public class ResultsTableRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName),age);
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -85,7 +87,7 @@ public class ResultsTableRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -104,7 +106,7 @@ public class ResultsTableRendererTest {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
         ImmutableList<Order> orders = ImmutableList.of();
-        String       rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints, client).landscapeTable();
+        String       rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints, client,log).landscapeTable();
         return rendered;
     }
 
@@ -136,7 +138,7 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
         ImmutableList<Order> orders = ImmutableList.of();
-        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints,client).databaseRow();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, orders, results.hints,client,log).databaseRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -148,7 +150,7 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
         ImmutableList<Order> orders = ImmutableList.of();
-        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders, results.hints,client).tableRow();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders, results.hints,client,log).tableRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -169,7 +171,7 @@ public class ResultsTableRendererTest {
 
         SelectResults results = onePersonResults();
         ImmutableList<Order> orders = ImmutableList.of();
-        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).columnNameRow();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client,log).columnNameRow();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -189,7 +191,7 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
 
         ImmutableList<Order> orders = ImmutableList.of();
-        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).nameCell(column);
+        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client,log).nameCell(column);
         equals(expected,rendered);
     }
 
@@ -199,7 +201,7 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
         ImmutableList<Order> orders = ImmutableList.of();
-        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).columnActionsRow();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client,log).columnActionsRow();
         String rendered = list.get(0).toString();
         assertTrue(rendered.contains(linkToHide));
     }
@@ -211,7 +213,7 @@ public class ResultsTableRendererTest {
         ClientInfo     client = ClientInfo.of();
         SelectResults results = onePersonResults();
         ImmutableList<Order> orders = ImmutableList.of();
-        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).valueRowsList();
+        List list = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client,log).valueRowsList();
         String rendered = list.get(0).toString();
         equals(expected,rendered);
     }
@@ -243,14 +245,14 @@ public class ResultsTableRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         ClientInfo     client = ClientInfo.of();
 
         ImmutableList<Order> orders = ImmutableList.of();
-        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client).nameCell(name);
+        String rendered = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet,orders,results.hints,client,log).nameCell(name);
         assertTrue(rendered,rendered.contains("familyName"));
     }
 
@@ -305,13 +307,13 @@ public class ResultsTableRendererTest {
                     r1, r2,
                     "Chicago","IL","IL","Illinois",
                     "Denver" ,"CO","CO","Colorado"
-                )
+                ),log
         );
 
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
         ClientInfo     client = ClientInfo.of();
 
-        String         rendered = ResultsTableRenderer.render(results,client);
+        String         rendered = ResultsTableRenderer.render(results,client,log);
         return rendered;
     }
 

@@ -10,6 +10,7 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -43,18 +44,18 @@ public final class ResultsTableRenderer {
      */
     private final DBResultSetRenderer tools;
 
-    private ResultsTableRenderer(SelectResults results, ClientInfo client) {
+    private ResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
     }
 
-    static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {
-        return new ResultsTableRenderer(results,client);
+    static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client, Log log) {
+        return new ResultsTableRenderer(results,client,log);
     }
 
-    public static String render(SelectResults results, ClientInfo client) {
-        return new ResultsTableRenderer(results,client).resultsTable();
+    public static String render(SelectResults results, ClientInfo client, Log log) {
+        return new ResultsTableRenderer(results,client,log).resultsTable();
     }
 
     static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
@@ -126,11 +127,11 @@ public final class ResultsTableRenderer {
     }
   
     String nameCell(Database database) {
-        return DBResultSetRenderer.nameCell(database);
+        return tools.nameCell(database);
     }
 
     String nameCell(DBTable table) {
-        return DBResultSetRenderer.nameCell(table);
+        return tools.nameCell(table);
     }
 
 }

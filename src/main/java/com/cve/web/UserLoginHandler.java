@@ -1,15 +1,19 @@
 package com.cve.web;
 
+import com.cve.log.Log;
+
 /**
  *
  * @author Curt
  */
 final class UserLoginHandler extends AbstractRequestHandler {
 
-    private UserLoginHandler() {}
+    private UserLoginHandler(Log log) {
+        super(log);
+    }
 
-    static UserLoginHandler of() {
-        return new UserLoginHandler();
+    static UserLoginHandler of(Log log) {
+        return new UserLoginHandler(log);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.cve.html;
 
+import com.cve.log.Log;
 import com.cve.util.Replace;
 import com.cve.web.DebugHandler;
 import com.cve.web.PageRequest;
@@ -12,10 +13,13 @@ import static com.cve.util.Check.notNull;
  */
 public final class HTML {
 
+    final Log log;
+
     private final String html;
 
-    private HTML(String html) {
+    private HTML(String html, Log log) {
         this.html = notNull(html);
+        this.log = notNull(log);
     }
 
     public static HTML of(String html) {

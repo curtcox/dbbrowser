@@ -1,5 +1,6 @@
 package com.cve.sample.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.Database;
 import com.cve.model.db.SQL;
 import com.cve.util.Check;
@@ -17,7 +18,8 @@ import java.util.List;
  */
 public final class SakilaDB {
 
-    public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
+    static final Log log = null;
+    public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA",log);
 
 
     private SakilaDB() {}

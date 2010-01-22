@@ -9,21 +9,29 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DriverIO;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ManagedFunction.Factory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
-
+import static com.cve.util.Check.notNull;
 /**
  *
  * @author curt
  */
 public final class DerbyDriver implements DriverIO {
 
-    private DerbyDriver() {}
+    final ManagedFunction.Factory managedFunction;
+    final DBServersStore serversStore;
+    final Log log;
 
-    public static DerbyDriver of() {
-        return new DerbyDriver();
+    private DerbyDriver(ManagedFunction.Factory managedFunction,  DBServersStore serversStore, Log log) {
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
+    }
+
+    public static DerbyDriver of(ManagedFunction.Factory managedFunction,  DBServersStore serversStore, Log log) {
+        return new DerbyDriver(managedFunction,serversStore,log);
     }
     
     @Override
@@ -33,8 +41,8 @@ public final class DerbyDriver implements DriverIO {
     }
 
     @Override
-    public DBMetaData getDBMetaData(DBConnection dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return DerbyMetaData.of(dbmd,managedFunction,serversStore);
+    public DBMetaData getDBMetaData(DBConnection dbmd) {
+        return DerbyMetaData.of(dbmd,managedFunction,serversStore,log);
     }
 
     @Override
@@ -44,11 +52,11 @@ public final class DerbyDriver implements DriverIO {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return new DerbyResultSetMetaDataFactory(server, meta);
+        return new DerbyResultSetMetaDataFactory(server, meta,log);
     }
 
     @Override
-    public DBMetaDataIO getDBMetaDataIO(DBConnection connection, Factory managedFunction) {
+    public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

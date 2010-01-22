@@ -4,6 +4,7 @@ import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.DBMetaDataIO.ColumnInfo;
 import com.cve.io.db.DBMetaDataIO.ColumnSpecifier;
 import com.cve.io.db.DefaultDBConnection;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
 import com.cve.sample.db.SampleH2Server;
@@ -21,11 +22,12 @@ import static org.junit.Assert.*;
  */
 public class H2MetaDataIOTest {
 
+    Log log;
     final DBServer server = SampleH2Server.SAMPLE;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo connectionInfo = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(connectionInfo,serversStore,managedFunction);
+    final DefaultDBConnection connection = DefaultDBConnection.of(connectionInfo,serversStore,managedFunction,log);
 
     final DBMetaDataIO io = H2MetaDataIO.of(connection, managedFunction);
 

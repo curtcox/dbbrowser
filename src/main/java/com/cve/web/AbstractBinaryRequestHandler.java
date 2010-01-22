@@ -54,7 +54,7 @@ public abstract class AbstractBinaryRequestHandler
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(get(request),type);
+            return PageResponse.of(get(request),type,log);
         }
         return null;
     }

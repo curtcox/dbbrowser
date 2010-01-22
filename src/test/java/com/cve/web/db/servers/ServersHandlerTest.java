@@ -1,12 +1,6 @@
 package com.cve.web.db.servers;
 
-import com.cve.io.db.DBMetaData;
-import com.cve.io.db.LocalDBMetaDataFactory;
-import com.cve.sample.db.SampleH2Server;
-import com.cve.stores.ManagedFunction;
-import com.cve.stores.UnmanagedFunctionFactory;
-import com.cve.stores.db.DBServersStore;
-import com.cve.stores.db.MemoryDBServersStore;
+import com.cve.log.Log;
 import com.cve.web.*;
 import com.cve.sample.db.DBSampleServerTestObjects;
 import java.io.IOException;
@@ -21,7 +15,8 @@ import static org.junit.Assert.*;
  */
 public class ServersHandlerTest {
 
-    static final ServersHandler handler = ServersHandler.of(DBSampleServerTestObjects.db,DBSampleServerTestObjects.serversStore);
+    Log log;
+    final ServersHandler handler = ServersHandler.of(DBSampleServerTestObjects.db,DBSampleServerTestObjects.serversStore,log);
 
     @Test
     public void producesServersOnlyRequest() throws IOException, SQLException {

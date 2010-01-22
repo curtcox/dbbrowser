@@ -13,12 +13,14 @@ import com.cve.io.db.DBMetaDataIO.SchemaInfo;
 import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
 import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
+import static com.cve.util.Check.notNull;
 
 /**
  * Meta data driver for H2 database.
@@ -26,13 +28,16 @@ import java.util.List;
  */
 final class OracleMetaData extends DefaultDBMetaData {
 
-    private OracleMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(io,managedFunction,serversStore);
+    final Log log;
+
+    private OracleMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        super(io,managedFunction,serversStore,log);
+        this.log = notNull(log);
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        DBMetaDataIO io = OracleMetaDataIO.of(connection,managedFunction);
-        return new OracleMetaData(io,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        DBMetaDataIO io = OracleMetaDataIO.of(connection,managedFunction,log);
+        return new OracleMetaData(io,managedFunction,serversStore,log);
     }
 
     /**
@@ -50,7 +55,7 @@ final class OracleMetaData extends DefaultDBMetaData {
             String   columnName = info.columnName;
             String databaseName = info.tableSchema;
             Class          type = classFor(info.dataType);
-            Database   database = Database.serverName(server, databaseName);
+            Database   database = Database.serverName(server, databaseName,log);
             DBColumn     column = database.tableName(tableName).columnNameType(columnName,type);
             list.add(column);
         }

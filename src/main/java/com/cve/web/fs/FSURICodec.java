@@ -157,7 +157,7 @@ public final class FSURICodec {
         FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<FSPath> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.FILES).split("\\+")) {
-            FSPath        path = FSPath.parse(server,fullTableName);
+            FSPath        path = FSPath.parse(server,fullTableName,log);
             list.add(path);
         }
         return ImmutableList.copyOf(list);

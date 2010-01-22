@@ -122,7 +122,7 @@ final class SimpleSelectRunner implements SelectRunner {
         boolean more = results.rows.size() > select.limit.limit;
         ImmutableList<DBRow>           fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
-        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues,log),more);
     }
 
     /**

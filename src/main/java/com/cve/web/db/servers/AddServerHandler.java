@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
@@ -12,6 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 
 import static com.cve.web.db.servers.AddServerPage.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * For adding a database server to the ServerStore.
@@ -21,12 +23,15 @@ final class AddServerHandler extends AbstractFormHandler {
 
     final DBServersStore serversStore;
 
-    private AddServerHandler(DBServersStore serversStore) {
-        this.serversStore = serversStore;
+    final Log log;
+
+    private AddServerHandler(DBServersStore serversStore, Log log) {
+        this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
     }
 
-    public static AddServerHandler of(DBServersStore serversStore) {
-        return new AddServerHandler(serversStore);
+    public static AddServerHandler of(DBServersStore serversStore, Log log) {
+        return new AddServerHandler(serversStore,log);
     }
 
     @Override
@@ -36,7 +41,7 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse get(PageRequest request) {
-        return PageResponse.of(SAMPLE);
+        return PageResponse.of(SAMPLE,null);
     }
 
     @Override
@@ -53,16 +58,16 @@ final class AddServerHandler extends AbstractFormHandler {
         if (serversStore.keys().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
-                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
+                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
             );
         }
         try {
             serversStore.put(server, info);
-            return PageResponse.newRedirect(server.linkTo().getTarget());
+            return PageResponse.newRedirect(server.linkTo().getTarget(),log);
         } catch (RuntimeException e) {
             String message = e.getMessage();
             return PageResponse.of(
-                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
+                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
             );
         }
     }

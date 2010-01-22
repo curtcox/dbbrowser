@@ -38,18 +38,18 @@ public class DefaultDBResultSetMetaDataFactory {
         this.log = notNull(log);
     }
 
-    public static DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {
-        args(server,connection,results);
+    public DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {
+        log.notNullArgs(server,connection,results);
         DefaultDBResultSetMetaDataFactory factory = factory(server,connection,results);
         DBResultSetMetaData meta = DBResultSetMetaData.of(factory.getDatabases(),factory.getTables(),factory.getColumns(),factory.getFunctions());
         return meta;
     }
 
-    private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results) {
-        args(server,connection,results);
+    private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results, Log log) {
+        log.notNullArgs(server,connection,results);
         DBDriver driver = connection.getInfo().driver;
         DBResultSetMetaDataIO meta = results.meta;
-        return driver.getResultSetFactory(server, meta);
+        return driver.getResultSetFactory(server, meta,log);
     }
 
     public ImmutableList<Database> getDatabases() {

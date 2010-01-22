@@ -1,14 +1,12 @@
 package com.cve.io.db.driver.h2;
 
 import com.cve.io.db.DBMetaData;
-import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.DefaultDBConnection;
-import com.cve.io.db.DefaultDBMetaDataIO;
 import com.cve.io.db.NoResultSetMetaData;
 import com.cve.io.db.SelectRenderer;
-import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
@@ -28,14 +26,15 @@ import static org.junit.Assert.*;
  */
 public class H2DriverTest {
 
+    final Log log = null;
     final DBServer server = SampleH2Server.SAMPLE;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
-    final DBMetaData dbmd = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore);
-
+    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
     final H2Driver driver = H2Driver.of();
+    final DBMetaData dbmd = driver.getDBMetaData(connection);
+
 
     @Test
     public void getJDBCURL() {
@@ -46,7 +45,7 @@ public class H2DriverTest {
 
     @Test
     public void getDBMetaData() {
-        DBMetaData meta = driver.getDBMetaData(connection, managedFunction, serversStore);
+        DBMetaData meta = driver.getDBMetaData(connection);
         assertTrue(meta.getColumnsFor(server).value.size() > 350);
         assertEquals(1,meta.getDatabasesOn(server).value.size());
     }

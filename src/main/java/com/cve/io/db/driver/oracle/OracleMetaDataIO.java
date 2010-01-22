@@ -3,6 +3,7 @@ package com.cve.io.db.driver.oracle;
 import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.DefaultDBMetaDataIO;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 
 /**
@@ -11,12 +12,12 @@ import com.cve.stores.ManagedFunction;
  */
 final class OracleMetaDataIO extends DefaultDBMetaDataIO {
 
-    protected OracleMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
-        super(connection,managedFunction);
+    protected OracleMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
+        super(connection,managedFunction,log);
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
-        return new OracleMetaDataIO(connection,managedFunction);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
+        return new OracleMetaDataIO(connection,managedFunction,log);
     }
 
 }

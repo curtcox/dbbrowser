@@ -2,6 +2,7 @@ package com.cve.io.db;
 
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.io.db.driver.h2.H2Driver;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.JDBCURL;
@@ -25,6 +26,7 @@ import static org.junit.Assert.*;
  */
 public class DefaultDBConnectionTest {
 
+    Log log;
     static final DBServer server = DBServer.uri(URIs.of("server"));
     static final Database database = server.databaseName("DB1");
     static final DBServer sampleServer = SampleH2Server.SAMPLE;
@@ -38,8 +40,8 @@ public class DefaultDBConnectionTest {
         store.put(server, info);
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-        DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
-        DBMetaData meta = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore);
+        DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
+        DBMetaData meta = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore,log);
 
         return meta;
     }

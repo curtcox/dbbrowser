@@ -7,13 +7,15 @@ import com.cve.model.db.Join;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
+import com.cve.log.Log;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.Set;
-import static com.cve.log.Log.args;
+import static com.cve.util.Check.notNull;
+
 
 /**
  * The {@link Hints} we know about.
@@ -30,17 +32,19 @@ import static com.cve.log.Log.args;
  */
 final class LocalHintsStore implements DBHintsStore {
 
+    final Log log;
     /**
      * How we access databases.
      */
     final DBMetaData.Factory db;
 
-    private LocalHintsStore(DBMetaData.Factory db) {
-        this.db = db;
+    private LocalHintsStore(DBMetaData.Factory db, Log log) {
+        this.db = notNull(db);
+        this.log = notNull(log);
     }
 
-    public static LocalHintsStore of(DBMetaData.Factory db) {
-        return new LocalHintsStore(db);
+    public static LocalHintsStore of(DBMetaData.Factory db, Log log) {
+        return new LocalHintsStore(db,log);
     }
 
     /**
@@ -67,7 +71,7 @@ final class LocalHintsStore implements DBHintsStore {
 
     @Override
     public Hints get(ImmutableList<DBColumn> columns) {
-        args(columns);
+        log.notNullArgs(columns);
         Set<Join>      joinSet = Sets.newHashSet();
         Set<DBRowFilter>  filterSet = Sets.newHashSet();
         for (DBColumn column : columns) {
@@ -85,8 +89,8 @@ final class LocalHintsStore implements DBHintsStore {
         );
     }
 
-    static ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
-        args(columns);
+    ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
+        log.notNullArgs(columns);
         Set<DBTable>  tables = Sets.newHashSet();
         for (DBColumn column : columns) {
             tables.add(column.table);

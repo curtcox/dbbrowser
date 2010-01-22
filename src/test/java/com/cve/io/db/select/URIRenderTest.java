@@ -1,6 +1,6 @@
 package com.cve.io.db.select;
 
-import com.cve.io.db.select.DBURIRenderer;
+import com.cve.log.Log;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
@@ -25,6 +25,8 @@ import static org.junit.Assert.*;
  * @author curt
  */
 public class URIRenderTest {
+
+    Log log;
 
     @Test
     public void renderSelectCustomerPersonName() {
@@ -64,7 +66,7 @@ public class URIRenderTest {
         DBColumn        number = account.columnNameType("number",Integer.class);
         DBColumn account_email = account.columnNameType("email",String.class);
         Join            join = Join.of(person_email, account_email);
-        DBRowFilter        filter = DBRowFilter.of(sex, DBValue.of("F"));
+        DBRowFilter        filter = DBRowFilter.of(sex, DBValue.of("F"),log);
         Order          order = Order.ascending(name);
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(

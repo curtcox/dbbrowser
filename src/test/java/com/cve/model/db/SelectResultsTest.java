@@ -1,13 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
-import com.cve.model.db.DBTable;
-import com.cve.model.db.DBColumn;
-import com.cve.model.db.Hints;
-import com.cve.model.db.DBResultSet;
-import com.cve.model.db.SelectResults;
-import com.cve.model.db.Select;
-import com.cve.model.db.Database;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -17,6 +10,8 @@ import static org.junit.Assert.*;
  * @author curt
  */
 public class SelectResultsTest {
+
+    Log log;
 
     public SelectResultsTest() {}
 
@@ -31,7 +26,7 @@ public class SelectResultsTest {
         DBTable             table = database.tableName("table");
         DBColumn           column = DBColumn.tableNameType(table,"column",String.class);
         Select    givenSelect   = Select.from(database,table,column);
-        DBResultSet givenResults  = DBResultSet.of(database,table,column);
+        DBResultSet givenResults  = DBResultSet.of(database,table,column,log);
         SelectResults results   = SelectResults.selectResultsHintsMore(givenSelect,givenResults,Hints.NONE,false);
         Select returnSelect = results.select;
         assertEquals(givenSelect, returnSelect);

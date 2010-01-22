@@ -1,6 +1,7 @@
 package com.cve.web.fs;
 
 import com.cve.io.fs.FSMetaData;
+import com.cve.log.Log;
 import com.cve.stores.fs.FSServersStore;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.Model;
@@ -13,11 +14,12 @@ import com.cve.web.RequestHandler;
  */
 final class PipelineBuilderHandler extends AbstractRequestHandler {
 
-    private PipelineBuilderHandler(FSMetaData.Factory fs, FSServersStore store) {
+    private PipelineBuilderHandler(FSMetaData.Factory fs, FSServersStore store, Log log) {
+        super(log);
     }
 
-    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store) {
-        return new PipelineBuilderHandler(fs,store);
+    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store, Log log) {
+        return new PipelineBuilderHandler(fs,store,log);
     }
 
     @Override

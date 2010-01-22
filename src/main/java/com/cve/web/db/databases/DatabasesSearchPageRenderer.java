@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.web.db.NavigationButtons.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * For finding stuff in a database server.
@@ -29,6 +30,14 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
+    private DatabasesSearchPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
+
+    static DatabasesSearchPageRenderer of(Log log) {
+        return new DatabasesSearchPageRenderer(log);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.notNullArgs(model,client);
@@ -40,7 +49,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
             Replace.bracketQuote("Occurences of " + target + " on <a href=[/]>server</a> ") + server,
             search(page.search)
         };
-        String guts  = Helper.render(page);
+        String guts  = Helper.render(page,log);
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
@@ -57,12 +66,13 @@ static final class Helper {
     static final UIDetail EMPTY_CELL = UIDetail.of("");
 
     Helper(DatabasesSearchPage page, Log log) {
-        this.page = page;
+        this.page = notNull(page);
+        this.log = notNull(log);
     }
 
-    static String render(DatabasesSearchPage page) {
+    static String render(DatabasesSearchPage page, Log log) {
         log.notNullArgs(page);
-        return new Helper(page).render();
+        return new Helper(page,log).render();
     }
     
     /**

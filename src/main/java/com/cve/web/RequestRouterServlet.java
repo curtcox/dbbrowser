@@ -1,6 +1,5 @@
 package com.cve.web;
 
-import com.cve.log.Log;
 import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
 
@@ -78,7 +77,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(t),response);
+            write(PageResponse.of(t,log),response);
         }
 
     }
@@ -91,7 +90,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(t),response);
+            write(PageResponse.of(t,log),response);
         }
 
     }
@@ -100,7 +99,7 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     void write(PageResponse page, HttpServletResponse response) throws IOException {
-        args(page,response);
+        log.notNullArgs(page,response);
         URI redirect = page.redirect;
         // Redirect, if that is the response
         if (redirect!=null) {

@@ -18,6 +18,10 @@ final class XMLHandler extends AbstractBinaryRequestHandler {
         this.log = notNull(log);
     }
 
+    static XMLHandler of(Log log) {
+        return new XMLHandler(log);
+    }
+    
     @Override
     public byte[] get(PageRequest request) {
         log.notNullArgs(request);

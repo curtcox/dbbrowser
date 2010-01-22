@@ -21,17 +21,20 @@ import static com.cve.util.Check.notNull;
  */
 final class H2MetaDataIO extends DefaultDBMetaDataIO {
 
+    final Log log;
+
     private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns;
 
-    protected H2MetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
-        super(connection,managedFunction);
+    protected H2MetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
+        super(connection,managedFunction,log);
         notNull(managedFunction);
-             columns = notNull(managedFunction.of(new GetColumns(),      ColumnSpecifier.class, DBResultSetIO.class, DBResultSetIO.NULL));
+        this.log = notNull(log);
+        columns = notNull(managedFunction.of(new GetColumns(),      ColumnSpecifier.class, DBResultSetIO.class, DBResultSetIO.NULL));
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
-        DBMetaDataIO io = new H2MetaDataIO(connection,managedFunction);
-        io = DBMetaDataIOLogger.of(io);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
+        DBMetaDataIO io = new H2MetaDataIO(connection,managedFunction,log);
+        io = DBMetaDataIOLogger.of(io,log);
         return io;
     }
 
@@ -61,7 +64,7 @@ final class H2MetaDataIO extends DefaultDBMetaDataIO {
         @Override
         public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
             ResultSet results = getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern, specifier.columnNamePattern);
-            DBResultSetIO io = DBResultSetIO.of(results);
+            DBResultSetIO io = DBResultSetIO.of(results,log);
             debug("" + io);
             return io;
         }
@@ -70,7 +73,6 @@ final class H2MetaDataIO extends DefaultDBMetaDataIO {
     /**
      * Logging stuff.
      */
-    static final Log LOG = Log.of(H2MetaDataIO.class);
-    private static void info(String mesage) { LOG.info(mesage);  }
-    private static void debug(String mesage) { LOG.debug(mesage);  }
+    private void info(String mesage) { log.info(mesage);  }
+    private void debug(String mesage) { log.debug(mesage);  }
 }

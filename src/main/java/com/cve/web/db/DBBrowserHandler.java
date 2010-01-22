@@ -28,9 +28,9 @@ public final class DBBrowserHandler implements RequestHandler {
             // handler                                                                     // for URLs of the form
             FreeFormQueryHandler.of(serversStore, managedFunction,log),                        // /server/select... & /server/database/select...
             DBRedirectsHandler.of(db,log),                                                     // action?args
-            DBServersHandler.of(db,serversStore,managedFunction),                          // / , /add , /remove
-            DatabaseMetaHandler.of(db,serversStore,managedFunction),                       // /meta/server/
-            DatabasesHandler.of(db),                                                       // /server/
+            DBServersHandler.of(db,serversStore,managedFunction,log),                          // / , /add , /remove
+            DatabaseMetaHandler.of(db,serversStore,managedFunction,log),                       // /meta/server/
+            DatabasesHandler.of(db,log),                                                       // /server/
             TablesHandler.of(db,serversStore,hintsStore, managedFunction,log),                 // /server/databases/
             ColumnValueDistributionHandler.of(db,serversStore,hintsStore,managedFunction,log), // server/database/table/column
             SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction,log)            // /server/databases/tables/...

@@ -1,10 +1,10 @@
 package com.cve.model.db;
 
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.concurrent.Immutable;
 import org.h2.table.Column;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * A condition that rejects some rows based upon the value of a particular column.
@@ -25,27 +25,30 @@ public final class DBRowFilter {
      */
     public final DBValue value;
 
+    final Log log;
+
     /**
      * Use the factory.
      */
-    private DBRowFilter(DBColumn column, DBValue value) {
+    private DBRowFilter(DBColumn column, DBValue value, Log log) {
         this.column = notNull(column);
         this.value  = notNull(value);
+        this.log = notNull(log);
     }
 
     /**
      * Return a filter for the given column and value.
      */
-    public static DBRowFilter of(DBColumn column, DBValue value) {
-        return new DBRowFilter(column,value);
+    public static DBRowFilter of(DBColumn column, DBValue value, Log log) {
+        return new DBRowFilter(column,value,log);
     }
 
     /**
      * Parses a filter that has previously been rendered as a URL fragment.
      * See toURrlFragment.
      */
-    public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
-        args(server,tables,fullFilterName);
+    public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName, Log log) {
+        log.notNullArgs(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
         String[]  nameParts = fullFilterName.split("\\=");
@@ -56,7 +59,7 @@ public final class DBRowFilter {
         DBColumn       column = DBColumn.parse(server,tables,nameParts[0]);
         String         string = nameParts[1];
         DBValue         value = DBValue.decode(string);
-        DBRowFilter       filter = DBRowFilter.of(column, value);
+        DBRowFilter       filter = DBRowFilter.of(column, value,log);
         return filter;
     }
 

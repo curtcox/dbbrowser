@@ -315,7 +315,7 @@ public final class DBResultSetRenderer {
         String  valueString = "" + object;
         Label          text = Label.of(valueString);
         DBColumn     column = cell.column;
-        DBRowFilter       filter = DBRowFilter.of(column, value);
+        DBRowFilter       filter = DBRowFilter.of(column, value,log);
         URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
         return Link.textTarget(text, target).toString();
     }

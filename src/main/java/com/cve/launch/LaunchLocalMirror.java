@@ -38,7 +38,8 @@ public final class LaunchLocalMirror {
         Log log = null;
         WebApp webApp = WebApp.of(
             LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction,log),
-            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction)
+            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction,log),
+            log
         );
         Grizzly.start(webApp, PORT);
     }

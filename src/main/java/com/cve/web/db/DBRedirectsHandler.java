@@ -66,7 +66,7 @@ public final class DBRedirectsHandler implements RequestHandler {
         }
         String  path = request.requestURI;
         URI   dest = redirectsActionsTo(path, query);
-        return PageResponse.newRedirect(dest);
+        return PageResponse.newRedirect(dest,log);
     }
 
     /**

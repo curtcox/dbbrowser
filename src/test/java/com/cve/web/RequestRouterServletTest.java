@@ -1,5 +1,6 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,11 +16,13 @@ import static org.mockito.Mockito.*;
  */
 public class RequestRouterServletTest {
 
+    Log log;
+
     @Test
     public void doGetServer() throws IOException {
         RequestHandler handler = mock(RequestHandler.class);
         ModelHtmlRenderer renderer = mock(ModelHtmlRenderer.class);
-        WebApp webapp = WebApp.of(handler, renderer);
+        WebApp webapp = WebApp.of(handler, renderer,log);
         RequestRouterServlet servlet = RequestRouterServlet.of(webapp);
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);

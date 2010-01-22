@@ -1,5 +1,6 @@
 package com.cve.web;
 
+import com.cve.log.Log;
 import com.cve.web.log.AnnotatedStackTraceModel;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -26,30 +27,34 @@ public final class PageResponse {
      */
     public final Model model;
 
-    private PageResponse(Model model) {
+    public final Log log;
+
+    private PageResponse(Model model, Log log) {
         this.model = notNull(model);
         redirect   = null;
+        this.log = notNull(log);
     }
 
-    private PageResponse(URI redirect) {
+    private PageResponse(URI redirect, Log log) {
         this.model    = null;
         this.redirect = notNull(redirect);
+        this.log = notNull(log);
     }
 
-    public static PageResponse of(Throwable throwable) {
-        return of(AnnotatedStackTraceModel.throwable(throwable));
+    public static PageResponse of(Throwable throwable, Log log) {
+        return of(AnnotatedStackTraceModel.throwable(throwable,log),log);
     }
 
-    public static PageResponse of(byte[] bytes,ContentType type) {
-        return of(ByteArrayModel.bytesType(bytes,type));
+    public static PageResponse of(byte[] bytes,ContentType type, Log log) {
+        return of(ByteArrayModel.bytesType(bytes,type),log);
     }
 
-    public static PageResponse of(Model model) {
-        return new PageResponse(model);
+    public static PageResponse of(Model model, Log log) {
+        return new PageResponse(model,log);
     }
 
-    public static PageResponse newRedirect(URI dest) {
-        return new PageResponse(dest);
+    public static PageResponse newRedirect(URI dest, Log log) {
+        return new PageResponse(dest,log);
     }
 
 

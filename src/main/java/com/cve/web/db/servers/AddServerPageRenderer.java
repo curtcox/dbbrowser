@@ -2,6 +2,7 @@ package com.cve.web.db.servers;
 
 import com.cve.io.db.driver.DBDriver;
 import com.cve.html.HTML;
+import com.cve.log.Log;
 import com.cve.ui.UIForm;
 import com.cve.ui.UITable;
 import static com.cve.ui.UIBuilder.*;
@@ -11,21 +12,29 @@ import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import java.net.URI;
-import static com.cve.log.Log.args;
 import static com.cve.web.db.servers.AddServerPage.*;
+import static com.cve.util.Check.notNull;
 /**
  * For adding servers.
  * @author Curt
  */
 final class AddServerPageRenderer implements ModelHtmlRenderer {
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/AddServer.html");
 
-    AddServerPageRenderer() {}
+    private AddServerPageRenderer(Log log) {
+        this.log = notNull(log);
+    }
 
+    static AddServerPageRenderer of(Log log) {
+        return new AddServerPageRenderer(log);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         String title = "Add a Server";
         String guts = render((AddServerPage) model);
         String[] nav = new String[0];

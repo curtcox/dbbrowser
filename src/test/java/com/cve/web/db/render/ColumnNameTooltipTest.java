@@ -1,6 +1,7 @@
 package com.cve.web.db.render;
 
 import com.cve.html.HTML;
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBRowFilter;
@@ -22,12 +23,14 @@ import static com.cve.web.db.render.ColumnNameTooltip.*;
  */
 public class ColumnNameTooltipTest {
 
+    Log log;
+
     public ColumnNameTooltipTest() {}
 
     private Join getJoin() {
         DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table");
+        DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);
@@ -37,22 +40,22 @@ public class ColumnNameTooltipTest {
     private DBRowFilter getFilter() {
         DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table");
+        DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBValue       value = DBValue.of("active");
-        DBRowFilter     filter = DBRowFilter.of(foo,value);
+        DBRowFilter     filter = DBRowFilter.of(foo,value,log);
         return filter;
     }
 
     private HTML getTip() {
         DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table");
+        DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);
         DBValue       value = DBValue.of("active");
-        DBRowFilter     filter = DBRowFilter.of(foo,value);
+        DBRowFilter     filter = DBRowFilter.of(foo,value,log);
 
         ImmutableList<DBColumn>   joins = ImmutableList.of(bar);
         ImmutableList<DBRowFilter> filters = ImmutableList.of(filter);

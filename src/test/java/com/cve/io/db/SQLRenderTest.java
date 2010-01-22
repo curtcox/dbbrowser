@@ -1,6 +1,6 @@
 package com.cve.io.db;
 
-import com.cve.io.db.SimpleSelectRenderer;
+import com.cve.log.Log;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
@@ -27,13 +27,15 @@ import static org.junit.Assert.*;
  */
 public class SQLRenderTest {
 
+    Log log;
+
     @Test
     public void renderSelectPerson() {
         DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
-        DBRowFilter      filter = DBRowFilter.of(name, DBValue.of("Smith"));
+        DBRowFilter      filter = DBRowFilter.of(name, DBValue.of("Smith"),log);
         Select      select = Select.from(database,person,name,filter);
         SQL expected = SQL.of(Replace.bracketSingleQuote(
             "SELECT customer.person.name " +
@@ -54,7 +56,7 @@ public class SQLRenderTest {
         DBColumn  person_email = person.columnNameType("email",String.class);
         DBColumn account_email = account.columnNameType("email",String.class);
         Join            join = Join.of(person_email, account_email);
-        DBRowFilter        filter = DBRowFilter.of(name, DBValue.of("Smith"));
+        DBRowFilter        filter = DBRowFilter.of(name, DBValue.of("Smith"),log);
         Order          order = Order.ascending(name);
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(

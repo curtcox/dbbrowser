@@ -12,14 +12,16 @@ import static org.junit.Assert.*;
  */
 public class DatabasesHandlerTest {
 
+    DatabasesHandler handler;
+
     @Test
     public void isServerOnlyRequest() {
-        assertTrue(DatabasesHandler.isDatabaseListRequest("//server/"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("//server"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("//server:8080/"));
-        assertTrue(DatabasesHandler.isDatabaseListRequest("//server:8080/"));
-        assertFalse(DatabasesHandler.isDatabaseListRequest("//server/db/"));
-        assertFalse(DatabasesHandler.isDatabaseListRequest("//server/db/table/"));
+        assertTrue(handler.isDatabaseListRequest("//server/"));
+        assertTrue(handler.isDatabaseListRequest("//server"));
+        assertTrue(handler.isDatabaseListRequest("//server:8080/"));
+        assertTrue(handler.isDatabaseListRequest("//server:8080/"));
+        assertFalse(handler.isDatabaseListRequest("//server/db/"));
+        assertFalse(handler.isDatabaseListRequest("//server/db/table/"));
     }
 
     private static <T> ImmutableList<T> list(T... items) { return ImmutableList.of(items); }

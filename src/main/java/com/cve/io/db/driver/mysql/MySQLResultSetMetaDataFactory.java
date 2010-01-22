@@ -7,6 +7,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -19,8 +20,8 @@ import java.util.Set;
  */
 final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MySQLResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        super(server,meta);
+    public MySQLResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
+        super(server,meta,log);
     }
 
     @Override

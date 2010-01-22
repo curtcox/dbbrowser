@@ -3,6 +3,7 @@ package com.cve.web;
 import com.cve.log.Log;
 import com.google.common.collect.Maps;
 import java.util.Map;
+import static com.cve.util.Check.notNull;
 
 /**
  * For injecting debugging into an HTML page.
@@ -13,6 +14,10 @@ final class DebugPageInjector {
 
      final Log log;
 
+     private DebugPageInjector(Log log) {
+         this.log = notNull(log);
+     }
+     
     /**
       Return JavaScript that will launch appropriate pages on keypress.
       Given a map from keys, to the page to launch on the keypress.

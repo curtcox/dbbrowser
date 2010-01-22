@@ -3,6 +3,7 @@ package com.cve.io.db.driver;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DefaultDBConnection;
 import com.cve.io.db.driver.h2.H2Driver;
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
@@ -22,11 +23,12 @@ import static org.junit.Assert.*;
  */
 public class DefaultDBMetaDataTest {
 
+    Log log;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
-    final DBMetaData dbmd = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore);
+    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
+    final DBMetaData dbmd = H2Driver.of().getDBMetaData(connection,managedFunction,serversStore,log);
 
     @Test
     public void getColumnsForServer() {

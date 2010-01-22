@@ -27,11 +27,11 @@ import com.cve.web.Search;
  * Database drivers that we support.
  * @author curt
  */
-public enum DBDriver {
+public class DBDriver {
 
     MySql("jdbc:mysql:", com.mysql.jdbc.Driver.class, MySQLDriver.of()),
     MsSqlTds("jdbc:jtds:sqlserver:", net.sourceforge.jtds.jdbc.Driver.class, MsSQLDriver.of()),
-    H2("jdbc:h2:",    org.h2.Driver.class, H2Driver.of()),
+    H2("jdbc:h2:",    org.h2.Driver.class, new H2Driver.Factory(log)),
     Derby("jdbc:derby:", org.apache.derby.jdbc.ClientDriver.class,DerbyDriver.of()),
     Oracle("jdbc:oracle:thin:", org.h2.Driver.class,OracleDriver.of()),
     ;
@@ -41,14 +41,14 @@ public enum DBDriver {
      */
     private final String prefix;
 
-    private final DriverIO io;
+    private final DriverIO.Factory io;
 
     /**
      * The JDBC driver class we wrap
      */
     private final Class<? extends Driver> driver;
 
-    DBDriver(String prefix,Class<? extends Driver> driver, DriverIO io) {
+    DBDriver(String prefix,Class<? extends Driver> driver, DriverIO.Factory io) {
         this.prefix = Check.notNull(prefix);
         this.driver = Check.notNull(driver);
         this.io     = Check.notNull(io);

@@ -12,6 +12,7 @@ import com.cve.io.db.DBMetaDataIO.ColumnSpecifier;
 import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
 import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -25,13 +26,13 @@ import java.util.List;
  */
 final class MsSQLTdsMetaData extends DefaultDBMetaData {
 
-    private MsSQLTdsMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(io,managedFunction,serversStore);
+    private MsSQLTdsMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        super(io,managedFunction,serversStore,log);
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        DBMetaDataIO io = MsSQLTdsMetaDataIO.of(connection,managedFunction);
-        return new MsSQLTdsMetaData(io,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        DBMetaDataIO io = MsSQLTdsMetaDataIO.of(connection,managedFunction,log);
+        return new MsSQLTdsMetaData(io,managedFunction,serversStore,log);
     }
 
     /**

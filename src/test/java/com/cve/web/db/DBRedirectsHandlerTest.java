@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
@@ -21,10 +22,11 @@ import static org.junit.Assert.*;
  */
 public class DBRedirectsHandlerTest {
 
+    Log log;
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    final DBRedirectsHandler   handler = DBRedirectsHandler.of(db);
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
+    final DBRedirectsHandler   handler = DBRedirectsHandler.of(db,log);
     {
         DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);

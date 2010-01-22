@@ -1,5 +1,6 @@
 package com.cve.web.log;
 
+import com.cve.log.Log;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
 import com.cve.web.log.ObjectRegistry.Key;
@@ -10,8 +11,14 @@ import com.cve.web.log.ObjectRegistry.Key;
  */
 final class ObjectBrowserHandler extends AbstractRequestHandler {
 
-    public ObjectBrowserHandler() {  super("^/object/"); }
+    private ObjectBrowserHandler(Log log) {
+        super("^/object/",log);
+    }
 
+    static ObjectBrowserHandler of(Log log) {
+        return new ObjectBrowserHandler(log);
+    }
+    
     @Override
     public ObjectModel get(PageRequest request) {
         String uri = request.requestURI;

@@ -5,6 +5,7 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.model.db.SelectResults;
 import com.cve.io.db.select.DBURIRenderer;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
@@ -34,19 +35,23 @@ public final class AlternateDisplayLinksRenderer {
 
     final ManagedFunction.Factory managedFunction;
 
-    private AlternateDisplayLinksRenderer(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    final Log log;
+
+    private AlternateDisplayLinksRenderer(
+        SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
                 this.select  = notNull(results.select);
                 this.search  = notNull(results.search);
            this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
     }
 
-    static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new AlternateDisplayLinksRenderer(results,serversStore,managedFunction);
+    static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new AlternateDisplayLinksRenderer(results,serversStore,managedFunction,log);
     }
 
-    public static String render(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore, managedFunction);
+    public static String render(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction,Log log) {
+        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore, managedFunction,log);
         return renderer.viewLinks();
    }
 
@@ -76,7 +81,7 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewSQLLink() {
         Label  text = Label.of("SQL");
-        URI target = FreeFormQueryHandler.of(serversStore,managedFunction).linkTo(select,search);
+        URI target = FreeFormQueryHandler.of(serversStore,managedFunction,log).linkTo(select,search);
         String tip = SQL.name();
         URI   image = SQL.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();

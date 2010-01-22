@@ -9,21 +9,29 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DriverIO;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ManagedFunction.Factory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
-
+import static com.cve.util.Check.notNull;
 /**
  *
  * @author curt
  */
 public final class MySQLDriver implements DriverIO {
 
-    private MySQLDriver() {}
+    final ManagedFunction.Factory managedFunction;
+    final DBServersStore serversStore;
+    final Log log;
+    
+    private MySQLDriver(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
+    }
 
-    public static DriverIO of() {
-        return new MySQLDriver();
+    public static DriverIO of(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        return new MySQLDriver(managedFunction,serversStore,log);
     }
 
     @Override
@@ -33,8 +41,8 @@ public final class MySQLDriver implements DriverIO {
     }
 
     @Override
-    public DBMetaData getDBMetaData(DBConnection connection,ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return MySQLMetaData.of(connection,managedFunction,serversStore);
+    public DBMetaData getDBMetaData(DBConnection connection) {
+        return MySQLMetaData.of(connection,managedFunction,serversStore,log);
     }
 
     @Override
@@ -44,11 +52,11 @@ public final class MySQLDriver implements DriverIO {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return new MySQLResultSetMetaDataFactory(server, meta);
+        return new MySQLResultSetMetaDataFactory(server, meta,log);
     }
 
     @Override
-    public DBMetaDataIO getDBMetaDataIO(DBConnection connection, Factory managedFunction) {
-        return MySQLMetaDataIO.of(connection, managedFunction);
+    public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
+        return MySQLMetaDataIO.of(connection, managedFunction,log);
     }
 }

@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SelectResults;
@@ -24,12 +25,13 @@ import static org.junit.Assert.*;
  */
 public class SelectBuilderHandlerTest {
 
+    Log log;
     DBServer server = DBServer.uri(URIs.of("server"));
     DBServersStore serversStore = MemoryDBServersStore.of();
     DBHintsStore hintsStore = MemoryDBHintsStore.of();
     ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
-    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction);
+    DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
+    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction,log);
     {
         DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);

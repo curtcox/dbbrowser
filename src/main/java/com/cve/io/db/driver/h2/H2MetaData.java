@@ -20,7 +20,7 @@ import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
-import static com.cve.log.Log.notNullArgs;
+import static com.cve.util.Check.notNull;
 /**
  * Meta data driver for H2 database.
  * @author curt
@@ -28,13 +28,16 @@ import static com.cve.log.Log.notNullArgs;
 final class H2MetaData extends DefaultDBMetaData {
 
 
-    private H2MetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(io,managedFunction,serversStore);
+    final Log log;
+
+    private H2MetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        super(io,managedFunction,serversStore,log);
+        this.log = notNull(log);
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        DBMetaDataIO io = H2MetaDataIO.of(connection,managedFunction);
-        return new H2MetaData(io,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        DBMetaDataIO io = H2MetaDataIO.of(connection,managedFunction,log);
+        return new H2MetaData(io,managedFunction,serversStore,log);
     }
 
 
@@ -42,7 +45,7 @@ final class H2MetaData extends DefaultDBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
-        notNullArgs(server);
+        log.notNullArgs(server);
         List<DBColumn> list = Lists.newArrayList();
         String           catalog = null;
         String     schemaPattern = null;
@@ -55,7 +58,7 @@ final class H2MetaData extends DefaultDBMetaData {
             String   columnName = info.columnName;
             String databaseName = info.tableSchema;
             Class          type = classFor(info.dataType);
-            Database   database = Database.serverName(server, databaseName);
+            Database   database = Database.serverName(server, databaseName,log);
             DBColumn     column = database.tableName(tableName).columnNameType(columnName,type);
             list.add(column);
         }
@@ -143,8 +146,7 @@ final class H2MetaData extends DefaultDBMetaData {
     /**
      * Logging stuff.
      */
-    static final Log LOG = Log.of(DefaultDBMetaData.class);
-    private static void info(String mesage) { LOG.info(mesage);  }
-    private static void debug(String mesage) { LOG.debug(mesage);  }
+    private void info(String mesage) { log.info(mesage);  }
+    private void debug(String mesage) { log.debug(mesage);  }
 
 }

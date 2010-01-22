@@ -4,6 +4,7 @@ import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBMetaDataIO;
 import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 
@@ -13,13 +14,13 @@ import com.cve.stores.db.DBServersStore;
  */
 final class MySQLMetaData extends DefaultDBMetaData {
 
-    private MySQLMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        super(io,managedFunction,serversStore);
+    private MySQLMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        super(io,managedFunction,serversStore,log);
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        DBMetaDataIO io = MySQLMetaDataIO.of(connection,managedFunction);
-        return new MySQLMetaData(io,managedFunction,serversStore);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        DBMetaDataIO io = MySQLMetaDataIO.of(connection,managedFunction,log);
+        return new MySQLMetaData(io,managedFunction,serversStore,log);
     }
 
 }

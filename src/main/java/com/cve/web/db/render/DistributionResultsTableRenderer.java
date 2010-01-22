@@ -8,6 +8,7 @@ import com.cve.model.db.DBRow;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -42,18 +43,18 @@ public final class DistributionResultsTableRenderer {
      */
     private final DBResultSetRenderer tools;
 
-    private DistributionResultsTableRenderer(SelectResults results, ClientInfo client) {
+    private DistributionResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
     }
 
-    static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client) {
-        return new DistributionResultsTableRenderer(results,client);
+    static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client, Log log) {
+        return new DistributionResultsTableRenderer(results,client,log);
     }
 
-    static String render(SelectResults results, ClientInfo client) {
-        return new DistributionResultsTableRenderer(results,client).resultsTable();
+    static String render(SelectResults results, ClientInfo client,Log log) {
+        return new DistributionResultsTableRenderer(results,client,log).resultsTable();
     }
 
     public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }

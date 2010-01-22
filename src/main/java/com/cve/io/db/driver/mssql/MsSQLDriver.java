@@ -11,8 +11,10 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DriverIO;
+import com.cve.log.Log;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
+import static com.cve.util.Check.notNull;
 
 /**
  *
@@ -20,10 +22,18 @@ import com.cve.util.URIs;
  */
 public final class MsSQLDriver implements DriverIO {
 
-    private MsSQLDriver() {}
+    final ManagedFunction.Factory managedFunction;
+    final DBServersStore serversStore;
+    final Log log;
+    
+    private MsSQLDriver(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
+        this.log = notNull(log);
+    }
 
-    public static DriverIO of() {
-        return new MsSQLDriver();
+    public static DriverIO of(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        return new MsSQLDriver(managedFunction, serversStore,log);
     }
 
     /**
@@ -46,8 +56,8 @@ public final class MsSQLDriver implements DriverIO {
     }
 
     @Override
-    public DBMetaData getDBMetaData(DBConnection connection,ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return MsSQLTdsMetaData.of(connection,managedFunction,serversStore);
+    public DBMetaData getDBMetaData(DBConnection connection) {
+        return MsSQLTdsMetaData.of(connection,managedFunction,serversStore,log);
     }
 
     @Override
@@ -57,11 +67,11 @@ public final class MsSQLDriver implements DriverIO {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return new MsSqlTdsResultSetMetaDataFactory(server, meta);
+        return new MsSqlTdsResultSetMetaDataFactory(server, meta,log);
     }
 
     @Override
-    public DBMetaDataIO getDBMetaDataIO(DBConnection connection, Factory managedFunction) {
-        return MsSQLTdsMetaDataIO.of(connection, managedFunction);
+    public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
+        return MsSQLTdsMetaDataIO.of(connection, managedFunction,log);
     }
 }

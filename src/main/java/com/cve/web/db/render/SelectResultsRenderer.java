@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.log.Log;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.SelectResults.Type;
 import com.cve.model.db.DBServer;
@@ -14,7 +15,6 @@ import com.cve.web.ModelHtmlRenderer;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.web.db.NavigationButtons.*;
-import static com.cve.log.Log.args;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -34,20 +34,23 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     final ManagedFunction.Factory managedFunction;
 
+    final Log log;
+
     private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
-    private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+    private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
            this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
+        this.log = notNull(log);
     }
 
-    public static SelectResultsRenderer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        return new SelectResultsRenderer(serversStore,managedFunction);
+    public static SelectResultsRenderer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        return new SelectResultsRenderer(serversStore,managedFunction,log);
     }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        args(model,client);
+        log.notNullArgs(model,client);
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
             return renderColumnValueDistribution(results,client);
@@ -76,18 +79,18 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     String renderColumnValueDistributionPage(SelectResults results, ClientInfo client) {
         return
-            DistributionResultsTableRenderer.render(results,client) +
+            DistributionResultsTableRenderer.render(results,client,log) +
             PagingLinksRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction,log)
         ;
     }
 
     String renderSelectBuilderPage(SelectResults results, ClientInfo client) {
         return
-            ResultsTableRenderer.render(results,client) +
+            ResultsTableRenderer.render(results,client,log) +
             PagingLinksRenderer.render(results) +
             ShowTableRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction,log)
         ;
     }
 

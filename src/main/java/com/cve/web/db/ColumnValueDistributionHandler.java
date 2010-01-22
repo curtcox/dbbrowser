@@ -58,7 +58,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
         this.log = notNull(log);
-        connections = DBConnectionFactory.of();
+        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
         codec = DBURICodec.of(log);
     }
 
@@ -120,7 +120,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults results = SelectExecutor.run(context);
+        SelectResults results = SelectExecutor.of(log).run(context);
         return results;
     }
 }

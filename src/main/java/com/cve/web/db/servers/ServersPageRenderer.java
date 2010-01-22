@@ -28,6 +28,10 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
         this.log = notNull(log);
     }
 
+    public static ServersPageRenderer of(Log log) {
+        return new ServersPageRenderer(log);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.notNullArgs(model,client);

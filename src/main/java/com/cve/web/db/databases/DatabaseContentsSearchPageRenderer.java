@@ -28,6 +28,10 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
         this.log = notNull(log);
     }
 
+    static DatabaseContentsSearchPageRenderer of(Log log) {
+        return new DatabaseContentsSearchPageRenderer(log);
+    }
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.notNullArgs(model,client);
@@ -41,7 +45,7 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
         };
         StringBuilder out = new StringBuilder();
         for (SelectResults results : page.resultsList) {
-            out.append(ResultsTableRenderer.render(results, client));
+            out.append(ResultsTableRenderer.render(results, client,log));
         }
         String guts = out.toString();
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);

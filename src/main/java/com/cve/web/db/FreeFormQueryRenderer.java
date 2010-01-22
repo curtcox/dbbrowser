@@ -25,7 +25,7 @@ import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
 import java.sql.SQLException;
-
+import static com.cve.util.Check.notNull;
 
 /**
  * For rendering the free-form query page.
@@ -44,13 +44,14 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/Select.html");
 
-    private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore) {
+    private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore, Log log) {
         this.db = db;
         this.hintsStore = hintsStore;
+        this.log = notNull(log);
     }
 
-    static FreeFormQueryRenderer of(DBMetaData.Factory db, DBHintsStore hintsStore) {
-        return new FreeFormQueryRenderer(db,hintsStore);
+    static FreeFormQueryRenderer of(DBMetaData.Factory db, DBHintsStore hintsStore, Log log) {
+        return new FreeFormQueryRenderer(db,hintsStore,log);
     }
     
     @Override
@@ -92,7 +93,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         }
         Hints hints = hintsStore.get(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
-        DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
+        DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client,log);
         String guts = page.message + form.toString() + renderer.landscapeTable();
         URI base = base(page);
         return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);

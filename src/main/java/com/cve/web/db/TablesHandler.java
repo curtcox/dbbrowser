@@ -90,7 +90,7 @@ public final class TablesHandler extends AbstractRequestHandler {
             return new TablesPage(server,database,tables,rows,columns);
         }
         if (search.space==Space.CONTENTS) {
-            return DatabaseContentsSearchPageCreator.of(db,serversStore,hintsStore,managedFunction).create(database,search);
+            return DatabaseContentsSearchPageCreator.of(db,serversStore,hintsStore,managedFunction,log).create(database,search);
         }
         return newNamesSearchPage(database,search);
     }

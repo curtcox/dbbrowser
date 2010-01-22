@@ -1,12 +1,12 @@
 package com.cve.model.db;
 
 
+import com.cve.log.Log;
 import com.google.common.collect.ImmutableList;
 
 import com.google.common.collect.ImmutableMap;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
-import static com.cve.log.Log.args;
 
 /**
  * The immutable results of running a {@link Select}.
@@ -40,21 +40,25 @@ public final class DBResultSet {
      */
     public final ImmutableMap<Cell,DBValue> values;
 
+    final Log log;
+
     /**
      * Use this for a null result set.
      */
-    public static final DBResultSet NULL = new DBResultSet(list(),list(),list(),list(),map());
+    public static final DBResultSet NULL = new DBResultSet(list(),list(),list(),list(),map(),null);
+
 
     private DBResultSet(
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
-        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values)
+        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values, Log log)
     {
         this.databases = notNull(databases);
         this.tables    = notNull(tables);
         this.columns   = notNull(columns);
         this.rows      = notNull(rows);
         this.values    = notNull(values);
+        this.log       = notNull(log);
         validate();
     }
 
@@ -74,10 +78,10 @@ public final class DBResultSet {
     public static DBResultSet of(
         ImmutableList<Database> databases,
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
-        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values)
+        ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values, Log log)
     {
-        args(databases,tables,columns,rows,values);
-        return new DBResultSet(databases,tables,columns,rows,values);
+        log.notNullArgs(databases,tables,columns,rows,values);
+        return new DBResultSet(databases,tables,columns,rows,values,log);
     }
 
     public DBValue getValue(DBRow row, DBColumn column) {
@@ -87,28 +91,28 @@ public final class DBResultSet {
 
 
     // A bunch of factory methods mainly for testing
-    public static DBResultSet of(Database database, DBTable table, DBColumn column) {
-        return new DBResultSet(list(database),list(table),list(column),list(),map());
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, Log log) {
+        return new DBResultSet(list(database),list(table),list(column),list(),map(),log);
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, DBValue value) {
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, DBValue value, Log log) {
         ImmutableMap<Cell,DBValue> values = CellValues.of(row,column,value);
-        return new DBResultSet(list(database),list(table),list(column),list(row),values);
+        return new DBResultSet(list(database),list(table),list(column),list(row),values,log);
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, ImmutableMap<Cell,DBValue> values) {
-        return new DBResultSet(list(database),list(table),list(column),list(row),values);
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, DBRow row, ImmutableMap<Cell,DBValue> values, Log log) {
+        return new DBResultSet(list(database),list(table),list(column),list(row),values,log);
     }
 
-    public static DBResultSet of(Database database, DBTable table, DBColumn column, ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values) {
-        return new DBResultSet(list(database),list(table),list(column),rows,values);
+    public static DBResultSet of(Database database, DBTable table, DBColumn column, ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values,Log log) {
+        return new DBResultSet(list(database),list(table),list(column),rows,values,log);
     }
 
     public static DBResultSet of(Database database,
         DBTable t1, DBTable t2,
         DBColumn c1, DBColumn c2, DBColumn c3, DBColumn c4, DBRow r1, DBRow r2,
-        ImmutableMap<Cell,DBValue> values) {
-        return new DBResultSet(list(database),list(t1,t2),list(c1,c2,c3,c4),list(r1,r2),values);
+        ImmutableMap<Cell,DBValue> values, Log log) {
+        return new DBResultSet(list(database),list(t1,t2),list(c1,c2,c3,c4),list(r1,r2),values,log);
     }
 
     private static ImmutableList             list() { return ImmutableList.of(); }

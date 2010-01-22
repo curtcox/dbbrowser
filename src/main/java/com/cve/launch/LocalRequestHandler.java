@@ -47,8 +47,8 @@ final class LocalRequestHandler implements RequestHandler {
                 DebugHandler.of(
                     CompressedURIHandler.of(
                         CompositeRequestHandler.of(
-                            CoreServerHandler.of(),
-                            SearchRedirectsHandler.of(),              // search?find=what
+                            CoreServerHandler.of(log),
+                            SearchRedirectsHandler.of(log),              // search?find=what
                             AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction,log),
                             LogBrowserHandler.of(),
                             FSBrowserHandler.of(fs,fsServersStore,managedFunction),

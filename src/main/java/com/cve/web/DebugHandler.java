@@ -85,7 +85,7 @@ public final class DebugHandler implements RequestHandler {
      * Return a debugging link, if debugging is on.
      * @return
      */
-    public static String debugLink() {
+    public String debugLink() {
         if (!DebugHandler.isOn()) {
             return "";
         }

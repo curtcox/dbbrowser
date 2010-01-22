@@ -3,6 +3,7 @@ package com.cve.io.db.driver.oracle;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
+import com.cve.log.Log;
 
 /**
  *
@@ -10,8 +11,8 @@ import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
  */
 final class OracleResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public OracleResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        super(server,meta);
+    public OracleResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
+        super(server,meta,log);
     }
 
 }

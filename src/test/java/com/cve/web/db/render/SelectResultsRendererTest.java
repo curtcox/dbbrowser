@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.log.Log;
 import com.cve.model.db.Cell;
 import com.cve.model.db.CellValues;
 import com.cve.model.db.SelectResults;
@@ -36,6 +37,7 @@ import org.junit.Test;
  */
 public class SelectResultsRendererTest {
 
+    Log log;
     final DBServer             server = DBServer.uri(URIs.of("SAMPLE"));
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
@@ -50,7 +52,7 @@ public class SelectResultsRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -65,7 +67,7 @@ public class SelectResultsRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName),age);
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
@@ -86,7 +88,7 @@ public class SelectResultsRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);
@@ -105,7 +107,7 @@ public class SelectResultsRendererTest {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
 
-        String       rendered = SelectResultsRenderer.of(serversStore,managedFunction).render(results,client).toString();
+        String       rendered = SelectResultsRenderer.of(serversStore,managedFunction,log).render(results,client).toString();
         return rendered;
     }
 
@@ -183,12 +185,12 @@ public class SelectResultsRendererTest {
                     r1, r2,
                     "Chicago","IL","IL","Illinois",
                     "Denver" ,"CO","CO","Colorado"
-                )
+                ),log
         );
         SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
         ClientInfo     client = ClientInfo.of();
 
-        String         rendered = SelectResultsRenderer.of(serversStore, managedFunction).render(results,client).toString();
+        String         rendered = SelectResultsRenderer.of(serversStore, managedFunction,log).render(results,client).toString();
         return rendered;
     }
 
