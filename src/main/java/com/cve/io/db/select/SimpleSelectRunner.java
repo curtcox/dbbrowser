@@ -60,7 +60,7 @@ final class SimpleSelectRunner implements SelectRunner {
         Select select = context.select;
         Search search = context.search;
         DBDriver driver = connection.getInfo().driver;
-        SQL         sql = driver.render(select,search);
+        SQL         sql = driver.getSelectRenderer().render(select,search);
         long      count = determineRowCount(context);
         DBResultSetIO results = connection.select(sql).value;
         SelectResults.Type  type = determineResultsType(select);

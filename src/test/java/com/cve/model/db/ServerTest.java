@@ -1,6 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
  */
 public class ServerTest {
 
+    Log log;
+
     public ServerTest() {}
 
     /**
@@ -18,8 +20,8 @@ public class ServerTest {
      */
     @Test
     public void equality() {
-        DBServer server1 = DBServer.uri(URIs.of("server"));
-        DBServer server2 = DBServer.uri(URIs.of("server"));
+        DBServer server1 = DBServer.uri(URIs.of("server"),log);
+        DBServer server2 = DBServer.uri(URIs.of("server"),log);
         assertEquals(server1,server2);
     }
 

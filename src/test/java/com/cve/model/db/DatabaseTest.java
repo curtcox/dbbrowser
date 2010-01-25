@@ -1,6 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -11,6 +11,8 @@ import static org.junit.Assert.*;
  */
 public class DatabaseTest {
 
+    Log log;
+
     public DatabaseTest() {}
 
 
@@ -18,7 +20,7 @@ public class DatabaseTest {
      */
     @Test
     public void equality() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         assertEquals(server.databaseName("foo"), server.databaseName("foo"));
     }
 
@@ -26,14 +28,14 @@ public class DatabaseTest {
      */
     @Test
     public void notEqualWhenServersDiffer() {
-        DBServer           server1 = DBServer.uri(URIs.of("server1"));
-        DBServer           server2 = DBServer.uri(URIs.of("server2"));
+        DBServer           server1 = DBServer.uri(URIs.of("server1"),log);
+        DBServer           server2 = DBServer.uri(URIs.of("server2"),log);
         assertNotEquals(server1.databaseName("foo"), server2.databaseName("foo"));
     }
 
     @Test
     public void notEqualWhenNamesDiffer() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         assertNotEquals(server.databaseName("foo"), server.databaseName("bar"));
     }
 

@@ -41,7 +41,7 @@ final class LocalRequestHandler implements RequestHandler {
         ManagedFunction.Factory managedFunction, Log log)
     {
         this.log = notNull(log);
-        final DBMetaData.Factory db = LocalDBMetaDataFactory.of(dbServersStore,managedFunction);
+        final DBMetaData.Factory db = LocalDBMetaDataFactory.of(dbServersStore,managedFunction,log);
         final FSMetaData.Factory fs = LocalFSMetaDataFactory.of(fsServersStore,managedFunction);
         handler = ErrorReportHandler.of(
                 DebugHandler.of(
@@ -50,12 +50,12 @@ final class LocalRequestHandler implements RequestHandler {
                             CoreServerHandler.of(log),
                             SearchRedirectsHandler.of(log),              // search?find=what
                             AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction,log),
-                            LogBrowserHandler.of(),
-                            FSBrowserHandler.of(fs,fsServersStore,managedFunction),
+                            LogBrowserHandler.of(log),
+                            FSBrowserHandler.of(fs,fsServersStore,managedFunction,log),
                             DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction,log)
                        ),log
                  )
-            )
+            ),log
         );
     }
 

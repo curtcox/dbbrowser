@@ -21,7 +21,7 @@ public class SelectResultsTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("database");
         DBTable             table = database.tableName("table");
         DBColumn           column = DBColumn.tableNameType(table,"column",String.class);

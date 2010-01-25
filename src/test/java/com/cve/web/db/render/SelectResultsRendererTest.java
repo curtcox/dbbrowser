@@ -38,7 +38,7 @@ import org.junit.Test;
 public class SelectResultsRendererTest {
 
     Log log;
-    final DBServer             server = DBServer.uri(URIs.of("SAMPLE"));
+    final DBServer             server = DBServer.uri(URIs.of("SAMPLE"),log);
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     {

@@ -1,11 +1,12 @@
 package com.cve.stores.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Join;
 import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
-import com.cve.util.Check;
+import static com.cve.util.Check.notNull;
 import com.cve.util.URIs;
 
 /**
@@ -14,25 +15,27 @@ import com.cve.util.URIs;
  */
 final class JoinIO implements IO<Join> {
 
+    final Log log;
+
     final IO<String> stringIO = StringIO.of();
 
-    final static JoinIO SINGLETON = new JoinIO();
+    private JoinIO(Log log) {
+        this.log = notNull(log);
+    }
 
-    private JoinIO() {}
-
-    static JoinIO of() {
-        return SINGLETON;
+    static JoinIO of(Log log) {
+        return new JoinIO(log);
     }
 
     @Override
     public Join read(byte[] bytes) {
         String line = stringIO.read(bytes);
-        String[] parts = Check.notNull(line).split(".");
-        DBColumn source = DBServer.uri(URIs.of(parts[0]))
+        String[] parts = notNull(line).split(".");
+        DBColumn source = DBServer.uri(URIs.of(parts[0]),log)
                 .databaseName(line)
                 .tableName(line)
                 .columnName(line);
-        DBColumn dest = DBServer.uri(URIs.of(parts[0]))
+        DBColumn dest = DBServer.uri(URIs.of(parts[0]),log)
                 .databaseName(line)
                 .tableName(line)
                 .columnName(line);
@@ -41,7 +44,7 @@ final class JoinIO implements IO<Join> {
 
     @Override
     public byte[] write(Join value) {
-        return stringIO.write(Check.notNull(value).toString());
+        return stringIO.write(notNull(value).toString());
     }
 
 }

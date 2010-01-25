@@ -31,11 +31,11 @@ public class SQLRenderTest {
 
     @Test
     public void renderSelectPerson() {
-        DBServer      server = DBServer.uri(URIs.of("server"));
+        DBServer      server = DBServer.uri(URIs.of("server"),log);
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
-        DBRowFilter      filter = DBRowFilter.of(name, DBValue.of("Smith"),log);
+        DBRowFilter      filter = DBRowFilter.of(name, DBValue.of("Smith"));
         Select      select = Select.from(database,person,name,filter);
         SQL expected = SQL.of(Replace.bracketSingleQuote(
             "SELECT customer.person.name " +
@@ -48,7 +48,7 @@ public class SQLRenderTest {
 
     @Test
     public void renderSelectPersonAccount() {
-        DBServer        server = DBServer.uri(URIs.of("server"));
+        DBServer        server = DBServer.uri(URIs.of("server"),log);
         Database    database = server.databaseName("customer");
         DBTable         person = database.tableName("person");
         DBTable        account = database.tableName("account");
@@ -56,7 +56,7 @@ public class SQLRenderTest {
         DBColumn  person_email = person.columnNameType("email",String.class);
         DBColumn account_email = account.columnNameType("email",String.class);
         Join            join = Join.of(person_email, account_email);
-        DBRowFilter        filter = DBRowFilter.of(name, DBValue.of("Smith"),log);
+        DBRowFilter        filter = DBRowFilter.of(name, DBValue.of("Smith"));
         Order          order = Order.ascending(name);
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(

@@ -36,7 +36,7 @@ public class ShowTableRendererTest {
     Log log;
 
     public SelectResults onePersonResults() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -51,7 +51,7 @@ public class ShowTableRendererTest {
     }
 
     public SelectResults resultsForShowTable() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -67,7 +67,7 @@ public class ShowTableRendererTest {
     }
 
     SelectResults multiPersonResults(int first, int last, DBLimit limit, boolean hasMore) {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);

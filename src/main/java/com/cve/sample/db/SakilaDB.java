@@ -19,7 +19,7 @@ import java.util.List;
 public final class SakilaDB {
 
     static final Log log = null;
-    public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA",log);
+    public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
 
 
     private SakilaDB() {}

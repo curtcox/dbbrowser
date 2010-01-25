@@ -148,12 +148,12 @@ public final class DBURICodec {
     public DBServer getServer(String uri) {
         log.notNullArgs(uri);
         String name = at(uri,Position.SERVER);
-        return DBServer.uri(URIs.of(name));
+        return DBServer.uri(URIs.of(name),log);
     }
 
     public Database getDatabase(String uri) {
         log.notNullArgs(uri);
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
@@ -171,7 +171,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<Database> list = Lists.newArrayList();
         for (String databaseName : at(uri,Position.DBS).split("\\+")) {
             list.add(server.databaseName(databaseName));
@@ -184,7 +184,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<DBTable> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.TABLES).split("\\+")) {
             DBTable        table = DBTable.parse(server,fullTableName,log);
@@ -201,7 +201,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<DBColumn> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[1];
@@ -249,7 +249,7 @@ public final class DBURICodec {
         if (joinParts.length()==0) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<Join> list = Lists.newArrayList();
         for (String fullJoinName : joinParts.split("\\+")) {
             Join join = Join.parse(server,tables,fullJoinName);
@@ -268,10 +268,10 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<DBRowFilter> list = Lists.newArrayList();
         for (String fullFilterName : filterParts.split("\\+")) {
-            DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName,log);
+            DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName);
             list.add(filter);
         }
         return ImmutableList.copyOf(list);
@@ -287,7 +287,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<Order> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Order order = Order.parse(server,tables,fullOrderName);
@@ -306,7 +306,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<Group> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Group group = Group.parse(server,tables,fullOrderName);

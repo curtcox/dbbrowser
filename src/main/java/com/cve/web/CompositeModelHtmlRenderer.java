@@ -10,7 +10,7 @@ import static com.cve.util.Check.notNull;
  * Finds the proper renderer from those it is given and delegates.
  * @author curt
  */
-final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
+public final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
 
     /**
      * Where we log to.

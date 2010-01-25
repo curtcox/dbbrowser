@@ -1,5 +1,6 @@
 package com.cve.stores.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.Join;
@@ -14,11 +15,13 @@ import static org.junit.Assert.*;
  */
 public class JoinIOTest {
 
-    static JoinIO io = JoinIO.of();
+    Log log;
+
+    JoinIO io = JoinIO.of(log);
 
     @Test
     public void both() {
-        Database db = DBServer.uri(URIs.of("one")).databaseName("db");
+        Database db = DBServer.uri(URIs.of("one"),log).databaseName("db");
         DBColumn c1 = db.tableName("t1").columnName("c1");
         DBColumn c2 = db.tableName("t2").columnName("c2");
         Join join = Join.of(c1, c2);

@@ -46,7 +46,7 @@ public class ResultsRenderTest {
     public void renderSelectPerson() throws SQLException, ClassNotFoundException {
         DBConnection connection = newMemoryDB();
 
-        DBServer         server = DBServer.uri(URIs.of("server"));
+        DBServer         server = DBServer.uri(URIs.of("server"),log);
         Hints           hints = Hints.NONE;
 
         Database       database = server.databaseName("INFORMATION_SCHEMA");

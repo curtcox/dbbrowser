@@ -26,7 +26,7 @@ public class DatabaseMetaHandlerTest {
     Log log;
 
     private DBServer getStoreServer() {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
         return server;
@@ -57,7 +57,7 @@ public class DatabaseMetaHandlerTest {
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
         DatabaseMetaHandler handler = newHandler();
-        handler.tryPage(DBServer.uri(URIs.of("server")), "bad method name");
+        handler.tryPage(DBServer.uri(URIs.of("server"),log), "bad method name");
     }
 
     DatabaseMetaHandler newHandler() {

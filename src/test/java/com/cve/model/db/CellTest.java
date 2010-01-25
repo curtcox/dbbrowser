@@ -20,14 +20,14 @@ public class CellTest {
     @Test
     public void equalityWithSameValues() throws URISyntaxException {
         DBRow       row = DBRow.FIRST;
-        DBTable table = DBTable.databaseName(DBServer.uri(new URI("")).databaseName("db"),"foo",log);
+        DBTable table = DBTable.databaseName(DBServer.uri(new URI(""),log).databaseName("db"),"foo",log);
         DBColumn column = DBColumn.tableNameType(table,"bar", String.class);
         assertEquals(Cell.at(row, column), Cell.at(row, column));
     }
 
     @Test
     public void equalityWithEquivalentValues() throws URISyntaxException {
-        DBTable table = DBTable.databaseName(DBServer.uri(new URI("")).databaseName("db"),"foo",log);
+        DBTable table = DBTable.databaseName(DBServer.uri(new URI(""),log).databaseName("db"),"foo",log);
         DBRow       r1a = DBRow.FIRST.next();
         DBRow       r1b = DBRow.FIRST.next();
         DBColumn    c1a = DBColumn.tableNameType(table,"bar", String.class);

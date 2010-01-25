@@ -37,7 +37,7 @@ public class ResultSetTest {
 
     @Test
     public void equality() {
-        DBServer         server = DBServer.uri(URIs.of("server"));
+        DBServer         server = DBServer.uri(URIs.of("server"),log);
 
         Database       database = server.databaseName("INFORMATION_SCHEMA");
         DBTable            tables = database.tableName("TABLES");

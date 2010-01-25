@@ -27,7 +27,7 @@ public class FilterTest {
     }
 
     void assertEquality(Object object) {
-        DBServer   server = DBServer.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"),log);
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
@@ -46,7 +46,7 @@ public class FilterTest {
     }
 
     void assertUnequality(Object a, Object b) {
-        DBServer   server = DBServer.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"),log);
         Database     db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn column = table.columnName("bar");
@@ -55,7 +55,7 @@ public class FilterTest {
     }
 
     private void assertRenderedFilterParses(Object value) {
-        DBServer   server = DBServer.uri(URIs.of("server"));
+        DBServer   server = DBServer.uri(URIs.of("server"),log);
         DBTable   table = server.databaseName("db").tableName("foo");
         DBRowFilter filter = table
                 .columnName("bar")
@@ -67,7 +67,7 @@ public class FilterTest {
         // We use "+" to separate filters in URLs, so the fragments can't
         // contain them
         assertFalse("Should not contain + : " + fragment,fragment.contains("+"));
-        DBRowFilter parsed = DBRowFilter.parse(server, tables, fragment,log);
+        DBRowFilter parsed = DBRowFilter.parse(server, tables, fragment);
         System.out.println("filter=" + filter);
         System.out.println("parsed=" + parsed);
         assertEquals(filter,parsed);

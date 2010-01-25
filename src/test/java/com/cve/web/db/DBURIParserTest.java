@@ -29,14 +29,14 @@ public class DBURIParserTest {
     @Test
     public void getAllFull() {
         String uri = "//server/db/db.t1+db.t2/db.t1.c1+db.t2.c2+count(c1)/db.t1.c1=db.t2.c2/db.t1.c1=only/db.t1.c1=ASC/db.t1.c1/";
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
         DBColumn         c1 = t1.columnName("c1");
         DBColumn         c2 = t2.columnName("c2");
         Join         join = Join.of(c1, c2);
-        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"),log);
+        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"));
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);
@@ -56,14 +56,14 @@ public class DBURIParserTest {
     @Test
     public void getAllShortened() {
         String uri = "//server/db/db.t1+db.t2/c1+0c2+count(c1)/c1=0c2/c1=only/c1=ASC/c1/";
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
         DBColumn         c1 = t1.columnName("c1");
         DBColumn         c2 = t2.columnName("c2");
         Join         join = Join.of(c1, c2);
-        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"),log);
+        DBRowFilter     filter = DBRowFilter.of(c1, DBValue.of("only"));
         Order       order = Order.ascending(c1);
         Group       group = Group.of(c1);
         ImmutableList<DBTable> tables = list(t1,t2);
@@ -83,7 +83,7 @@ public class DBURIParserTest {
     @Test
     public void getServerWhenOnlyServer() {
         String uri = "//server/";
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         assertEquals(server,  codec.getServer(uri));
     }
 
@@ -103,7 +103,7 @@ public class DBURIParserTest {
     public void getWithEmptyGroupBy() {
         String uri = "//SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE/////20+20/";
         Select select = codec.getSelect(uri);
-        DBServer     server = DBServer.uri(URIs.of("SAMPLE"));
+        DBServer     server = DBServer.uri(URIs.of("SAMPLE"),log);
         Database database = server.databaseName("PUBLIC");
         assertEquals(database,select.databases.get(0));
         assertEquals(server,select.databases.get(0).server);

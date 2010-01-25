@@ -58,7 +58,7 @@ final class H2MetaData extends DefaultDBMetaData {
             String   columnName = info.columnName;
             String databaseName = info.tableSchema;
             Class          type = classFor(info.dataType);
-            Database   database = Database.serverName(server, databaseName,log);
+            Database   database = Database.serverName(server, databaseName);
             DBColumn     column = database.tableName(tableName).columnNameType(columnName,type);
             list.add(column);
         }

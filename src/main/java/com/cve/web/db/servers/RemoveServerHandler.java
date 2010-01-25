@@ -1,6 +1,7 @@
 package com.cve.web.db.servers;
 
 import com.cve.log.Log;
+import com.cve.stores.db.DBServersStore;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
 
@@ -10,8 +11,12 @@ import com.cve.web.PageRequest;
  */
 final class RemoveServerHandler extends AbstractRequestHandler {
 
-    private RemoveServerHandler(Log log) {
+    private RemoveServerHandler(DBServersStore serversStore,Log log) {
         super(log);
+    }
+
+    public static RemoveServerHandler of(DBServersStore serversStore, Log log) {
+        return new RemoveServerHandler(serversStore,log);
     }
 
     @Override

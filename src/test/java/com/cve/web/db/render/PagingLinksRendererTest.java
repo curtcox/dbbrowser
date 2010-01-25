@@ -38,7 +38,7 @@ public class PagingLinksRendererTest {
     private static final String BIGGER = PagingLinksRenderer.BIGGER;
 
     public SelectResults onePersonResults() {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -53,7 +53,7 @@ public class PagingLinksRendererTest {
     }
 
     SelectResults multiPersonResults(int first, int last, DBLimit limit, boolean hasMore) {
-        DBServer           server = DBServer.uri(URIs.of("server"));
+        DBServer           server = DBServer.uri(URIs.of("server"),log);
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);

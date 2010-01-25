@@ -9,10 +9,10 @@ import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
 
 /**
- * Database drivers that we support.
+ *
  * @author curt
  */
-public class DBDriver implements DriverIO {
+public final class CompositeDBDriver implements DriverIO {
 
     @Override
     public JDBCURL getJDBCURL(String name) {
@@ -38,7 +38,5 @@ public class DBDriver implements DriverIO {
     public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
-
 
 }

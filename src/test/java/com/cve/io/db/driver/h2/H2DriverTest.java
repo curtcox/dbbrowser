@@ -32,7 +32,7 @@ public class H2DriverTest {
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
     final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
-    final H2Driver driver = H2Driver.of();
+    final H2Driver driver = H2Driver.of(log, managedFunction,serversStore);
     final DBMetaData dbmd = driver.getDBMetaData(connection);
 
 

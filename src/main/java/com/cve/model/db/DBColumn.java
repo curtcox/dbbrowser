@@ -3,6 +3,7 @@ package com.cve.model.db;
 import com.cve.html.HTML;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
@@ -48,6 +49,10 @@ public final class DBColumn {
      */
     public final Keyness keyness;
 
+    public final Log log;
+
+    final DBURICodec codec;
+    
     /**
      * For limiting the number of objects we produce.
      */
@@ -67,6 +72,8 @@ public final class DBColumn {
         this.name    = notNull(name);
         this.type    = notNull(type);
         this.keyness = notNull(keyness);
+        log = table.log;
+        codec = DBURICodec.of(log);
     }
 
     private static DBColumn canonical(DBColumn column) {
@@ -162,7 +169,7 @@ public final class DBColumn {
     }
 
     public Link linkTo() {
-        URI target = DBURICodec.encode(this);
+        URI target = codec.encode(this);
         String markedName = name;
         if (keyness==Keyness.PRIMARY) {
             markedName = HTML.b(name);

@@ -1,9 +1,10 @@
 package com.cve.stores.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
-import com.cve.util.Check;
+import static com.cve.util.Check.notNull;
 import com.cve.util.URIs;
 
 /**
@@ -12,19 +13,21 @@ import com.cve.util.URIs;
  */
 final class ServerIO implements IO<DBServer> {
 
+    final Log log;
+
     final IO<String> stringIO = StringIO.of();
 
-    final static ServerIO SINGLETON = new ServerIO();
+    private ServerIO(Log log) {
+        this.log = notNull(log);
+    }
 
-    private ServerIO() {}
-
-    static ServerIO of() {
-        return SINGLETON;
+    static ServerIO of(Log log) {
+        return new ServerIO(log);
     }
     
     @Override
     public DBServer read(byte[] bytes) {
-        return DBServer.uri(URIs.of(Check.notNull(stringIO.read(bytes))));
+        return DBServer.uri(URIs.of(notNull(stringIO.read(bytes))),log);
     }
 
     @Override

@@ -29,7 +29,7 @@ public class H2MetaDataIOTest {
     final DBConnectionInfo connectionInfo = SampleH2Server.getConnectionInfo();
     final DefaultDBConnection connection = DefaultDBConnection.of(connectionInfo,serversStore,managedFunction,log);
 
-    final DBMetaDataIO io = H2MetaDataIO.of(connection, managedFunction);
+    final DBMetaDataIO io = H2MetaDataIO.of(connection, managedFunction,log);
 
     @Test
     public void getColumns() {

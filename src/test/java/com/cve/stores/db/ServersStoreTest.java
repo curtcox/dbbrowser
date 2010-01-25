@@ -1,5 +1,6 @@
 package com.cve.stores.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
@@ -14,6 +15,8 @@ import static org.junit.Assert.*;
  */
 public class ServersStoreTest {
 
+    Log log;
+
     @Test
     public void getServers() {
         ImmutableList<DBServer> servers = MemoryDBServersStore.of().keys();
@@ -22,7 +25,7 @@ public class ServersStoreTest {
 
     @Test
     public void getConnection() {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db1"));
         DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL,"","");
         DBServersStore  store = MemoryDBServersStore.of();

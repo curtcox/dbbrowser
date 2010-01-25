@@ -26,14 +26,14 @@ import static org.junit.Assert.*;
 public class SelectBuilderHandlerTest {
 
     Log log;
-    DBServer server = DBServer.uri(URIs.of("server"));
+    DBServer server = DBServer.uri(URIs.of("server"),log);
     DBServersStore serversStore = MemoryDBServersStore.of();
     DBHintsStore hintsStore = MemoryDBHintsStore.of();
     ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
     SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction,log);
     {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 

@@ -32,7 +32,7 @@ public class DBBrowserHandlerTest {
     final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
     final RequestHandler handler = DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction,log);
     {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 

@@ -30,7 +30,7 @@ public class URIRenderTest {
 
     @Test
     public void renderSelectCustomerPersonName() {
-        DBServer      server = DBServer.uri(URIs.of("server"));
+        DBServer      server = DBServer.uri(URIs.of("server"),log);
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -42,7 +42,7 @@ public class URIRenderTest {
 
     @Test
     public void renderSelectCustomerPersonNameAge() {
-        DBServer      server = DBServer.uri(URIs.of("server"));
+        DBServer      server = DBServer.uri(URIs.of("server"),log);
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -55,7 +55,7 @@ public class URIRenderTest {
 
     @Test
     public void renderSelectCustomerPersonNameAgeAccount() {
-        DBServer      server = DBServer.uri(URIs.of("server"));
+        DBServer      server = DBServer.uri(URIs.of("server"),log);
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBTable      account = database.tableName("account");
@@ -66,7 +66,7 @@ public class URIRenderTest {
         DBColumn        number = account.columnNameType("number",Integer.class);
         DBColumn account_email = account.columnNameType("email",String.class);
         Join            join = Join.of(person_email, account_email);
-        DBRowFilter        filter = DBRowFilter.of(sex, DBValue.of("F"),log);
+        DBRowFilter        filter = DBRowFilter.of(sex, DBValue.of("F"));
         Order          order = Order.ascending(name);
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(

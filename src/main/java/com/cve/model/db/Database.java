@@ -33,11 +33,11 @@ public final class Database {
 
     public static final Database NULL = new Database(DBServer.NULL,"");
 
-    private Database(DBServer server, String name, Log log) {
+    private Database(DBServer server, String name) {
+        log = server.log;
         log.notNullArgs(server,name);
         this.server = notNull(server);
         this.name   = notNull(name);
-        this.log    = log;
         codec = DBURICodec.of(log);
     }
 
@@ -45,8 +45,8 @@ public final class Database {
         return CANONICALIZER.canonical(database);
     }
 
-    public static Database serverName(DBServer server, String name , Log log) {
-        return canonical(new Database(server,name,log));
+    public static Database serverName(DBServer server, String name) {
+        return canonical(new Database(server,name));
     }
 
     @Override
@@ -63,7 +63,7 @@ public final class Database {
     }
 
     public DBTable tableName(String name) {
-        return DBTable.databaseName(this, name);
+        return DBTable.databaseName(this, name,log);
     }
 
     @Override

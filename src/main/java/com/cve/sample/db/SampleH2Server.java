@@ -1,5 +1,6 @@
 package com.cve.sample.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
@@ -21,10 +22,11 @@ import java.sql.Statement;
  */
 public final class SampleH2Server {
 
+    public static final Log log = null;
     /**
      * Our sample server.
      */
-    public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
+    public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"),log);
 
     private static final SampleH2Server SERVER = newSampleH2Server();
 

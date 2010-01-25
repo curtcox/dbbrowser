@@ -28,7 +28,7 @@ public class DBRedirectsHandlerTest {
     final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
     final DBRedirectsHandler   handler = DBRedirectsHandler.of(db,log);
     {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 

@@ -1,11 +1,10 @@
 package com.cve.stores.db;
 
-import com.cve.stores.db.TableIO;
+import com.cve.log.Log;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.DBServer;
 import com.cve.util.URIs;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -13,12 +12,13 @@ import static org.junit.Assert.*;
  */
 public class TableIOTest {
 
-    static TableIO io = TableIO.of();
+    Log log;
+    TableIO io = TableIO.of(log);
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one")).databaseName("db").tableName("t1"));
-        both(DBServer.uri(URIs.of("two")).databaseName("db").tableName("t2"));
+        both(DBServer.uri(URIs.of("one"),log).databaseName("db").tableName("t1"));
+        both(DBServer.uri(URIs.of("two"),log).databaseName("db").tableName("t2"));
     }
 
     void both(DBTable t) {

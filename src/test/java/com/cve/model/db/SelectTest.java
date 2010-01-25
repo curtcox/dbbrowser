@@ -1,16 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.model.db.DBServer;
-import com.cve.model.db.Join;
-import com.cve.model.db.DBTable;
-import com.cve.model.db.DBColumn;
-import com.cve.model.db.AggregateFunction;
-import com.cve.model.db.DBLimit;
-import com.cve.model.db.DBRowFilter;
-import com.cve.model.db.Order;
-import com.cve.model.db.Group;
-import com.cve.model.db.Select;
-import com.cve.model.db.Database;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
@@ -22,6 +12,9 @@ import static org.junit.Assert.*;
  */
 public class SelectTest {
 
+
+    Log log;
+
     public SelectTest() {
     }
 
@@ -31,7 +24,7 @@ public class SelectTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        DBServer server = DBServer.uri(URIs.of("server"));
+        DBServer server = DBServer.uri(URIs.of("server"),log);
         ImmutableList<Database>   databases = ImmutableList.of(server.databaseName("database"));
         ImmutableList<DBTable>       tables = ImmutableList.of();
         ImmutableList<DBColumn>     columns = ImmutableList.of();

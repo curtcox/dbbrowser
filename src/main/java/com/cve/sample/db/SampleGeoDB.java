@@ -1,6 +1,5 @@
 package com.cve.sample.db;
 
-import com.cve.log.Log;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import java.sql.SQLException;
@@ -11,8 +10,7 @@ import java.sql.SQLException;
  */
 public final class SampleGeoDB {
 
-    static final Log log = null;
-    public static final Database GEO = Database.serverName(SampleH2Server.SAMPLE, "GEO",log);
+    public static final Database GEO = Database.serverName(SampleH2Server.SAMPLE, "GEO");
 
     public static final DBTable STATES = GEO.tableName("states");
     public static final DBTable COUNTRIES = GEO.tableName("countries");

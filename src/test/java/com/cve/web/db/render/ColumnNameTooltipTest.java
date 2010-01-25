@@ -28,7 +28,7 @@ public class ColumnNameTooltipTest {
     public ColumnNameTooltipTest() {}
 
     private Join getJoin() {
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
@@ -38,24 +38,24 @@ public class ColumnNameTooltipTest {
     }
 
     private DBRowFilter getFilter() {
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBValue       value = DBValue.of("active");
-        DBRowFilter     filter = DBRowFilter.of(foo,value,log);
+        DBRowFilter     filter = DBRowFilter.of(foo,value);
         return filter;
     }
 
     private HTML getTip() {
-        DBServer     server = DBServer.uri(URIs.of("server"));
+        DBServer     server = DBServer.uri(URIs.of("server"),log);
         Database database = server.databaseName("db");
         DBTable       table = DBTable.databaseName(database, "table",log);
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);
         DBValue       value = DBValue.of("active");
-        DBRowFilter     filter = DBRowFilter.of(foo,value,log);
+        DBRowFilter     filter = DBRowFilter.of(foo,value);
 
         ImmutableList<DBColumn>   joins = ImmutableList.of(bar);
         ImmutableList<DBRowFilter> filters = ImmutableList.of(filter);

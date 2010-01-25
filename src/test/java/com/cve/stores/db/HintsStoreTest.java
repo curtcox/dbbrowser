@@ -1,5 +1,6 @@
 package com.cve.stores.db;
 
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.Hints;
@@ -18,9 +19,11 @@ import static org.junit.Assert.*;
  */
 public class HintsStoreTest {
 
+    Log log;
+    
     @Test
     public void findsHintsWithJoin() throws SQLException {
-        DBServer         server = DBServer.uri(URIs.of("server"));
+        DBServer         server = DBServer.uri(URIs.of("server"),log);
 
         Database         database = server.databaseName("DB1");
         DBTable             account = database.tableName("ACCOUNT");

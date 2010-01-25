@@ -20,8 +20,8 @@ public final class DBServersHandler implements RequestHandler {
         handler = CompositeRequestHandler.of(
             // handler                         // for URLs of the form
             ServersHandler.of(db,serversStore,log),             // /
-            AddServerHandler.of(serversStore),            // /add
-            new RemoveServerHandler(),         // /remove
+            AddServerHandler.of(serversStore,log),           // /add
+            RemoveServerHandler.of(serversStore,log),         // /remove
             DatabaseMetaHandler.of(db,serversStore,managedFunction,log)  // /meta/server/
         );
     }

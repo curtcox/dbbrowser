@@ -30,24 +30,25 @@ public final class DBRowFilter {
     /**
      * Use the factory.
      */
-    private DBRowFilter(DBColumn column, DBValue value, Log log) {
+    private DBRowFilter(DBColumn column, DBValue value) {
         this.column = notNull(column);
         this.value  = notNull(value);
-        this.log = notNull(log);
+        this.log = notNull(column.log);
     }
 
     /**
      * Return a filter for the given column and value.
      */
-    public static DBRowFilter of(DBColumn column, DBValue value, Log log) {
-        return new DBRowFilter(column,value,log);
+    public static DBRowFilter of(DBColumn column, DBValue value) {
+        return new DBRowFilter(column,value);
     }
 
     /**
      * Parses a filter that has previously been rendered as a URL fragment.
      * See toURrlFragment.
      */
-    public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName, Log log) {
+    public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
+        Log log  = server.log;
         log.notNullArgs(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
@@ -59,7 +60,7 @@ public final class DBRowFilter {
         DBColumn       column = DBColumn.parse(server,tables,nameParts[0]);
         String         string = nameParts[1];
         DBValue         value = DBValue.decode(string);
-        DBRowFilter       filter = DBRowFilter.of(column, value,log);
+        DBRowFilter       filter = DBRowFilter.of(column, value);
         return filter;
     }
 

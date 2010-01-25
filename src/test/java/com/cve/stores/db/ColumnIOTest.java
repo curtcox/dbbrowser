@@ -1,6 +1,6 @@
 package com.cve.stores.db;
 
-import com.cve.stores.db.ColumnIO;
+import com.cve.log.Log;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBServer;
 import com.cve.util.URIs;
@@ -13,12 +13,14 @@ import static org.junit.Assert.*;
  */
 public class ColumnIOTest {
 
-    static ColumnIO io = ColumnIO.of();
+    Log log;
+
+    ColumnIO io = ColumnIO.of(log);
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one")).databaseName("db").tableName("t1").columnName("c1"));
-        both(DBServer.uri(URIs.of("two")).databaseName("db").tableName("t2").columnName("c2"));
+        both(DBServer.uri(URIs.of("one"),log).databaseName("db").tableName("t1").columnName("c1"));
+        both(DBServer.uri(URIs.of("two"),log).databaseName("db").tableName("t2").columnName("c2"));
     }
 
     void both(DBColumn c) {

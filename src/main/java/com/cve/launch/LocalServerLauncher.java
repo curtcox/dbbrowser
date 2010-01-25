@@ -105,7 +105,7 @@ public final class LocalServerLauncher {
     void startGrizzly() throws IOException {
         WebApp webApp = WebApp.of(
             LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction,log),
-            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction),
+            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction,log),
             log
         );
         Grizzly.start(webApp, PORT);

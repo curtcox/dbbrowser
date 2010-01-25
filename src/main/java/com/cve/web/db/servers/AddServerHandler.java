@@ -53,7 +53,7 @@ final class AddServerHandler extends AbstractFormHandler {
         String   serverName = params.get(SERVER);
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
-        DBServer       server = DBServer.uri(URIs.of(serverName));
+        DBServer       server = DBServer.uri(URIs.of(serverName),log);
         DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password);
         if (serversStore.keys().contains(server)) {
             String message = "There is already a server for " + url;
