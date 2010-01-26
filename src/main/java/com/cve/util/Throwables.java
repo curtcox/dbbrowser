@@ -1,31 +1,42 @@
 package com.cve.util;
 
+import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.web.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-
+import static com.cve.util.Check.notNull;
 import java.net.URI;
-import static com.cve.html.HTML.*;
+
 /**
  * For printing throwables.
  */
 public final class Throwables {
 
-    public static String toString(Throwable t) {
+    private final Log log;
+
+    private final HTMLTags tags;
+
+    private Throwables(Log log) {
+        this.log = notNull(log);
+        tags = HTMLTags.of(log);
+    }
+
+    public String toString(Throwable t) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out);
         t.printStackTrace(writer);
         writer.close();
-        return pre(out.toString());
+        return tags.pre(out.toString());
     }
 
     /**
      * For now, just display the throwable as tables.
      * Later, we need to make the rows into links to the source.
      */
-    public static String toHtml(Throwable t) {
+    public String toHtml(Throwable t) {
         StringBuilder out = new StringBuilder();
         while (t!=null) {
             out.append("<b>" + t.getClass().getName() + "</b> " + t.getMessage());
@@ -45,10 +56,17 @@ public final class Throwables {
         return html(body(out.toString()));
     }
 
+    String tr(String s) { return tags.tr(s); }
+    String th(String s) { return tags.th(s); }
+    String td(String s) { return tags.th(s); }
+    String body(String s) { return tags.body(s); }
+    String html(String s) { return tags.html(s); }
+    String borderTable(String s) { return tags.borderTable(s); }
+
     /**
      * Return the HTML for a stack trace element.
      */
-    static String row(StackTraceElement e) {
+    String row(StackTraceElement e) {
         String className = e.getClassName();
         String  fileName = e.getFileName();
         return tr(
@@ -60,8 +78,8 @@ public final class Throwables {
 
     }
 
-    static Link linkToSource(String className, String fileName) {
-        Label text = Label.of(fileName);
+    Link linkToSource(String className, String fileName) {
+        Label text = Label.of(fileName,log);
         String classFileName = className.replace(".", "/") + ".java";
         URI target = URIs.of(ResourceHandler.PREFIX + classFileName);
         return Link.textTarget(text, target);

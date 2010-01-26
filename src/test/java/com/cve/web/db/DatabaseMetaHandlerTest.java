@@ -1,6 +1,7 @@
 
 package com.cve.web.db;
 
+import com.cve.html.HTMLTags;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
 import com.cve.log.Log;
@@ -16,7 +17,6 @@ import java.sql.SQLException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static com.cve.html.HTML.*;
 /**
  *
  * @author curt
@@ -24,6 +24,7 @@ import static com.cve.html.HTML.*;
 public class DatabaseMetaHandlerTest {
 
     Log log;
+    HTMLTags tags;
 
     private DBServer getStoreServer() {
         DBServer server = DBServer.uri(URIs.of("server"),log);
@@ -67,4 +68,13 @@ public class DatabaseMetaHandlerTest {
         DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction,log);
         return handler;
     }
+
+        String h1(String s) { return tags.h1(s); }
+    String h2(String s) { return tags.h2(s); }
+    String tr(String s) { return tags.tr(s); }
+    String td(String s) { return tags.td(s); }
+String th(String s) { return tags.th(s); }
+String table(String s) { return tags.table(s); }
+String borderTable(String s) { return tags.borderTable(s); }
+
 }

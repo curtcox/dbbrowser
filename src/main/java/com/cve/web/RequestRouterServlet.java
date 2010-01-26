@@ -51,7 +51,7 @@ public final class RequestRouterServlet extends HttpServlet {
     /**
      * Dumps servlet requests for diagnostic purposes.
      */
-    private static final RequestDumpServlet DUMPER = RequestDumpServlet.newInstance();
+    private final RequestDumpServlet dumper;
 
     public static RequestRouterServlet of(WebApp webapp) {
         RequestHandler      router = webapp.handler;
@@ -67,6 +67,7 @@ public final class RequestRouterServlet extends HttpServlet {
         this.router = notNull(router);
         this.renderer = notNull(renderer);
         this.log = notNull(log);
+        dumper = RequestDumpServlet.of(log);
     }
 
     @Override
@@ -142,7 +143,7 @@ public final class RequestRouterServlet extends HttpServlet {
         String uri = request.getRequestURI();
         // You can dump any request by sticking a ! on the beginning or end.
         if (uri.startsWith("/!") || uri.endsWith("!")) {
-            DUMPER.doGet(request,response);
+            dumper.doGet(request,response);
             return;
         }
         // Transform the request, produce route it to something that knows how
@@ -154,7 +155,7 @@ public final class RequestRouterServlet extends HttpServlet {
             return;
         }
         // Any request that we couldn't process gets dumped, too.
-        DUMPER.doGet(request,response);
+        dumper.doGet(request,response);
     }
 
 }

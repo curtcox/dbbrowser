@@ -18,7 +18,7 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
-import com.cve.html.HTML;
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -62,7 +61,9 @@ public final class DBResultSetRenderer {
      */
     private final ClientInfo client;
 
-    final Log log;
+    private final Log log;
+
+    private final HTMLTags tags;
 
     private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
         this.results = notNull(results);
@@ -70,6 +71,7 @@ public final class DBResultSetRenderer {
         this.hints   = notNull(hints);
         this.client  = notNull(client);
         this.log = notNull(log);
+        tags = HTMLTags.of(log);
     }
 
     public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
@@ -85,13 +87,16 @@ public final class DBResultSetRenderer {
      */
     public String landscapeTable() {
         List<UIRow> rows = Lists.newArrayList();
-        rows.add(UIRow.of(databaseRow(),   CSS.DATABASE));
-        rows.add(UIRow.of(tableRow(),      CSS.TABLE));
-        rows.add(UIRow.of(columnNameRow()));
-        rows.add(UIRow.of(columnActionsRow(), CSS.ACTIONS));
+        rows.add(row(databaseRow(),   CSS.DATABASE));
+        rows.add(row(tableRow(),      CSS.TABLE));
+        rows.add(row(columnNameRow()));
+        rows.add(row(columnActionsRow(), CSS.ACTIONS));
         rows.addAll(valueRowsList());
         return UITable.of(rows).toString();
     }
+
+    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
+    UIRow row(List<UIDetail> details)          { return UIRow.of(details,log); }
 
     /**
      * The rows that contain all of the result set values.
@@ -104,7 +109,7 @@ public final class DBResultSetRenderer {
             for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
                 DBValue value = results.getValue(row, column);
-                details.add(UIDetail.of(valueCell(cell,value)));
+                details.add(detail(valueCell(cell,value)));
             }
             out.add(UIRow.of(details, cssClass));
             if (cssClass==CSS.EVEN_ROW) {
@@ -116,6 +121,9 @@ public final class DBResultSetRenderer {
         return out;
     }
 
+    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
+    UIDetail detail(String value) { return UIDetail.of(value, log); }
+
     /**
      * A table row where each cell represents a different database.
      * Cells from this row may span multiple columns of rows below.
@@ -124,7 +132,7 @@ public final class DBResultSetRenderer {
         List<UIDetail> out = Lists.newArrayList();
         for (Database database : results.databases) {
             int width = results.columns.size();
-            out.add(UIDetail.of(nameCell(database),width));
+            out.add(detail(nameCell(database),width));
         }
         return ImmutableList.copyOf(out);
     }
@@ -142,7 +150,7 @@ public final class DBResultSetRenderer {
                     width++;
                 }
             }
-            out.add(UIDetail.of(nameCell(table),width));
+            out.add(detail(nameCell(table),width));
         }
         return ImmutableList.copyOf(out);
     }
@@ -156,9 +164,9 @@ public final class DBResultSetRenderer {
         int columnCount = results.columns.size();
         for (DBColumn column : results.columns) {
             if (columnCount < 5 ) {
-                out.add(UIDetail.of(nameCell(column),classOf(column)));
+                out.add(detail(nameCell(column),classOf(column)));
             } else {
-                out.add(UIDetail.of(nameCell(column),classOf(column)));
+                out.add(detail(nameCell(column),classOf(column)));
             }
         }
         return ImmutableList.copyOf(out);
@@ -171,7 +179,7 @@ public final class DBResultSetRenderer {
     ImmutableList<UIDetail> columnActionsRow() {
         List<UIDetail> out = Lists.newArrayList();
         for (DBColumn column : results.columns) {
-            out.add(UIDetail.of(actionCell(column,direction(column))));
+            out.add(detail(actionCell(column,direction(column))));
         }
         return ImmutableList.copyOf(out);
     }
@@ -196,7 +204,7 @@ public final class DBResultSetRenderer {
             for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
                 DBValue value = results.getValue(row, column);
-                out.append(td(valueCell(cell,value)));
+                out.append(tags.td(valueCell(cell,value)));
             }
             out.append("</tr>\r");
             if (cssClass==CSS.EVEN_ROW) {
@@ -213,7 +221,7 @@ public final class DBResultSetRenderer {
      */
     String nameCell(Database database) {
         log.notNullArgs(database);
-        Label  text = Label.of(database.name);
+        Label  text = Label.of(database.name,log);
         URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
     }
@@ -223,7 +231,7 @@ public final class DBResultSetRenderer {
      */
     String nameCell(DBTable table) {
         log.notNullArgs(table);
-        Label  text = Label.of(table.name);
+        Label  text = Label.of(table.name,log);
         URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
     }
@@ -242,7 +250,7 @@ public final class DBResultSetRenderer {
         if (columnName.length() > width) {
             columnName = columnName.substring(0,width);
         }
-        Label                    text = Label.of(columnName);
+        Label                    text = Label.of(columnName,log);
         URI                    target = column.linkTo().getTarget();
         ImmutableList<DBColumn> joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<DBRowFilter> filters = hints.getFiltersFor(column);
@@ -253,10 +261,10 @@ public final class DBResultSetRenderer {
             return link;
         }
         if (keyness==DBColumn.Keyness.PRIMARY) {
-            return HTML.img("Primary key", Icons.PRIMARY_KEY) + link;
+            return tags.img("Primary key", Icons.PRIMARY_KEY) + link;
         }
         if (keyness==DBColumn.Keyness.FOREIGN) {
-            return HTML.img("Foreign key", Icons.FOREIGN_KEY) + link;
+            return tags.img("Foreign key", Icons.FOREIGN_KEY) + link;
         }
         throw new IllegalArgumentException("" + keyness);
     }
@@ -302,18 +310,18 @@ public final class DBResultSetRenderer {
         return CSS.COLUMN;
     }
 
-    static String actionCell(DBColumn column, Order.Direction direction) {
-        Label  text = Label.of("Hide or sort");
+    String actionCell(DBColumn column, Order.Direction direction) {
+        Label  text = Label.of("Hide or sort",log);
         URI  target = SelectBuilderAction.HIDE.withArgs(column.fullName());
         Tooltip tip = ColumnActionTooltip.columnDirection(column,direction);
         URI   image = Icons.CONFIGURE;
         return Link.textTargetTipImage(text, target, tip,image).toString();
     }
 
-    static String valueCell(Cell cell, DBValue value) {
+    String valueCell(Cell cell, DBValue value) {
         Object       object = value.value;
         String  valueString = "" + object;
-        Label          text = Label.of(valueString);
+        Label          text = Label.of(valueString,log);
         DBColumn     column = cell.column;
         DBRowFilter       filter = DBRowFilter.of(column, value);
         URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());

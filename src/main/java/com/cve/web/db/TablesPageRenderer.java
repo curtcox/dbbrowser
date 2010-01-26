@@ -6,12 +6,12 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.html.HTML.*;
 import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
@@ -22,10 +22,13 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     private final Log log;
 
+    private final HTMLTags tags;
+
     private static URI HELP = URIs.of("/resource/help/Tables.html");
 
     private TablesPageRenderer(Log log) {
         this.log = notNull(log);
+        tags = HTMLTags.of(log);
     }
 
     public static TablesPageRenderer of(Log log) {
@@ -78,4 +81,9 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         return out.toString();
     }
 
+    String table(String s)       { return tags.table(s); }
+    String tr(String s)          { return tags.tr(s); }
+    String th(String s)          { return tags.th(s); }
+    String th(String s, CSS css) { return tags.th(s, css); }
+    String td(String s, CSS css) { return tags.td(s, css); }
 }

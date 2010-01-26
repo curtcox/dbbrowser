@@ -1,7 +1,5 @@
 package com.cve.web.db.render;
 
-import com.cve.web.db.render.ResultsTableRenderer;
-import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.model.db.Cell;
 import com.cve.model.db.CellValues;
 import com.cve.model.db.SelectResults;
@@ -18,6 +16,7 @@ import com.cve.model.db.Select;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import static com.cve.util.Replace.bracketQuote;
 import static com.cve.util.Replace.escapeQuotes;
@@ -32,7 +31,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import static com.cve.html.HTML.*;
 /**
  *
  * @author Curt
@@ -40,6 +38,14 @@ import static com.cve.html.HTML.*;
 public class ResultsTableRendererTest {
 
     Log log;
+    HTMLTags tags;
+
+    String tr(String s) { return tags.tr(s); }
+    String td(String s) { return tags.td(s); }
+    String td(String s, int w) { return tags.td(s,w); }
+    String tr(String s, CSS css) { return tags.tr(s,css); }
+    String th(String s, CSS css) { return tags.th(s,css); }
+    String td(String s, CSS css) { return tags.td(s,css); }
 
     public SelectResults onePersonResults() {
         DBServer           server = DBServer.uri(URIs.of("server"),log);

@@ -24,6 +24,10 @@ public final class AnnotatedStackTraceBrowser
         this.log = notNull(log);
     }
 
+    public static AnnotatedStackTraceBrowser of(Log log) {
+        return new AnnotatedStackTraceBrowser(log);
+    }
+    
     /* (non-Javadoc)
      */
     @Override

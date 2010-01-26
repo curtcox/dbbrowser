@@ -1,5 +1,6 @@
 package com.cve.web.log;
 
+import com.cve.log.Log;
 import com.cve.web.log.browsers.AnnotatedStackTraceBrowser;
 import com.cve.web.log.browsers.ArrayBrowser;
 import com.cve.web.log.browsers.CollectionBrowser;
@@ -27,19 +28,13 @@ final class CustomBrowserRegistry {
     
     private static final CustomBrowser ARRAY_BROWSER = new ArrayBrowser();
 
-    /**
-     * Register all custom browsers.
-     */
-    static {
-        register(new CollectionBrowser());
-        register(new MapBrowser());
-        register(new MultimapBrowser());
-        register(new AnnotatedStackTraceBrowser());
+    private CustomBrowserRegistry(Log log) {
+        // Register all custom browsers.
+        register(CollectionBrowser.of(log));
+        register(MapBrowser.of(log));
+        register(MultimapBrowser.of(log));
+        register(AnnotatedStackTraceBrowser.of(log));
         // add new custom browsers here
-    }
-
-    private CustomBrowserRegistry() {
-        // don't instantiate
     }
 
     /**

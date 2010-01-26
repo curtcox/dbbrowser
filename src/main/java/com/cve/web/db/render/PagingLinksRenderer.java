@@ -4,6 +4,7 @@ import com.cve.model.db.DBLimit;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.model.db.SelectResults;
 import com.cve.web.Icons;
 import java.net.URI;
@@ -17,6 +18,7 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class PagingLinksRenderer {
 
+    final Log log;
     /**
      * The results we render
      */
@@ -32,6 +34,7 @@ public final class PagingLinksRenderer {
 
     private PagingLinksRenderer(SelectResults results) {
         this.results = notNull(results);
+        this.log = notNull(results.log);
     }
 
     static PagingLinksRenderer results(SelectResults results) {
@@ -47,28 +50,28 @@ public final class PagingLinksRenderer {
         StringBuilder out = new StringBuilder();
         DBLimit limit = results.select.limit;
         if (limit.offset>0) {
-            Label  text = Label.of(BACK);
+            Label  text = Label.of(BACK,log);
             URI  target = SelectBuilderAction.BACK.withArgs("1");
             String  tip = "Previous rows";
             URI   image = Icons.BACK;
             out.append(Link.textTargetImageAlt(text, target,image,tip) + " ");
         }
         if (results.hasMore) {
-            Label  text = Label.of(NEXT);
+            Label  text = Label.of(NEXT,log);
             URI  target = SelectBuilderAction.NEXT.withArgs("1");
             String  tip = "Next rows";
             URI   image = Icons.NEXT;
             out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (limit.limit > 20) {
-            Label  text = Label.of(SMALLER);
+            Label  text = Label.of(SMALLER,log);
             URI  target = SelectBuilderAction.SMALLER.withArgs("10");
             String  tip = "Fewer rows";
             URI   image = Icons.MINUS;
             out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (results.hasMore) {
-            Label  text = Label.of(BIGGER);
+            Label  text = Label.of(BIGGER,log);
             URI  target = SelectBuilderAction.BIGGER.withArgs("10");
             String  tip = "More rows";
             URI   image = Icons.PLUS;

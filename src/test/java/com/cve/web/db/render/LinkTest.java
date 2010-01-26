@@ -4,6 +4,7 @@ import com.cve.html.Tooltip;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.html.HTML;
+import com.cve.log.Log;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.junit.Test;
@@ -17,14 +18,16 @@ import com.cve.util.Replace;
  */
 public class LinkTest {
 
+    Log log;
+
     public LinkTest() {}
 
-    private static final Tooltip DUMMY_TOOLTIP = new Tooltip() {
-        public HTML toHTML() { return HTML.of("dummy tooltip"); }
+    private final Tooltip DUMMY_TOOLTIP = new Tooltip() {
+        public HTML toHTML() { return HTML.of("dummy tooltip",log); }
     };
 
     private String linkHTML() {
-        Label text = Label.of("foo");
+        Label text = Label.of("foo",log);
         URI target = uri("bar");
         Tooltip tip = DUMMY_TOOLTIP;
         String html = Link.textTargetTip(text,target,tip).toString();

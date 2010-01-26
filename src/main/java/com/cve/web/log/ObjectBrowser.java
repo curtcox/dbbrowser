@@ -1,5 +1,7 @@
 package com.cve.web.log;
 
+import com.cve.html.HTMLTags;
+import com.cve.log.Log;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
@@ -11,7 +13,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
-import static com.cve.html.HTML.*;
+import static com.cve.util.Check.notNull;
 
 /**
  * A graphical browser for objects.
@@ -24,11 +26,16 @@ public final class ObjectBrowser {
      */
     private final Object target;
 
+    private final ObjectLink link;
 
     /**
      * What visibility to show.  Public, private, etc...
      */
     private final Mask mask;
+
+    private final Log log;
+
+    private final HTMLTags tags;
 
 /**
  * Something that limits the kind of methods and variables we are interested in.
@@ -168,9 +175,12 @@ public ObjectBrowser(Object o) {
     this(o,Mask.PRIVATE);
 }
 
-public ObjectBrowser(Object target, Mask mask) {
+public ObjectBrowser(Object target, Mask mask, Log log) {
     this.mask   = mask;
     this.target = target;
+    this.log    = notNull(log);
+    link = ObjectLink.of(log);
+    tags = HTMLTags.of(log);
 }
 
 /**
@@ -180,7 +190,7 @@ public ObjectBrowser(Object target, Mask mask) {
 String toHTML() {
     StringBuffer out = new StringBuffer();
     out.append(checkSpecialHandling(target));
-    out.append(h1(ObjectLink.to(target)));
+    out.append(h1(link.to(target)));
 
     out.append(h1("toString"));
     out.append("" + target);
@@ -200,6 +210,13 @@ String toHTML() {
 
     return out.toString();
 } // show Object
+
+String h1(String s) { return tags.h1(s); }
+String h2(String s) { return tags.h2(s); }
+String tr(String s) { return tags.tr(s); }
+String td(String s) { return tags.td(s); }
+String th(String s) { return tags.th(s); }
+String borderTable(String s) { return tags.borderTable(s); }
 
 /**
  * Return a new browser for this object using public visibility.
@@ -288,7 +305,7 @@ private String showField(Field f, Object o) {
     if (value==null) {
         row.append(td(fname));
     } else {
-        row.append(td(ObjectLink.to(fname,value)));
+        row.append(td(link.to(fname,value)));
     }
     row.append(td(valueString) + "\n");
     return tr(row.toString());
@@ -324,7 +341,7 @@ private String showExecutables(Collection<Executable> executables) {
         grouped.put(clazz,executable);
     }
     for (Class clazz : grouped.keySet()) {
-        out.append(h2(ObjectLink.to(clazz.getName(),clazz)));
+        out.append(h2(link.to(clazz.getName(),clazz)));
         out.append(showExecutablesFromOneClass(grouped.get(clazz)));
     }
     return out.toString();
@@ -364,14 +381,14 @@ private String showExecutable(Executable method){
         r.append(td(method.getName()));
     } else {
         Method m = ((ExecutableMethod) method).getMethod();
-        r.append(td(ObjectLink.to(m.getName(),new DeferredMethod(target,m))));
+        r.append(td(link.to(m.getName(),new DeferredMethod(target,m))));
     }
 
     // arguments
     StringBuffer args = new StringBuffer("(");
     for (int i=0; i<parameters.length; i++) {
         Class pClass = parameters[i];
-        args.append(ObjectLink.to(pClass.getName(),pClass));
+        args.append(link.to(pClass.getName(),pClass));
         if (i + 1 < parameters.length) {
             args.append(",");
         }
@@ -384,7 +401,7 @@ private String showExecutable(Executable method){
         StringBuffer all = new StringBuffer();
         for (int i=0; i<exceptions.length; i++) {
             Class eClass = exceptions[i];
-            all.append(ObjectLink.to(eClass.getName(),eClass));
+            all.append(link.to(eClass.getName(),eClass));
             if (i + 1 < exceptions.length) {
                 all.append(",");
             }
@@ -409,7 +426,7 @@ private String typeName(Class t) {
     if (t.isPrimitive()) {
         return name + brackets;
     } else {
-        return ObjectLink.to(name,t) + brackets;
+        return link.to(name,t) + brackets;
     }
 } 
 

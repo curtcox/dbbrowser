@@ -1,5 +1,8 @@
 package com.cve.web;
 
+import static com.cve.util.Check.notNull;
+import com.cve.html.HTMLTags;
+import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -14,16 +17,22 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import javax.servlet.http.HttpServletResponse;
-import static com.cve.html.HTML.*;
 /**
  * This just dumps diagnostic information about the given request.
  */
 public final class RequestDumpServlet {
 
-    private RequestDumpServlet() {}
+    private final Log log;
 
-    public static RequestDumpServlet newInstance() {
-        return new RequestDumpServlet();
+    private final HTMLTags tags;
+
+    private RequestDumpServlet(Log log) {
+        this.log = notNull(log);
+        tags = HTMLTags.of(log);
+    }
+
+    public static RequestDumpServlet of(Log log) {
+        return new RequestDumpServlet(log);
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -31,11 +40,11 @@ public final class RequestDumpServlet {
     {
         PrintWriter pw = response.getWriter();
         response.setContentType("text/html");
-        pw.print(html(body(tableOf(request))));
+        pw.print(tags.html(tags.body(tableOf(request))));
         pw.close();
     }
 
-    static String tableOf(HttpServletRequest r) {
+    String tableOf(HttpServletRequest r) {
         List<UIRow> rows = Lists.newArrayList();
         add(rows,"Description","Value"                    ) ;
         add(rows,"Auth Type",            r.getAuthType() );
@@ -76,7 +85,11 @@ public final class RequestDumpServlet {
         return UITable.of(rows).toString();
     }
 
-    static void add(List<UIRow> rows, String key, Object value) {
-        rows.add(UIRow.of(UIDetail.of(key),UIDetail.of("" + value)));
+    void add(List<UIRow> rows, String key, Object value) {
+        rows.add(UIRow.of(detail(key),detail("" + value)));
+    }
+    
+    UIDetail detail(String key) {
+        return UIDetail.of(key, log);
     }
 }

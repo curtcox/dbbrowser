@@ -16,7 +16,7 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DBServer {
 
-    final Log log;
+    public final Log log;
 
     /**
      * How the server is represented in URLs.

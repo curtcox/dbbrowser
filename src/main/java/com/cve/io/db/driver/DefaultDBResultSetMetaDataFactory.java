@@ -45,11 +45,11 @@ public class DefaultDBResultSetMetaDataFactory {
         return meta;
     }
 
-    private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results, Log log) {
-        log.notNullArgs(server,connection,results);
+    private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results) {
+        server.log.notNullArgs(server,connection,results);
         DBDriver driver = connection.getInfo().driver;
         DBResultSetMetaDataIO meta = results.meta;
-        return driver.getResultSetFactory(server, meta,log);
+        return driver.getResultSetFactory(server, meta);
     }
 
     public ImmutableList<Database> getDatabases() {

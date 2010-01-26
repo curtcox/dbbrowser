@@ -69,7 +69,7 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewLink(AlternateView view) {
-        Label  text = Label.of(view.toString());
+        Label  text = Label.of(view.toString(),log);
         URI  target = URIs.of( "/view/" + view + DBURIRenderer.render(select,search));
         String tip = view.name();
         URI   image = view.icon;
@@ -80,7 +80,7 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewSQLLink() {
-        Label  text = Label.of("SQL");
+        Label  text = Label.of("SQL",log);
         URI target = FreeFormQueryHandler.of(serversStore,managedFunction,log).linkTo(select,search);
         String tip = SQL.name();
         URI   image = SQL.icon;
@@ -91,7 +91,7 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewZLink() {
-        Label  text = Label.of("/z/");
+        Label  text = Label.of("/z/",log);
         URI  target = CompressedURIHandler.shortURI(DBURIRenderer.render(select,search));
         String tip = "Compressed URL";
         URI   image = COMPRESSED.icon;

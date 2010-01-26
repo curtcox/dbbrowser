@@ -13,11 +13,9 @@ import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
-import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
 import java.net.URI;
 import java.util.Collection;
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -63,7 +61,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         Search     search = Search.contents(page.search.target);
         Database database = page.database;
         String    alt = "Search the table rows";
-        Label    text = Label.of(alt);
+        Label    text = Label.of(alt,log);
         URI    target = codec.encode(search.ofContents(),database);
         URI     image = Icons.PLUS;
         return Link.textTargetImageAlt(text, target, image, alt).toString();
@@ -78,11 +76,12 @@ static final class Helper {
 
     final Log log;
 
-    static final UIDetail EMPTY_CELL = UIDetail.of("");
+    final UIDetail EMPTY_CELL;
 
     Helper(TablesSearchPage page, Log log) {
         this.page = page;
         this.log = log;
+        EMPTY_CELL = UIDetail.of("",log);
     }
 
     static Helper of(TablesSearchPage page, Log log) {
@@ -102,7 +101,7 @@ static final class Helper {
         if (page.columns.isEmpty()) {
             return search.target + " not found on " + page.database.linkTo();
         }
-        UITableBuilder out = new UITableBuilder();
+        UITableBuilder out = UITableBuilder.of(log);
         out.add(UIRow.of(detail("Table"),detail("Columns")));
         for (DBTable table : page.tables) {
             if (isLeaf(table)) {
@@ -118,16 +117,16 @@ static final class Helper {
         return !page.columns.containsKey(table);
     }
 
-    static UIDetail cell(DBTable table) {
-        return RenderingTools.cell(table);
+    UIDetail cell(DBTable table) {
+        return RenderingTools.of(log).cell(table);
     }
 
-    static UIDetail cell(Collection<DBColumn> columns) {
-        return RenderingTools.cell(columns);
+    UIDetail cell(Collection<DBColumn> columns) {
+        return RenderingTools.of(log).cell(columns);
     }
 
     UIRow row(DBTable table) {
-        return UIRow.of(cell(table));
+        return UIRow.of(log,cell(table));
     }
 
     UIRow columnsRow(Collection<DBColumn> columns) {
@@ -135,9 +134,9 @@ static final class Helper {
         DBTable     table = column.table;
         UIDetail tableCell = cell(table);
         if (tableCell==EMPTY_CELL) {
-            return UIRow.of(cell(columns));
+            return UIRow.of(log, cell(columns));
         }
-        return UIRow.of( tableCell, cell(columns) );
+        return UIRow.of(log,  tableCell, cell(columns) );
     }
 }
 

@@ -1,7 +1,8 @@
 package com.cve.ui;
 
-import com.cve.html.HTML;
-import com.cve.util.Check;
+import com.cve.html.HTMLTags;
+import com.cve.log.Log;
+import static com.cve.util.Check.notNull;
 import java.net.URI;
 
 /**
@@ -11,20 +12,22 @@ import java.net.URI;
  */
 public final class UIImage implements UIElement {
 
+    private final HTMLTags tags;
     private final String text;
     private final URI uri;
 
-    private UIImage(String text, URI uri) {
-        this.text = Check.notNull(text);
-        this.uri = Check.notNull(uri);
+    private UIImage(String text, URI uri, Log log) {
+        this.text = notNull(text);
+        this.uri = notNull(uri);
+        tags = HTMLTags.of(log);
     }
     
-    public static UIImage textURI(String text, URI uri) {
-        return new UIImage(text,uri);
+    public static UIImage textURI(String text, URI uri, Log log) {
+        return new UIImage(text,uri,log);
     }
 
     @Override
     public String toString() {
-        return HTML.img(text, uri);
+        return tags.img(text, uri);
     }
 }

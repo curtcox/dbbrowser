@@ -5,9 +5,9 @@ import javax.annotation.concurrent.Immutable;
 import com.cve.html.HTML;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.html.HTML.*;
 
 /**
  * An immutable structured representation of a HtmlPage.

@@ -1,7 +1,8 @@
 package com.cve.ui;
 
 import static com.cve.util.Check.notNull;
-import com.cve.html.HTML;
+import com.cve.html.HTMLTags;
+import com.cve.log.Log;
 import com.cve.web.PageRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -33,29 +34,35 @@ public final class UIForm {
      */
     private final ImmutableList<UIElement> elements;
 
+    private final Log log;
+
+    private final HTMLTags tags;
+
     /**
      * Create a new form that POSTs against the given URI.
      */
-    public static UIForm postAction(URI action) {
+    public static UIForm postAction(URI action, Log log) {
         ImmutableList<UIElement> elements = ImmutableList.of();
-        return new UIForm(action,PageRequest.Method.POST,elements);
+        return new UIForm(action,PageRequest.Method.POST,elements,log);
     }
 
     /**
      * Create a new form that GETs against the given URI.
      */
-    public static UIForm getAction(URI action) {
+    public static UIForm getAction(URI action, Log log) {
         ImmutableList<UIElement> elements = ImmutableList.of();
-        return new UIForm(action,PageRequest.Method.GET,elements);
+        return new UIForm(action,PageRequest.Method.GET,elements,log);
     }
 
     /**
      * Use a factory instead.
      */
-    private UIForm(URI action, PageRequest.Method method, List<UIElement> elements) {
+    private UIForm(URI action, PageRequest.Method method, List<UIElement> elements, Log log) {
         this.action   = notNull(action);
         this.method   = notNull(method);
         this.elements = ImmutableList.copyOf(notNull(elements));
+        this.log = notNull(log);
+        tags = HTMLTags.of(log);
     }
 
     /**
@@ -65,7 +72,7 @@ public final class UIForm {
         List<UIElement> newElements = Lists.newArrayList();
         newElements.addAll(elements);
         newElements.add(element);
-        return new UIForm(action,method,newElements);
+        return new UIForm(action,method,newElements,log);
     }
 
     @Override
@@ -75,6 +82,6 @@ public final class UIForm {
             out.append(element);
         }
         String body = out.toString();
-        return HTML.form(action.toString(),method,body);
+        return tags.form(action.toString(),method,body);
     }
 }

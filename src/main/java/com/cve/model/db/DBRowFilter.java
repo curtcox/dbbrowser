@@ -25,7 +25,7 @@ public final class DBRowFilter {
      */
     public final DBValue value;
 
-    final Log log;
+    public final Log log;
 
     /**
      * Use the factory.

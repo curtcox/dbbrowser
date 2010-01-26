@@ -1,6 +1,8 @@
 package com.cve.ui;
 
+import com.cve.log.Log;
 import java.net.URI;
+import static com.cve.util.Check.notNull;
 
 /**
  * Convenient static methods for building a UI.
@@ -8,20 +10,30 @@ import java.net.URI;
  */
 public final class UIBuilder {
 
-    public static UITable table(UIRow... rows) {
-        return UITable.of(rows);
+    final Log log;
+
+    private UIBuilder(Log log) {
+        this.log = notNull(log);
     }
 
-    public static UIDetail detail(String value) {
-        return UIDetail.of(value);
+    public static UIBuilder of(Log log) {
+        return new UIBuilder(log);
     }
 
-    public static UIRow row(UIDetail... details) {
-        return UIRow.of(details);
+    public UITable table(UIRow... rows) {
+        return UITable.of(log, rows);
     }
 
-    public static UIRow row(UIElement... elements) {
-        return UIRow.of(elements);
+    public UIDetail detail(String value) {
+        return UIDetail.of(value,log);
+    }
+
+    public UIRow row(UIDetail... details) {
+        return UIRow.of(log,details);
+    }
+
+    public UIRow row(UIElement... elements) {
+        return UIRow.of(log,elements);
     }
 
     /**

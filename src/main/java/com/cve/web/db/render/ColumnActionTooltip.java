@@ -40,7 +40,7 @@ final class ColumnActionTooltip {
         String text   = "hide " + column.fullName();
         URI    target = SelectBuilderAction.HIDE.withArgs(column.fullName());
         URI     image = Icons.HIDE;
-        UILink   link = UILink.textTargetImageAlt(Label.of(text), target,image,text);
+        UILink   link = UILink.textTargetImageAlt(Label.of(text,column.log), target,image,text);
         return link;
     }
 
@@ -48,7 +48,7 @@ final class ColumnActionTooltip {
         String text   = "sort " + column.fullName();
         URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=ASC");
         URI     image = Icons.SORT_ASC;
-        UILink   link = UILink.textTargetImageAlt(Label.of(text), target,image,text);
+        UILink   link = UILink.textTargetImageAlt(Label.of(text,column.log), target,image,text);
         return link;
     }
 
@@ -56,7 +56,7 @@ final class ColumnActionTooltip {
         String text   = "sort " + column.fullName();
         URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=DESC");
         URI     image = Icons.SORT_DESC;
-        UILink   link = UILink.textTargetImageAlt(Label.of(text), target,image,text);
+        UILink   link = UILink.textTargetImageAlt(Label.of(text,column.log), target,image,text);
         return link;
     }
 
@@ -64,7 +64,7 @@ final class ColumnActionTooltip {
         String text   = "sort " + column.fullName();
         URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=NONE");
         URI     image = Icons.SORT_NONE;
-        UILink   link = UILink.textTargetImageAlt(Label.of(text), target,image,text);
+        UILink   link = UILink.textTargetImageAlt(Label.of(text,column.log), target,image,text);
         return link;
     }
 

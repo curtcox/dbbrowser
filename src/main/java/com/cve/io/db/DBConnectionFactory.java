@@ -65,4 +65,8 @@ public final class DBConnectionFactory {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
+    public DBConnection getConnection(DBServer server, Database database) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
 }

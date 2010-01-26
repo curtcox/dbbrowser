@@ -1,7 +1,7 @@
 package com.cve.web.db.render;
 
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
-import com.cve.web.db.render.ShowTableRenderer;
 import com.cve.model.db.Cell;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.Database;
@@ -26,7 +26,6 @@ import java.util.Map;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import static com.cve.html.HTML.*;
 /**
  *
  * @author Curt
@@ -34,6 +33,8 @@ import static com.cve.html.HTML.*;
 public class ShowTableRendererTest {
 
     Log log;
+
+    HTMLTags tags;
 
     public SelectResults onePersonResults() {
         DBServer           server = DBServer.uri(URIs.of("server"),log);
@@ -98,8 +99,8 @@ public class ShowTableRendererTest {
     @Test
     public void personShowTableWhenNotEmpty() {
         String expected = Replace.bracketQuote(
-            borderTable(
-                tr("<td rowspan=[1]>Show</td><td>customer.person</td><td><a href=[show?customer.person.age]>age</a> </td>")
+            tags.borderTable(
+                tags.tr("<td rowspan=[1]>Show</td><td>customer.person</td><td><a href=[show?customer.person.age]>age</a> </td>")
             ));
         String rendered = ShowTableRenderer.results(resultsForShowTable()).showTable();
         assertEquals(expected,rendered);

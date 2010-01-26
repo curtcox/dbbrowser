@@ -1,10 +1,12 @@
 package com.cve.web.log.browsers;
 
+import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.log.AbstractBrowser;
 import com.cve.web.log.ObjectLink;
+import static com.cve.util.Check.notNull;
 
 /**
  * @author ccox
@@ -13,8 +15,11 @@ public final class ArrayBrowser
     extends AbstractBrowser
 {
 
-    public ArrayBrowser() {
+    private Log log;
+
+    private ArrayBrowser(Log log) {
         super(Object.class); // harmless lie
+        this.log = notNull(log);
     }
 
     /* (non-Javadoc)
@@ -22,17 +27,17 @@ public final class ArrayBrowser
     @Override
     public String getComponentFor(Object o) {
         Object[] a = (Object[]) o;
-        UITable table = UITable.of();
+        UITable table = UITable.of(log);
         int i = 0;
         for (Object value : a) {
-            UIRow row = UIRow.of(UIDetail.of("" + i),link(value));
+            UIRow row = UIRow.of(log,UIDetail.of("" + i,log),link(value));
             table = table.with(row);
             i++;
         }
         return table.toString();
     }
 
-    private static UIDetail link(Object o) {
-        return UIDetail.of(ObjectLink.to("" + o,o));
+    private UIDetail link(Object o) {
+        return UIDetail.of(ObjectLink.of(log).to("" + o,o),log);
     }
 }

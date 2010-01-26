@@ -38,6 +38,8 @@ public final class DistributionResultsTableRenderer {
      */
     private final ClientInfo client;
 
+    final Log log;
+    
     /**
      * Utility methods for rendering select results.
      */
@@ -46,6 +48,7 @@ public final class DistributionResultsTableRenderer {
     private DistributionResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
         this.results = notNull(results);
         this.client  = notNull(client);
+        this.log     = notNull(log);
         tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
     }
 
@@ -66,12 +69,17 @@ public final class DistributionResultsTableRenderer {
     String resultsTable() {
 
         List<UIRow> rows = Lists.newArrayList();
-        rows.add(UIRow.of(tools.databaseRow(),   CSS.DATABASE));
-        rows.add(UIRow.of(tools.tableRow(),      CSS.TABLE));
-        rows.add(UIRow.of(columnNameRow()));
+        rows.add(row(tools.databaseRow(),   CSS.DATABASE));
+        rows.add(row(tools.tableRow(),      CSS.TABLE));
+        rows.add(row(columnNameRow()));
         rows.addAll(valueRows());
         return UITable.of(rows).toString();
     }
+
+    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
+    UIRow row(List<UIDetail> details)          { return UIRow.of(details,log); }
+    UIDetail detail(String value, CSS css)     { return UIDetail.of(value,css,log); }
+    UIDetail detail(String value)              { return UIDetail.of(value,log); }
 
      /**
      * A table row where each cell represents a different column.
@@ -81,8 +89,8 @@ public final class DistributionResultsTableRenderer {
         DBResultSet resultSet = results.resultSet;
         List<UIDetail> out = Lists.newArrayList();
         DBColumn column = resultSet.columns.get(0);
-        out.add(UIDetail.of(column.name,tools.classOf(column)));
-        out.add(UIDetail.of("count"));
+        out.add(detail(column.name,tools.classOf(column)));
+        out.add(detail("count"));
         return ImmutableList.copyOf(out);
     }
 
@@ -103,7 +111,7 @@ public final class DistributionResultsTableRenderer {
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
             DBValue  countValue = resultSet.values.get(countCell);
-            details.add(UIDetail.of(countValue.value.toString()));
+            details.add(detail(countValue.value.toString()));
 
             out.add(UIRow.of(details, cssClass));
             if (cssClass==CSS.EVEN_ROW) {

@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.html.HTMLTags;
 import com.cve.web.*;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
@@ -21,7 +22,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 
-import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -40,6 +40,8 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final Log log;
 
+    final HTMLTags tags;
+    
     final DBURICodec codec;
 
     final DBConnectionFactory connections;
@@ -132,7 +134,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
          "keys imported by a table). They are ordered by " +
          "PKTABLE_CAT, PKTABLE_SCHEM, PKTABLE_NAME, and KEY_SEQ.";
 
-    static String getIndex(DBServer server) throws SQLException {
+    String getIndex(DBServer server) throws SQLException {
         return
         table(
             tableLinkRow("Attributes",            "attributes", "")  +
@@ -149,7 +151,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         );
     }
 
-    static String tableLinkRow(String label, String target, String description) {
+    String tableLinkRow(String label, String target, String description) {
          return tr(
              td(Link.textTarget(Label.of(label), URIs.of(target)).toString()) +
              td(description));
@@ -264,7 +266,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         return connections.metaFor(server,serversStore,managedFunction);
     }
 
-    public static String render(ResultSet results) throws SQLException {
+    public String render(ResultSet results) throws SQLException {
         try {
             StringBuilder      out = new StringBuilder();
             ResultSetMetaData rsmd = results.getMetaData();
@@ -298,5 +300,12 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         }
     }
 
+String h1(String s) { return tags.h1(s); }
+String h2(String s) { return tags.h2(s); }
+String tr(String s) { return tags.tr(s); }
+String td(String s) { return tags.td(s); }
+String th(String s) { return tags.th(s); }
+String table(String s) { return tags.table(s); }
+String borderTable(String s) { return tags.borderTable(s); }
 
 }

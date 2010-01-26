@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.html.HTMLTags;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -13,7 +14,6 @@ import com.google.common.collect.Lists;
 import java.net.URI;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
 /**
  * Things hidden in the result set that could be shown.
@@ -29,6 +29,7 @@ import static com.cve.util.Check.notNull;
 
 public final class ShowTableRenderer {
 
+    private final HTMLTags tags;
     /**
      * The results we render
      */
@@ -122,5 +123,12 @@ public final class ShowTableRenderer {
         return Link.textTarget(text, target).toString();
     }
 
+    String h1(String s) { return tags.h1(s); }
+    String h2(String s) { return tags.h2(s); }
+    String tr(String s) { return tags.tr(s); }
+    String td(String s) { return tags.td(s); }
+String th(String s) { return tags.th(s); }
+String table(String s) { return tags.table(s); }
+String borderTable(String s) { return tags.borderTable(s); }
 
 }

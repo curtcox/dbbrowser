@@ -18,7 +18,6 @@ import com.cve.web.ClientInfo;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
 import static com.cve.web.db.render.DBResultSetRenderer.*;
 
@@ -29,6 +28,7 @@ import static com.cve.web.db.render.DBResultSetRenderer.*;
 
 public final class ResultsTableRenderer {
 
+    private final Log log;
     /**
      * The results we render
      */
@@ -47,6 +47,7 @@ public final class ResultsTableRenderer {
     private ResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
         this.results = notNull(results);
         this.client  = notNull(client);
+        this.log = notNull(log);
         tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
     }
 
@@ -75,12 +76,12 @@ public final class ResultsTableRenderer {
     String portraitTable() {
         List<UIRow> out = Lists.newArrayList();
         DBResultSet resultSet = results.resultSet;
-        UIRow headerRow = UIRow.of(
-            UIDetail.of("Database",CSS.DATABASE),
-            UIDetail.of("Table",CSS.TABLE),
-            UIDetail.of("Column",CSS.COLUMN),
-            UIDetail.of("Action",CSS.ACTIONS),
-            UIDetail.of("Value"));
+        UIRow headerRow = row(
+            detail("Database",CSS.DATABASE),
+            detail("Table",CSS.TABLE),
+            detail("Column",CSS.COLUMN),
+            detail("Action",CSS.ACTIONS),
+            detail("Value"));
         out.add(headerRow);
         Database lastDatabase = Database.NULL;
         DBTable     lastTable = DBTable.NULL;
@@ -89,29 +90,34 @@ public final class ResultsTableRenderer {
             DBTable          table = column.table;
             Database      database = table.database;
             if (database.equals(lastDatabase)) {
-                details.add(UIDetail.of("",CSS.DATABASE));
+                details.add(detail("",CSS.DATABASE));
             } else {
-                details.add(UIDetail.of(nameCell(database),CSS.DATABASE));
+                details.add(detail(nameCell(database),CSS.DATABASE));
                 lastDatabase = database;
             }
             if (table.equals(lastTable)) {
-                details.add(UIDetail.of("",CSS.TABLE));
+                details.add(detail("",CSS.TABLE));
             } else {
-                details.add(UIDetail.of(nameCell(table),CSS.TABLE));
+                details.add(detail(nameCell(table),CSS.TABLE));
                 lastTable = table;
             }
-            details.add(UIDetail.of(nameCell(column),tools.classOf(column)));
-            details.add(UIDetail.of(actionCell(column,direction(column)),CSS.ACTIONS));
+            details.add(detail(nameCell(column),tools.classOf(column)));
+            details.add(detail(actionCell(column,direction(column)),CSS.ACTIONS));
             for (DBRow row : resultSet.rows) {
                 Cell cell = Cell.at(row, column);
                 DBValue value = resultSet.getValue(row, column);
-                details.add(UIDetail.of(valueCell(cell,value)));
+                details.add(detail(valueCell(cell,value)));
             }
-            out.add(UIRow.of(details));
+            out.add(row(details));
         }
         out.add(headerRow);
         return UITable.of(out).toString();
     }
+
+    UIRow       row(List<UIDetail> details) { return UIRow.of(details,log);       }
+    UIRow       row(UIDetail... details)    { return UIRow.of(log, details);       }
+    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
+    UIDetail detail(String value) { return UIDetail.of(value, log); }
 
     Order.Direction direction(DBColumn column) {
         for (Order order : results.select.orders) {

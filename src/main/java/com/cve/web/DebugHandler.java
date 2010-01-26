@@ -16,7 +16,7 @@ import static com.cve.util.Check.notNull;
  */
 public final class DebugHandler implements RequestHandler {
 
-    private Log log;
+    private final Log log;
 
     /**
      * Only pay attention to requests that start with this.
@@ -45,15 +45,16 @@ public final class DebugHandler implements RequestHandler {
     /**
      * Use the factory.
      */
-    private DebugHandler(RequestHandler handler) {
+    private DebugHandler(RequestHandler handler, Log log) {
         this.handler = notNull(handler);
+        this.log = notNull(log);
     }
 
     /**
      * Create a new DebugHandler, wrapping the given handler.
      */
-    public static RequestHandler of(RequestHandler handler) {
-        return new DebugHandler(handler);
+    public static RequestHandler of(RequestHandler handler, Log log) {
+        return new DebugHandler(handler,log);
     }
 
     @Override
@@ -85,7 +86,7 @@ public final class DebugHandler implements RequestHandler {
      * Return a debugging link, if debugging is on.
      * @return
      */
-    public String debugLink() {
+    public static String debugLink(Log log) {
         if (!DebugHandler.isOn()) {
             return "";
         }
