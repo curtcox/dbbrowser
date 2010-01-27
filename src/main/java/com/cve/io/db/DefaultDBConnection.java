@@ -122,7 +122,7 @@ public final class DefaultDBConnection implements DBConnection {
 
     @Override
     public DBMetaData getMetaData() {
-        return driver.getDBMetaData(this, managedFunction, serversStore);
+        return driver.getDBMetaData(this);
     }
 
     void info(String message) {

@@ -7,6 +7,9 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
+import com.cve.model.db.SQL;
+import com.cve.model.db.Select;
+import com.cve.web.Search;
 
 /**
  * Database drivers that we support.
@@ -37,6 +40,14 @@ public class DBDriver implements DriverIO {
     @Override
     public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public SQL renderCount(Select select, Search search) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public SQL render(Select select, Search search) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
 

@@ -51,7 +51,7 @@ public final class DBConnectionFactory {
         log.notNullArgs(server,serversStore,managedFunction);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server);
         DBDriver driver = DBDriver.url(connection.info.url);
-        DBMetaDataIO io = driver.getDBMetaDataIO(connection,managedFunction);
+        DBMetaDataIO io = driver.getDBMetaDataIO(connection);
         return io;
     }
     

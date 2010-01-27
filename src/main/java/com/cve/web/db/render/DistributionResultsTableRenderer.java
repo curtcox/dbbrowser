@@ -108,7 +108,7 @@ public final class DistributionResultsTableRenderer {
 
             Cell   valueCell = Cell.at(row, column);
             DBValue      value = resultSet.getValue(row, column);
-            details.add(detail(valueCell(valueCell,value)));
+            details.add(detail(tools.valueCell(valueCell,value)));
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
             DBValue  countValue = resultSet.values.get(countCell);
