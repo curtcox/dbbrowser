@@ -47,7 +47,7 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
             b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN, title, b.search(search)
         };
         String guts  = Helper.render(page,log);
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP,log);
     }
 
 /**

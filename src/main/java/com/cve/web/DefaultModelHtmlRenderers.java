@@ -25,11 +25,11 @@ public class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
         ManagedFunction.Factory managedFunction,Log log)
     {
         this.log = notNull(log);
-        renderer = CompositeModelHtmlRenderer.of(ModelHtmlRendererMap.RENDERERS,log)
-            .with(DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction,log))
-            .with(LogModelHtmlRenderers.RENDERERS)
-            .with(AltModelHtmlRenderers.RENDERERS)
-        ;
+        renderer = CompositeModelHtmlRenderer.of(log,
+            DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction,log),
+            LogModelHtmlRenderers.of(log),
+            AltModelHtmlRenderers.of(log)
+        );
     }
 
     public static DefaultModelHtmlRenderers of(

@@ -38,6 +38,10 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
         tags = HTMLTags.of(log);
     }
 
+    public static DatabasesPageRenderer of(Log log) {
+        return new DatabasesPageRenderer(log);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         DatabasesPage page = (DatabasesPage) model;
@@ -48,7 +52,7 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
             Replace.bracketQuote("Available Databases on <a href=[/]>server</a> ") + server,
             buttons.SEARCH
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     String tableOfDatabases(DatabasesPage page) {

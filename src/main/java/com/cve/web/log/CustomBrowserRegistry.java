@@ -24,9 +24,9 @@ import java.util.Map;
 final class CustomBrowserRegistry {
 
     // class -> browser
-    private static final Map<Class,CustomBrowser> registry = Maps.newHashMap();
+    private final Map<Class,CustomBrowser> registry = Maps.newHashMap();
     
-    private static final CustomBrowser ARRAY_BROWSER = new ArrayBrowser();
+    private final CustomBrowser ARRAY_BROWSER;
 
     private CustomBrowserRegistry(Log log) {
         // Register all custom browsers.
@@ -35,12 +35,17 @@ final class CustomBrowserRegistry {
         register(MultimapBrowser.of(log));
         register(AnnotatedStackTraceBrowser.of(log));
         // add new custom browsers here
+        ARRAY_BROWSER = ArrayBrowser.of(log);
     }
 
+    public static CustomBrowserRegistry of(Log log) {
+        return new CustomBrowserRegistry(log);
+    }
+    
     /**
      * Return all browsers that are appropriate for this object.
      */
-    static CustomBrowser[] getBrowsersFor(Object o) {
+    CustomBrowser[] getBrowsersFor(Object o) {
         if (o==null) {
             return new CustomBrowser[0];
         }
@@ -62,7 +67,7 @@ final class CustomBrowserRegistry {
      * This is not a public method, since this class must know about all
      * CustomBrowsers to ensure that they are registered.  
      */
-    private static void register(CustomBrowser browser) {
+    private void register(CustomBrowser browser) {
         registry.put(browser.isBrowserFor(),browser);
     }
 }

@@ -28,11 +28,11 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     public HtmlPage render(Model model, ClientInfo client) {
         ObjectModel objectModel = (ObjectModel) model;
         Object o = objectModel.object;
-        return HtmlPage.guts(render(o));
+        return HtmlPage.guts(render(o),log);
     }
 
     String render(Object o) {
         HTMLTags tags = HTMLTags.of(log);
-        return tags.html(tags.body(new ObjectBrowser(o).toHTML()));
+        return tags.html(tags.body(new ObjectBrowser(o,log).toHTML()));
     }
 }

@@ -171,8 +171,8 @@ private static class DeferredMethod {
     }
 } // Deferred Method
 
-public ObjectBrowser(Object o) {
-    this(o,Mask.PRIVATE);
+public ObjectBrowser(Object o, Log log) {
+    this(o,Mask.PRIVATE,log);
 }
 
 public ObjectBrowser(Object target, Mask mask, Log log) {
@@ -221,31 +221,31 @@ String borderTable(String s) { return tags.borderTable(s); }
 /**
  * Return a new browser for this object using public visibility.
  */
-private static ObjectBrowser newPublic(Object o) {
-    return new ObjectBrowser(o);
+private static ObjectBrowser newPublic(Object o, Log log) {
+    return new ObjectBrowser(o,log);
 }
 
 /**
  * Return a new browser for this object using private visibility.
  */
-private static ObjectBrowser newPrivate(Object o) {
-    return new ObjectBrowser(o,Mask.PRIVATE);
+private static ObjectBrowser newPrivate(Object o, Log log) {
+    return new ObjectBrowser(o,Mask.PRIVATE,log);
 }
 
 /**
  * Show the given object in a new frame using public visibility.
  * @param o the object to show
  */
-private static String showPublic(Object o) {
-    return newPublic(o).toHTML();
+private static String showPublic(Object o, Log log) {
+    return newPublic(o,log).toHTML();
 }
 
 /**
  * Show the given object in a new frame using private visibility.
  * @param o the object to show
  */
-public static String showPrivate(Object o) {
-    return newPrivate(o).toHTML();
+public static String showPrivate(Object o, Log log) {
+    return newPrivate(o,log).toHTML();
 }
 
 /**
@@ -253,7 +253,7 @@ public static String showPrivate(Object o) {
  */
 private String checkSpecialHandling(Object o) {
     StringBuffer out = new StringBuffer();
-    for (CustomBrowser browser : CustomBrowserRegistry.getBrowsersFor(o)) {
+    for (CustomBrowser browser : CustomBrowserRegistry.of(log).getBrowsersFor(o)) {
         String title = o.getClass().getName() + System.identityHashCode(o);
         out.append(title);
         String component = browser.getComponentFor(o);
@@ -439,7 +439,7 @@ public static String modifiers(int m) {
 } 
 
 public static void main(String[] args) {
-    showPublic("Public");
+    showPublic("Public",null);
 }
 
 } // Object Browser

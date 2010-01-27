@@ -2,7 +2,7 @@ package com.cve.web.db.servers;
 
 import com.cve.log.Log;
 import com.cve.web.ClientInfo;
-import com.cve.web.CompositeModelHtmlRenderer;
+import com.cve.web.ClassMapModelHtmlRenderer;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
@@ -26,7 +26,7 @@ public final class ServerModelHtmlRenderers implements ModelHtmlRenderer {
         map.put(ServersPage.class,                PageDecorator.of(ServersPageRenderer.of(log)));
         map.put(ServersSearchPage.class,          PageDecorator.of(ServersSearchPageRenderer.of(log)));
         map.put(AddServerPage.class,              PageDecorator.of(AddServerPageRenderer.of(log)));
-        renderer = CompositeModelHtmlRenderer.of(map,log);
+        renderer = ClassMapModelHtmlRenderer.of(map,log);
     }
 
     public static ServerModelHtmlRenderers of(Log log) {

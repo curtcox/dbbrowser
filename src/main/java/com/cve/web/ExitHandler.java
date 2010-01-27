@@ -26,7 +26,7 @@ final class ExitHandler
 
     @Override
     public PageResponse get(PageRequest request) {
-        ExitPage question = new ExitPage();
+        ExitPage question = ExitPage.of(log);
         return PageResponse.of(question,log);
     }
 

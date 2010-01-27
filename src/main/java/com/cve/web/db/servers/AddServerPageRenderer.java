@@ -57,7 +57,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
         String title = "Add a Server";
         String guts = render((AddServerPage) model);
         String[] nav = new String[0];
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     private String render(AddServerPage page) {

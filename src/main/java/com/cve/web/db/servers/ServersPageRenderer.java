@@ -51,7 +51,7 @@ private ServersPageRenderer(Log log) {
         String title = "Available Servers";
         String[] navigation = getNavigation(title);
         String guts  = tableOfServers(page);
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP,log);
     }
 
     String[] getNavigation(String title) {

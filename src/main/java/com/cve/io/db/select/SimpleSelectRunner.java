@@ -66,7 +66,7 @@ final class SimpleSelectRunner implements SelectRunner {
         SelectResults.Type  type = determineResultsType(select);
         ResultsAndMore immutable = transform(select,results);
         Hints hints = context.hints;
-        return SelectResults.typeSelectSearchResultsHintsCountMore(type,select,search,immutable.resultSet,hints,count,immutable.more);
+        return SelectResults.typeSelectSearchResultsHintsCountMore(type,select,search,immutable.resultSet,hints,count,immutable.more,log);
     }
 
     /**

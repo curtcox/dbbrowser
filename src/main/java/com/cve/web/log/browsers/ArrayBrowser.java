@@ -22,6 +22,10 @@ public final class ArrayBrowser
         this.log = notNull(log);
     }
 
+    public static ArrayBrowser of(Log log) {
+        return new ArrayBrowser(log);
+    }
+
     /* (non-Javadoc)
      */
     @Override

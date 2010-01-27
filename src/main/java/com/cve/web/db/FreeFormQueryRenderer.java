@@ -77,25 +77,25 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         DBResultSet results = page.results;
         String[] nav = new String[] {};
         String title = "Select...";
-        UIForm form = UIForm.postAction(URIs.of("select"))
+        UIForm form = UIForm.postAction(URIs.of("select"),log)
             .with(textArea(Q,sql.toString(),8,120))
             .with(label("<p>"))
             .with(submit("Execute"))
         ;
         if (sql.toString().isEmpty()) {
             String guts = page.message + form.toString();
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
         }
         AnnotatedStackTrace trace = page.trace;
         if (trace!=AnnotatedStackTrace.NULL) {
-            String guts = page.message + form.toString() + ObjectLink.to("details",trace);
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+            String guts = page.message + form.toString() + ObjectLink.of(log).to("details",trace);
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
         }
         Hints hints = hintsStore.get(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
         DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client,log);
         String guts = page.message + form.toString() + renderer.landscapeTable();
         URI base = base(page);
-        return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);
+        return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base,log);
     }
 }

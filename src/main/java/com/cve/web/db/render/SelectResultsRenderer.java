@@ -64,7 +64,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         String title = "Values in " + results.select.columns.get(0);
         NavigationButtons b = NavigationButtons.of(log);
         String[] nav = new String[] { b.search(results.search) };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     public HtmlPage renderNormalResults(SelectResults results, ClientInfo client) {
@@ -76,7 +76,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
             Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo()),
             b.search(results.search)
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     String renderColumnValueDistributionPage(SelectResults results, ClientInfo client) {

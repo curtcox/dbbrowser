@@ -1,13 +1,14 @@
 package com.cve.web.log;
 
 import com.cve.log.Log;
+import com.cve.web.ClassMapModelHtmlRenderer;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
+import static com.cve.util.Check.notNull;
 
 /**
  * Renderers for log pages.
@@ -16,18 +17,23 @@ public final class LogModelHtmlRenderers implements ModelHtmlRenderer {
 
     final Log log;
 
-    public static final ImmutableMap<Class,ModelHtmlRenderer> RENDERERS = load();
+    final ModelHtmlRenderer renderer;
 
-    public static ImmutableMap<Class,ModelHtmlRenderer> load() {
+    private LogModelHtmlRenderers(Log log) {
+        this.log = notNull(log);
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(AnnotatedStackTraceModel.class, AnnotatedStackTraceRenderer.of(log));
-        map.put(ObjectModel.class, new ObjectModelRenderer());
-        return ImmutableMap.copyOf(map);
+        map.put(ObjectModel.class, ObjectModelRenderer.of(log));
+        renderer = ClassMapModelHtmlRenderer.of(map,log);
     }
 
+    public static LogModelHtmlRenderers of(Log log) {
+        return new LogModelHtmlRenderers(log);
+    }
+    
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return renderer.render(model, client);
     }
 
 }

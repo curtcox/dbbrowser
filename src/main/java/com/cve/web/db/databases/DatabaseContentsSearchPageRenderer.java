@@ -49,6 +49,6 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
             out.append(ResultsTableRenderer.render(results, client,log));
         }
         String guts = out.toString();
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP,log);
     }
 }

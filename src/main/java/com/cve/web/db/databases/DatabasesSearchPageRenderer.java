@@ -49,7 +49,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
             b.search(page.search)
         };
         String guts  = Helper.render(page,log);
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
 /**

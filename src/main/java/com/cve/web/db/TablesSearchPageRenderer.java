@@ -55,7 +55,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
             ), b.search(page.search)
         };
         String guts  = Helper.of(page,log).render(page) + searchContentsLink(page);
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     String searchContentsLink(TablesSearchPage page) {

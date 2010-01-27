@@ -1,10 +1,10 @@
 package com.cve.web;
 
 import com.cve.util.Check;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import java.util.Map;
 import com.cve.log.Log;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
  * Finds the proper renderer from those it is given and delegates.
@@ -20,36 +20,41 @@ public final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
     /**
      * Class -> Renderer
      */
-    private final ImmutableMap<Class,ModelHtmlRenderer> renderers;
+    private final ImmutableList<ModelHtmlRenderer> renderers;
 
-    private CompositeModelHtmlRenderer(ImmutableMap<Class,ModelHtmlRenderer> renderers, Log log) {
+    private CompositeModelHtmlRenderer(ImmutableList<ModelHtmlRenderer> renderers, Log log) {
         this.log = notNull(log);
         this.renderers = notNull(renderers);
     }
 
-    public static CompositeModelHtmlRenderer of(Map<Class,ModelHtmlRenderer> renderers, Log log) {
-        ImmutableMap<Class,ModelHtmlRenderer> map = ImmutableMap.copyOf(renderers);
-        return new CompositeModelHtmlRenderer(map,log);
+    public static CompositeModelHtmlRenderer of(Log log, ModelHtmlRenderer... renderers) {
+        ImmutableList<ModelHtmlRenderer> list = ImmutableList.of(renderers);
+        return new CompositeModelHtmlRenderer(list,log);
     }
 
-    CompositeModelHtmlRenderer with(Map<Class,ModelHtmlRenderer> addedRenderers) {
-        Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.putAll(renderers);
-        map.putAll(addedRenderers);
-        return of(map,log);
+    public static CompositeModelHtmlRenderer of(List<ModelHtmlRenderer> renderers, Log log) {
+        ImmutableList<ModelHtmlRenderer> list = ImmutableList.copyOf(renderers);
+        return new CompositeModelHtmlRenderer(list,log);
+    }
+
+    CompositeModelHtmlRenderer with(ModelHtmlRenderer addedRenderer) {
+        List<ModelHtmlRenderer> list = Lists.newArrayList();
+        list.addAll(renderers);
+        list.add(addedRenderer);
+        return of(list,log);
     }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.args(model,client);
         Check.notNull(model);
-        Class toRender = model.getClass();
-        ModelHtmlRenderer renderer = renderers.get(model.getClass());
-        if (renderer==null) {
-            String message = "No renderer for " + toRender.toString();
-            throw new IllegalArgumentException(message);
+        for (ModelHtmlRenderer renderer : renderers) {
+            HtmlPage page = renderer.render(model, client);
+            if (page!=null) {
+                return page;
+            }
         }
-        return renderer.render(model,client);
+        return null;
     }
 
 }

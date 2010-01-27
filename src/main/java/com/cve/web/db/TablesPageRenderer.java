@@ -49,7 +49,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
                 server.linkTo() + "/" + database.linkTo()
             ), b.SEARCH
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
     }
 
     String tableOfTables(TablesPage page) {
