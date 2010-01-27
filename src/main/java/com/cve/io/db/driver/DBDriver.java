@@ -17,6 +17,14 @@ import com.cve.web.Search;
  */
 public class DBDriver implements DriverIO {
 
+    public static DBDriver url(JDBCURL url) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    public static Iterable<DBDriver> values() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
     @Override
     public JDBCURL getJDBCURL(String name) {
         throw new UnsupportedOperationException("Not supported yet.");

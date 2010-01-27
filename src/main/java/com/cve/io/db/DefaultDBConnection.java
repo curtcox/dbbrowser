@@ -78,7 +78,8 @@ public final class DefaultDBConnection implements DBConnection {
     @Override
     public synchronized DBResultSetMetaData getMetaData(DBServer server, DBResultSetIO results)  {
         log.notNullArgs(server,results);
-        return DefaultDBResultSetMetaDataFactory.of(server,this,results);
+        DefaultDBResultSetMetaDataFactory factory = driver.getResultSetFactory(server, null);
+        return factory.of(server, this, results);
     }
 
     synchronized Connection reset() throws SQLException {
