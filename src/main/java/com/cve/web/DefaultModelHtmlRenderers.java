@@ -14,7 +14,7 @@ import static com.cve.util.Check.notNull;
  * Renders models into HTML, JPG, PNG, etc...
  * @author curt
  */
-public class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
+public final class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
 
     final Log log;
 
@@ -28,7 +28,8 @@ public class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
         renderer = CompositeModelHtmlRenderer.of(log,
             DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction,log),
             LogModelHtmlRenderers.of(log),
-            AltModelHtmlRenderers.of(log)
+            AltModelHtmlRenderers.of(log),
+            GlobalHtmlRenderers.of(log)
         );
     }
 
