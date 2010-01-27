@@ -15,7 +15,13 @@ public interface ModelHtmlRenderer {
     /**
      * Given a model, render it the way we do.
      * The string returned may be the entire page, just the body, or the body
-     * contents with a head prepended.  See PageDecorator.
+     * contents with a head prepended.
+     * <p>
+     * Generally, renderers should return null, if they don't render the model
+     * they are given, rather than throw an exception.  This allows the 
+     * chaining and composition of renderers.
+     * <p>
+     * See PageDecorator.
      */
     HtmlPage render(Model model, ClientInfo client);
 }

@@ -9,7 +9,7 @@ import static com.cve.util.Check.notNull;
  *
  * @author curt
  */
-public final class CompositeDBDriverFactory implements DriverIO.Factory {
+public final class CompositeDBDriverFactory implements DBDriver.Factory {
 
     final Log log;
 
@@ -18,7 +18,7 @@ public final class CompositeDBDriverFactory implements DriverIO.Factory {
     }
 
     @Override
-    public DriverIO of(Log log, Factory managedFunction, DBServersStore serversStore) {
+    public DBDriver of(Log log, Factory managedFunction, DBServersStore serversStore) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

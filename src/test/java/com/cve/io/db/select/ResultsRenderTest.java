@@ -16,6 +16,7 @@ import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SelectContext;
 import com.cve.model.db.DBValue;
 import com.cve.io.db.DBConnectionFactory;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnmanagedFunctionFactory;
@@ -88,7 +89,8 @@ public class ResultsRenderTest {
         JDBCURL url = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         String user = "";
         String password = "";
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password);
+        DBDriver driver = null;
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password,driver,log);
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
 

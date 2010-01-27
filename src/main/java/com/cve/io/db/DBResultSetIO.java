@@ -1,6 +1,7 @@
 package com.cve.io.db;
 
 import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import com.cve.util.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -39,7 +40,7 @@ public final class DBResultSetIO {
     private static DBResultSetIO newNull() {
         DBResultSetMetaDataIO meta = DBResultSetMetaDataIO.of(new NullResultSetMetaData());
         ImmutableList<ImmutableMap> rows = ImmutableList.of();
-        Log log = null;
+        Log log = SimpleLog.of(DBResultSetIO.class);
         return new DBResultSetIO(meta,rows,log);
     }
 

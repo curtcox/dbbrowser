@@ -18,20 +18,26 @@ public final class NavigationButtons {
 
     final Log log;
 
-    public final String ADD_SERVER = addServer();
+    public final String ADD_SERVER;
 
-    public final String REMOVE_SERVER = removeServer();
+    public final String REMOVE_SERVER;
 
-    public final String SEARCH = search(Search.EMPTY);
+    public final String SEARCH;
 
-    public final String SHUTDOWN = shutdown();
+    public final String SHUTDOWN;
 
-    public final String LOGIN = login();
+    public final String LOGIN;
 
-    public final String LOGOUT = logout();
+    public final String LOGOUT;
 
     private NavigationButtons(Log log) {
         this.log = notNull(log);
+        ADD_SERVER = addServer();
+        REMOVE_SERVER = removeServer();
+        SEARCH = search(Search.EMPTY);
+        SHUTDOWN = shutdown();
+        LOGIN = login();
+        LOGOUT = logout();
     }
 
     public static NavigationButtons of(Log log) {

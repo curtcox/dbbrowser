@@ -8,7 +8,8 @@ import com.cve.web.log.ObjectRegistry;
 /**
  * Our own private logging abstraction.
  */
-final class SimpleLog {
+public final class SimpleLog implements Log {
+
 
     private final Class clazz;
 
@@ -22,24 +23,31 @@ final class SimpleLog {
         return new SimpleLog(c);
     }
 
+    public static Log of() {
+        return of(Log.class);
+    }
+
     /**
      * Return an annotated stack trace for here.
      */
-    public static AnnotatedStackTrace annotatedStackTrace() {
+    @Override
+    public AnnotatedStackTrace annotatedStackTrace() {
         return AnnotatedStackTrace.throwableArgs(new Throwable(),args.copy());
     }
 
     /**
      * Return an annotated stack trace for the given throwable.
      */
-    public static AnnotatedStackTrace annotatedStackTrace(Throwable t) {
+    @Override
+    public AnnotatedStackTrace annotatedStackTrace(Throwable t) {
         return AnnotatedStackTrace.throwableArgs(t,args.copy());
     }
 
     /**
      * Note the given arguments for the method being executed.
      */
-    public static void args(Object... objects) {
+    @Override
+    public void args(Object... objects) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         StackTraceElement element = elements[3];
         args.put(element,objects);
@@ -53,7 +61,8 @@ final class SimpleLog {
      * Note the given arguments for the method being executed.
      * Throw an exception if any are null.
      */
-    public static void notNullArgs(Object... objects) {
+    @Override
+    public void notNullArgs(Object... objects) {
         for (Object o : objects) {
             Check.notNull(o);
         }
@@ -66,22 +75,27 @@ final class SimpleLog {
         // System.out.println(element + " " + Arrays.asList(objects));
     }
 
+    @Override
     public void debug(String message) {
         //System.out.println(clazz + ":" + message);
     }
 
+    @Override
     public void info(String message) {
         System.out.println(clazz + ":" + message);
     }
 
+    @Override
     public void warn(String message) {
         System.out.println(clazz + ":" + message);
     }
 
+    @Override
     public void warn(Throwable t) {
         t.printStackTrace();
     }
 
+    @Override
     public void severe(String message) {
         System.out.println(clazz + ":" + message);
     }

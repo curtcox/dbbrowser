@@ -36,7 +36,7 @@ public final class DatabaseModelHtmlRenderers implements ModelHtmlRenderer {
 
         renderer = CompositeModelHtmlRenderer.of(log,
             ClassMapModelHtmlRenderer.of(map, log),
-            ServerModelHtmlRenderers.of(log)
+            ServerModelHtmlRenderers.of(managedFunction, serversStore,log)
         );
     }
 

@@ -46,8 +46,7 @@ public final class ClassMapModelHtmlRenderer implements ModelHtmlRenderer {
         Class toRender = model.getClass();
         ModelHtmlRenderer renderer = renderers.get(model.getClass());
         if (renderer==null) {
-            String message = "No renderer for " + toRender.toString();
-            throw new IllegalArgumentException(message);
+            return null;
         }
         return renderer.render(model,client);
     }

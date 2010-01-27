@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
@@ -54,7 +55,8 @@ final class AddServerHandler extends AbstractFormHandler {
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         DBServer       server = DBServer.uri(URIs.of(serverName),log);
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password);
+        DBDriver       driver = null;
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password, driver, log);
         if (serversStore.keys().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(

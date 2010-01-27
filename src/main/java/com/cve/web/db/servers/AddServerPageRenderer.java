@@ -1,8 +1,11 @@
 package com.cve.web.db.servers;
 
 import com.cve.html.HTMLTags;
+import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.DBServersStore;
 import com.cve.ui.UIForm;
 import com.cve.ui.UITable;
 import com.cve.ui.UIBuilder;
@@ -32,11 +35,17 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     final Log log;
 
+    final ManagedFunction.Factory managedFunction;
+
+    final DBServersStore serversStore;
+
     private static URI HELP = URIs.of("/resource/help/AddServer.html");
 
-    private AddServerPageRenderer(Log log) {
-        this.log = notNull(log);
-        this.tags = HTMLTags.of(log);
+    private AddServerPageRenderer(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+        this.managedFunction = notNull(managedFunction);
+        this.serversStore = notNull(serversStore);
+        this.log     = notNull(log);
+        this.tags    = HTMLTags.of(log);
         this.builder = UIBuilder.of(log);
     }
 
@@ -47,8 +56,8 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     UITable table(UIRow... rows)           { return builder.table(rows); }
     UISubmit submit(String value)          { return builder.submit(value); }
 
-    static AddServerPageRenderer of(Log log) {
-        return new AddServerPageRenderer(log);
+    static AddServerPageRenderer of(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
+        return new AddServerPageRenderer(managedFunction,serversStore,log);
     }
     
     @Override
@@ -77,7 +86,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     String supportedFormats() {
         StringBuilder out = new StringBuilder();
-        for (DBDriver driver : DBDriver.values()) {
+        for (DBDriver driver : DBDrivers.of(managedFunction,serversStore,log).values()) {
             out.append(tags.li(driver.getJDBCURL("server").toString()));
         }
         return "Available URL formats " + tags.ol(out.toString());

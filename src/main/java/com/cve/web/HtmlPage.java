@@ -6,6 +6,7 @@ import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import com.cve.util.URIs;
 import java.net.URI;
 
@@ -61,7 +62,7 @@ public final class HtmlPage {
 
     public final Log log;
 
-    private static final Log LOG = null;
+    private static final Log LOG = SimpleLog.of(HtmlPage.class);
 
     final HTMLTags tags;
 

@@ -3,6 +3,7 @@ package com.cve.launch;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
 import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import com.cve.sample.db.SampleH2Server;
 import com.cve.stores.LocalManagedFunctionFactory;
 import com.cve.stores.LocalStoreFactory;
@@ -69,7 +70,7 @@ public final class LocalServerLauncher {
         DBServersStore dbServersStore = stores.of(DBServersStore.class);
         FSServersStore fsServersStore = stores.of(FSServersStore.class);
         DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
-        Log                       log = null;
+        Log                       log = SimpleLog.of();
         DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction,log);
         return new LocalServerLauncher(
            managedFunction,

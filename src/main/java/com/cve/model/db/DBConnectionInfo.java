@@ -1,6 +1,9 @@
 package com.cve.model.db;
 
+import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
+import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -12,6 +15,7 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DBConnectionInfo {
 
+    public final Log             log;
     public final JDBCURL         url;
     public final String         user;
     public final String     password;
@@ -24,23 +28,25 @@ public final class DBConnectionInfo {
         user     = null;
         password = null;
         driver   = null;
+        log      = SimpleLog.of(DBConnectionInfo.class);
     }
 
     /**
      * Use the factory.
      */
-    private DBConnectionInfo(JDBCURL url, String user, String password) {
+    private DBConnectionInfo(JDBCURL url, String user, String password, DBDriver driver, Log log) {
         this.url      = notNull(url);
         this.user     = notNull(user);
         this.password = notNull(password);
-        driver        = DBDriver.url(url);
+        this.driver   = notNull(driver);
+        this.log      = notNull(log);
     }
 
     /**
      * Factory for creating ConnectionInfoS.
      */
-    public static DBConnectionInfo urlUserPassword(JDBCURL url, String user, String password) {
-        return new DBConnectionInfo(url,user,password);
+    public static DBConnectionInfo urlUserPassword(JDBCURL url, String user, String password, DBDriver driver, Log log) {
+        return new DBConnectionInfo(url,user,password,driver,log);
     }
 
     @Override

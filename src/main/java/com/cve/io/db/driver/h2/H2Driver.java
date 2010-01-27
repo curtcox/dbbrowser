@@ -8,25 +8,42 @@ import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
-import com.cve.io.db.driver.DriverIO;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.model.db.SQL;
+import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
-import com.cve.stores.ManagedFunction.Factory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import static com.cve.util.Check.notNull;
+import com.cve.web.Search;
 
 /**
  *
  * @author curt
  */
-public final class H2Driver implements DriverIO {
+public final class H2Driver implements DBDriver {
 
     final Log log;
     final ManagedFunction.Factory managedFunction;
     final DBServersStore serversStore;
 
-    public final class Factory implements DriverIO.Factory {
+    @Override
+    public SQL render(Select select, Search search) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SQL renderCount(Select select, Search search) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean handles(JDBCURL url) {
+        return url.toString().startsWith("jdbc:h2:");
+    }
+
+    public static final class Factory implements DBDriver.Factory {
 
         final Log log;
 
@@ -34,8 +51,12 @@ public final class H2Driver implements DriverIO {
             this.log = notNull(log);
         }
 
+        public static Factory of(Log log) {
+            return new Factory(log);
+        }
+
         @Override
-        public DriverIO of(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        public DBDriver of(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
             return H2Driver.of(log,managedFunction,serversStore);
         }
 

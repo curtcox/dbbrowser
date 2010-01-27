@@ -35,7 +35,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     String table(String s) { return tags.table(s); }
     String borderTable(String s) { return tags.borderTable(s); }
 
-private ServersPageRenderer(Log log) {
+    private ServersPageRenderer(Log log) {
         this.log = notNull(log);
         tags = HTMLTags.of(log);
     }
@@ -55,6 +55,7 @@ private ServersPageRenderer(Log log) {
     }
 
     String[] getNavigation(String title) {
+        log.notNullArgs(title);
         NavigationButtons b = NavigationButtons.of(log);
         return new String[] {
             b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN , title, b.SEARCH

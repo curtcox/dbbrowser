@@ -8,17 +8,20 @@ import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
-import com.cve.io.db.driver.DriverIO;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.model.db.SQL;
+import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import static com.cve.util.Check.notNull;
+import com.cve.web.Search;
 /**
  *
  * @author curt
  */
-public final class DerbyDriver implements DriverIO {
+public final class DerbyDriver implements DBDriver {
 
     final ManagedFunction.Factory managedFunction;
     final DBServersStore serversStore;
@@ -57,6 +60,21 @@ public final class DerbyDriver implements DriverIO {
 
     @Override
     public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SQL render(Select select, Search search) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SQL renderCount(Select select, Search search) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public boolean handles(JDBCURL url) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

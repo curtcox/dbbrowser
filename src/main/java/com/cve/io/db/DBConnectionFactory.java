@@ -1,5 +1,6 @@
 package com.cve.io.db;
 
+import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
@@ -50,7 +51,7 @@ public final class DBConnectionFactory {
     public DBMetaDataIO getDbmdIO(DBServer server,DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         log.notNullArgs(server,serversStore,managedFunction);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server);
-        DBDriver driver = DBDriver.url(connection.info.url);
+        DBDriver driver = DBDrivers.of(managedFunction,serversStore,log).url(connection.info.url);
         DBMetaDataIO io = driver.getDBMetaDataIO(connection);
         return io;
     }

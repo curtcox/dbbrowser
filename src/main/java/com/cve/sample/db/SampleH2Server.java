@@ -1,13 +1,22 @@
 package com.cve.sample.db;
 
+import com.cve.io.db.driver.DBDriver;
+import com.cve.io.db.driver.DBDrivers;
 import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SQL;
 import com.cve.model.db.DBServer;
+import com.cve.stores.LocalManagedFunctionFactory;
+import com.cve.stores.LocalStoreFactory;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.Store;
+import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
+import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.sql.Connection;
@@ -22,7 +31,8 @@ import java.sql.Statement;
  */
 public final class SampleH2Server {
 
-    public static final Log log = null;
+    public static final Log log = SimpleLog.of(SampleH2Server.class);
+
     /**
      * Our sample server.
      */
@@ -55,7 +65,10 @@ public final class SampleH2Server {
         final String user = "";
         final String password = "";
         final JDBCURL jdbcURL = JDBCURL.uri(URIs.of(url));
-        return DBConnectionInfo.urlUserPassword(jdbcURL, user, password);
+        ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
+        DBServersStore dbServersStore = MemoryDBServersStore.of();
+        DBDriver driver = DBDrivers.of(managedFunction, dbServersStore, log).url(jdbcURL);
+        return DBConnectionInfo.urlUserPassword(jdbcURL, user, password,driver,log);
     }
 
     /**

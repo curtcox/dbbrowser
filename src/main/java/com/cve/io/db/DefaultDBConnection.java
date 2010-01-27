@@ -1,8 +1,9 @@
 
 package com.cve.io.db;
 
-import com.cve.io.db.driver.DBDriver;
+import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.SQL;
 import com.cve.model.db.DBServer;
@@ -64,7 +65,7 @@ public final class DefaultDBConnection implements DBConnection {
     public static DefaultDBConnection of(
         DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
     {
-        DBDriver driver = DBDriver.url(info.url);
+        DBDriver driver = DBDrivers.of(managedFunction, serversStore,log).url(info.url);
         return new DefaultDBConnection(driver,info,serversStore,managedFunction,log);
     }
 

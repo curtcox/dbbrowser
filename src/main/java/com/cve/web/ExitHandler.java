@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.SimpleLog;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -13,7 +14,7 @@ final class ExitHandler
 
     final Log log;
 
-    private static final ExitHandler HANDLER = new ExitHandler(null);
+    private static final ExitHandler HANDLER = new ExitHandler(SimpleLog.of(ExitHandler.class));
 
     static ExitHandler of() {
         return HANDLER;

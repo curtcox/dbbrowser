@@ -56,7 +56,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public static RequestRouterServlet of(WebApp webapp) {
         RequestHandler      router = webapp.handler;
         ModelHtmlRenderer renderer = webapp.renderer;
-        Log                    log = null;
+        Log                    log = webapp.log;
         return new RequestRouterServlet(router, renderer,log);
     }
 

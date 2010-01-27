@@ -2,6 +2,7 @@ package com.cve.web.db;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
@@ -40,7 +41,8 @@ public class SelectBuilderHandlerTest {
     @Test
     public void getResults() throws SQLException {
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
+        DBDriver driver = null;
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver,log);
         String            uri = "//server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
         SelectResults results = handler.getResultsFromDB(uri);
         assertNotNull(results);

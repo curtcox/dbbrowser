@@ -1,6 +1,8 @@
 package com.cve.web.db.servers;
 
 import com.cve.log.Log;
+import com.cve.stores.ManagedFunction;
+import com.cve.stores.db.DBServersStore;
 import com.cve.web.ClientInfo;
 import com.cve.web.ClassMapModelHtmlRenderer;
 import com.cve.web.HtmlPage;
@@ -20,17 +22,17 @@ public final class ServerModelHtmlRenderers implements ModelHtmlRenderer {
 
     final ModelHtmlRenderer renderer;
 
-    private ServerModelHtmlRenderers(Log log) {
+    private ServerModelHtmlRenderers(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
         this.log = notNull(log);
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(ServersPage.class,                PageDecorator.of(ServersPageRenderer.of(log)));
         map.put(ServersSearchPage.class,          PageDecorator.of(ServersSearchPageRenderer.of(log)));
-        map.put(AddServerPage.class,              PageDecorator.of(AddServerPageRenderer.of(log)));
+        map.put(AddServerPage.class,              PageDecorator.of(AddServerPageRenderer.of(managedFunction,serversStore,log)));
         renderer = ClassMapModelHtmlRenderer.of(map,log);
     }
 
-    public static ServerModelHtmlRenderers of(Log log) {
-         return new ServerModelHtmlRenderers(log);
+    public static ServerModelHtmlRenderers of(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
+         return new ServerModelHtmlRenderers(managedFunction, serversStore,log);
     }
 
     @Override

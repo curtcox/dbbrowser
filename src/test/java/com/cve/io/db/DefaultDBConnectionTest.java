@@ -1,6 +1,6 @@
 package com.cve.io.db;
 
-import com.cve.io.db.driver.DefaultDBMetaData;
+import com.cve.io.db.driver.DBDriver;
 import com.cve.io.db.driver.h2.H2Driver;
 import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
@@ -35,7 +35,8 @@ public class DefaultDBConnectionTest {
 
     DBMetaData newEmpty() {
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "");
+        DBDriver driver = null;
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver,log);
         DBServersStore  store = MemoryDBServersStore.of();
         store.put(server, info);
         DBServersStore serversStore = MemoryDBServersStore.of();
