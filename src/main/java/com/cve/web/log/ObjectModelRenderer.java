@@ -1,10 +1,12 @@
 package com.cve.web.log;
 
+import com.cve.html.HTMLTags;
+import com.cve.log.Log;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
-import static com.cve.html.HTML.*;
+import static com.cve.util.Check.notNull;
 
 /**
  *
@@ -12,7 +14,15 @@ import static com.cve.html.HTML.*;
  */
 final class ObjectModelRenderer implements ModelHtmlRenderer {
 
-    ObjectModelRenderer() {}
+    final Log log;
+
+    private ObjectModelRenderer(Log log) {
+        this.log = notNull(log);
+    }
+
+    public static ObjectModelRenderer of(Log log) {
+        return new ObjectModelRenderer(log);
+    }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
@@ -22,6 +32,7 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     }
 
     String render(Object o) {
-        return html(body(new ObjectBrowser(o).toHTML()));
+        HTMLTags tags = HTMLTags.of(log);
+        return tags.html(tags.body(new ObjectBrowser(o).toHTML()));
     }
 }

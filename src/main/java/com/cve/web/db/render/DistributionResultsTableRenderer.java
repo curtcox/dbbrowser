@@ -8,6 +8,7 @@ import com.cve.model.db.DBRow;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -60,7 +61,7 @@ public final class DistributionResultsTableRenderer {
         return new DistributionResultsTableRenderer(results,client,log).resultsTable();
     }
 
-    public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
+    public String    tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of(log).q(width) + ">" + s + "</td>"; }
 
 
     /**
@@ -73,7 +74,7 @@ public final class DistributionResultsTableRenderer {
         rows.add(row(tools.tableRow(),      CSS.TABLE));
         rows.add(row(columnNameRow()));
         rows.addAll(valueRows());
-        return UITable.of(rows).toString();
+        return UITable.of(rows,log).toString();
     }
 
     UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
@@ -107,13 +108,13 @@ public final class DistributionResultsTableRenderer {
 
             Cell   valueCell = Cell.at(row, column);
             DBValue      value = resultSet.getValue(row, column);
-            details.add(UIDetail.of(valueCell(valueCell,value)));
+            details.add(detail(valueCell(valueCell,value)));
 
             Cell    countCell = Cell.at(row, column,AggregateFunction.COUNT);
             DBValue  countValue = resultSet.values.get(countCell);
             details.add(detail(countValue.value.toString()));
 
-            out.add(UIRow.of(details, cssClass));
+            out.add(row(details, cssClass));
             if (cssClass==CSS.EVEN_ROW) {
                 cssClass = CSS.ODD_ROW;
             } else {

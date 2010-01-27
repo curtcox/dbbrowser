@@ -138,7 +138,7 @@ public final class FSURICodec {
     public FSServer getServer(String uri) {
         log.notNullArgs(uri);
         String name = at(uri,Position.SERVER);
-        return FSServer.uri(URIs.of(name));
+        return FSServer.uri(URIs.of(name),log);
     }
 
     public String getMetaDataMethod(String uri) {
@@ -154,7 +154,7 @@ public final class FSURICodec {
         if (!exists(uri,Position.FILES)) {
             return ImmutableList.of();
         }
-        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)));
+        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<FSPath> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.FILES).split("\\+")) {
             FSPath        path = FSPath.parse(server,fullTableName,log);
@@ -171,7 +171,7 @@ public final class FSURICodec {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)));
+        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         List<FSField> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[1];

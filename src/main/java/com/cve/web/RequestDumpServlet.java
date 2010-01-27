@@ -82,11 +82,11 @@ public final class RequestDumpServlet {
         add(rows,"Parameter Map",        parameters);
         add(rows,"Description", "Value");
         
-        return UITable.of(rows).toString();
+        return UITable.of(rows,log).toString();
     }
 
     void add(List<UIRow> rows, String key, Object value) {
-        rows.add(UIRow.of(detail(key),detail("" + value)));
+        rows.add(UIRow.of(log,detail(key),detail("" + value)));
     }
     
     UIDetail detail(String key) {

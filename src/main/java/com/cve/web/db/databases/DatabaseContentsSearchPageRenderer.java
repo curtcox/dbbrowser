@@ -10,8 +10,8 @@ import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.Search;
+import com.cve.web.db.NavigationButtons;
 import java.net.URI;
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -40,8 +40,9 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
         Search     search = page.search;
         String     target = search.target;
         String title = "Occurences of " + target + " in " + database.name;
+        NavigationButtons b = NavigationButtons.of(log);
         String[] navigation = new String[] {
-            ADD_SERVER, REMOVE_SERVER , SHUTDOWN, title, search(search)
+            b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN, title, b.search(search)
         };
         StringBuilder out = new StringBuilder();
         for (SelectResults results : page.resultsList) {

@@ -47,11 +47,12 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         Database database = page.database;
         DBServer     server = database.server;
         String title = "Occurences of " + target + " on "+ server.uri + "/" + database.name;
+        NavigationButtons b = NavigationButtons.of(log);
         String[] nav = new String[] {
             Replace.bracketQuote(
                 "Occurences of " + target + " on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.linkTo()
-            ), search(page.search)
+            ), b.search(page.search)
         };
         String guts  = Helper.of(page,log).render(page) + searchContentsLink(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
@@ -102,7 +103,7 @@ static final class Helper {
             return search.target + " not found on " + page.database.linkTo();
         }
         UITableBuilder out = UITableBuilder.of(log);
-        out.add(UIRow.of(detail("Table"),detail("Columns")));
+        out.add(row(detail("Table"),detail("Columns")));
         for (DBTable table : page.tables) {
             if (isLeaf(table)) {
                out.add(row(table));
@@ -127,6 +128,14 @@ static final class Helper {
 
     UIRow row(DBTable table) {
         return UIRow.of(log,cell(table));
+    }
+
+    UIRow row(UIDetail... details) {
+        return UIRow.of(log,details);
+    }
+
+    UIDetail detail(String s) {
+        return UIDetail.of(s,log);
     }
 
     UIRow columnsRow(Collection<DBColumn> columns) {

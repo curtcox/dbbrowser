@@ -64,7 +64,7 @@ public final class DBServer {
     public String toString() { return uri.toString(); }
 
     public Link linkTo() {
-        Label text = Label.of(toString());
+        Label text = Label.of(toString(),log);
         URI target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }

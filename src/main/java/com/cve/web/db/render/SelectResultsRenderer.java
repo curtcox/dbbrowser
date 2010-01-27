@@ -12,9 +12,9 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import com.cve.web.db.NavigationButtons;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -62,7 +62,8 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     public HtmlPage renderColumnValueDistribution(SelectResults results, ClientInfo client) {
         String guts = renderColumnValueDistributionPage(results,client);
         String title = "Values in " + results.select.columns.get(0);
-        String[] nav = new String[] { search(results.search) };
+        NavigationButtons b = NavigationButtons.of(log);
+        String[] nav = new String[] { b.search(results.search) };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
@@ -70,9 +71,10 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         String guts = renderSelectBuilderPage(results,client);
         DBServer server = results.server;
         String title = "Data from server " + server.toString();
+        NavigationButtons b = NavigationButtons.of(log);
         String[] nav = new String[] {
             Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo()),
-            search(results.search)
+            b.search(results.search)
         };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }

@@ -40,15 +40,25 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final Log log;
 
-    final HTMLTags tags;
     
     final DBURICodec codec;
 
     final DBConnectionFactory connections;
 
+    final HTMLTags tags;
+    String h1(String s) { return tags.h1(s); }
+    String h2(String s) { return tags.h2(s); }
+    String tr(String s) { return tags.tr(s); }
+    String td(String s) { return tags.td(s); }
+    String th(String s) { return tags.th(s); }
+    String table(String s) { return tags.table(s); }
+    String borderTable(String s) { return tags.borderTable(s); }
+
     private static final String PREFIX = "/meta/";
 
-    private DatabaseMetaHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+    private DatabaseMetaHandler(
+        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+    {
         super("^" + PREFIX,log);
         this.db = notNull(db);
         this.managedFunction = notNull(managedFunction);
@@ -56,6 +66,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         this.log = notNull(log);
         codec = DBURICodec.of(log);
         connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        tags = HTMLTags.of(log);
     }
 
     public static DatabaseMetaHandler of(
@@ -153,7 +164,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     String tableLinkRow(String label, String target, String description) {
          return tr(
-             td(Link.textTarget(Label.of(label), URIs.of(target)).toString()) +
+             td( Link.textTarget(Label.of(label,log), URIs.of(target)).toString() ) +
              td(description));
     }
 
@@ -187,7 +198,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
             try {
                 out.append(render(metaFor(server).getColumns(catalog,schemaPattern,tableNamePattern,columnNamePattern)));
             } catch (SQLException e) {
-                out.append(Throwables.toHtml(e));
+                out.append(Throwables.of(log).toHtml(e));
             }
         }
         return out.toString();
@@ -300,12 +311,5 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
         }
     }
 
-String h1(String s) { return tags.h1(s); }
-String h2(String s) { return tags.h2(s); }
-String tr(String s) { return tags.tr(s); }
-String td(String s) { return tags.td(s); }
-String th(String s) { return tags.th(s); }
-String table(String s) { return tags.table(s); }
-String borderTable(String s) { return tags.borderTable(s); }
 
 }

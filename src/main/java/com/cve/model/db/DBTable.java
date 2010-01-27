@@ -114,7 +114,7 @@ public final class DBTable {
      * Provide a link to this table.
      */
     public Link linkTo() {
-        Label text = Label.of(name);
+        Label text = Label.of(name,log);
         URI target = codec.encode(this);
         return Link.textTarget(text, target);
     }

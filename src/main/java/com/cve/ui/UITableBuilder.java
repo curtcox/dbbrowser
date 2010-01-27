@@ -19,7 +19,7 @@ public final class UITableBuilder {
         this.log = notNull(log);
     }
 
-    public UITableBuilder of(Log log) {
+    public static UITableBuilder of(Log log) {
         return new UITableBuilder(log);
     }
 

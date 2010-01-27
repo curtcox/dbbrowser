@@ -24,24 +24,27 @@ public class FSPath {
      */
     public final String name;
 
+    final Log log;
+
     private static final Canonicalizer<FSPath> CANONICALIZER = Canonicalizer.of();
 
     /**
      * Something to use for null paths.
      */
-    public static FSPath NULL = new FSPath(FSServer.NULL,"");
+    public static FSPath NULL = new FSPath(FSServer.NULL,"",null);
 
     private static FSPath canonical(FSPath table) {
         return CANONICALIZER.canonical(table);
     }
 
-    private FSPath(FSServer server, String name) {
+    private FSPath(FSServer server, String name, Log log) {
         this.server  = notNull(server);
         this.name    = notNull(name);
+        this.log = notNull(log);
     }
 
-    public static FSPath serverPath(FSServer server, String name) {
-        return canonical(new FSPath(server,name));
+    public static FSPath serverPath(FSServer server, String name, Log log) {
+        return canonical(new FSPath(server,name,log));
     }
 
     public static FSPath parse(FSServer server, String path, Log log) {
@@ -73,7 +76,7 @@ public class FSPath {
      * Provide a link to this table.
      */
     public Link linkTo() {
-        Label text = Label.of(name);
+        Label text = Label.of(name,log);
         URI target = FSURICodec.encode(this);
         return Link.textTarget(text, target);
     }

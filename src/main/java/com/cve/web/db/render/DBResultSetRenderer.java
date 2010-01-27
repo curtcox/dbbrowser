@@ -80,7 +80,7 @@ public final class DBResultSetRenderer {
         return new DBResultSetRenderer(results,orders,hints,client,log);
     }
 
-    public static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
+    public String    tdRowspan(String s, int width) { return "<td rowspan=" + tags.q(width) + ">" + s + "</td>"; }
 
     /**
      * Return a landscape table where every result set row maps to a table row.
@@ -92,7 +92,7 @@ public final class DBResultSetRenderer {
         rows.add(row(columnNameRow()));
         rows.add(row(columnActionsRow(), CSS.ACTIONS));
         rows.addAll(valueRowsList());
-        return UITable.of(rows).toString();
+        return UITable.of(rows,log).toString();
     }
 
     UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
@@ -111,7 +111,7 @@ public final class DBResultSetRenderer {
                 DBValue value = results.getValue(row, column);
                 details.add(detail(valueCell(cell,value)));
             }
-            out.add(UIRow.of(details, cssClass));
+            out.add(row(details, cssClass));
             if (cssClass==CSS.EVEN_ROW) {
                 cssClass = CSS.ODD_ROW;
             } else {
@@ -123,6 +123,7 @@ public final class DBResultSetRenderer {
 
     UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
     UIDetail detail(String value) { return UIDetail.of(value, log); }
+    UIDetail detail(String value,int width) { return UIDetail.of(value, width, log); }
 
     /**
      * A table row where each cell represents a different database.

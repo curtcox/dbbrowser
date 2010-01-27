@@ -13,7 +13,6 @@ import com.cve.web.db.NavigationButtons;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -21,13 +20,22 @@ import static com.cve.util.Check.notNull;
  */
 final class ServersPageRenderer implements ModelHtmlRenderer {
 
-    private final HTMLTags tags;
     
     private final Log log;
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
-    private ServersPageRenderer(Log log) {
+    private final HTMLTags tags;
+    String h1(String s) { return tags.h1(s); }
+    String h2(String s) { return tags.h2(s); }
+    String tr(String s) { return tags.tr(s); }
+    String td(String s) { return tags.td(s); }
+    String td(String s, CSS css) { return tags.td(s,css); }
+    String th(String s) { return tags.th(s); }
+    String table(String s) { return tags.table(s); }
+    String borderTable(String s) { return tags.borderTable(s); }
+
+private ServersPageRenderer(Log log) {
         this.log = notNull(log);
         tags = HTMLTags.of(log);
     }
@@ -41,7 +49,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
         log.notNullArgs(model,client);
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";
-        String[] navigation = getNavigation(log);
+        String[] navigation = getNavigation(title);
         String guts  = tableOfServers(page);
         return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
@@ -86,7 +94,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
             } else if (object instanceof AnnotatedStackTrace) {
                 AnnotatedStackTrace t = (AnnotatedStackTrace) object;
                 String message = t.throwable.getMessage();
-                out.append(ObjectLink.to(message, t));
+                out.append(ObjectLink.of(log).to(message, t));
             } else {
                 throw new IllegalArgumentException("" + object);
             }
@@ -99,12 +107,5 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
         return out.toString();
     }
 
-    String h1(String s) { return tags.h1(s); }
-    String h2(String s) { return tags.h2(s); }
-    String tr(String s) { return tags.tr(s); }
-    String td(String s) { return tags.td(s); }
-String th(String s) { return tags.th(s); }
-String table(String s) { return tags.table(s); }
-String borderTable(String s) { return tags.borderTable(s); }
 
 }

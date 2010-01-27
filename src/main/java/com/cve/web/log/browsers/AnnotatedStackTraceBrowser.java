@@ -35,7 +35,7 @@ public final class AnnotatedStackTraceBrowser
         AnnotatedStackTrace trace = (AnnotatedStackTrace) o;
         ClientInfo client = ClientInfo.of();
         Model model = AnnotatedStackTraceModel.trace(trace,log);
-        HtmlPage page = new AnnotatedStackTraceRenderer().render(model,client);
+        HtmlPage page = AnnotatedStackTraceRenderer.of(log).render(model,client);
         return page.body;
     }
 

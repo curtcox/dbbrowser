@@ -23,7 +23,7 @@ public final class CollectionBrowser
         this.log = notNull(log);
     }
 
-    public CollectionBrowser of(Log log) {
+    public static CollectionBrowser of(Log log) {
         return new CollectionBrowser(log);
     }
 

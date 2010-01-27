@@ -64,7 +64,7 @@ public class ResultsRenderTest {
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue> fixedValues = ImmutableMap.copyOf(values);
         DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues,log);
-        SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true);
+        SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true,log);
         SelectContext   context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
         SelectResults    actual = SelectExecutor.of(log).run(context);
 

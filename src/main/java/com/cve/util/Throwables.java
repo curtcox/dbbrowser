@@ -24,6 +24,10 @@ public final class Throwables {
         tags = HTMLTags.of(log);
     }
 
+    public static Throwables of(Log log) {
+        return new Throwables(log);
+    }
+    
     public String toString(Throwable t) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out);

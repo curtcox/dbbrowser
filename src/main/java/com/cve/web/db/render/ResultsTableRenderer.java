@@ -10,6 +10,7 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
+import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
@@ -59,7 +60,7 @@ public final class ResultsTableRenderer {
         return new ResultsTableRenderer(results,client,log).resultsTable();
     }
 
-    static String    tdRowspan(String s, int width) { return "<td rowspan=" + q(width) + ">" + s + "</td>"; }
+    String tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of(log).q(width) + ">" + s + "</td>"; }
 
 
     String resultsTable() {
@@ -111,13 +112,18 @@ public final class ResultsTableRenderer {
             out.add(row(details));
         }
         out.add(headerRow);
-        return UITable.of(out).toString();
+        return UITable.of(out,log).toString();
     }
 
     UIRow       row(List<UIDetail> details) { return UIRow.of(details,log);       }
     UIRow       row(UIDetail... details)    { return UIRow.of(log, details);       }
     UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
-    UIDetail detail(String value) { return UIDetail.of(value, log); }
+    UIDetail detail(String value)           { return UIDetail.of(value, log); }
+    String nameCell(DBColumn column)        { return tools.nameCell(column);   }
+    String nameCell(Database database)      { return tools.nameCell(database); }
+    String nameCell(DBTable table)          { return tools.nameCell(table);  }
+    String actionCell(DBColumn column, Order.Direction direction) { return tools.actionCell(column, direction); }
+    String valueCell(Cell cell, DBValue value) { return tools.valueCell(cell, value); }
 
     Order.Direction direction(DBColumn column) {
         for (Order order : results.select.orders) {
@@ -128,16 +134,5 @@ public final class ResultsTableRenderer {
         return Order.Direction.NONE;
     }
 
-    String nameCell(DBColumn column) {
-        return tools.nameCell(column);
-    }
-  
-    String nameCell(Database database) {
-        return tools.nameCell(database);
-    }
-
-    String nameCell(DBTable table) {
-        return tools.nameCell(table);
-    }
 
 }

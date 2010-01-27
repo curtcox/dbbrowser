@@ -41,6 +41,6 @@ public final class MapBrowser
     }
 
     private UIDetail link(Object o) {
-        return UIDetail.of(ObjectLink.to("" + o,o),log);
+        return UIDetail.of(ObjectLink.of(log).to("" + o,o),log);
     }
 }

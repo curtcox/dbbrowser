@@ -54,7 +54,7 @@ final class LocalRequestHandler implements RequestHandler {
                             FSBrowserHandler.of(fs,fsServersStore,managedFunction,log),
                             DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction,log)
                        ),log
-                 )
+                 ),log
             ),log
         );
     }

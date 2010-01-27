@@ -99,7 +99,7 @@ public final class DebugHandler implements RequestHandler {
             ;
             throw new IllegalStateException(message);
         }
-        return ObjectLink.to(".",trace);
+        return ObjectLink.of(log).to(".",trace);
     }
 
 }

@@ -12,7 +12,6 @@ import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -43,11 +42,12 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         Database database = page.database;
         String guts = tableOfTables(page);
         String title = "Tables on " + server.uri + "/" + database.name;
+        NavigationButtons b = NavigationButtons.of(log);
         String[] nav = new String[] {
             Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.linkTo()
-            ), SEARCH
+            ), b.SEARCH
         };
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }

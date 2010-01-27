@@ -48,7 +48,7 @@ public class PagingLinksRendererTest {
         DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false,log);
         return results;
     }
 
@@ -70,7 +70,7 @@ public class PagingLinksRendererTest {
         DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore,log);
         return results;
     }
 

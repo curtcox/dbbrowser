@@ -12,13 +12,11 @@ import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
-import static com.cve.ui.UIBuilder.*;
 import com.cve.util.URIs;
 import com.google.common.collect.Sets;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Set;
-import static com.cve.web.db.NavigationButtons.*;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -45,9 +43,10 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
         String target = page.search.target;
         DBServer server = page.server;
         String title = "Occurences of " + target + " on " + server.toString();
+        NavigationButtons b = NavigationButtons.of(log);
         String nav[] = new String[] {
             Replace.bracketQuote("Occurences of " + target + " on <a href=[/]>server</a> ") + server,
-            search(page.search)
+            b.search(page.search)
         };
         String guts  = Helper.render(page,log);
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
@@ -61,13 +60,17 @@ static final class Helper {
 
     final DatabasesSearchPage page;
 
+    final RenderingTools tools;
+
     final Log log;
 
-    static final UIDetail EMPTY_CELL = UIDetail.of("");
+    final UIDetail EMPTY_CELL;
 
     Helper(DatabasesSearchPage page, Log log) {
         this.page = notNull(page);
         this.log = notNull(log);
+        tools = RenderingTools.of(log);
+        EMPTY_CELL = UIDetail.of("",log);
     }
 
     static String render(DatabasesSearchPage page, Log log) {
@@ -79,8 +82,8 @@ static final class Helper {
      * Return a table of all the available servers.
      */
     String render() {
-        UITableBuilder out = new UITableBuilder();
-        out.add(UIRow.of(detail("Database"),detail("Table"),detail("Columns")));
+        UITableBuilder out = UITableBuilder.of(log);
+        out.add(row(detail("Database"),detail("Table"),detail("Columns")));
         for (Database database : page.databases) {
             if (isLeaf(database)) {
                 out.add(row(database));
@@ -123,30 +126,36 @@ static final class Helper {
         }
         databasesOut.add(database);
         int height = height(database);
-        return RenderingTools.cell(database,height);
+        return tools.cell(database,height);
     }
 
-    static UIDetail cell(DBTable table) {
-        return RenderingTools.cell(table);
+    UIDetail detail(String s) {
+        return UIDetail.of(s, log);
     }
 
-    static UIDetail cell(Collection<DBColumn> columns) {
-        return RenderingTools.cell(columns);
+    UIDetail cell(DBTable table) {
+        return tools.cell(table);
+    }
+
+    UIDetail cell(Collection<DBColumn> columns) {
+        return tools.cell(columns);
     }
     
     UIRow row(Database database) {
-        return UIRow.of(cell(database));
+        return UIRow.of(log,cell(database));
+    }
+
+    UIRow row(UIDetail... details) {
+        return UIRow.of(log,details);
     }
 
     UIRow row(DBTable table) {
         Database database = table.database;
         UIDetail databaseCell = cell(database);
         if (databaseCell==EMPTY_CELL) {
-            return UIRow.of(cell(table));
+            return row(cell(table));
         }
-        return UIRow.of(
-            databaseCell, cell(table)
-        );
+        return row(databaseCell, cell(table));
     }
 
     UIRow columnsRow(Collection<DBColumn> columns) {
@@ -156,14 +165,12 @@ static final class Helper {
         UIDetail databaseCell = cell(database);
         UIDetail tableCell = cell(table);
         if (tableCell==EMPTY_CELL) {
-            return UIRow.of(cell(columns));
+            return row(cell(columns));
         }
         if (databaseCell==EMPTY_CELL) {
-            return UIRow.of(tableCell,cell(columns));
+            return row(tableCell,cell(columns));
         }
-        return UIRow.of(
-            databaseCell, tableCell, cell(columns)
-        );
+        return row(databaseCell, tableCell, cell(columns));
     }
 }
 

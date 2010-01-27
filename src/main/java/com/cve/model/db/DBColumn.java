@@ -1,6 +1,7 @@
 package com.cve.model.db;
 
 import com.cve.html.HTML;
+import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
@@ -171,13 +172,14 @@ public final class DBColumn {
     public Link linkTo() {
         URI target = codec.encode(this);
         String markedName = name;
+        HTMLTags tags = HTMLTags.of(log);
         if (keyness==Keyness.PRIMARY) {
-            markedName = HTML.b(name);
+            markedName = tags.b(name);
         }
         if (keyness==Keyness.FOREIGN) {
-            markedName = HTML.i(name);
+            markedName = tags.i(name);
         }
-        Label text = Label.of(markedName);
+        Label text = Label.of(markedName,log);
         return Link.textTarget(text, target);
     }
 

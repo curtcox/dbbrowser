@@ -2,6 +2,7 @@ package com.cve.model.fs;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
 import com.cve.util.Canonicalizer;
 import com.cve.util.URIs;
 import com.cve.web.fs.FSURICodec;
@@ -14,6 +15,8 @@ import static com.cve.util.Check.notNull;
  */
 public final class FSServer {
 
+    final Log log;
+
     /**
      * How the server is represented in URLs.
      * This isn't the URI that the server is at, but rather the URI fragment
@@ -23,19 +26,20 @@ public final class FSServer {
 
     private static final Canonicalizer<FSServer> CANONICALIZER = Canonicalizer.of();
 
-    public static FSServer NULL = new FSServer(URIs.of(""));
+    public static FSServer NULL = new FSServer(URIs.of(""),null);
 
 
     private static FSServer canonical(FSServer server) {
         return CANONICALIZER.canonical(server);
     }
 
-    private FSServer(URI uri) {
+    private FSServer(URI uri, Log log) {
         this.uri = notNull(uri);
+        this.log = notNull(log);
     }
 
-    public static FSServer uri(URI uri) {
-        return canonical(new FSServer(uri));
+    public static FSServer uri(URI uri, Log log) {
+        return canonical(new FSServer(uri,log));
     }
 
     @Override
@@ -52,14 +56,14 @@ public final class FSServer {
     }
 
     public FSPath path(String path) {
-        return FSPath.serverPath(this, path);
+        return FSPath.serverPath(this, path,log);
     }
 
     @Override
     public String toString() { return uri.toString(); }
 
     public Link linkTo() {
-        Label text = Label.of(toString());
+        Label text = Label.of(toString(),log);
         URI target = FSURICodec.encode(this);
         return Link.textTarget(text, target);
     }

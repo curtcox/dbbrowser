@@ -33,7 +33,7 @@ final class ColumnActionTooltip {
             actions.add(none(column));
         }
         String html = UICascadingMenu.of(actions).toString();
-        return SimpleTooltip.of(html);
+        return SimpleTooltip.of(html,column.log);
     }
 
     static UIElement hide(DBColumn column) {

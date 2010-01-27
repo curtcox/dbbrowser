@@ -1,8 +1,11 @@
 package com.cve.model.db;
 
+import com.cve.log.Log;
 import com.cve.web.Model;
 import com.cve.web.Search;
+import java.sql.ResultSet;
 import javax.annotation.concurrent.Immutable;
+import org.h2.tools.Server;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -77,8 +80,16 @@ public final class SelectResults implements Model {
      */
     public final Type type;
 
+    /**
+     * Where we log to.
+     */
+    public final Log log;
 
-    private SelectResults(DBServer server,Type type, Select select, Search search, DBResultSet resultSet, Hints hints, long count, boolean hasMore) {
+
+    private SelectResults(
+        DBServer server,Type type, Select select, Search search, DBResultSet resultSet,
+        Hints hints, long count, boolean hasMore, Log log)
+    {
         this.server    = notNull(server);
         this.type      = notNull(type);
         this.select    = notNull(select);
@@ -87,6 +98,7 @@ public final class SelectResults implements Model {
         this.hints     = notNull(hints);
         this.count     = count;
         this.hasMore   = hasMore;
+        this.log       = notNull(log);
     }
 
     static DBServer check(Select select, DBResultSet resultSet) {
@@ -99,26 +111,26 @@ public final class SelectResults implements Model {
     }
 
     public static SelectResults selectResultsHintsMore(
-        Select select, DBResultSet resultSet, Hints hints, boolean hasMore)
+        Select select, DBResultSet resultSet, Hints hints, boolean hasMore, Log log)
     {
         DBServer server = check(select,resultSet);
         Search search = Search.EMPTY;
-        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,100,hasMore);
+        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,100,hasMore,log);
     }
 
     public static SelectResults selectResultsHintsCountMore(
-        Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore)
+        Select select, DBResultSet resultSet, Hints hints, int count, boolean hasMore,Log log)
     {
         DBServer server = check(select,resultSet);
         Search search = Search.EMPTY;
-        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,count,hasMore);
+        return new SelectResults(server,Type.NORMAL_DATA,select,search,resultSet,hints,count,hasMore,log);
     }
 
     public static SelectResults typeSelectSearchResultsHintsCountMore(
-        Type type, Select select, Search search, DBResultSet resultSet, Hints hints, long count, boolean hasMore)
+        Type type, Select select, Search search, DBResultSet resultSet, Hints hints, long count, boolean hasMore, Log log)
     {
         DBServer server = check(select,resultSet);
-        return new SelectResults(server,type,select,search,resultSet,hints,count,hasMore);
+        return new SelectResults(server,type,select,search,resultSet,hints,count,hasMore,log);
     }
 
     @Override
