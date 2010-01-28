@@ -55,7 +55,7 @@ final class ServersHandler extends AbstractRequestHandler {
 
     @Override
     public Model get(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         Search search = codec.getSearch(request.requestURI);
         if (search.isEmpty()) {
             ImmutableList<DBServer> servers = serversStore.keys();
@@ -69,7 +69,7 @@ final class ServersHandler extends AbstractRequestHandler {
      * Perform the requested search and return a results page.
      */
     ServersSearchPage newSearchPage(Search search) {
-        log.notNullArgs(search);
+        log.args(search);
         ImmutableList<DBColumn> columns = allColumns();
         Set<DBServer> filteredServers = Sets.newHashSet();
         Multimap<DBServer,Database> filteredDatabases = HashMultimap.create();

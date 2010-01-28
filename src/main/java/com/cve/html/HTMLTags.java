@@ -87,6 +87,7 @@ public final class HTMLTags {
     }
 
     private String debug(String open, String body, String close) {
+        log.args(body);
         return open + body + DebugHandler.debugLink(log) + close;
     }
 }

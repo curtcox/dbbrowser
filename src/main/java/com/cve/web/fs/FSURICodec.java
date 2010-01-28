@@ -136,13 +136,13 @@ public final class FSURICodec {
     }
 
     public FSServer getServer(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         String name = at(uri,Position.SERVER);
         return FSServer.uri(URIs.of(name),log);
     }
 
     public String getMetaDataMethod(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (!exists(uri,Position.METADATA)) {
             return "";
         }
@@ -150,7 +150,7 @@ public final class FSURICodec {
     }
 
     public ImmutableList<FSPath> getPaths(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (!exists(uri,Position.FILES)) {
             return ImmutableList.of();
         }
@@ -209,7 +209,7 @@ public final class FSURICodec {
     }
 
     public FSPipeline getPipeline(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         // get everything out of the URL
         ImmutableList<FSPath>                paths = getPaths(uri);
 

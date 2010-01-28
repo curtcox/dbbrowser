@@ -36,7 +36,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         TablesPage page = (TablesPage) model;
         DBServer     server = page.server;
         Database database = page.database;
@@ -53,7 +53,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
     }
 
     String tableOfTables(TablesPage page) {
-        log.notNullArgs(page);
+        log.args(page);
         StringBuilder out = new StringBuilder();
         out.append(th("Table") + th("Rows") + th("Columns"));
         for (DBTable table : page.tables) {
@@ -67,7 +67,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
     }
 
     String columnsFor(TablesPage page, DBTable table) {
-        log.notNullArgs(page,table);
+        log.args(page,table);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (DBColumn column : page.columns.get(table)) {

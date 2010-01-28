@@ -221,7 +221,7 @@ public final class DBResultSetRenderer {
      * Return a string to go in a database name cell.
      */
     String nameCell(Database database) {
-        log.notNullArgs(database);
+        log.args(database);
         Label  text = Label.of(database.name,log);
         URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
@@ -231,7 +231,7 @@ public final class DBResultSetRenderer {
      * Return a string to go in a table name cell.
      */
     String nameCell(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Label  text = Label.of(table.name,log);
         URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
@@ -244,7 +244,7 @@ public final class DBResultSetRenderer {
      * for relevant hints (joins and filters);
      */
     String nameCell(DBColumn column) {
-        log.notNullArgs(column);
+        log.args(column);
         int                     width = maxWidth(column);
         String             columnName = breakUp(column.name);
 

@@ -15,7 +15,7 @@ public final class Timestamp {
         this.value = value;
     }
 
-    static Timestamp of() {
+    public static Timestamp of() {
         return new Timestamp(System.currentTimeMillis());
     }
 }

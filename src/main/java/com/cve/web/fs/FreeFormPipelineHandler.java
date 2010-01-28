@@ -31,7 +31,7 @@ final class FreeFormPipelineHandler extends AbstractRequestHandler {
      */
     @Override
     public boolean handles(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         return false;
     }
 

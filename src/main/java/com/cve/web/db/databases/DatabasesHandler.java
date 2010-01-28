@@ -47,7 +47,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
     @Override
     public Model get(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         String uri = request.requestURI;
 
         Search search = codec.getSearch(uri);
@@ -91,7 +91,7 @@ public final class DatabasesHandler extends AbstractRequestHandler {
      * Perform the requested search and return a results page.
      */
     DatabasesSearchPage newSearchPage(DBServer server,Search search) {
-        log.notNullArgs(server,search);
+        log.args(server,search);
         ImmutableList<DBColumn> columns = db.of(server).getColumnsFor(server).value;
         Set<Database> filteredDatabases = Sets.newHashSet();
         Multimap<Database,DBTable> filteredTables = HashMultimap.create();

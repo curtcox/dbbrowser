@@ -35,7 +35,7 @@ public final class Database {
 
     private Database(DBServer server, String name) {
         log = server.log;
-        log.notNullArgs(server,name);
+        log.args(server,name);
         this.server = notNull(server);
         this.name   = notNull(name);
         codec = DBURICodec.of(log);

@@ -137,7 +137,7 @@ public final class DBURICodec {
     }
 
     public Search getSearch(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (uri.equals("/")) {
             return Search.EMPTY;
         }
@@ -146,20 +146,20 @@ public final class DBURICodec {
     }
 
     public DBServer getServer(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         String name = at(uri,Position.SERVER);
         return DBServer.uri(URIs.of(name),log);
     }
 
     public Database getDatabase(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
 
     public String getMetaDataMethod(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (!exists(uri,Position.METADATA)) {
             return "";
         }
@@ -167,7 +167,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<Database> getDatabases(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
@@ -180,7 +180,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<DBTable> getTables(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
@@ -227,7 +227,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<AggregateFunction> getFunctions(ImmutableList<DBTable> tables, String uri) {
-        log.notNullArgs(tables,uri);
+        log.args(tables,uri);
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
@@ -241,7 +241,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<Join> getJoins(ImmutableList<DBTable> tables,String uri) {
-        log.notNullArgs(tables,uri);
+        log.args(tables,uri);
         if (!exists(uri,Position.JOINS)) {
             return ImmutableList.of();
         }
@@ -259,7 +259,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<DBRowFilter> getFilters(ImmutableList<DBTable> tables,String uri) {
-        log.notNullArgs(tables,uri);
+        log.args(tables,uri);
         if (!exists(uri,Position.FILTERS)) {
             return ImmutableList.of();
         }
@@ -278,7 +278,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<Order> getOrders(ImmutableList<DBTable> tables,String uri) {
-        log.notNullArgs(tables,uri);
+        log.args(tables,uri);
         if (!exists(uri,Position.ORDERS)) {
             return ImmutableList.of();
         }
@@ -297,7 +297,7 @@ public final class DBURICodec {
     }
 
     public ImmutableList<Group> getGroups(ImmutableList<DBTable> tables,String uri) {
-        log.notNullArgs(tables,uri);
+        log.args(tables,uri);
         if (!exists(uri,Position.GROUPS)) {
             return ImmutableList.of();
         }
@@ -326,7 +326,7 @@ public final class DBURICodec {
     }
 
     public Select getSelect(String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         // get everything out of the URL
         ImmutableList<Database>          databases = getDatabases(uri);
         ImmutableList<DBTable>              tables = getTables(uri);
@@ -385,12 +385,12 @@ public final class DBURICodec {
     }
 
     public URI encode(Database database) {
-        log.notNullArgs(database);
+        log.args(database);
         return encode(Search.EMPTY,database);
     }
 
     public URI encode(Search search, Database database) {
-        log.notNullArgs(search,database);
+        log.args(search,database);
         DBServer server = database.server;
         return URIs.of(encode(search,server) + database.name + "/");
     }

@@ -3,7 +3,7 @@ package com.cve.model.db;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
-import com.cve.log.SimpleLog;
+import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
@@ -28,7 +28,7 @@ public final class DBServer {
 
     private static final Canonicalizer<DBServer> CANONICALIZER = Canonicalizer.of();
 
-    public static DBServer NULL = new DBServer(URIs.of(""),SimpleLog.of(DBServer.class));
+    public static DBServer NULL = new DBServer(URIs.of(""),Logs.of());
 
 
     private static DBServer canonical(DBServer server) {

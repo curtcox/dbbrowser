@@ -77,7 +77,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      */
     @Override
     public Model get(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         String        uri = request.requestURI;
         Search     search = codec.getSearch(uri);
         DBServer   server = codec.getServer(uri);
@@ -136,7 +136,7 @@ public final class TablesHandler extends AbstractRequestHandler {
      * and server names.  Return a results page.
      */
     TablesSearchPage newNamesSearchPage(Database database,Search search) {
-        log.notNullArgs(database,search);
+        log.args(database,search);
         DBMetaData               meta = db.of(database.server);
         ImmutableList<DBColumn> columns = meta.getColumnsFor(database).value;
         Set<DBTable> filteredTables = Sets.newHashSet();

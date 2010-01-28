@@ -37,7 +37,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         notNull(request);
 
         String query = request.queryString;
@@ -47,7 +47,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
         }
         String target = request.parameters.get(Search.FIND);
         URI dest = redirectSearchesTo(path,target);
-        return PageResponse.newRedirect(dest,log);
+        return PageResponse.newRedirect(request,dest,log);
     }
 
     /**
@@ -60,7 +60,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
      * @param target what to search for
      */
     URI redirectSearchesTo(String path, String target) {
-        log.notNullArgs(path,target);
+        log.args(path,target);
         int slashes = URIs.slashCount(path);
         if (slashes==1) {
             return URIs.of("/" + target + "/");

@@ -34,7 +34,7 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         DatabaseContentsSearchPage page = (DatabaseContentsSearchPage) model;
         Database database = page.database;
         Search     search = page.search;

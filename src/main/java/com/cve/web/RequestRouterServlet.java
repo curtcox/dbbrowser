@@ -78,7 +78,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(t,log),response);
+            write(PageResponse.of(PageRequest.request(request),t,log),response);
         }
 
     }
@@ -91,7 +91,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(t,log),response);
+            write(PageResponse.of(PageRequest.request(request),t,log),response);
         }
 
     }
@@ -100,7 +100,7 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     void write(PageResponse page, HttpServletResponse response) throws IOException {
-        log.notNullArgs(page,response);
+        log.args(page,response);
         URI redirect = page.redirect;
         // Redirect, if that is the response
         if (redirect!=null) {
@@ -146,7 +146,7 @@ public final class RequestRouterServlet extends HttpServlet {
             dumper.doGet(request,response);
             return;
         }
-        // Transform the request, produce route it to something that knows how
+        // Transform the request.   Route it to something that knows how
         // to process it, and write the response.
         PageRequest   pageRequest = PageRequest.request(request);
         PageResponse  uriResponse = router.produce(pageRequest);

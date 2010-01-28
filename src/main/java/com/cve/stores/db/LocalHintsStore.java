@@ -71,7 +71,7 @@ final class LocalHintsStore implements DBHintsStore {
 
     @Override
     public Hints get(ImmutableList<DBColumn> columns) {
-        log.notNullArgs(columns);
+        log.args(columns);
         Set<Join>      joinSet = Sets.newHashSet();
         Set<DBRowFilter>  filterSet = Sets.newHashSet();
         for (DBColumn column : columns) {
@@ -90,7 +90,7 @@ final class LocalHintsStore implements DBHintsStore {
     }
 
     ImmutableList<DBTable> spanningTables(Collection<DBColumn> columns) {
-        log.notNullArgs(columns);
+        log.args(columns);
         Set<DBTable>  tables = Sets.newHashSet();
         for (DBColumn column : columns) {
             tables.add(column.table);

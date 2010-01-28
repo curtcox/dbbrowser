@@ -52,13 +52,13 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
 
     @Override
     public byte[] get(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction,log);
         return csv(alt.getResultsFromDB(request.requestURI));
     }
 
     public byte[] csv(SelectResults results) {
-        log.notNullArgs(results);
+        log.args(results);
         DBResultSet  rows = results.resultSet;
         StringBuilder out = new StringBuilder();
         int maxColumn = rows.columns.size();

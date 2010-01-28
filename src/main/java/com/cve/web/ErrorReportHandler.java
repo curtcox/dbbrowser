@@ -28,11 +28,11 @@ public final class ErrorReportHandler implements RequestHandler {
 
     @Override
     public PageResponse produce(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         try {
             return handler.produce(request);
         } catch (Throwable t) {
-            return PageResponse.of(AnnotatedStackTraceModel.throwable(t,log),log);
+            return PageResponse.of(request,AnnotatedStackTraceModel.throwable(t,log),log);
         }
     }
 

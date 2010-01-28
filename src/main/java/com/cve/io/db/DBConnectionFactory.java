@@ -39,7 +39,7 @@ public final class DBConnectionFactory {
     }
 
     public DBConnection getConnection(DBServer server) {
-        log.notNullArgs(server,serversStore,managedFunction);
+        log.args(server,serversStore,managedFunction);
         DBConnectionInfo info = serversStore.get(server);
         if (info==null) {
             String message = server + " not found in store";
@@ -49,7 +49,7 @@ public final class DBConnectionFactory {
     }
 
     public DBMetaDataIO getDbmdIO(DBServer server,DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        log.notNullArgs(server,serversStore,managedFunction);
+        log.args(server,serversStore,managedFunction);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server);
         DBDriver driver = DBDrivers.of(managedFunction,serversStore,log).url(connection.info.url);
         DBMetaDataIO io = driver.getDBMetaDataIO(connection);
@@ -57,7 +57,7 @@ public final class DBConnectionFactory {
     }
     
     public java.sql.DatabaseMetaData metaFor(DBServer server,DBServersStore serversStore,ManagedFunction.Factory managedFunction) throws SQLException {
-        log.notNullArgs(server,serversStore,managedFunction);
+        log.args(server,serversStore,managedFunction);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server);
         return connection.getJDBCMetaData();
     }

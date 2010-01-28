@@ -24,7 +24,10 @@ public final class Main {
     public static void localServerWithAppEngine() {
 
     }
-    
+
+    /**
+     * Local server with App engine handling authentication.
+     */
     public static void localServerWithAppEngineAuth() {
 
     }

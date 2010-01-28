@@ -29,10 +29,10 @@ public final class ResourceHandler extends AbstractRequestHandler {
 
     @Override
     public PageResponse produce(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(serveResource(request),ContentType.guessByExtension(uri),log);
+            return PageResponse.of(request,serveResource(request),ContentType.guessByExtension(uri),log);
         }
         return null;
     }

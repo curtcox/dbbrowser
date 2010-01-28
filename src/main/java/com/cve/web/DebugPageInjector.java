@@ -98,7 +98,7 @@ String script =
       Log this page request.
     */
     public void logThisPage(Map pageDescription) {
-        log.notNullArgs(pageDescription);
+        log.args(pageDescription);
     }
 
     static boolean isDebugEnabled() {

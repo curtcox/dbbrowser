@@ -38,7 +38,7 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         ServersSearchPage page = (ServersSearchPage) model;
         Search          search = page.search;
         String title = "Occurences of " + search.target;
@@ -72,7 +72,7 @@ static final class Helper {
     }
 
     static String render(ServersSearchPage page, Log log) {
-        log.notNullArgs(page);
+        log.args(page);
         return new Helper(page,log).render();
     }
     

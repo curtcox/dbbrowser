@@ -50,7 +50,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
             return renderColumnValueDistribution(results,client);

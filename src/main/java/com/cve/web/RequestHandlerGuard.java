@@ -48,7 +48,7 @@ public abstract class RequestHandlerGuard implements RequestHandler {
             return handler.produce(request);
         }
         URI dest = getDeniedURI(request);
-        return PageResponse.newRedirect(dest,log);
+        return PageResponse.newRedirect(request,dest,log);
     }
 
     /**

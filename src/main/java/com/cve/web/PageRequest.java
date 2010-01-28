@@ -4,6 +4,7 @@ package com.cve.web;
 import javax.annotation.concurrent.Immutable;
 import javax.servlet.http.HttpServletRequest;
 import com.cve.util.Check;
+import com.cve.util.Timestamp;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
@@ -22,6 +23,13 @@ public final class PageRequest {
      */
     public enum Method {
         GET, POST;
+    }
+
+    /**
+     * Unique id for a request.
+     */
+    public static class ID {
+        final Timestamp timestamp = Timestamp.of();
     }
 
     /**
@@ -57,6 +65,11 @@ public final class PageRequest {
      */
     public final Method method;
 
+    /**
+     * Unique ID for this request.
+     */
+    public final ID id;
+
     private PageRequest(
         Method type, String requestURI, String queryString,
         ImmutableMap<String,String> parameters, ImmutableList<Cookie> cookies)
@@ -66,6 +79,7 @@ public final class PageRequest {
         this.queryString = Check.notNull(queryString);
         this.parameters  = Check.notNull(parameters);
         this.cookies     = Check.notNull(cookies);
+        id = new ID();
     }
 
     public static PageRequest path(String pathInfo)
@@ -108,4 +122,24 @@ public final class PageRequest {
         return new PageRequest(method,requestURI,queryString,parameters,cookies);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        PageRequest other = (PageRequest) o;
+        return requestURI.equals(other.requestURI) &&
+               queryString.equals(other.queryString) &&
+               parameters.equals(other.parameters) &&
+               cookies.equals(other.cookies) &&
+               method.equals(other.method) &&
+               id.equals(other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return requestURI.hashCode()  ^
+               queryString.hashCode() ^
+               parameters.hashCode()  ^
+               cookies.hashCode()     ^
+               method.hashCode()      ^
+               id.hashCode();
+    }
 }

@@ -18,16 +18,14 @@ public interface Log {
      */
     AnnotatedStackTrace annotatedStackTrace(Throwable t);
 
-    /**
-     * Note the given arguments for the method being executed.
-     */
-    void args(Object... objects);
+
+    void possiblyNullArgs(Object... objects);
 
     /**
      * Note the given arguments for the method being executed.
      * Throw an exception if any are null.
      */
-    void notNullArgs(Object... objects);
+    void args(Object... objects);
 
     void debug(String message);
 

@@ -70,7 +70,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getPrimaryKeysFor(ImmutableList<DBTable> tables) {
-        log.notNullArgs(tables);
+        log.args(tables);
         Set<DBColumn> keys = Sets.newHashSet();
         for (DBTable table : tables) {
             keys.addAll(getPrimaryKeysFor(table));
@@ -82,7 +82,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * See http://java.sun.com/javase/6/docs/api/java/sql/DatabaseMetaData.html#getPrimaryKeys(java.lang.String,%20java.lang.String,%20java.lang.String)
      */
     private ImmutableList<DBColumn> getPrimaryKeysFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Database     database = table.database;
         DBServer         server = database.server;
         String        catalog = database.name;
@@ -103,7 +103,7 @@ public class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<Join>> getJoinsFor(ImmutableList<DBTable> tables) {
-        log.notNullArgs(tables);
+        log.args(tables);
         Set<Join> joins = Sets.newLinkedHashSet();
         for (DBTable table : tables) {
             joins.addAll(getImportedKeysFor(table));
@@ -116,7 +116,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(ImmutableList<DBTable> tables) {
-        log.notNullArgs(tables);
+        log.args(tables);
         Set<DBColumn> set = Sets.newHashSet();
         for (DBTable table : tables) {
             set.addAll(getColumnsFor(table).value);
@@ -127,7 +127,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public CurrentValue<Long> getRowCountFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         DBServer           server = table.database.server;
         DBConnection connection = connections.getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
@@ -139,7 +139,7 @@ public class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
-        log.notNullArgs(server);
+        log.args(server);
         List<DBColumn> list = Lists.newArrayList();
         for (Database database : getDatabasesOn(server).value) {
             String          catalog = database.name;
@@ -165,7 +165,7 @@ public class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(Database database) {
-        log.notNullArgs(database);
+        log.args(database);
         List<DBColumn> list = Lists.newArrayList();
         String          catalog = database.name;
         String    schemaPattern = null;
@@ -190,7 +190,7 @@ public class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Database       database = table.database;
         DBServer           server = database.server;
         String          catalog = database.name;
@@ -232,7 +232,7 @@ public class DefaultDBMetaData implements DBMetaData {
 
     @Override
     public CurrentValue<ImmutableList<Database>> getDatabasesOn(DBServer server) {
-        log.notNullArgs(server);
+        log.args(server);
         List<Database> list = Lists.newArrayList();
         for (CatalogInfo info : dbmd.getCatalogs().value) {
             String databaseName = info.databaseName;
@@ -246,7 +246,7 @@ public class DefaultDBMetaData implements DBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBTable>> getTablesOn(Database database) {
-        log.notNullArgs(database);
+        log.args(database);
         String          catalog = database.name;
         String    schemaPattern = null;
         String tableNamePattern = null;
@@ -261,14 +261,14 @@ public class DefaultDBMetaData implements DBMetaData {
     }
 
     DBMetaDataIO getDbmdIO(DBServer server) {
-        log.notNullArgs(server);
+        log.args(server);
         return connections.getDbmdIO(server,serversStore,managedFunction);
     }
 
     /**
      */
     public ImmutableList<Join> getImportedKeysFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Database       database = table.database;
         DBServer           server = database.server;
         String   catalog = database.name;
@@ -292,7 +292,7 @@ public class DefaultDBMetaData implements DBMetaData {
     /**
      */
     public ImmutableList<Join> getExportedKeysFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Database       database = table.database;
         DBServer           server = database.server;
         String   catalog = database.name;
@@ -319,7 +319,7 @@ public class DefaultDBMetaData implements DBMetaData {
      * have the same name.
      */
     private ImmutableList<Join> getReasonableJoinsFor(DBTable table) {
-        log.notNullArgs(table);
+        log.args(table);
         Database database = table.database;
         DBServer     server = database.server;
 

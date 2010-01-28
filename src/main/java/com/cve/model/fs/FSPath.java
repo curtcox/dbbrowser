@@ -48,7 +48,7 @@ public class FSPath {
     }
 
     public static FSPath parse(FSServer server, String path, Log log) {
-        log.notNullArgs(server,path);
+        log.args(server,path);
         notNull(server);
         notNull(path);
         return server.path(path);

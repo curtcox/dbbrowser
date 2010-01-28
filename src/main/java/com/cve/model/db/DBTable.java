@@ -4,7 +4,7 @@ import com.cve.model.db.DBColumn.Keyness;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
-import com.cve.log.SimpleLog;
+import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
@@ -37,7 +37,7 @@ public final class DBTable {
     /**
      * Something to use for null tables.
      */
-    public static DBTable NULL = new DBTable(Database.NULL,"",SimpleLog.of(DBTable.class));
+    public static DBTable NULL = new DBTable(Database.NULL,"",Logs.of());
 
     private static DBTable canonical(DBTable table) {
         return CANONICALIZER.canonical(table);
@@ -55,7 +55,7 @@ public final class DBTable {
     }
 
     public static DBTable parse(DBServer server, String fullTableName, Log log) {
-        log.notNullArgs(server,fullTableName);
+        log.args(server,fullTableName);
         notNull(server);
         notNull(fullTableName);
         String[]  nameParts = fullTableName.split("\\.");

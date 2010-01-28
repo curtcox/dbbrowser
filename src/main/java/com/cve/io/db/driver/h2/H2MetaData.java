@@ -45,7 +45,7 @@ final class H2MetaData extends DefaultDBMetaData {
      */
     @Override
     public CurrentValue<ImmutableList<DBColumn>> getColumnsFor(DBServer server) {
-        log.notNullArgs(server);
+        log.args(server);
         List<DBColumn> list = Lists.newArrayList();
         String           catalog = null;
         String     schemaPattern = null;

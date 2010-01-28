@@ -23,7 +23,7 @@ public final class SelectExecutor {
     }
     
     public SelectResults run(SelectContext context) {
-        log.notNullArgs(context);
+        log.args(context);
         Stopwatch watch = Stopwatch.start(context.select);
         SelectRunner runner = SimpleSelectRunner.of(log);
         SelectResults results = runner.run(context);

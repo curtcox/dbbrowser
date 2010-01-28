@@ -45,7 +45,7 @@ final class SimpleSelectRunner implements SelectRunner {
     
     @Override
     public SelectResults run(SelectContext context) {
-        log.notNullArgs(context);
+        log.args(context);
         try {
             return tryRun(context.verified());
         } catch (SQLException e) {
@@ -54,7 +54,7 @@ final class SimpleSelectRunner implements SelectRunner {
     }
 
     SelectResults tryRun(SelectContext context) throws SQLException {
-        log.notNullArgs(context);
+        log.args(context);
         notNull(context);
         DBConnection connection = context.connection;
         Select select = context.select;
@@ -86,7 +86,7 @@ final class SimpleSelectRunner implements SelectRunner {
      * Is the given select normal data or a column value distribution query?
      */
     SelectResults.Type determineResultsType(Select select) {
-        log.notNullArgs(select);
+        log.args(select);
         if (select.groups.size()!=1) {
             return SelectResults.Type.NORMAL_DATA;
         }
@@ -101,7 +101,7 @@ final class SimpleSelectRunner implements SelectRunner {
      * dbmodel.DBResultSet.
      */
     ResultsAndMore transform(Select select, DBResultSetIO results) throws SQLException {
-        log.notNullArgs(select,results);
+        log.args(select,results);
         ImmutableList<Database>   databases = select.databases;
         ImmutableList<DBTable>       tables = select.tables;
         ImmutableList<DBColumn>     columns = select.columns;

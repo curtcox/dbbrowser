@@ -54,7 +54,7 @@ public abstract class AbstractRequestHandler
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(get(request),log);
+            return PageResponse.of(request,get(request),log);
         }
         return null;
     }

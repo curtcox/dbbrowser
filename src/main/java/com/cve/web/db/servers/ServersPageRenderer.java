@@ -46,7 +46,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";
         String[] navigation = getNavigation(title);
@@ -55,7 +55,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     }
 
     String[] getNavigation(String title) {
-        log.notNullArgs(title);
+        log.args(title);
         NavigationButtons b = NavigationButtons.of(log);
         return new String[] {
             b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN , title, b.SEARCH
@@ -66,7 +66,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      * Return a table of all the available servers.
      */
     String tableOfServers(ServersPage page) {
-        log.notNullArgs(page);
+        log.args(page);
         StringBuilder out = new StringBuilder();
         out.append(tr(th("Database Server") + th("Databases")));
         for (DBServer server : page.servers) {
@@ -85,7 +85,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      * available on the given server.
      */
     String databasesOn(ServersPage page, DBServer server) {
-        log.notNullArgs(page,server);
+        log.args(page,server);
         StringBuilder out = new StringBuilder();
         int i = 0;
         for (Object object : page.databases.get(server)) {

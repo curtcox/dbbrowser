@@ -1,7 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import com.cve.log.SimpleLog;
+import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -14,7 +14,7 @@ final class ExitHandler
 
     final Log log;
 
-    private static final ExitHandler HANDLER = new ExitHandler(SimpleLog.of(ExitHandler.class));
+    private static final ExitHandler HANDLER = new ExitHandler(Logs.of());
 
     static ExitHandler of() {
         return HANDLER;
@@ -28,7 +28,7 @@ final class ExitHandler
     @Override
     public PageResponse get(PageRequest request) {
         ExitPage question = ExitPage.of(log);
-        return PageResponse.of(question,log);
+        return PageResponse.of(request,question,log);
     }
 
     @Override

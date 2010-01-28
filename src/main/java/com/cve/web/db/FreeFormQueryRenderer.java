@@ -56,7 +56,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         try {
             return render((FreeFormQueryModel) model,client);
         } catch (SQLException e) {

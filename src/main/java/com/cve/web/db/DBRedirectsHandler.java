@@ -58,7 +58,7 @@ public final class DBRedirectsHandler implements RequestHandler {
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
 
         String query = request.queryString;
         if (query.isEmpty()) {
@@ -66,14 +66,14 @@ public final class DBRedirectsHandler implements RequestHandler {
         }
         String  path = request.requestURI;
         URI   dest = redirectsActionsTo(path, query);
-        return PageResponse.newRedirect(dest,log);
+        return PageResponse.newRedirect(request,dest,log);
     }
 
     /**
      * Given a path and query, produce the URI it should redirect to.
      */
     URI redirectsActionsTo(String path, String query) {
-        log.notNullArgs(path,query);
+        log.args(path,query);
         int lastSlash = path.lastIndexOf("/");
         notNegative(lastSlash);
         // the path up to the last slash

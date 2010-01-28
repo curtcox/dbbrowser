@@ -80,7 +80,7 @@ public final class DBResultSet {
         ImmutableList<DBTable> tables, ImmutableList<DBColumn> columns,
         ImmutableList<DBRow> rows, ImmutableMap<Cell,DBValue> values, Log log)
     {
-        log.notNullArgs(databases,tables,columns,rows,values);
+        log.args(databases,tables,columns,rows,values);
         return new DBResultSet(databases,tables,columns,rows,values,log);
     }
 

@@ -27,7 +27,7 @@ public final class DatabaseContentsSearchPage implements Model {
     final ImmutableList<SelectResults> resultsList;
 
     private DatabaseContentsSearchPage(Search search, Database database, List<SelectResults> resultsList, Log log) {
-        log.notNullArgs(search,database,resultsList);
+        log.args(search,database,resultsList);
         this.log = notNull(log);
         this.search      = notNull(search);
         this.database    = notNull(database);

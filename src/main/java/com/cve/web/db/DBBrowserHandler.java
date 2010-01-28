@@ -22,7 +22,7 @@ public final class DBBrowserHandler implements RequestHandler {
     private DBBrowserHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log)
     {
-        log.notNullArgs(db,serversStore,hintsStore,managedFunction);
+        log.args(db,serversStore,hintsStore,managedFunction);
         this.log = notNull(log);
         handler = CompositeRequestHandler.of(
             // handler                                                                     // for URLs of the form

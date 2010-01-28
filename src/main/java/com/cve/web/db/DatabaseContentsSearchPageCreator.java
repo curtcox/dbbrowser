@@ -61,7 +61,7 @@ final class DatabaseContentsSearchPageCreator {
     }
 
     List<SelectResults> createResultsList(Database database, Search search) {
-        log.notNullArgs(database,search);
+        log.args(database,search);
         List<SelectResults> resultsList = Lists.newArrayList();
         DBMetaData                 meta = db.of(database.server);
         for (DBTable table : meta.getTablesOn(database).value) {

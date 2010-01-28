@@ -41,7 +41,7 @@ final class FSRedirectsHandler implements RequestHandler {
      */
     @Override
     public PageResponse produce(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         notNull(request);
 
         String query = request.queryString;
@@ -50,14 +50,14 @@ final class FSRedirectsHandler implements RequestHandler {
         }
         String  path = request.requestURI;
         URI   dest = redirectsActionsTo(path, query);
-        return PageResponse.newRedirect(dest,log);
+        return PageResponse.newRedirect(request,dest,log);
     }
 
     /**
      * Given a path and query, produce the URI it should redirect to.
      */
     URI redirectsActionsTo(String path, String query) {
-        log.notNullArgs(path,query);
+        log.args(path,query);
         notNull(path);
         int lastSlash = path.lastIndexOf("/");
         notNegative(lastSlash);

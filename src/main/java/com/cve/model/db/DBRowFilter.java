@@ -49,7 +49,7 @@ public final class DBRowFilter {
      */
     public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
         Log log  = server.log;
-        log.notNullArgs(server,tables,fullFilterName);
+        log.args(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
         String[]  nameParts = fullFilterName.split("\\=");

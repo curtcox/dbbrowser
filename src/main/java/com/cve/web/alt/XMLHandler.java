@@ -24,7 +24,7 @@ final class XMLHandler extends AbstractBinaryRequestHandler {
     
     @Override
     public byte[] get(PageRequest request) {
-        log.notNullArgs(request);
+        log.args(request);
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

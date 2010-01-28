@@ -2,29 +2,42 @@ package com.cve.log;
 
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
-import com.cve.util.SimpleCache;
 import com.cve.web.log.ObjectRegistry;
+import com.google.common.collect.Maps;
+import java.util.Map;
 
 /**
  * Our own private logging abstraction.
  */
-public final class SimpleLog implements Log {
+final class SimpleLog implements Log {
+
+    private static SimpleLog SINGLETON = new SimpleLog();
 
 
-    private final Class clazz;
+    private SimpleLog() {}
 
-    private static final SimpleCache<StackTraceElement,Object[]> args = SimpleCache.of();
-
-    private SimpleLog(Class c) {
-        this.clazz = Check.notNull(c);
+    public static SimpleLog of() {
+        return SINGLETON;
     }
 
-    public static SimpleLog of(Class c) {
-        return new SimpleLog(c);
+    /**
+     * Where in the stack -> arguments
+     */
+    private final ThreadLocal<Map<StackTraceElement,Object[]>> stackArgs = new ThreadLocal() {
+         @Override protected Map<StackTraceElement,Object[]> initialValue() {
+             return Maps.newHashMap();
+         }
+    };
+
+    Map<StackTraceElement,Object[]> copyStackArgs() {
+        Map<StackTraceElement,Object[]> copy = Maps.newHashMap();
+        Map<StackTraceElement,Object[]> thisThread = stackArgs.get();
+        copy.putAll(thisThread);
+        return copy;
     }
 
-    public static Log of() {
-        return of(Log.class);
+    void putArgs(StackTraceElement element, Object[] args) {
+        stackArgs.get().put(element, args);
     }
 
     /**
@@ -32,7 +45,7 @@ public final class SimpleLog implements Log {
      */
     @Override
     public AnnotatedStackTrace annotatedStackTrace() {
-        return AnnotatedStackTrace.throwableArgs(new Throwable(),args.copy());
+        return AnnotatedStackTrace.throwableArgs(new Throwable(),copyStackArgs());
     }
 
     /**
@@ -40,17 +53,17 @@ public final class SimpleLog implements Log {
      */
     @Override
     public AnnotatedStackTrace annotatedStackTrace(Throwable t) {
-        return AnnotatedStackTrace.throwableArgs(t,args.copy());
+        return AnnotatedStackTrace.throwableArgs(t,copyStackArgs());
     }
 
     /**
      * Note the given arguments for the method being executed.
      */
     @Override
-    public void args(Object... objects) {
+    public void possiblyNullArgs(Object... objects) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         StackTraceElement element = elements[3];
-        args.put(element,objects);
+        putArgs(element,objects);
         for (Object o : objects) {
             ObjectRegistry.put(o);
         }
@@ -62,17 +75,21 @@ public final class SimpleLog implements Log {
      * Throw an exception if any are null.
      */
     @Override
-    public void notNullArgs(Object... objects) {
+    public void args(Object... objects) {
         for (Object o : objects) {
             Check.notNull(o);
         }
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
         StackTraceElement element = elements[3];
-        args.put(element,objects);
+        putArgs(element,objects);
         for (Object o : objects) {
             ObjectRegistry.put(o);
         }
         // System.out.println(element + " " + Arrays.asList(objects));
+    }
+
+    private String caller() {
+        return "";
     }
 
     @Override
@@ -82,12 +99,12 @@ public final class SimpleLog implements Log {
 
     @Override
     public void info(String message) {
-        System.out.println(clazz + ":" + message);
+        System.out.println(caller() + ":" + message);
     }
 
     @Override
     public void warn(String message) {
-        System.out.println(clazz + ":" + message);
+        System.out.println(caller() + ":" + message);
     }
 
     @Override
@@ -97,7 +114,7 @@ public final class SimpleLog implements Log {
 
     @Override
     public void severe(String message) {
-        System.out.println(clazz + ":" + message);
+        System.out.println(caller() + ":" + message);
     }
 
 }

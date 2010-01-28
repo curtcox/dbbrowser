@@ -39,14 +39,14 @@ public class DefaultDBResultSetMetaDataFactory {
     }
 
     public DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {
-        log.notNullArgs(server,connection,results);
+        log.args(server,connection,results);
         DefaultDBResultSetMetaDataFactory factory = factory(server,connection,results);
         DBResultSetMetaData meta = DBResultSetMetaData.of(factory.getDatabases(),factory.getTables(),factory.getColumns(),factory.getFunctions());
         return meta;
     }
 
     private static DefaultDBResultSetMetaDataFactory factory(DBServer server, DBConnection connection, DBResultSetIO results) {
-        server.log.notNullArgs(server,connection,results);
+        server.log.args(server,connection,results);
         DBDriver driver = connection.getInfo().driver;
         DBResultSetMetaDataIO meta = results.meta;
         return driver.getResultSetFactory(server, meta);

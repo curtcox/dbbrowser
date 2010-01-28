@@ -40,7 +40,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         TablesSearchPage page = (TablesSearchPage) model;
         Search     search = page.search;
         String     target = search.target;
@@ -90,7 +90,7 @@ static final class Helper {
     }
 
     String render(TablesSearchPage page) {
-        log.notNullArgs(page);
+        log.args(page);
         return new Helper(page,log).render();
     }
     

@@ -79,7 +79,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             return null;
         }
         SelectResults results = getResultsFromDB(uri);
-        return PageResponse.of(results,log);
+        return PageResponse.of(request,results,log);
     }
 
     /**
@@ -111,7 +111,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         }
         Search search = codec.getSearch(uri);
         URI dest = DBURIRenderer.render(select,search);
-        return PageResponse.newRedirect(dest,log);
+        return PageResponse.newRedirect(request,dest,log);
     }
 
     /**

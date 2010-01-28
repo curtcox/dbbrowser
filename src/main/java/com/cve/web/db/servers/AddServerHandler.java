@@ -42,7 +42,7 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse get(PageRequest request) {
-        return PageResponse.of(SAMPLE,null);
+        return PageResponse.of(request,SAMPLE,null);
     }
 
     @Override
@@ -60,16 +60,16 @@ final class AddServerHandler extends AbstractFormHandler {
         if (serversStore.keys().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
-                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
+                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
             );
         }
         try {
             serversStore.put(server, info);
-            return PageResponse.newRedirect(server.linkTo().getTarget(),log);
+            return PageResponse.newRedirect(request,server.linkTo().getTarget(),log);
         } catch (RuntimeException e) {
             String message = e.getMessage();
             return PageResponse.of(
-                AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
+                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
             );
         }
     }

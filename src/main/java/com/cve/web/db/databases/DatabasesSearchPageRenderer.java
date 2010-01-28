@@ -38,7 +38,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         DatabasesSearchPage page = (DatabasesSearchPage) model;
         String target = page.search.target;
         DBServer server = page.server;
@@ -74,7 +74,7 @@ static final class Helper {
     }
 
     static String render(DatabasesSearchPage page, Log log) {
-        log.notNullArgs(page);
+        log.args(page);
         return new Helper(page,log).render();
     }
     

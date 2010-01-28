@@ -6,12 +6,12 @@ import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
-import com.cve.log.SimpleLog;
+import com.cve.log.Logs;
 import com.cve.util.URIs;
 import java.net.URI;
 
 /**
- * An immutable structured representation of a HtmlPage.
+ * An immutable structured representation of an HtmlPage.
  * The kind of pages we represent have several standard parts.
  * <ol>
  * <li> base, head, title, and body correspond to specific HTML entities
@@ -58,11 +58,14 @@ public final class HtmlPage {
      */
     public final String body;
 
+    /**
+     * We used this for unspecified URIs.
+     */
     private static final URI EMPTY = URIs.of("");
 
     public final Log log;
 
-    private static final Log LOG = SimpleLog.of(HtmlPage.class);
+    private static final Log LOG = Logs.of();
 
     final HTMLTags tags;
 

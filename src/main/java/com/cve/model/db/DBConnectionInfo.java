@@ -1,9 +1,8 @@
 package com.cve.model.db;
 
-import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
-import com.cve.log.SimpleLog;
+import com.cve.log.Logs;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -28,7 +27,7 @@ public final class DBConnectionInfo {
         user     = null;
         password = null;
         driver   = null;
-        log      = SimpleLog.of(DBConnectionInfo.class);
+        log      = Logs.of();
     }
 
     /**

@@ -62,7 +62,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        log.notNullArgs(model,client);
+        log.args(model,client);
         String title = "Add a Server";
         String guts = render((AddServerPage) model);
         String[] nav = new String[0];

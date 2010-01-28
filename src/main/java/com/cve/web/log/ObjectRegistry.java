@@ -63,6 +63,11 @@ public final class ObjectRegistry {
         }
     } // Key
 
+    /**
+     * We use a simple cache to keep from running out of memory.
+     * We can't use anything like a WeakHashMap, because the references will
+     * be on the page in the user's browser.
+     */
     static final Map<Key,Object> objects = SimpleCache.of();
 
     static Object get(Key key) {

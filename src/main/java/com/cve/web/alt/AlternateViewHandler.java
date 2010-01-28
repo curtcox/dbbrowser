@@ -66,7 +66,7 @@ public final class AlternateViewHandler implements RequestHandler {
      * Return the results of the select that corresponds to the given URI.
      */
     SelectResults getResultsFromDB(final String uri) {
-        log.notNullArgs(uri);
+        log.args(uri);
         // /view/CSV/foo
         //          ^ start here
         URI tail = URIs.startingAtSlash(uri,3);
