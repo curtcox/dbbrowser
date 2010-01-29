@@ -10,6 +10,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import org.bouncycastle.util.encoders.Base64;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -25,19 +26,19 @@ public final class CompressedURIHandler implements RequestHandler {
     /**
      * Where we log to.
      */
-    private final Log log;
+    private final Log log = Logs.of();
 
     static final String PREFIX = "/z/";
 
     static final Charset charset = Charset.forName("UTF-8");
 
-    private CompressedURIHandler(RequestHandler handler, Log log) {
+    private CompressedURIHandler(RequestHandler handler) {
         this.handler = notNull(handler);
-        this.log = notNull(log);
+        
     }
     
-    public static RequestHandler of(RequestHandler handler, Log log) {
-        return new CompressedURIHandler(handler,log);
+    public static RequestHandler of(RequestHandler handler) {
+        return new CompressedURIHandler(handler);
     }
 
     @Override

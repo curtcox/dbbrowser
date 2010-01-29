@@ -8,30 +8,30 @@ import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.util.Check.notNull;
 
 /**
  * For picking a table.
  */
 public final class TablesPageRenderer implements ModelHtmlRenderer {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
     private static URI HELP = URIs.of("/resource/help/Tables.html");
 
-    private TablesPageRenderer(Log log) {
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+    private TablesPageRenderer() {
+        
+        tags = HTMLTags.of();
     }
 
-    public static TablesPageRenderer of(Log log) {
-        return new TablesPageRenderer(log);
+    public static TablesPageRenderer of() {
+        return new TablesPageRenderer();
     }
 
     @Override
@@ -42,14 +42,14 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
         Database database = page.database;
         String guts = tableOfTables(page);
         String title = "Tables on " + server.uri + "/" + database.name;
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String[] nav = new String[] {
             Replace.bracketQuote(
                 "Available Tables on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.linkTo()
             ), b.SEARCH
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     String tableOfTables(TablesPage page) {

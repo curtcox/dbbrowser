@@ -16,14 +16,14 @@ public final class UIImage implements UIElement {
     private final String text;
     private final URI uri;
 
-    private UIImage(String text, URI uri, Log log) {
+    private UIImage(String text, URI uri) {
         this.text = notNull(text);
         this.uri = notNull(uri);
-        tags = HTMLTags.of(log);
+        tags = HTMLTags.of();
     }
     
-    public static UIImage textURI(String text, URI uri, Log log) {
-        return new UIImage(text,uri,log);
+    public static UIImage textURI(String text, URI uri) {
+        return new UIImage(text,uri);
     }
 
     @Override

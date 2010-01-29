@@ -16,14 +16,14 @@ import static com.cve.util.Check.*;
  */
 final class FileValueDistributionHandler extends AbstractRequestHandler {
 
-    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store, ManagedFunction.Factory managedFunction, Log log) {
-        return new FileValueDistributionHandler(fs,log);
+    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store, ManagedFunction.Factory managedFunction) {
+        return new FileValueDistributionHandler(fs);
     }
 
     private final FSMetaData.Factory fs;
 
-    private FileValueDistributionHandler(FSMetaData.Factory fs, Log log) {
-        super(log);
+    private FileValueDistributionHandler(FSMetaData.Factory fs) {
+        super();
         this.fs = notNull(fs);
     }
 

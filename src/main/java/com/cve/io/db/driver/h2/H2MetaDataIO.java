@@ -6,6 +6,7 @@ import com.cve.io.db.DBMetaDataIOLogger;
 import com.cve.io.db.DBResultSetIO;
 import com.cve.io.db.DefaultDBMetaDataIO;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnpredictableFunction;
@@ -21,20 +22,20 @@ import static com.cve.util.Check.notNull;
  */
 final class H2MetaDataIO extends DefaultDBMetaDataIO {
 
-    final Log log;
+    final Log log = Logs.of();
 
     private final ManagedFunction<ColumnSpecifier,DBResultSetIO> columns;
 
-    protected H2MetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        super(connection,managedFunction,log);
+    protected H2MetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        super(connection,managedFunction);
         notNull(managedFunction);
-        this.log = notNull(log);
+        
         columns = notNull(managedFunction.of(new GetColumns(),      ColumnSpecifier.class, DBResultSetIO.class, DBResultSetIO.NULL));
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        DBMetaDataIO io = new H2MetaDataIO(connection,managedFunction,log);
-        io = DBMetaDataIOLogger.of(io,log);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        DBMetaDataIO io = new H2MetaDataIO(connection,managedFunction);
+        io = DBMetaDataIOLogger.of(io);
         return io;
     }
 
@@ -64,7 +65,7 @@ final class H2MetaDataIO extends DefaultDBMetaDataIO {
         @Override
         public DBResultSetIO apply(ColumnSpecifier specifier) throws Exception {
             ResultSet results = getMetaData().getColumns(specifier.catalog, specifier.schemaPattern, specifier.tableNamePattern, specifier.columnNamePattern);
-            DBResultSetIO io = DBResultSetIO.of(results,log);
+            DBResultSetIO io = DBResultSetIO.of(results);
             debug("" + io);
             return io;
         }

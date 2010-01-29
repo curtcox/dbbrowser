@@ -11,8 +11,8 @@ import com.cve.log.Log;
  */
 final class MsSqlTdsResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MsSqlTdsResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
-        super(server,meta,log);
+    public MsSqlTdsResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
+        super(server,meta);
     }
 
 }

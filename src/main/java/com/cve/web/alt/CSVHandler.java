@@ -7,6 +7,7 @@ import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBValue;
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
@@ -35,25 +36,25 @@ final class CSVHandler extends AbstractBinaryRequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private CSVHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
-        super("^/view/CSV/",ContentType.TEXT,log);
+    private CSVHandler(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        super("^/view/CSV/",ContentType.TEXT);
         this.db = notNull(db);
         this.serversStore = serversStore;
         this.hintsStore = hintsStore;
         this.managedFunction = managedFunction;
-        this.log = notNull(log);
+        
     }
 
-    static CSVHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new CSVHandler(db,serversStore,hintsStore,managedFunction,log);
+    static CSVHandler of(DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new CSVHandler(db,serversStore,hintsStore,managedFunction);
     }
 
     @Override
     public byte[] get(PageRequest request) {
         log.args(request);
-        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction,log);
+        AlternateViewHandler alt = AlternateViewHandler.of(db,serversStore,hintsStore,managedFunction);
         return csv(alt.getResultsFromDB(request.requestURI));
     }
 

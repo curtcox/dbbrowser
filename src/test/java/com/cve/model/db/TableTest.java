@@ -11,13 +11,13 @@ import static org.junit.Assert.*;
  */
 public class TableTest {
 
-    Log log;
+    ;
 
     public TableTest() {}
 
     @Test
     public void equality() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table1 = db.tableName("foo");
         DBTable   table2 = db.tableName("foo");

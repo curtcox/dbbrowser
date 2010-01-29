@@ -20,8 +20,8 @@ import java.util.Set;
  */
 final class MySQLResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public MySQLResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
-        super(server,meta,log);
+    public MySQLResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
+        super(server,meta);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.cve.io.db;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -18,17 +19,17 @@ public final class LocalDBMetaDataFactory implements DBMetaData.Factory {
 
     final DBConnectionFactory connections;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private LocalDBMetaDataFactory(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+    private LocalDBMetaDataFactory(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
     }
 
-    public static LocalDBMetaDataFactory of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new LocalDBMetaDataFactory(serversStore,managedFunction,log);
+    public static LocalDBMetaDataFactory of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new LocalDBMetaDataFactory(serversStore,managedFunction);
     }
 
     @Override

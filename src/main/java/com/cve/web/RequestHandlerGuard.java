@@ -2,6 +2,7 @@ package com.cve.web;
 
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -19,18 +20,18 @@ public abstract class RequestHandlerGuard implements RequestHandler {
      */
     private final RequestHandler handler;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
-    protected RequestHandlerGuard(RequestHandler handler, Log log) {
+    protected RequestHandlerGuard(RequestHandler handler) {
         this.handler = notNull(handler);
-        this.log = notNull(log);
+        
     }
 
     /**
      * Return a new guard that always makes the same decisions.
      */
-    public static RequestHandler of(RequestHandler handler, final boolean pass, final URI denied, Log log) {
-        return new RequestHandlerGuard(handler,log) {
+    public static RequestHandler of(RequestHandler handler, final boolean pass, final URI denied) {
+        return new RequestHandlerGuard(handler) {
             @Override public boolean passes(PageRequest request) {
                 return pass;
             }
@@ -48,7 +49,7 @@ public abstract class RequestHandlerGuard implements RequestHandler {
             return handler.produce(request);
         }
         URI dest = getDeniedURI(request);
-        return PageResponse.newRedirect(request,dest,log);
+        return PageResponse.newRedirect(request,dest);
     }
 
     /**

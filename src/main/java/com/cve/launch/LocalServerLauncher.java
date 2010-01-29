@@ -33,20 +33,18 @@ public final class LocalServerLauncher {
     final DBServersStore dbServersStore;
     final FSServersStore fsServersStore;
     final DBHintsStore hintsStore;
-    final Log log;
     final int PORT = PortFinder.findFree();
 
     private LocalServerLauncher(
         ManagedFunction.Factory managedFunction, DBMetaData.Factory db,
         DBServersStore dbServersStore, FSServersStore fsServersStore,
-        DBHintsStore hintsStore, Log log)
+        DBHintsStore hintsStore)
     {
         this.managedFunction = managedFunction;
         this.db = db;
         this.dbServersStore = dbServersStore;
         this.fsServersStore = fsServersStore;
         this.hintsStore = hintsStore;
-        this.log = log;
     }
     
     static LocalServerLauncher of() {
@@ -55,12 +53,11 @@ public final class LocalServerLauncher {
         DBServersStore dbServersStore = stores.of(DBServersStore.class);
         FSServersStore fsServersStore = stores.of(FSServersStore.class);
         DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
-        Log                       log = null;
-        DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction,log);
+        DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction);
         return new LocalServerLauncher(
            managedFunction,
            db, dbServersStore, fsServersStore,
-           hintsStore, log
+           hintsStore
         );
     }
 
@@ -71,11 +68,11 @@ public final class LocalServerLauncher {
         FSServersStore fsServersStore = stores.of(FSServersStore.class);
         DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
         Log                       log = Logs.of();
-        DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction,log);
+        DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction);
         return new LocalServerLauncher(
            managedFunction,
            db, dbServersStore, fsServersStore,
-           hintsStore, log
+           hintsStore
         );
     }
 
@@ -105,9 +102,8 @@ public final class LocalServerLauncher {
 
     void startGrizzly() throws IOException {
         WebApp webApp = WebApp.of(
-            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction,log),
-            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction,log),
-            log
+            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction),
+            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction)
         );
         Grizzly.start(webApp, PORT);
     }

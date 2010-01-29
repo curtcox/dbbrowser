@@ -7,6 +7,7 @@ import com.cve.model.fs.FSPath;
 import com.cve.model.fs.FSPipeline;
 import com.cve.model.fs.FSServer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -105,14 +106,14 @@ public final class FSURICodec {
     /**
      * Where we log to.
      */
-    final Log log;
+    final Log log = Logs.of();
 
-    private FSURICodec(Log log) {
-        this.log = notNull(log);
+    private FSURICodec() {
+        
     }
 
-    public static FSURICodec of(Log log) {
-        return new FSURICodec(log);
+    public static FSURICodec of() {
+        return new FSURICodec();
     }
     
     String at(String uri, Position pos) {
@@ -138,7 +139,7 @@ public final class FSURICodec {
     public FSServer getServer(String uri) {
         log.args(uri);
         String name = at(uri,Position.SERVER);
-        return FSServer.uri(URIs.of(name),log);
+        return FSServer.uri(URIs.of(name));
     }
 
     public String getMetaDataMethod(String uri) {
@@ -154,10 +155,10 @@ public final class FSURICodec {
         if (!exists(uri,Position.FILES)) {
             return ImmutableList.of();
         }
-        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<FSPath> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.FILES).split("\\+")) {
-            FSPath        path = FSPath.parse(server,fullTableName,log);
+            FSPath        path = FSPath.parse(server,fullTableName);
             list.add(path);
         }
         return ImmutableList.copyOf(list);
@@ -171,7 +172,7 @@ public final class FSURICodec {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        FSServer server = FSServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<FSField> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[1];

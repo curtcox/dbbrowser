@@ -1,10 +1,10 @@
 package com.cve.io.db.select;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.SelectContext;
 import com.cve.model.db.SelectResults;
 import com.cve.util.Stopwatch;
-import static com.cve.util.Check.notNull;
 
 /**
  * How everyone outside of this package executes selects.
@@ -12,20 +12,20 @@ import static com.cve.util.Check.notNull;
  */
 public final class SelectExecutor {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private SelectExecutor(Log log) {
-        this.log = notNull(log);
+    private SelectExecutor() {
+        
     }
 
-    public static SelectExecutor of(Log log) {
-        return new SelectExecutor(log);
+    public static SelectExecutor of() {
+        return new SelectExecutor();
     }
     
     public SelectResults run(SelectContext context) {
         log.args(context);
         Stopwatch watch = Stopwatch.start(context.select);
-        SelectRunner runner = SimpleSelectRunner.of(log);
+        SelectRunner runner = SimpleSelectRunner.of();
         SelectResults results = runner.run(context);
         watch.stop();
         return results;

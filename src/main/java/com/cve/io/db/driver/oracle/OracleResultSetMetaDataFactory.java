@@ -11,8 +11,8 @@ import com.cve.log.Log;
  */
 final class OracleResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public OracleResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
-        super(server,meta,log);
+    public OracleResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
+        super(server,meta);
     }
 
 }

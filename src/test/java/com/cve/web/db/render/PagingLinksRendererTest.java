@@ -32,28 +32,28 @@ import org.junit.Test;
  */
 public class PagingLinksRendererTest {
 
-    Log log;
+    ;
     private static final String BACK = PagingLinksRenderer.BACK;
     private static final String NEXT = PagingLinksRenderer.NEXT;
     private static final String BIGGER = PagingLinksRenderer.BIGGER;
 
     public SelectResults onePersonResults() {
-        DBServer           server = DBServer.uri(URIs.of("server"),log);
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         return results;
     }
 
     SelectResults multiPersonResults(int first, int last, DBLimit limit, boolean hasMore) {
-        DBServer           server = DBServer.uri(URIs.of("server"),log);
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("customer");
         DBTable            person = database.tableName("person");
         DBColumn             name = person.columnNameType("name",String.class);
@@ -67,10 +67,10 @@ public class PagingLinksRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);
         return results;
     }
 

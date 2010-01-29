@@ -6,9 +6,9 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import java.util.Collection;
-import static com.cve.util.Check.notNull;
 
 /**
  *
@@ -16,26 +16,26 @@ import static com.cve.util.Check.notNull;
  */
 public final class RenderingTools {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private RenderingTools(Log log) {
-        this.log = notNull(log);
+    private RenderingTools() {
+        
     }
 
-    public static RenderingTools of(Log log) {
-        return new RenderingTools(log);
+    public static RenderingTools of() {
+        return new RenderingTools();
     }
     
     public UIDetail cell(DBServer server,int height) {
-        return UIDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height,log);
+        return UIDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height);
     }
 
     public UIDetail cell(Database database, int height) {
-        return UIDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height,log);
+        return UIDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height);
     }
 
     public UIDetail cell(DBTable table) {
-        return UIDetail.of(table.linkTo().toString(),CSS.TABLE,log);
+        return UIDetail.of(table.linkTo().toString(),CSS.TABLE);
     }
 
     public UIDetail cell(Collection<DBColumn> columns) {
@@ -43,7 +43,7 @@ public final class RenderingTools {
         for (DBColumn column : columns) {
             out.append(column.linkTo() + " ");
         }
-        return UIDetail.of(out.toString(),CSS.COLUMN,log);
+        return UIDetail.of(out.toString(),CSS.COLUMN);
     }
 
 }

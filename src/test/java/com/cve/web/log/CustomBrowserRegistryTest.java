@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  */
 public class CustomBrowserRegistryTest {
 
-    Log log;
+    ;
 
     @Test
     public void hashmapHasCustom() {
@@ -32,6 +32,6 @@ public class CustomBrowserRegistryTest {
     }
 
     CustomBrowser[] getFor(Object o) {
-        return CustomBrowserRegistry.of(log).getBrowsersFor(o);
+        return CustomBrowserRegistry.of().getBrowsersFor(o);
     }
 }

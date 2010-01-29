@@ -12,6 +12,7 @@ import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -29,7 +30,7 @@ import static com.cve.web.db.render.DBResultSetRenderer.*;
 
 public final class ResultsTableRenderer {
 
-    private final Log log;
+    private final Log log = Logs.of();
     /**
      * The results we render
      */
@@ -45,22 +46,22 @@ public final class ResultsTableRenderer {
      */
     private final DBResultSetRenderer tools;
 
-    private ResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
+    private ResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        this.log = notNull(log);
-        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
+        
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
     }
 
-    static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client, Log log) {
-        return new ResultsTableRenderer(results,client,log);
+    static ResultsTableRenderer resultsClientInfo(SelectResults results, ClientInfo client) {
+        return new ResultsTableRenderer(results,client);
     }
 
-    public static String render(SelectResults results, ClientInfo client, Log log) {
-        return new ResultsTableRenderer(results,client,log).resultsTable();
+    public static String render(SelectResults results, ClientInfo client) {
+        return new ResultsTableRenderer(results,client).resultsTable();
     }
 
-    String tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of(log).q(width) + ">" + s + "</td>"; }
+    String tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of().q(width) + ">" + s + "</td>"; }
 
 
     String resultsTable() {
@@ -112,13 +113,13 @@ public final class ResultsTableRenderer {
             out.add(row(details));
         }
         out.add(headerRow);
-        return UITable.of(out,log).toString();
+        return UITable.of(out).toString();
     }
 
-    UIRow       row(List<UIDetail> details) { return UIRow.of(details,log);       }
-    UIRow       row(UIDetail... details)    { return UIRow.of(log, details);       }
-    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
-    UIDetail detail(String value)           { return UIDetail.of(value, log); }
+    UIRow       row(List<UIDetail> details) { return UIRow.of(details);       }
+    UIRow       row(UIDetail... details)    { return UIRow.of( details);       }
+    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css); }
+    UIDetail detail(String value)           { return UIDetail.of(value); }
     String nameCell(DBColumn column)        { return tools.nameCell(column);   }
     String nameCell(Database database)      { return tools.nameCell(database); }
     String nameCell(DBTable table)          { return tools.nameCell(table);  }

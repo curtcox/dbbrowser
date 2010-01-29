@@ -3,6 +3,7 @@ package com.cve.ui;
 import static com.cve.util.Check.notNull;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.PageRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -34,35 +35,35 @@ public final class UIForm {
      */
     private final ImmutableList<UIElement> elements;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
     /**
      * Create a new form that POSTs against the given URI.
      */
-    public static UIForm postAction(URI action, Log log) {
+    public static UIForm postAction(URI action) {
         ImmutableList<UIElement> elements = ImmutableList.of();
-        return new UIForm(action,PageRequest.Method.POST,elements,log);
+        return new UIForm(action,PageRequest.Method.POST,elements);
     }
 
     /**
      * Create a new form that GETs against the given URI.
      */
-    public static UIForm getAction(URI action, Log log) {
+    public static UIForm getAction(URI action) {
         ImmutableList<UIElement> elements = ImmutableList.of();
-        return new UIForm(action,PageRequest.Method.GET,elements,log);
+        return new UIForm(action,PageRequest.Method.GET,elements);
     }
 
     /**
      * Use a factory instead.
      */
-    private UIForm(URI action, PageRequest.Method method, List<UIElement> elements, Log log) {
+    private UIForm(URI action, PageRequest.Method method, List<UIElement> elements) {
         this.action   = notNull(action);
         this.method   = notNull(method);
         this.elements = ImmutableList.copyOf(notNull(elements));
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+        
+        tags = HTMLTags.of();
     }
 
     /**
@@ -72,7 +73,7 @@ public final class UIForm {
         List<UIElement> newElements = Lists.newArrayList();
         newElements.addAll(elements);
         newElements.add(element);
-        return new UIForm(action,method,newElements,log);
+        return new UIForm(action,method,newElements);
     }
 
     @Override

@@ -14,6 +14,7 @@ import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
 import com.cve.io.db.select.DBURIRenderer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -40,7 +41,7 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     final ManagedFunction.Factory managedFunction;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final DBURICodec codec;
 
@@ -48,22 +49,21 @@ public final class SelectBuilderHandler implements RequestHandler {
 
     private SelectBuilderHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        codec = DBURICodec.of();
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
     }
 
     static SelectBuilderHandler of(
          DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-         ManagedFunction.Factory managedFunction, Log log)
+         ManagedFunction.Factory managedFunction)
     {
-        return new SelectBuilderHandler(db,serversStore,hintsStore,managedFunction,log);
+        return new SelectBuilderHandler(db,serversStore,hintsStore,managedFunction);
     }
 
     @Override
@@ -79,7 +79,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             return null;
         }
         SelectResults results = getResultsFromDB(uri);
-        return PageResponse.of(request,results,log);
+        return PageResponse.of(request,results);
     }
 
     /**
@@ -111,7 +111,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         }
         Search search = codec.getSearch(uri);
         URI dest = DBURIRenderer.render(select,search);
-        return PageResponse.newRedirect(request,dest,log);
+        return PageResponse.newRedirect(request,dest);
     }
 
     /**
@@ -139,7 +139,7 @@ public final class SelectBuilderHandler implements RequestHandler {
         SelectContext context = SelectContext.of(select, search, server, connection, hints);
 
         // run the select
-        SelectResults results = SelectExecutor.of(log).run(context);
+        SelectResults results = SelectExecutor.of().run(context);
         return results;
     }
 

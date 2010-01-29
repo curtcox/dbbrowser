@@ -7,18 +7,18 @@ import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
 import java.net.URI;
-import static com.cve.util.Check.notNull;
 /**
  * Renders a DatabasePage to a HTML string.
  */
 final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
     private final NavigationButtons buttons;
     private final HTMLTags tags;
 
@@ -32,14 +32,14 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
     String th(String s) { return tags.th(s); }
     String borderTable(String s) { return tags.borderTable(s); }
 
-    private DatabasesPageRenderer(Log log) {
-        this.log = notNull(log);
-        buttons = NavigationButtons.of(log);
-        tags = HTMLTags.of(log);
+    private DatabasesPageRenderer() {
+        
+        buttons = NavigationButtons.of();
+        tags = HTMLTags.of();
     }
 
-    public static DatabasesPageRenderer of(Log log) {
-        return new DatabasesPageRenderer(log);
+    public static DatabasesPageRenderer of() {
+        return new DatabasesPageRenderer();
     }
     
     @Override
@@ -52,7 +52,7 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
             Replace.bracketQuote("Available Databases on <a href=[/]>server</a> ") + server,
             buttons.SEARCH
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     String tableOfDatabases(DatabasesPage page) {

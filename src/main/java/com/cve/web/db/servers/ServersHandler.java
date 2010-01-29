@@ -6,6 +6,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
@@ -39,18 +40,18 @@ final class ServersHandler extends AbstractRequestHandler {
 
     final DBURICodec codec;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
-    private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore, Log log) {
-        super(log);
+    private ServersHandler(DBMetaData.Factory db, DBServersStore serversStore) {
+        super();
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
+        
+        codec = DBURICodec.of();
     }
 
-    static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, Log log) {
-        return new ServersHandler(db,serversStore,log);
+    static ServersHandler of(DBMetaData.Factory db, DBServersStore serversStore) {
+        return new ServersHandler(db,serversStore);
     }
 
     @Override

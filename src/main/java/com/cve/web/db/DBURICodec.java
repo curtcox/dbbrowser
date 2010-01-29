@@ -14,13 +14,13 @@ import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Group;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.List;
-import static com.cve.util.Check.notNull;
 /**
  * Tools for converting between objects and the specially formatted database
  * {@link URI}S we work with.
@@ -113,17 +113,17 @@ public final class DBURICodec {
 
     }
 
-    final Log log;
+    final Log log = Logs.of();
 
     /**
      * Use the factory.
      */
-    private DBURICodec(Log log) {
-        this.log = notNull(log);
+    private DBURICodec() {
+        
     }
 
-    public static DBURICodec of(Log log) {
-        return new DBURICodec(log);
+    public static DBURICodec of() {
+        return new DBURICodec();
     }
 
     String at(String uri, Position pos) {
@@ -148,12 +148,12 @@ public final class DBURICodec {
     public DBServer getServer(String uri) {
         log.args(uri);
         String name = at(uri,Position.SERVER);
-        return DBServer.uri(URIs.of(name),log);
+        return DBServer.uri(URIs.of(name));
     }
 
     public Database getDatabase(String uri) {
         log.args(uri);
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         Database database = server.databaseName(at(uri,Position.DBS));
         return database;
     }
@@ -171,7 +171,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.DBS)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Database> list = Lists.newArrayList();
         for (String databaseName : at(uri,Position.DBS).split("\\+")) {
             list.add(server.databaseName(databaseName));
@@ -184,10 +184,10 @@ public final class DBURICodec {
         if (!exists(uri,Position.TABLES)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBTable> list = Lists.newArrayList();
         for (String fullTableName : at(uri,Position.TABLES).split("\\+")) {
-            DBTable        table = DBTable.parse(server,fullTableName,log);
+            DBTable        table = DBTable.parse(server,fullTableName);
             list.add(table);
         }
         return ImmutableList.copyOf(list);
@@ -201,7 +201,7 @@ public final class DBURICodec {
         if (!exists(uri,Position.COLUMNS)) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBColumn> list = Lists.newArrayList();
         for (String fullColumnName : at(uri,Position.COLUMNS).split("\\+")) {
             fullColumnName = splitFullColumnName(fullColumnName)[1];
@@ -249,7 +249,7 @@ public final class DBURICodec {
         if (joinParts.length()==0) {
             return ImmutableList.of();
         }
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Join> list = Lists.newArrayList();
         for (String fullJoinName : joinParts.split("\\+")) {
             Join join = Join.parse(server,tables,fullJoinName);
@@ -268,7 +268,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<DBRowFilter> list = Lists.newArrayList();
         for (String fullFilterName : filterParts.split("\\+")) {
             DBRowFilter filter = DBRowFilter.parse(server,tables,fullFilterName);
@@ -287,7 +287,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Order> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Order order = Order.parse(server,tables,fullOrderName);
@@ -306,7 +306,7 @@ public final class DBURICodec {
             return ImmutableList.of();
         }
 
-        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)),log);
+        DBServer server = DBServer.uri(URIs.of(at(uri,Position.SERVER)));
         List<Group> list = Lists.newArrayList();
         for (String fullOrderName : orderParts.split("\\+")) {
             Group group = Group.parse(server,tables,fullOrderName);

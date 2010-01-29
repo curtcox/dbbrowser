@@ -3,6 +3,7 @@ package com.cve.model.fs;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.fs.FSURICodec;
 import com.google.common.collect.ImmutableList;
@@ -14,7 +15,7 @@ import static com.cve.util.Check.notNull;
  */
 public final class FSField {
 
-    final Log log;
+    final Log log = Logs.of();
 
     /**
      * The path this field is on.
@@ -40,10 +41,9 @@ public final class FSField {
     /**
      * Use the factories.
      */
-    private FSField(FSPath path, String name, Log log) {
+    private FSField(FSPath path, String name) {
         this.path   = notNull(path);
         this.name   = notNull(name);
-        this.log    = notNull(log);
     }
 
     private static FSField canonical(FSField field) {
@@ -51,7 +51,7 @@ public final class FSField {
     }
 
     public static FSField pathName(FSPath path, String name) {
-        return canonical(new FSField(path,name,path.log));
+        return canonical(new FSField(path,name));
     }
 
     public FSLineFilter filterValue(FSValue value) {
@@ -100,7 +100,7 @@ public final class FSField {
     public Link linkTo() {
         URI target = FSURICodec.encode(this);
         String markedName = name;
-        Label text = Label.of(markedName,log);
+        Label text = Label.of(markedName);
         return Link.textTarget(text, target);
     }
 

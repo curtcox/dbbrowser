@@ -1,8 +1,8 @@
 package com.cve.web;
 
-import static com.cve.util.Check.notNull;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -22,17 +22,17 @@ import javax.servlet.http.HttpServletResponse;
  */
 public final class RequestDumpServlet {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
-    private RequestDumpServlet(Log log) {
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+    private RequestDumpServlet() {
+        
+        tags = HTMLTags.of();
     }
 
-    public static RequestDumpServlet of(Log log) {
-        return new RequestDumpServlet(log);
+    public static RequestDumpServlet of() {
+        return new RequestDumpServlet();
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -82,14 +82,14 @@ public final class RequestDumpServlet {
         add(rows,"Parameter Map",        parameters);
         add(rows,"Description", "Value");
         
-        return UITable.of(rows,log).toString();
+        return UITable.of(rows).toString();
     }
 
     void add(List<UIRow> rows, String key, Object value) {
-        rows.add(UIRow.of(log,detail(key),detail("" + value)));
+        rows.add(UIRow.of(detail(key),detail("" + value)));
     }
     
     UIDetail detail(String key) {
-        return UIDetail.of(key, log);
+        return UIDetail.of(key);
     }
 }

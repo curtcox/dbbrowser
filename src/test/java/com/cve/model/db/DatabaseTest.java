@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class DatabaseTest {
 
-    Log log;
+    ;
 
     public DatabaseTest() {}
 
@@ -20,7 +20,7 @@ public class DatabaseTest {
      */
     @Test
     public void equality() {
-        DBServer           server = DBServer.uri(URIs.of("server"),log);
+        DBServer           server = DBServer.uri(URIs.of("server"));
         assertEquals(server.databaseName("foo"), server.databaseName("foo"));
     }
 
@@ -28,14 +28,14 @@ public class DatabaseTest {
      */
     @Test
     public void notEqualWhenServersDiffer() {
-        DBServer           server1 = DBServer.uri(URIs.of("server1"),log);
-        DBServer           server2 = DBServer.uri(URIs.of("server2"),log);
+        DBServer           server1 = DBServer.uri(URIs.of("server1"));
+        DBServer           server2 = DBServer.uri(URIs.of("server2"));
         assertNotEquals(server1.databaseName("foo"), server2.databaseName("foo"));
     }
 
     @Test
     public void notEqualWhenNamesDiffer() {
-        DBServer           server = DBServer.uri(URIs.of("server"),log);
+        DBServer           server = DBServer.uri(URIs.of("server"));
         assertNotEquals(server.databaseName("foo"), server.databaseName("bar"));
     }
 

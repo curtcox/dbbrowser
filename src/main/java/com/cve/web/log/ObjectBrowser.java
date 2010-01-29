@@ -2,6 +2,7 @@ package com.cve.web.log;
 
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
@@ -13,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import com.google.common.collect.Multimap;
 import java.util.Collection;
-import static com.cve.util.Check.notNull;
 
 /**
  * A graphical browser for objects.
@@ -33,7 +33,7 @@ public final class ObjectBrowser {
      */
     private final Mask mask;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
@@ -171,16 +171,15 @@ private static class DeferredMethod {
     }
 } // Deferred Method
 
-public ObjectBrowser(Object o, Log log) {
-    this(o,Mask.PRIVATE,log);
+public ObjectBrowser(Object o) {
+    this(o,Mask.PRIVATE);
 }
 
-public ObjectBrowser(Object target, Mask mask, Log log) {
+public ObjectBrowser(Object target, Mask mask) {
     this.mask   = mask;
     this.target = target;
-    this.log    = notNull(log);
-    link = ObjectLink.of(log);
-    tags = HTMLTags.of(log);
+    link = ObjectLink.of();
+    tags = HTMLTags.of();
 }
 
 /**
@@ -221,31 +220,31 @@ String borderTable(String s) { return tags.borderTable(s); }
 /**
  * Return a new browser for this object using public visibility.
  */
-private static ObjectBrowser newPublic(Object o, Log log) {
-    return new ObjectBrowser(o,log);
+private static ObjectBrowser newPublic(Object o) {
+    return new ObjectBrowser(o);
 }
 
 /**
  * Return a new browser for this object using private visibility.
  */
-private static ObjectBrowser newPrivate(Object o, Log log) {
-    return new ObjectBrowser(o,Mask.PRIVATE,log);
+private static ObjectBrowser newPrivate(Object o) {
+    return new ObjectBrowser(o,Mask.PRIVATE);
 }
 
 /**
  * Show the given object in a new frame using public visibility.
  * @param o the object to show
  */
-private static String showPublic(Object o, Log log) {
-    return newPublic(o,log).toHTML();
+private static String showPublic(Object o) {
+    return newPublic(o).toHTML();
 }
 
 /**
  * Show the given object in a new frame using private visibility.
  * @param o the object to show
  */
-public static String showPrivate(Object o, Log log) {
-    return newPrivate(o,log).toHTML();
+public static String showPrivate(Object o) {
+    return newPrivate(o).toHTML();
 }
 
 /**
@@ -253,7 +252,7 @@ public static String showPrivate(Object o, Log log) {
  */
 private String checkSpecialHandling(Object o) {
     StringBuffer out = new StringBuffer();
-    for (CustomBrowser browser : CustomBrowserRegistry.of(log).getBrowsersFor(o)) {
+    for (CustomBrowser browser : CustomBrowserRegistry.of().getBrowsersFor(o)) {
         String title = o.getClass().getName() + System.identityHashCode(o);
         out.append(title);
         String component = browser.getComponentFor(o);
@@ -439,7 +438,7 @@ public static String modifiers(int m) {
 } 
 
 public static void main(String[] args) {
-    showPublic("Public",null);
+    showPublic("Public");
 }
 
 } // Object Browser

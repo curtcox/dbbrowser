@@ -8,6 +8,7 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
@@ -32,19 +33,19 @@ import static com.cve.util.Check.notNull;
  */
 final class LocalHintsStore implements DBHintsStore {
 
-    final Log log;
+    final Log log = Logs.of();
     /**
      * How we access databases.
      */
     final DBMetaData.Factory db;
 
-    private LocalHintsStore(DBMetaData.Factory db, Log log) {
+    private LocalHintsStore(DBMetaData.Factory db) {
         this.db = notNull(db);
-        this.log = notNull(log);
+        
     }
 
-    public static LocalHintsStore of(DBMetaData.Factory db, Log log) {
-        return new LocalHintsStore(db,log);
+    public static LocalHintsStore of(DBMetaData.Factory db) {
+        return new LocalHintsStore(db);
     }
 
     /**

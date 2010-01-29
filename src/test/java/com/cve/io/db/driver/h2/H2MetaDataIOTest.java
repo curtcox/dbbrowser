@@ -22,14 +22,14 @@ import static org.junit.Assert.*;
  */
 public class H2MetaDataIOTest {
 
-    Log log;
+    ;
     final DBServer server = SampleH2Server.SAMPLE;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo connectionInfo = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(connectionInfo,serversStore,managedFunction,log);
+    final DefaultDBConnection connection = DefaultDBConnection.of(connectionInfo,serversStore,managedFunction);
 
-    final DBMetaDataIO io = H2MetaDataIO.of(connection, managedFunction,log);
+    final DBMetaDataIO io = H2MetaDataIO.of(connection, managedFunction);
 
     @Test
     public void getColumns() {

@@ -11,13 +11,13 @@ import static org.junit.Assert.*;
  */
 public class ColumnTest {
 
-    Log log;
+    
 
     public ColumnTest() {}
 
     @Test
     public void equality() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         assertEquals(DBColumn.tableNameType(table,"bar", String.class),
@@ -27,7 +27,7 @@ public class ColumnTest {
 
     @Test
     public void unequality() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         Database   db = server.databaseName("db");
         DBTable   table = db.tableName("foo");
         DBColumn bar = DBColumn.tableName(table,"bar");

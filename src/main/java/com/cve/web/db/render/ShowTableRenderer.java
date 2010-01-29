@@ -5,6 +5,7 @@ import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBTable;
@@ -30,7 +31,7 @@ import static com.cve.util.Check.notNull;
 
 public final class ShowTableRenderer {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
     /**
@@ -38,18 +39,18 @@ public final class ShowTableRenderer {
      */
     private final SelectResults results;
 
-    private ShowTableRenderer(SelectResults results, Log log) {
+    private ShowTableRenderer(SelectResults results) {
         this.results = notNull(results);
-        this.log = notNull(log);
-        this.tags = HTMLTags.of(log);
+        
+        this.tags = HTMLTags.of();
     }
 
     static ShowTableRenderer results(SelectResults results) {
-        return new ShowTableRenderer(results,results.log);
+        return new ShowTableRenderer(results);
     }
 
     public static String render(SelectResults results) {
-        ShowTableRenderer renderer = new ShowTableRenderer(results,results.log);
+        ShowTableRenderer renderer = new ShowTableRenderer(results);
         return renderer.showTable();
    }
 
@@ -88,7 +89,7 @@ public final class ShowTableRenderer {
         return borderTable(tableOut.toString());
     }
 
-    public String    tdRowspan(String s, int height) { return "<td rowspan=" + HTMLTags.of(log).q(height) + ">" + s + "</td>"; }
+    public String    tdRowspan(String s, int height) { return "<td rowspan=" + HTMLTags.of().q(height) + ">" + s + "</td>"; }
 
     ImmutableList<DBTable> getTablesWithHiddenColumns() {
         return ImmutableList.copyOf(Collections2.filter(results.resultSet.tables, new Predicate() {
@@ -123,7 +124,7 @@ public final class ShowTableRenderer {
 
 
     String showCell(DBColumn column) {
-        Label  text = Label.of(column.name,log);
+        Label  text = Label.of(column.name);
         URI  target = SelectBuilderAction.SHOW.withArgs(column.fullName());
         return Link.textTarget(text, target).toString();
     }

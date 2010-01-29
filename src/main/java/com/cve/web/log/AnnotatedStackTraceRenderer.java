@@ -1,11 +1,11 @@
 package com.cve.web.log;
 
-import static com.cve.util.Check.notNull;
 import com.cve.html.HTMLTags;
 import com.cve.web.*;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
@@ -18,7 +18,7 @@ import java.net.URI;
 public final class AnnotatedStackTraceRenderer
     implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final HTMLTags tags;
 
@@ -29,20 +29,20 @@ public final class AnnotatedStackTraceRenderer
     String html(String s) { return tags.html(s); }
     String borderTable(String s) { return tags.borderTable(s); }
 
-    private AnnotatedStackTraceRenderer(Log log) {
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+    private AnnotatedStackTraceRenderer() {
+        
+        tags = HTMLTags.of();
     }
 
-    public static AnnotatedStackTraceRenderer of(Log log) {
-        return new AnnotatedStackTraceRenderer(log);
+    public static AnnotatedStackTraceRenderer of() {
+        return new AnnotatedStackTraceRenderer();
     }
     
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         AnnotatedStackTraceModel objectModel = (AnnotatedStackTraceModel) model;
         AnnotatedStackTrace t = objectModel.trace;
-        return HtmlPage.guts(render(t),log);
+        return HtmlPage.guts(render(t));
     }
 
     String render(AnnotatedStackTrace trace) {
@@ -94,13 +94,13 @@ public final class AnnotatedStackTraceRenderer
         for (Object arg : args) {
             String label  = "" + arg;
             Object target = arg;
-            out.append(ObjectLink.of(log).to(label,target) + " ");
+            out.append(ObjectLink.of().to(label,target) + " ");
         }
         return out.toString();
     }
 
     Link linkToSource(String className, String fileName) {
-        Label text = Label.of(fileName,log);
+        Label text = Label.of(fileName);
         String classFileName = className.replace(".", "/") + ".java";
         URI target = URIs.of(ResourceHandler.PREFIX + classFileName);
         return Link.textTarget(text, target);

@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import java.util.regex.Pattern;
 import static com.cve.util.Check.notNull;
 
@@ -26,18 +27,18 @@ public abstract class AbstractBinaryRequestHandler
     /**
      * Where we log to.
      */
-    private final Log log;
+    private final Log log = Logs.of();
 
-    public AbstractBinaryRequestHandler(String regexp, ContentType type, Log log) {
+    public AbstractBinaryRequestHandler(String regexp, ContentType type) {
         notNull(regexp);
         notNull(type);
-        this.log = notNull(log);
+        
         pattern = Pattern.compile(regexp);
         this.type = type;
     }
 
-    public AbstractBinaryRequestHandler(ContentType type, Log log) {
-        this.log = notNull(log);
+    public AbstractBinaryRequestHandler(ContentType type) {
+        
         this.type = notNull(type);
         pattern = Pattern.compile("");
     }
@@ -54,7 +55,7 @@ public abstract class AbstractBinaryRequestHandler
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(request,get(request),type,log);
+            return PageResponse.of(request,get(request),type);
         }
         return null;
     }

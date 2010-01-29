@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class ResultSetTest {
 
-    Log log;
+    ;
 
     public ResultSetTest() {}
 
@@ -29,7 +29,7 @@ public class ResultSetTest {
         ImmutableList<DBColumn>     columns = ImmutableList.of();
         ImmutableList<DBRow>           rows = ImmutableList.of();
         ImmutableMap<Cell,DBValue>   values = ImmutableMap.of();
-        DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values,log);
+        DBResultSet               resultSet = DBResultSet.of(databases,tables,columns,rows,values);
         assertEquals(tables, resultSet.tables);
         assertEquals(columns,resultSet.columns);
         assertEquals(rows,   resultSet.rows);
@@ -37,7 +37,7 @@ public class ResultSetTest {
 
     @Test
     public void equality() {
-        DBServer         server = DBServer.uri(URIs.of("server"),log);
+        DBServer         server = DBServer.uri(URIs.of("server"));
 
         Database       database = server.databaseName("INFORMATION_SCHEMA");
         DBTable            tables = database.tableName("TABLES");
@@ -53,8 +53,8 @@ public class ResultSetTest {
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue> fixedValues1 = ImmutableMap.copyOf(values);
         ImmutableMap<Cell,DBValue> fixedValues2 = ImmutableMap.copyOf(values);
-        DBResultSet     resultSet1 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues1,log);
-        DBResultSet     resultSet2 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues2,log);
+        DBResultSet     resultSet1 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues1);
+        DBResultSet     resultSet2 = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues2);
         assertEquals(resultSet1,resultSet2);
     }
 

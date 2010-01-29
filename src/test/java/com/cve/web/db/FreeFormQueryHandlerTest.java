@@ -15,11 +15,11 @@ import static org.junit.Assert.*;
  */
 public class FreeFormQueryHandlerTest {
 
-    Log log;
+    ;
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
 
-    final FreeFormQueryHandler handler = FreeFormQueryHandler.of(serversStore,managedFunction,log);
+    final FreeFormQueryHandler handler = FreeFormQueryHandler.of(serversStore,managedFunction);
 
     @Test
     public void doesntHandleServerWithNoQuery() {

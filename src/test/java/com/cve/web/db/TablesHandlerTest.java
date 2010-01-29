@@ -23,12 +23,12 @@ import static org.junit.Assert.*;
  */
 public class TablesHandlerTest {
 
-    Log log;
+    ;
     final DBHintsStore hintsStore = MemoryDBHintsStore.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
-    final TablesHandler handler = TablesHandler.of(db,serversStore,hintsStore,managedFunction,log);
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    final TablesHandler handler = TablesHandler.of(db,serversStore,hintsStore,managedFunction);
     {
         SampleH2Server.addToStore(serversStore);
     }

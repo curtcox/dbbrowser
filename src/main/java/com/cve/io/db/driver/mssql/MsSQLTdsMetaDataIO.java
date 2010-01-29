@@ -12,11 +12,11 @@ import com.cve.stores.ManagedFunction;
  */
 final class MsSQLTdsMetaDataIO  extends DefaultDBMetaDataIO {
 
-    protected MsSQLTdsMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        super(connection,managedFunction,log);
+    protected MsSQLTdsMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        super(connection,managedFunction);
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        return new MsSQLTdsMetaDataIO(connection,managedFunction,log);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        return new MsSQLTdsMetaDataIO(connection,managedFunction);
     }
 }

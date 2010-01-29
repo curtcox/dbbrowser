@@ -8,6 +8,7 @@ import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.URIs;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -32,17 +33,17 @@ public final class DatabasesHandler extends AbstractRequestHandler {
 
     final DBURICodec codec;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private DatabasesHandler(DBMetaData.Factory db, Log log) {
-        super(log);
+    private DatabasesHandler(DBMetaData.Factory db) {
+        super();
         this.db = notNull(db);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
+        
+        codec = DBURICodec.of();
     }
 
-    public static DatabasesHandler of(DBMetaData.Factory db, Log log) {
-        return new DatabasesHandler(db,log);
+    public static DatabasesHandler of(DBMetaData.Factory db) {
+        return new DatabasesHandler(db);
     }
 
     @Override

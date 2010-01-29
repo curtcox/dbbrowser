@@ -5,6 +5,7 @@ import com.cve.model.db.DBServer;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.DBURIRenderer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.RequestHandler;
@@ -38,18 +39,18 @@ public final class DBRedirectsHandler implements RequestHandler {
 
     final DBMetaData.Factory db;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final DBURICodec codec;
 
-    private DBRedirectsHandler(DBMetaData.Factory db, Log log) {
+    private DBRedirectsHandler(DBMetaData.Factory db) {
         this.db = notNull(db);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
+        
+        codec = DBURICodec.of();
     }
 
-    public static DBRedirectsHandler of(DBMetaData.Factory db, Log log) {
-        return new DBRedirectsHandler(db,log);
+    public static DBRedirectsHandler of(DBMetaData.Factory db) {
+        return new DBRedirectsHandler(db);
     }
 
     /**
@@ -66,7 +67,7 @@ public final class DBRedirectsHandler implements RequestHandler {
         }
         String  path = request.requestURI;
         URI   dest = redirectsActionsTo(path, query);
-        return PageResponse.newRedirect(request,dest,log);
+        return PageResponse.newRedirect(request,dest);
     }
 
     /**

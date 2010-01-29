@@ -15,8 +15,8 @@ import static org.junit.Assert.*;
  */
 public class ServersHandlerTest {
 
-    Log log;
-    final ServersHandler handler = ServersHandler.of(DBSampleServerTestObjects.db,DBSampleServerTestObjects.serversStore,log);
+    ;
+    final ServersHandler handler = ServersHandler.of(DBSampleServerTestObjects.db,DBSampleServerTestObjects.serversStore);
 
     @Test
     public void producesServersOnlyRequest() throws IOException, SQLException {

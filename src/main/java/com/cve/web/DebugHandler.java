@@ -3,6 +3,7 @@ package com.cve.web;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.web.log.ObjectLink;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 
 import static com.cve.util.Check.notNull;
 
@@ -16,7 +17,7 @@ import static com.cve.util.Check.notNull;
  */
 public final class DebugHandler implements RequestHandler {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     /**
      * Only pay attention to requests that start with this.
@@ -45,16 +46,16 @@ public final class DebugHandler implements RequestHandler {
     /**
      * Use the factory.
      */
-    private DebugHandler(RequestHandler handler, Log log) {
+    private DebugHandler(RequestHandler handler) {
         this.handler = notNull(handler);
-        this.log = notNull(log);
+        
     }
 
     /**
      * Create a new DebugHandler, wrapping the given handler.
      */
-    public static RequestHandler of(RequestHandler handler, Log log) {
-        return new DebugHandler(handler,log);
+    public static RequestHandler of(RequestHandler handler) {
+        return new DebugHandler(handler);
     }
 
     @Override
@@ -86,11 +87,11 @@ public final class DebugHandler implements RequestHandler {
      * Return a debugging link, if debugging is on.
      * @return
      */
-    public static String debugLink(Log log) {
+    public static String debugLink() {
         if (!DebugHandler.isOn()) {
             return "";
         }
-        AnnotatedStackTrace trace = log.annotatedStackTrace();
+        AnnotatedStackTrace trace = Logs.of().annotatedStackTrace();
         int max = 200;
         if (trace.elements.size() > max) {
             String message = "The maximum stack depth of " + max +
@@ -99,7 +100,7 @@ public final class DebugHandler implements RequestHandler {
             ;
             throw new IllegalStateException(message);
         }
-        return ObjectLink.of(log).to(".",trace);
+        return ObjectLink.of().to(".",trace);
     }
 
 }

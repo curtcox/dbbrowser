@@ -12,11 +12,11 @@ import com.cve.stores.ManagedFunction;
  */
 final class DerbyMetaDataIO extends DefaultDBMetaDataIO {
 
-    protected DerbyMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        super(connection,managedFunction,log);
+    protected DerbyMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        super(connection,managedFunction);
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        return new DerbyMetaDataIO(connection,managedFunction,log);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        return new DerbyMetaDataIO(connection,managedFunction);
     }
 }

@@ -37,8 +37,8 @@ import org.junit.Test;
  */
 public class SelectResultsRendererTest {
 
-    Log log;
-    final DBServer             server = DBServer.uri(URIs.of("SAMPLE"),log);
+    ;
+    final DBServer             server = DBServer.uri(URIs.of("SAMPLE"));
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     {
@@ -52,10 +52,10 @@ public class SelectResultsRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         return results;
     }
 
@@ -67,10 +67,10 @@ public class SelectResultsRendererTest {
         DBRow                 row = DBRow.FIRST;
         Select           select = Select.from(database,person,name);
         DBValue             value = DBValue.of("Smith");
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value,log);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,row,value);
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName),age);
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,false);
         return results;
     }
 
@@ -88,10 +88,10 @@ public class SelectResultsRendererTest {
             values.put(cell, value);
         }
         Select           select = Select.from(database,person,name).with(limit);
-        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values),log);
+        DBResultSet     resultSet = DBResultSet.of(database,person,name,ImmutableList.copyOf(rows),ImmutableMap.copyOf(values));
         DBColumn       familyName = database.tableName("family").columnNameType("familyName", String.class);
         Hints             hints = Hints.of(Join.of(name,familyName));
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,hints,hasMore);
         return results;
     }
 
@@ -107,7 +107,7 @@ public class SelectResultsRendererTest {
         SelectResults results = onePersonResults();
         ClientInfo     client = ClientInfo.of();
 
-        String       rendered = SelectResultsRenderer.of(serversStore,managedFunction,log).render(results,client).toString();
+        String       rendered = SelectResultsRenderer.of(serversStore,managedFunction).render(results,client).toString();
         return rendered;
     }
 
@@ -185,12 +185,12 @@ public class SelectResultsRendererTest {
                     r1, r2,
                     "Chicago","IL","IL","Illinois",
                     "Denver" ,"CO","CO","Colorado"
-                ),log
+                )
         );
-        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false,log);
+        SelectResults   results = SelectResults.selectResultsHintsMore(select,resultSet,Hints.NONE,false);
         ClientInfo     client = ClientInfo.of();
 
-        String         rendered = SelectResultsRenderer.of(serversStore, managedFunction,log).render(results,client).toString();
+        String         rendered = SelectResultsRenderer.of(serversStore, managedFunction).render(results,client).toString();
         return rendered;
     }
 

@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
@@ -21,14 +22,14 @@ import static com.cve.util.Check.*;
  */
 public final class SearchRedirectsHandler implements RequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private SearchRedirectsHandler(Log log) {
-        this.log = notNull(log);
+    private SearchRedirectsHandler() {
+        
     }
 
-    public static SearchRedirectsHandler of(Log log) {
-        return new SearchRedirectsHandler(log);
+    public static SearchRedirectsHandler of() {
+        return new SearchRedirectsHandler();
     }
 
     /**
@@ -47,7 +48,7 @@ public final class SearchRedirectsHandler implements RequestHandler {
         }
         String target = request.parameters.get(Search.FIND);
         URI dest = redirectSearchesTo(path,target);
-        return PageResponse.newRedirect(request,dest,log);
+        return PageResponse.newRedirect(request,dest);
     }
 
     /**

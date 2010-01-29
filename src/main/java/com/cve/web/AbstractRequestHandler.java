@@ -2,7 +2,7 @@ package com.cve.web;
 
 import java.util.regex.Pattern;
 import com.cve.log.Log;
-import static com.cve.util.Check.notNull;
+import com.cve.log.Logs;
 
 /**
  * Something that handles {@link PageRequest}S and produces
@@ -21,15 +21,15 @@ public abstract class AbstractRequestHandler
     /**
      * Where we log to.
      */
-    private final Log log;
+    private final Log log = Logs.of();
 
     /**
      * Create a new handler that services the request types specified by
      * the supplied regular expression string.
      * @param regexp
      */
-    public AbstractRequestHandler(String regexp, Log log) {
-        this.log = notNull(log);
+    public AbstractRequestHandler(String regexp) {
+        
         pattern = Pattern.compile(regexp);
     }
 
@@ -37,8 +37,8 @@ public abstract class AbstractRequestHandler
      * Construct a new handler with no associated regex.
      * If you use this, you should override handles, too.
      */
-    public AbstractRequestHandler(Log log) {
-        this.log = notNull(log);
+    public AbstractRequestHandler() {
+        
         pattern = Pattern.compile("");
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractRequestHandler
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(request,get(request),log);
+            return PageResponse.of(request,get(request));
         }
         return null;
     }

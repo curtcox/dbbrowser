@@ -2,9 +2,9 @@ package com.cve.web.log;
 
 import com.cve.html.Label;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.URIs;
 import java.net.URI;
-import static com.cve.util.Check.notNull;
 
 /**
  * For providing hyperlinks to expose objects in the JVM.
@@ -12,14 +12,14 @@ import static com.cve.util.Check.notNull;
  */
 public final class ObjectLink {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private ObjectLink(Log log) {
-        this.log = notNull(log);
+    private ObjectLink() {
+        
     }
 
-    public static ObjectLink of(Log log) {
-        return new ObjectLink(log);
+    public static ObjectLink of() {
+        return new ObjectLink();
     }
 
     /**
@@ -41,7 +41,7 @@ public final class ObjectLink {
      */
     public String to(Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
-        Label text = Label.of(getLabel(object) + "/" + hash,log);
+        Label text = Label.of(getLabel(object) + "/" + hash);
         URI target = URIs.of("/object/" + hash);
         return link(text, target).toString();
     }
@@ -51,7 +51,7 @@ public final class ObjectLink {
      */
     public String to(String labelText, Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
-        Label text = Label.of(labelText,log);
+        Label text = Label.of(labelText);
         URI target = URIs.of("/object/" + hash);
         return link(text, target).toString();
     }

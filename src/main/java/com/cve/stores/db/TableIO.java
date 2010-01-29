@@ -1,13 +1,13 @@
 package com.cve.stores.db;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
 import com.cve.stores.StringIO;
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import static com.cve.util.Check.notNull;
 
 /**
  * For formatting strings into strings.
@@ -15,16 +15,16 @@ import static com.cve.util.Check.notNull;
  */
 final class TableIO implements IO<DBTable> {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final IO<String> stringIO = StringIO.of();
 
-    private TableIO(Log log) {
-        this.log = notNull(log);
+    private TableIO() {
+        
     }
 
-    static TableIO of(Log log) {
-        return new TableIO(log);
+    static TableIO of() {
+        return new TableIO();
     }
 
     @Override
@@ -36,7 +36,7 @@ final class TableIO implements IO<DBTable> {
     public DBTable read(byte[] bytes) {
         String line = stringIO.read(bytes);
         String[]    parts = Check.notNull(line).split(".");
-        return DBServer.uri(URIs.of(parts[0]),log)
+        return DBServer.uri(URIs.of(parts[0]))
                 .databaseName(parts[1])
                 .tableName(parts[2]);
     }

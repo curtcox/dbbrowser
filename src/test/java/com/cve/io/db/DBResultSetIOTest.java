@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
  */
 public class DBResultSetIOTest {
 
-    Log log;
+    ;
 
     /**
         GEO.tableName cities
@@ -34,7 +34,7 @@ public class DBResultSetIOTest {
         SampleH2Server.of();
         SQL sql = SQL.of("SELECT * FROM GEO.CITIES");
         ResultSet results = SampleH2Server.select(sql);
-        DBResultSetIO io = DBResultSetIO.of(results,log);
+        DBResultSetIO io = DBResultSetIO.of(results);
         assertEquals(4,io.meta.columnCount);
 
         ImmutableList<ImmutableMap> rows = io.rows;

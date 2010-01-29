@@ -1,11 +1,11 @@
 package com.cve.html;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Replace;
 import com.cve.web.DebugHandler;
 import com.cve.web.PageRequest;
 import java.net.URI;
-import static com.cve.util.Check.notNull;
 /**
  * A typesafe string for HMTL, plus some string-based static methods to make
  * constructing it easier.  Also, use of this class enables some debugging
@@ -13,14 +13,14 @@ import static com.cve.util.Check.notNull;
  */
 public final class HTMLTags {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private HTMLTags(Log log) {
-        this.log = notNull(log);
+    private HTMLTags() {
+        
     }
 
-    public static HTMLTags of(Log log) {
-        return new HTMLTags(log);
+    public static HTMLTags of() {
+        return new HTMLTags();
     }
 
     public String  html(String s) { return "<html>" + s + "</html>"; }
@@ -88,6 +88,6 @@ public final class HTMLTags {
 
     private String debug(String open, String body, String close) {
         log.args(body);
-        return open + body + DebugHandler.debugLink(log) + close;
+        return open + body + DebugHandler.debugLink() + close;
     }
 }

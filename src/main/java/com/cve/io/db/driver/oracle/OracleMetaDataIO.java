@@ -12,12 +12,12 @@ import com.cve.stores.ManagedFunction;
  */
 final class OracleMetaDataIO extends DefaultDBMetaDataIO {
 
-    protected OracleMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        super(connection,managedFunction,log);
+    protected OracleMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        super(connection,managedFunction);
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        return new OracleMetaDataIO(connection,managedFunction,log);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        return new OracleMetaDataIO(connection,managedFunction);
     }
 
 }

@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
  */
 public class DatabaseIOTest {
 
-    Log log;
+    ;
 
-    DatabaseIO io = DatabaseIO.of(log);
+    DatabaseIO io = DatabaseIO.of();
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one"),log).databaseName("db"));
-        both(DBServer.uri(URIs.of("two"),log).databaseName("db"));
+        both(DBServer.uri(URIs.of("one")).databaseName("db"));
+        both(DBServer.uri(URIs.of("two")).databaseName("db"));
     }
 
     void both(Database db) {

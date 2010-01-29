@@ -1,25 +1,25 @@
 package com.cve.web.alt;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
 import com.cve.web.PageRequest;
-import static com.cve.util.Check.notNull;
 /**
  *
  * @author curt
  */
 final class XMLHandler extends AbstractBinaryRequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private XMLHandler(Log log) {
-        super("^/view/XML/", ContentType.XML, log);
-        this.log = notNull(log);
+    private XMLHandler() {
+        super("^/view/XML/", ContentType.XML);
+        
     }
 
-    static XMLHandler of(Log log) {
-        return new XMLHandler(log);
+    static XMLHandler of() {
+        return new XMLHandler();
     }
     
     @Override

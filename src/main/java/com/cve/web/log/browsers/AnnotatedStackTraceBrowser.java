@@ -1,6 +1,7 @@
 package com.cve.web.log.browsers;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
@@ -8,7 +9,6 @@ import com.cve.web.Model;
 import com.cve.web.log.AbstractBrowser;
 import com.cve.web.log.AnnotatedStackTraceModel;
 import com.cve.web.log.AnnotatedStackTraceRenderer;
-import static com.cve.util.Check.notNull;
 
 /**
  * @author ccox
@@ -17,15 +17,15 @@ public final class AnnotatedStackTraceBrowser
     extends AbstractBrowser
 {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private AnnotatedStackTraceBrowser(Log log) {
+    private AnnotatedStackTraceBrowser() {
         super(AnnotatedStackTrace.class);
-        this.log = notNull(log);
+        
     }
 
-    public static AnnotatedStackTraceBrowser of(Log log) {
-        return new AnnotatedStackTraceBrowser(log);
+    public static AnnotatedStackTraceBrowser of() {
+        return new AnnotatedStackTraceBrowser();
     }
     
     /* (non-Javadoc)
@@ -34,8 +34,8 @@ public final class AnnotatedStackTraceBrowser
     public String getComponentFor(Object o) {
         AnnotatedStackTrace trace = (AnnotatedStackTrace) o;
         ClientInfo client = ClientInfo.of();
-        Model model = AnnotatedStackTraceModel.trace(trace,log);
-        HtmlPage page = AnnotatedStackTraceRenderer.of(log).render(model,client);
+        Model model = AnnotatedStackTraceModel.trace(trace);
+        HtmlPage page = AnnotatedStackTraceRenderer.of().render(model,client);
         return page.body;
     }
 

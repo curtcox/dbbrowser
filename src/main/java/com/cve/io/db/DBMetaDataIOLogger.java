@@ -1,6 +1,7 @@
 package com.cve.io.db;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.CurrentValue;
 import static com.cve.util.Check.notNull;
 import com.google.common.collect.ImmutableList;
@@ -14,13 +15,13 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
 
     private final DBMetaDataIO io;
 
-    private DBMetaDataIOLogger(DBMetaDataIO io, Log log) {
+    private DBMetaDataIOLogger(DBMetaDataIO io) {
         this.io = notNull(io);
-        this.log = notNull(log);
+        
     }
 
-    public static DBMetaDataIO of(DBMetaDataIO io, Log log) {
-        return new DBMetaDataIOLogger(io,log);
+    public static DBMetaDataIO of(DBMetaDataIO io) {
+        return new DBMetaDataIOLogger(io);
     }
 
     @Override
@@ -71,7 +72,7 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
     /**
      * Logging stuff.
      */
-    final Log log;
+    final Log log = Logs.of();
     private void info(String mesage) { log.info(mesage);  }
     private void debug(String mesage) { log.debug(mesage);  }
 }

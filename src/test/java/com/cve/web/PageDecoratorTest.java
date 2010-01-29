@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
  */
 public class PageDecoratorTest {
 
-    Log log;
-    final PageDecorator decorator = PageDecorator.of(StringModelRenderer.of(log));
+    ;
+    final PageDecorator decorator = PageDecorator.of(StringModelRenderer.of());
     final ClientInfo client = ClientInfo.of();
 
     @Test
     public void renderedContainsHtml() {
-        HtmlPage body = HtmlPage.guts("",log);
+        HtmlPage body = HtmlPage.guts("");
         String rendered = decorator.render(body, client).toString();
         assertTrue(rendered.contains("<html>"));
         assertTrue(rendered.contains("</html>"));

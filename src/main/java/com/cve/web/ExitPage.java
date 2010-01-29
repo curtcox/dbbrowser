@@ -1,10 +1,10 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIForm;
 import com.cve.ui.UISubmit;
 import com.cve.util.URIs;
-import static com.cve.util.Check.notNull;
 
 /**
  * The "Are you sure you want to exit?" page.
@@ -12,18 +12,18 @@ import static com.cve.util.Check.notNull;
  */
 final class ExitPage implements Model {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final UIForm exitForm;
 
-    private ExitPage(Log log) {
-        this.log = notNull(log);
+    private ExitPage() {
+        
         exitForm = UIForm.postAction(
-            URIs.of("/exit"),log)
+            URIs.of("/exit"))
             .with(UISubmit.value("exit"));
     }
 
-    public static ExitPage of(Log log) {
-        return new ExitPage(log);
+    public static ExitPage of() {
+        return new ExitPage();
     }
 }

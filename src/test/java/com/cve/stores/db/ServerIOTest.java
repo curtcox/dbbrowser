@@ -12,14 +12,14 @@ import static org.junit.Assert.*;
  */
 public class ServerIOTest {
 
-    Log log;
+    ;
 
-    ServerIO io = ServerIO.of(log);
+    ServerIO io = ServerIO.of();
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one"),log));
-        both(DBServer.uri(URIs.of("one"),log));
+        both(DBServer.uri(URIs.of("one")));
+        both(DBServer.uri(URIs.of("one")));
     }
 
     void both(DBServer s) {

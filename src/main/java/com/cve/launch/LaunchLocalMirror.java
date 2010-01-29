@@ -35,11 +35,9 @@ public final class LaunchLocalMirror {
         FSServersStore fsServersStore = null;
         DBHintsStore hintsStore = null;
         ManagedFunction.Factory managedFunction = null;
-        Log log = null;
         WebApp webApp = WebApp.of(
-            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction,log),
-            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction,log),
-            log
+            LocalRequestHandler.of(dbServersStore,fsServersStore,hintsStore,managedFunction),
+            DefaultModelHtmlRenderers.of(db,dbServersStore,hintsStore,managedFunction)
         );
         Grizzly.start(webApp, PORT);
     }

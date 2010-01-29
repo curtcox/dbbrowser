@@ -2,7 +2,6 @@ package com.cve.io.db;
 
 import com.cve.io.db.driver.DBDriver;
 import com.cve.io.db.driver.h2.H2Driver;
-import com.cve.log.Log;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.JDBCURL;
@@ -26,8 +25,7 @@ import static org.junit.Assert.*;
  */
 public class DefaultDBConnectionTest {
 
-    static Log log;
-    static final DBServer server = DBServer.uri(URIs.of("server"),log);
+    static final DBServer server = DBServer.uri(URIs.of("server"));
     static final Database database = server.databaseName("DB1");
     static final DBServer sampleServer = SampleH2Server.SAMPLE;
     final Database geoDatabase = SampleGeoDB.GEO;
@@ -36,13 +34,13 @@ public class DefaultDBConnectionTest {
     DBMetaData newEmpty() {
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         DBDriver driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver,log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver);
         DBServersStore  store = MemoryDBServersStore.of();
         store.put(server, info);
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-        DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
-        DBMetaData meta = H2Driver.of(log,managedFunction,serversStore).getDBMetaData(connection);
+        DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
+        DBMetaData meta = H2Driver.of(managedFunction,serversStore).getDBMetaData(connection);
 
         return meta;
     }

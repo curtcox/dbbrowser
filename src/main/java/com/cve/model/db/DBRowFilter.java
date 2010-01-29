@@ -1,6 +1,7 @@
 package com.cve.model.db;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.google.common.collect.ImmutableList;
 import javax.annotation.concurrent.Immutable;
 import org.h2.table.Column;
@@ -25,7 +26,7 @@ public final class DBRowFilter {
      */
     public final DBValue value;
 
-    public final Log log;
+    public final Log log = Logs.of();
 
     /**
      * Use the factory.
@@ -33,7 +34,6 @@ public final class DBRowFilter {
     private DBRowFilter(DBColumn column, DBValue value) {
         this.column = notNull(column);
         this.value  = notNull(value);
-        this.log = notNull(column.log);
     }
 
     /**
@@ -48,8 +48,7 @@ public final class DBRowFilter {
      * See toURrlFragment.
      */
     public static DBRowFilter parse(DBServer server, ImmutableList<DBTable> tables, String fullFilterName) {
-        Log log  = server.log;
-        log.args(server,tables,fullFilterName);
+        Logs.of().args(server,tables,fullFilterName);
         notNull(server);
         notNull(fullFilterName);
         String[]  nameParts = fullFilterName.split("\\=");

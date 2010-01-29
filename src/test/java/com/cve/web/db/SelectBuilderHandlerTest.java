@@ -26,15 +26,15 @@ import static org.junit.Assert.*;
  */
 public class SelectBuilderHandlerTest {
 
-    Log log;
-    DBServer server = DBServer.uri(URIs.of("server"),log);
+    ;
+    DBServer server = DBServer.uri(URIs.of("server"));
     DBServersStore serversStore = MemoryDBServersStore.of();
     DBHintsStore hintsStore = MemoryDBHintsStore.of();
     ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
-    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction,log);
+    DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    SelectBuilderHandler handler = SelectBuilderHandler.of(db,serversStore,hintsStore,managedFunction);
     {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 
@@ -42,7 +42,7 @@ public class SelectBuilderHandlerTest {
     public void getResults() throws SQLException {
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:"));
         DBDriver driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver,log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver);
         String            uri = "//server/INFORMATION_SCHEMA/INFORMATION_SCHEMA.CATALOGS/INFORMATION_SCHEMA.CATALOGS.CATALOG_NAME/";
         SelectResults results = handler.getResultsFromDB(uri);
         assertNotNull(results);

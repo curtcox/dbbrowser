@@ -23,14 +23,14 @@ import static com.cve.web.db.render.ColumnNameTooltip.*;
  */
 public class ColumnNameTooltipTest {
 
-    Log log;
+    ;
 
     public ColumnNameTooltipTest() {}
 
     private Join getJoin() {
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table",log);
+        DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);
@@ -38,9 +38,9 @@ public class ColumnNameTooltipTest {
     }
 
     private DBRowFilter getFilter() {
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table",log);
+        DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBValue       value = DBValue.of("active");
         DBRowFilter     filter = DBRowFilter.of(foo,value);
@@ -48,9 +48,9 @@ public class ColumnNameTooltipTest {
     }
 
     private HTML getTip() {
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
-        DBTable       table = DBTable.databaseName(database, "table",log);
+        DBTable       table = DBTable.databaseName(database, "table");
         DBColumn        foo = DBColumn.tableNameType(table, "foo", String.class);
         DBColumn        bar = DBColumn.tableNameType(table, "bar", String.class);
         Join         join = Join.of(foo, bar);

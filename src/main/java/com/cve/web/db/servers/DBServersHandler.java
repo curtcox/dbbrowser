@@ -16,18 +16,18 @@ public final class DBServersHandler implements RequestHandler {
 
     private final RequestHandler handler;
 
-    private DBServersHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+    private DBServersHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         handler = CompositeRequestHandler.of(
             // handler                         // for URLs of the form
-            ServersHandler.of(db,serversStore,log),             // /
-            AddServerHandler.of(serversStore,log),           // /add
-            RemoveServerHandler.of(serversStore,log),         // /remove
-            DatabaseMetaHandler.of(db,serversStore,managedFunction,log)  // /meta/server/
+            ServersHandler.of(db,serversStore),             // /
+            AddServerHandler.of(serversStore),           // /add
+            RemoveServerHandler.of(serversStore),         // /remove
+            DatabaseMetaHandler.of(db,serversStore,managedFunction)  // /meta/server/
         );
     }
 
-    public static DBServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new DBServersHandler(db,serversStore,managedFunction,log);
+    public static DBServersHandler of(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new DBServersHandler(db,serversStore,managedFunction);
     }
 
     @Override

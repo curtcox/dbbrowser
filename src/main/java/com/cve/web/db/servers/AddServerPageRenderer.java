@@ -4,6 +4,7 @@ import com.cve.html.HTMLTags;
 import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.ui.UIForm;
@@ -33,7 +34,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     final UIBuilder builder;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final ManagedFunction.Factory managedFunction;
 
@@ -41,12 +42,11 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/AddServer.html");
 
-    private AddServerPageRenderer(ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+    private AddServerPageRenderer(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.log     = notNull(log);
-        this.tags    = HTMLTags.of(log);
-        this.builder = UIBuilder.of(log);
+        this.tags    = HTMLTags.of();
+        this.builder = UIBuilder.of();
     }
 
     UIRow     row(UIDetail... details)     { return builder.row(details);  }
@@ -56,8 +56,8 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     UITable table(UIRow... rows)           { return builder.table(rows); }
     UISubmit submit(String value)          { return builder.submit(value); }
 
-    static AddServerPageRenderer of(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
-        return new AddServerPageRenderer(managedFunction,serversStore,log);
+    static AddServerPageRenderer of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        return new AddServerPageRenderer(managedFunction,serversStore);
     }
     
     @Override
@@ -66,7 +66,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
         String title = "Add a Server";
         String guts = render((AddServerPage) model);
         String[] nav = new String[0];
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     private String render(AddServerPage page) {
@@ -77,7 +77,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
              row(label(PASSWORD), text(PASSWORD, page.password         ) ),
              row(submit("add"))
         );
-        UIForm addServer = UIForm.postAction(URIs.of("add"),log)
+        UIForm addServer = UIForm.postAction(URIs.of("add"))
             .with(label(page.message))
             .with(table)
             .with(label(supportedFormats()));
@@ -86,7 +86,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     String supportedFormats() {
         StringBuilder out = new StringBuilder();
-        for (DBDriver driver : DBDrivers.of(managedFunction,serversStore,log).values()) {
+        for (DBDriver driver : DBDrivers.of(managedFunction,serversStore).values()) {
             out.append(tags.li(driver.getJDBCURL("server").toString()));
         }
         return "Available URL formats " + tags.ol(out.toString());

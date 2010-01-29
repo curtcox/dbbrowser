@@ -5,6 +5,7 @@ import com.cve.model.fs.FSServer;
 import com.cve.io.fs.FSMetaData;
 import com.cve.io.fs.pipeline.FSURIRenderer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.PageRequest;
 import com.cve.web.PageResponse;
 import com.cve.web.RequestHandler;
@@ -21,18 +22,18 @@ final class FSRedirectsHandler implements RequestHandler {
 
     final FSURICodec codec;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final FSMetaData.Factory fs;
 
-    private FSRedirectsHandler(FSMetaData.Factory fs, Log log) {
+    private FSRedirectsHandler(FSMetaData.Factory fs) {
         this.fs = notNull(fs);
-        this.log = notNull(log);
-        codec = FSURICodec.of(log);
+        
+        codec = FSURICodec.of();
     }
 
-    public static RequestHandler of(FSMetaData.Factory fs, Log log) {
-        return new FSRedirectsHandler(fs,log);
+    public static RequestHandler of(FSMetaData.Factory fs) {
+        return new FSRedirectsHandler(fs);
     }
 
     /**
@@ -50,7 +51,7 @@ final class FSRedirectsHandler implements RequestHandler {
         }
         String  path = request.requestURI;
         URI   dest = redirectsActionsTo(path, query);
-        return PageResponse.newRedirect(request,dest,log);
+        return PageResponse.newRedirect(request,dest);
     }
 
     /**

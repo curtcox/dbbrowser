@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class DBResultSetMetaDataIOTest {
 
-    Log log;
+    ;
 
     /**
         GEO.tableName cities
@@ -32,7 +32,7 @@ public class DBResultSetMetaDataIOTest {
         SampleH2Server.of();
         SQL sql = SQL.of("SELECT * FROM GEO.CITIES");
         ResultSet results = SampleH2Server.select(sql);
-        DBResultSetIO io = DBResultSetIO.of(results,log);
+        DBResultSetIO io = DBResultSetIO.of(results);
         DBResultSetMetaDataIO meta = io.meta;
         assertEquals(4,        meta.columnCount);
 

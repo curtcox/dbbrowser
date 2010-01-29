@@ -1,6 +1,5 @@
 package com.cve.html;
 
-import com.cve.log.Log;
 import com.cve.util.Replace;
 import com.cve.web.DebugHandler;
 import java.net.URI;
@@ -34,52 +33,52 @@ public final class Link {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
-        this.html   = a(text,target,tip,text.log);
+        this.html   = a(text,target,tip);
     }
 
     private Link(Label text, URI target, Tooltip tip, URI image) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
-        this.html   = a(text,target,tip,image,text.log);
+        this.html   = a(text,target,tip,image);
     }
 
     private Link(Label text, URI target) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
-        this.html   = a(text,target,text.log);
+        this.html   = a(text,target);
     }
 
     private Link(Label text, URI target, URI image, String alt) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
-        this.html   = a(text,target,image,alt,text.log);
+        this.html   = a(text,target,image,alt);
     }
 
-    private static String a(Label text, URI target, URI image, String alt, Log log) {
-        return "<a href=" + q(target.toString()) + ">" + HTMLTags.of(log).img(alt,image) +"</a>" + debug(log);
+    private static String a(Label text, URI target, URI image, String alt) {
+        return "<a href=" + q(target.toString()) + ">" + HTMLTags.of().img(alt,image) +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target, Log log) {
-        return "<a href=" + q(target.toString()) + ">" + text +"</a>" + debug(log);
+    private static String a(Label text, URI target) {
+        return "<a href=" + q(target.toString()) + ">" + text +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target, Tooltip tip, Log log) {
-        return "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>" + debug(log);
+    private static String a(Label text, URI target, Tooltip tip) {
+        return "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target, Tooltip tip, URI image, Log log) {
-        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTMLTags.of(log).img(text.toString(),image) +"</a>" + debug(log);
+    private static String a(Label text, URI target, Tooltip tip, URI image) {
+        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTMLTags.of().img(text.toString(),image) +"</a>" + debug();
     }
 
     /**
      * Return a debugging link, if debugging is on.
      * @return
      */
-    private static String debug(Log log) {
-        return DebugHandler.debugLink(log);
+    private static String debug() {
+        return DebugHandler.debugLink();
     }
 
     public static Link textTarget(Label text, URI target) {

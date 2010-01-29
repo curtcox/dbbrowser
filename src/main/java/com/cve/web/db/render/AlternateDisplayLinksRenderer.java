@@ -6,6 +6,7 @@ import com.cve.html.Link;
 import com.cve.model.db.SelectResults;
 import com.cve.io.db.select.DBURIRenderer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
@@ -35,23 +36,23 @@ public final class AlternateDisplayLinksRenderer {
 
     final ManagedFunction.Factory managedFunction;
 
-    final Log log;
+    final Log log = Logs.of();
 
     private AlternateDisplayLinksRenderer(
-        SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+        SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
                 this.select  = notNull(results.select);
                 this.search  = notNull(results.search);
            this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
+        
     }
 
-    static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new AlternateDisplayLinksRenderer(results,serversStore,managedFunction,log);
+    static AlternateDisplayLinksRenderer results(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new AlternateDisplayLinksRenderer(results,serversStore,managedFunction);
     }
 
-    public static String render(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction,Log log) {
-        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore, managedFunction,log);
+    public static String render(SelectResults results, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        AlternateDisplayLinksRenderer renderer = new AlternateDisplayLinksRenderer(results,serversStore, managedFunction);
         return renderer.viewLinks();
    }
 
@@ -69,7 +70,7 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewLink(AlternateView view) {
-        Label  text = Label.of(view.toString(),log);
+        Label  text = Label.of(view.toString());
         URI  target = URIs.of( "/view/" + view + DBURIRenderer.render(select,search));
         String tip = view.name();
         URI   image = view.icon;
@@ -80,8 +81,8 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewSQLLink() {
-        Label  text = Label.of("SQL",log);
-        URI target = FreeFormQueryHandler.of(serversStore,managedFunction,log).linkTo(select,search);
+        Label  text = Label.of("SQL");
+        URI target = FreeFormQueryHandler.of(serversStore,managedFunction).linkTo(select,search);
         String tip = SQL.name();
         URI   image = SQL.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();
@@ -91,7 +92,7 @@ public final class AlternateDisplayLinksRenderer {
      * Create a link to the given view.
      */
     String viewZLink() {
-        Label  text = Label.of("/z/",log);
+        Label  text = Label.of("/z/");
         URI  target = CompressedURIHandler.shortURI(DBURIRenderer.render(select,search));
         String tip = "Compressed URL";
         URI   image = COMPRESSED.icon;

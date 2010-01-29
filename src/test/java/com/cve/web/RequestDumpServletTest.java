@@ -12,12 +12,12 @@ import static org.mockito.Mockito.*;
  */
 public class RequestDumpServletTest {
 
-    Log log;
+    ;
 
     @Test
     public void handled() {
         HttpServletRequest request = mock(HttpServletRequest.class);
         when(request.getCookies()).thenReturn(new Cookie[0]);
-        RequestDumpServlet.of(log).tableOf(request);
+        RequestDumpServlet.of().tableOf(request);
     }
 }

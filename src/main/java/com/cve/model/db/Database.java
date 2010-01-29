@@ -3,6 +3,7 @@ package com.cve.model.db;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import java.net.URI;
@@ -27,18 +28,17 @@ public final class Database {
 
     final DBURICodec codec;
 
-    final Log log;
+    final Log log = Logs.of();
 
     private static final Canonicalizer<Database> CANONICALIZER = Canonicalizer.of();
 
     public static final Database NULL = new Database(DBServer.NULL,"");
 
     private Database(DBServer server, String name) {
-        log = server.log;
         log.args(server,name);
         this.server = notNull(server);
         this.name   = notNull(name);
-        codec = DBURICodec.of(log);
+        codec = DBURICodec.of();
     }
 
     private static Database canonical(Database database) {
@@ -63,7 +63,7 @@ public final class Database {
     }
 
     public DBTable tableName(String name) {
-        return DBTable.databaseName(this, name,log);
+        return DBTable.databaseName(this, name);
     }
 
     @Override
@@ -72,7 +72,7 @@ public final class Database {
     }
 
     public Link linkTo() {
-        Label text = Label.of(name,log);
+        Label text = Label.of(name);
         URI target = codec.encode(this);
         return Link.textTarget(text, target);
     }

@@ -1,6 +1,7 @@
 package com.cve.stores.db;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.stores.IO;
@@ -14,16 +15,16 @@ import com.cve.util.URIs;
  */
 final class DatabaseIO implements IO<Database> {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final IO<String> stringIO = StringIO.of();
 
-    private DatabaseIO(Log log) {
-        this.log = notNull(log);
+    private DatabaseIO() {
+        
     }
 
-    static DatabaseIO of(Log log) {
-        return new DatabaseIO(log);
+    static DatabaseIO of() {
+        return new DatabaseIO();
     }
 
     @Override
@@ -35,7 +36,7 @@ final class DatabaseIO implements IO<Database> {
     public Database read(byte[] bytes) {
         String line = stringIO.read(bytes);
         String[] parts = notNull(line).split(".");
-        DBServer server = DBServer.uri(URIs.of(parts[0]),null);
+        DBServer server = DBServer.uri(URIs.of(parts[0]));
         return server.databaseName(parts[1]);
     }
 

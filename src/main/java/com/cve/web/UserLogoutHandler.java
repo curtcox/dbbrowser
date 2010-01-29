@@ -8,12 +8,12 @@ import com.cve.log.Log;
  */
 final class UserLogoutHandler extends AbstractRequestHandler {
 
-    private UserLogoutHandler(Log log) {
-        super(log);
+    private UserLogoutHandler() {
+        super();
     }
 
-    static UserLogoutHandler of(Log log) {
-        return new UserLogoutHandler(log);
+    static UserLogoutHandler of() {
+        return new UserLogoutHandler();
     }
 
     @Override

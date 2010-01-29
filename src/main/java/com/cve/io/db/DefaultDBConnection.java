@@ -8,6 +8,7 @@ import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.SQL;
 import com.cve.model.db.DBServer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -49,24 +50,23 @@ public final class DefaultDBConnection implements DBConnection {
 
     private final ManagedFunction<SQL,DBResultSetIO> resultSets;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private DefaultDBConnection(
-        DBDriver driver, DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+        DBDriver driver, DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
         this.driver = notNull(driver);
         this.info = notNull(info);
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = log;
         resultSets = managedFunction.of(new ExecuteSQL(),SQL.class,DBResultSetIO.class,DBResultSetIO.NULL);
     }
 
     public static DefaultDBConnection of(
-        DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+        DBConnectionInfo info, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
-        DBDriver driver = DBDrivers.of(managedFunction, serversStore,log).url(info.url);
-        return new DefaultDBConnection(driver,info,serversStore,managedFunction,log);
+        DBDriver driver = DBDrivers.of(managedFunction, serversStore).url(info.url);
+        return new DefaultDBConnection(driver,info,serversStore,managedFunction);
     }
 
     synchronized private Connection getConnection() throws SQLException {
@@ -148,7 +148,7 @@ public final class DefaultDBConnection implements DBConnection {
             info(sqlString);
             statement.execute(sqlString);
             ResultSet resultSet = ResultSetWrapper.of(statement.getResultSet());
-            DBResultSetIO io = DBResultSetIO.of(resultSet,log);
+            DBResultSetIO io = DBResultSetIO.of(resultSet);
             return io;
         }
 

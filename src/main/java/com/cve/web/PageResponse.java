@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.log.AnnotatedStackTraceModel;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -35,42 +36,42 @@ public final class PageResponse {
     /**
      * Where we log to.
      */
-    public final Log log;
+    public final Log log = Logs.of();
 
     /**
      * Normal constructor -- use a factory.
      */
-    private PageResponse(PageRequest request, Model model, Log log) {
+    private PageResponse(PageRequest request, Model model) {
         this.request = notNull(request);
         this.model = notNull(model);
         redirect   = null;
-        this.log = notNull(log);
+        
     }
 
     /**
      * Redirect constructor -- use a factory.
      */
-    private PageResponse(PageRequest request,URI redirect, Log log) {
+    private PageResponse(PageRequest request,URI redirect) {
         this.request = notNull(request);
         this.model    = null;
         this.redirect = notNull(redirect);
-        this.log = notNull(log);
+        
     }
 
-    public static PageResponse of(PageRequest request,Throwable throwable, Log log) {
-        return of(request,AnnotatedStackTraceModel.throwable(throwable,log),log);
+    public static PageResponse of(PageRequest request,Throwable throwable) {
+        return of(request,AnnotatedStackTraceModel.throwable(throwable));
     }
 
-    public static PageResponse of(PageRequest request,byte[] bytes,ContentType type, Log log) {
-        return of(request,ByteArrayModel.bytesType(bytes,type),log);
+    public static PageResponse of(PageRequest request,byte[] bytes,ContentType type) {
+        return of(request,ByteArrayModel.bytesType(bytes,type));
     }
 
-    public static PageResponse of(PageRequest request,Model model, Log log) {
-        return new PageResponse(request,model,log);
+    public static PageResponse of(PageRequest request,Model model) {
+        return new PageResponse(request,model);
     }
 
-    public static PageResponse newRedirect(PageRequest request,URI dest, Log log) {
-        return new PageResponse(request,dest,log);
+    public static PageResponse newRedirect(PageRequest request,URI dest) {
+        return new PageResponse(request,dest);
     }
 
     @Override

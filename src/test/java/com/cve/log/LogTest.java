@@ -11,7 +11,7 @@ import org.junit.Test;
  */
 public class LogTest {
 
-    final Log log = null;
+    final Log log  = null;
 
     @Test
     public void annotatedStackTraceRetainsMethodArgSomewhere() {

@@ -24,14 +24,14 @@ import static org.junit.Assert.*;
  */
 public class DatabaseMetaHandlerTest {
 
-    Log log;
+    
     HTMLTags tags;
 
     private DBServer getStoreServer() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db"));
         DBDriver driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver, log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL, "", "",driver);
         return server;
     }
 
@@ -60,14 +60,14 @@ public class DatabaseMetaHandlerTest {
     @Test(expected=IllegalArgumentException.class)
     public void badRequestThrowsException() throws SQLException {
         DatabaseMetaHandler handler = newHandler();
-        handler.tryPage(DBServer.uri(URIs.of("server"),log), "bad method name");
+        handler.tryPage(DBServer.uri(URIs.of("server")), "bad method name");
     }
 
     DatabaseMetaHandler newHandler() {
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-        DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
-        DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction,log);
+        DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+        DatabaseMetaHandler handler = DatabaseMetaHandler.of(db,serversStore,managedFunction);
         return handler;
     }
 

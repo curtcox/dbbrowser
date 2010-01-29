@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,17 +15,17 @@ import static com.cve.util.Check.notNull;
  */
 public final class ResourceHandler extends AbstractRequestHandler {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     public static final String PREFIX = "/resource/";
 
-    private ResourceHandler(Log log) {
-        super("^" + PREFIX,log);
-        this.log = notNull(log);
+    private ResourceHandler() {
+        super("^" + PREFIX);
+        
     }
 
-    static ResourceHandler of(Log log) {
-        return new ResourceHandler(log);
+    static ResourceHandler of() {
+        return new ResourceHandler();
     }
 
     @Override
@@ -32,7 +33,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
-            return PageResponse.of(request,serveResource(request),ContentType.guessByExtension(uri),log);
+            return PageResponse.of(request,serveResource(request),ContentType.guessByExtension(uri));
         }
         return null;
     }

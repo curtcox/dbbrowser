@@ -26,13 +26,13 @@ import java.util.List;
  */
 final class MsSQLTdsMetaData extends DefaultDBMetaData {
 
-    private MsSQLTdsMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
-        super(io,managedFunction,serversStore,log);
+    private MsSQLTdsMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
-        DBMetaDataIO io = MsSQLTdsMetaDataIO.of(connection,managedFunction,log);
-        return new MsSQLTdsMetaData(io,managedFunction,serversStore,log);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = MsSQLTdsMetaDataIO.of(connection,managedFunction);
+        return new MsSQLTdsMetaData(io,managedFunction,serversStore);
     }
 
     /**

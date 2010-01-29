@@ -1,6 +1,7 @@
 package com.cve.web.db.render;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.SelectResults.Type;
 import com.cve.model.db.DBServer;
@@ -34,18 +35,18 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     final ManagedFunction.Factory managedFunction;
 
-    final Log log;
+    final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/SelectResults.html");
 
-    private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+    private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
            this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
+        
     }
 
-    public static SelectResultsRenderer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new SelectResultsRenderer(serversStore,managedFunction,log);
+    public static SelectResultsRenderer of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new SelectResultsRenderer(serversStore,managedFunction);
     }
 
     @Override
@@ -62,37 +63,37 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     public HtmlPage renderColumnValueDistribution(SelectResults results, ClientInfo client) {
         String guts = renderColumnValueDistributionPage(results,client);
         String title = "Values in " + results.select.columns.get(0);
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String[] nav = new String[] { b.search(results.search) };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     public HtmlPage renderNormalResults(SelectResults results, ClientInfo client) {
         String guts = renderSelectBuilderPage(results,client);
         DBServer server = results.server;
         String title = "Data from server " + server.toString();
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String[] nav = new String[] {
             Replace.bracketQuote("Data from <a href=[/]>server</a> /" + server.linkTo()),
             b.search(results.search)
         };
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     String renderColumnValueDistributionPage(SelectResults results, ClientInfo client) {
         return
-            DistributionResultsTableRenderer.render(results,client,log) +
+            DistributionResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction,log)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
         ;
     }
 
     String renderSelectBuilderPage(SelectResults results, ClientInfo client) {
         return
-            ResultsTableRenderer.render(results,client,log) +
+            ResultsTableRenderer.render(results,client) +
             PagingLinksRenderer.render(results) +
             ShowTableRenderer.render(results) +
-            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction,log)
+            AlternateDisplayLinksRenderer.render(results,serversStore,managedFunction)
         ;
     }
 

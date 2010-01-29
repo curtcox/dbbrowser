@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 /**
  * Finds the proper renderer from those it is given and delegates.
@@ -15,28 +16,28 @@ public final class ClassMapModelHtmlRenderer implements ModelHtmlRenderer {
     /**
      * Where we log to.
      */
-    private final Log log;
+    private final Log log = Logs.of();
 
     /**
      * Class -> Renderer
      */
     private final ImmutableMap<Class,ModelHtmlRenderer> renderers;
 
-    private ClassMapModelHtmlRenderer(ImmutableMap<Class,ModelHtmlRenderer> renderers, Log log) {
-        this.log = notNull(log);
+    private ClassMapModelHtmlRenderer(ImmutableMap<Class,ModelHtmlRenderer> renderers) {
+        
         this.renderers = notNull(renderers);
     }
 
-    public static ClassMapModelHtmlRenderer of(Map<Class,ModelHtmlRenderer> renderers, Log log) {
+    public static ClassMapModelHtmlRenderer of(Map<Class,ModelHtmlRenderer> renderers) {
         ImmutableMap<Class,ModelHtmlRenderer> map = ImmutableMap.copyOf(renderers);
-        return new ClassMapModelHtmlRenderer(map,log);
+        return new ClassMapModelHtmlRenderer(map);
     }
 
     ClassMapModelHtmlRenderer with(Map<Class,ModelHtmlRenderer> addedRenderers) {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.putAll(renderers);
         map.putAll(addedRenderers);
-        return of(map,log);
+        return of(map);
     }
 
     @Override

@@ -13,14 +13,14 @@ import static org.junit.Assert.*;
  */
 public class ColumnIOTest {
 
-    Log log;
+    ;
 
-    ColumnIO io = ColumnIO.of(log);
+    ColumnIO io = ColumnIO.of();
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one"),log).databaseName("db").tableName("t1").columnName("c1"));
-        both(DBServer.uri(URIs.of("two"),log).databaseName("db").tableName("t2").columnName("c2"));
+        both(DBServer.uri(URIs.of("one")).databaseName("db").tableName("t1").columnName("c1"));
+        both(DBServer.uri(URIs.of("two")).databaseName("db").tableName("t2").columnName("c2"));
     }
 
     void both(DBColumn c) {

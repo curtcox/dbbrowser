@@ -17,31 +17,31 @@ public final class MultimapBrowser
     extends AbstractBrowser
 {
 
-    Log log;
+    ;
 
-    private MultimapBrowser(Log log) {
+    private MultimapBrowser() {
         super(Multimap.class);
-        this.log = notNull(log);
+        
     }
 
-    public static MultimapBrowser of(Log log) {
-        return new MultimapBrowser(log);
+    public static MultimapBrowser of() {
+        return new MultimapBrowser();
     }
 
     @Override
     public String getComponentFor(Object o) {
         Multimap map = (Multimap) o;
-        UITable table = UITable.of(log);
+        UITable table = UITable.of();
         for (Object key : map.keySet()) {
             Object value = map.get(key);
-            UIRow row = UIRow.of(log,link(key),link(value));
+            UIRow row = UIRow.of(link(key),link(value));
             table = table.with(row);
         }
         return table.toString();
     }
 
     private UIDetail link(Object o) {
-        return UIDetail.of(ObjectLink.of(log).to("" + o,o),log);
+        return UIDetail.of(ObjectLink.of().to("" + o,o));
     }
 
 }

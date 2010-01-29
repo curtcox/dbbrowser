@@ -1,25 +1,25 @@
 package com.cve.web.alt;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
 import com.cve.web.PageRequest;
-import static com.cve.util.Check.*;
 /**
  *
  * @author curt
  */
 final class JSONHandler extends AbstractBinaryRequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private JSONHandler(Log log) {
-        super("^/view/JSON/", ContentType.HTML,log);
-        this.log = notNull(log);
+    private JSONHandler() {
+        super("^/view/JSON/", ContentType.HTML);
+        
     }
 
-    static JSONHandler of(Log log) {
-        return new JSONHandler(log);
+    static JSONHandler of() {
+        return new JSONHandler();
     }
     
     @Override

@@ -18,6 +18,7 @@ import com.cve.io.db.DBResultSetIO;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -33,14 +34,14 @@ import static com.cve.util.Check.notNull;
  */
 final class SimpleSelectRunner implements SelectRunner {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
-    private SimpleSelectRunner(Log log) {
-        this.log = notNull(log);
+    private SimpleSelectRunner() {
+        
     }
 
-    public static SimpleSelectRunner of(Log log) {
-        return new SimpleSelectRunner(log);
+    public static SimpleSelectRunner of() {
+        return new SimpleSelectRunner();
     }
     
     @Override
@@ -66,7 +67,7 @@ final class SimpleSelectRunner implements SelectRunner {
         SelectResults.Type  type = determineResultsType(select);
         ResultsAndMore immutable = transform(select,results);
         Hints hints = context.hints;
-        return SelectResults.typeSelectSearchResultsHintsCountMore(type,select,search,immutable.resultSet,hints,count,immutable.more,log);
+        return SelectResults.typeSelectSearchResultsHintsCountMore(type,select,search,immutable.resultSet,hints,count,immutable.more);
     }
 
     /**
@@ -122,7 +123,7 @@ final class SimpleSelectRunner implements SelectRunner {
         boolean more = results.rows.size() > select.limit.limit;
         ImmutableList<DBRow>           fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
-        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues,log),more);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),more);
     }
 
     /**

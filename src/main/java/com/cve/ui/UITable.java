@@ -3,12 +3,12 @@ package com.cve.ui;
 
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.util.Check.notNull;
 
 /**
  * Like a HTML table.
@@ -19,37 +19,37 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class UITable implements UIElement {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
     private final ImmutableList<UIRow> rows;
 
-    private UITable(List<UIRow> rows, Log log) {
+    private UITable(List<UIRow> rows) {
         ImmutableList<UIRow> copy = ImmutableList.copyOf(Check.notNull(rows));
         this.rows = copy;
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+        
+        tags = HTMLTags.of();
     }
 
-    public static UITable of(Log log) {
+    public static UITable of() {
         ImmutableList<UIRow> rows = ImmutableList.of();
-        return new UITable(rows,log);
+        return new UITable(rows);
     }
 
-    public static UITable of(List<UIRow> rows, Log log) {
-        return new UITable(ImmutableList.copyOf(rows),log);
+    public static UITable of(List<UIRow> rows) {
+        return new UITable(ImmutableList.copyOf(rows));
     }
 
-    public static UITable of(Log log, UIRow... rows) {
-        return new UITable(ImmutableList.of(rows),log);
+    public static UITable of(UIRow... rows) {
+        return new UITable(ImmutableList.of(rows));
     }
 
     public UITable with(UIRow row) {
         List<UIRow> list = Lists.newArrayList();
         list.addAll(rows);
         list.add(row);
-        return new UITable(ImmutableList.copyOf(list),log);
+        return new UITable(ImmutableList.copyOf(list));
     }
 
     @Override

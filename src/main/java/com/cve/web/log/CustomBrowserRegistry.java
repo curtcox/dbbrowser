@@ -28,18 +28,18 @@ final class CustomBrowserRegistry {
     
     private final CustomBrowser ARRAY_BROWSER;
 
-    private CustomBrowserRegistry(Log log) {
+    private CustomBrowserRegistry() {
         // Register all custom browsers.
-        register(CollectionBrowser.of(log));
-        register(MapBrowser.of(log));
-        register(MultimapBrowser.of(log));
-        register(AnnotatedStackTraceBrowser.of(log));
+        register(CollectionBrowser.of());
+        register(MapBrowser.of());
+        register(MultimapBrowser.of());
+        register(AnnotatedStackTraceBrowser.of());
         // add new custom browsers here
-        ARRAY_BROWSER = ArrayBrowser.of(log);
+        ARRAY_BROWSER = ArrayBrowser.of();
     }
 
-    public static CustomBrowserRegistry of(Log log) {
-        return new CustomBrowserRegistry(log);
+    public static CustomBrowserRegistry of() {
+        return new CustomBrowserRegistry();
     }
     
     /**

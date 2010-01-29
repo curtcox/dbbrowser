@@ -6,6 +6,7 @@ import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
@@ -13,7 +14,6 @@ import com.cve.web.db.NavigationButtons;
 import com.cve.web.log.ObjectLink;
 import java.net.URI;
 
-import static com.cve.util.Check.notNull;
 
 /**
  * For picking a database server.
@@ -21,7 +21,7 @@ import static com.cve.util.Check.notNull;
 final class ServersPageRenderer implements ModelHtmlRenderer {
 
     
-    private final Log log;
+    private final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
@@ -35,13 +35,13 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     String table(String s) { return tags.table(s); }
     String borderTable(String s) { return tags.borderTable(s); }
 
-    private ServersPageRenderer(Log log) {
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+    private ServersPageRenderer() {
+        
+        tags = HTMLTags.of();
     }
 
-    public static ServersPageRenderer of(Log log) {
-        return new ServersPageRenderer(log);
+    public static ServersPageRenderer of() {
+        return new ServersPageRenderer();
     }
     
     @Override
@@ -51,12 +51,12 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
         String title = "Available Servers";
         String[] navigation = getNavigation(title);
         String guts  = tableOfServers(page);
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP,log);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
 
     String[] getNavigation(String title) {
         log.args(title);
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         return new String[] {
             b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN , title, b.SEARCH
         };
@@ -95,7 +95,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
             } else if (object instanceof AnnotatedStackTrace) {
                 AnnotatedStackTrace t = (AnnotatedStackTrace) object;
                 String message = t.throwable.getMessage();
-                out.append(ObjectLink.of(log).to(message, t));
+                out.append(ObjectLink.of().to(message, t));
             } else {
                 throw new IllegalArgumentException("" + object);
             }

@@ -25,14 +25,14 @@ import static org.junit.Assert.*;
  */
 public class DBBrowserHandlerTest {
 
-    Log log;
+    ;
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBHintsStore hintsStore = MemoryDBHintsStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
-    final RequestHandler handler = DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction,log);
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    final RequestHandler handler = DBBrowserHandler.of(db,serversStore,hintsStore,managedFunction);
     {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 

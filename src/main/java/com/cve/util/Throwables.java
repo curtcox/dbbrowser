@@ -4,10 +4,10 @@ import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import static com.cve.util.Check.notNull;
 import java.net.URI;
 
 /**
@@ -15,17 +15,17 @@ import java.net.URI;
  */
 public final class Throwables {
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
-    private Throwables(Log log) {
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+    private Throwables() {
+        
+        tags = HTMLTags.of();
     }
 
-    public static Throwables of(Log log) {
-        return new Throwables(log);
+    public static Throwables of() {
+        return new Throwables();
     }
     
     public String toString(Throwable t) {
@@ -83,7 +83,7 @@ public final class Throwables {
     }
 
     Link linkToSource(String className, String fileName) {
-        Label text = Label.of(fileName,log);
+        Label text = Label.of(fileName);
         String classFileName = className.replace(".", "/") + ".java";
         URI target = URIs.of(ResourceHandler.PREFIX + classFileName);
         return Link.textTarget(text, target);

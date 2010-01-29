@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -8,14 +9,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;
 import java.util.Map;
-import static com.cve.util.Check.notNull;
 /**
  * Converts a model to HTML in stages.
  * @author curt
  */
 final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
     public abstract class Stage {
 
@@ -36,25 +36,25 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
      */
     private final ImmutableMap<Class,Stage> stages;
 
-    private StagedModelHtmlRenderer(ImmutableList<Stage> renderers, Log log) {
+    private StagedModelHtmlRenderer(ImmutableList<Stage> renderers) {
         Map<Class,Stage> map = Maps.newHashMap();
         for (Stage stage : renderers) {
             map.put(stage.target, stage);
         }
         stages = ImmutableMap.copyOf(map);
-        this.log = notNull(log);
+        
     }
 
-    public static StagedModelHtmlRenderer of(List<Stage> renderers, Log log) {
+    public static StagedModelHtmlRenderer of(List<Stage> renderers) {
         ImmutableList<Stage> list = ImmutableList.copyOf(renderers);
-        return new StagedModelHtmlRenderer(list,log);
+        return new StagedModelHtmlRenderer(list);
     }
 
     StagedModelHtmlRenderer with(List<Stage> addedRenderers) {
         List<Stage> list = Lists.newArrayList();
         list.addAll(stages.values());
         list.addAll(addedRenderers);
-        return of(list,log);
+        return of(list);
     }
 
     @Override
@@ -70,7 +70,7 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
             }
             rendered = renderer.render(model,client);
             if (rendered instanceof String) {
-                return HtmlPage.guts((String) rendered,log);
+                return HtmlPage.guts((String) rendered);
             }
             toRender = rendered;
         }

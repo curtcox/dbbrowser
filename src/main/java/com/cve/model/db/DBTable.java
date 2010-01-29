@@ -28,7 +28,7 @@ public final class DBTable {
      */
     public final String name;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final DBURICodec codec;
 
@@ -37,25 +37,24 @@ public final class DBTable {
     /**
      * Something to use for null tables.
      */
-    public static DBTable NULL = new DBTable(Database.NULL,"",Logs.of());
+    public static DBTable NULL = new DBTable(Database.NULL,"");
 
     private static DBTable canonical(DBTable table) {
         return CANONICALIZER.canonical(table);
     }
 
-    private DBTable(Database database, String name, Log log) {
+    private DBTable(Database database, String name) {
         this.database = notNull(database);
         this.name     = notNull(name);
-        this.log      = notNull(log);
-        codec = DBURICodec.of(log);
+        codec = DBURICodec.of();
     }
 
-    public static DBTable databaseName(Database database, String name, Log log) {
-        return canonical(new DBTable(database,name,log));
+    public static DBTable databaseName(Database database, String name) {
+        return canonical(new DBTable(database,name));
     }
 
-    public static DBTable parse(DBServer server, String fullTableName, Log log) {
-        log.args(server,fullTableName);
+    public static DBTable parse(DBServer server, String fullTableName) {
+        Logs.of().args(server,fullTableName);
         notNull(server);
         notNull(fullTableName);
         String[]  nameParts = fullTableName.split("\\.");
@@ -115,7 +114,7 @@ public final class DBTable {
      * Provide a link to this table.
      */
     public Link linkTo() {
-        Label text = Label.of(name,log);
+        Label text = Label.of(name);
         URI target = codec.encode(this);
         return Link.textTarget(text, target);
     }

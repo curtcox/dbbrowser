@@ -37,7 +37,7 @@ public final class ColumnNameTooltip
                 joinInfo(column,joins))
                 .with(filterInfo(filters)
             ).toString();
-        HTML html = HTML.of(info,column.log);
+        HTML html = HTML.of(info);
         return SimpleTooltip.of(html);
     }
 
@@ -46,7 +46,7 @@ public final class ColumnNameTooltip
      */
     static HTML info(DBColumn column) {
         notNull(column);
-        return HTML.of(column.name,column.log);
+        return HTML.of(column.name);
     }
 
     static UIElement joinInfo(DBColumn source, DBColumn dest) {
@@ -64,9 +64,9 @@ public final class ColumnNameTooltip
         URI    target = SelectBuilderAction.JOIN.withArgs(
              source.fullName() + "=" + destName
         );
-        UILink link = UILink.textTarget(Label.of(text,source.log), target);
+        UILink link = UILink.textTarget(Label.of(text), target);
         if (dest.keyness==Keyness.PRIMARY) {
-            return UIComposite.of(UIImage.textURI("Primary key", Icons.PRIMARY_KEY, source.log),link);
+            return UIComposite.of(UIImage.textURI("Primary key", Icons.PRIMARY_KEY),link);
         }
         return link;
     }
@@ -77,7 +77,7 @@ public final class ColumnNameTooltip
         String value  = filter.value.toString();
         String text   = "show only " + value;
         URI    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
-        UILink   link = UILink.textTarget(Label.of(text,filter.log), target);
+        UILink   link = UILink.textTarget(Label.of(text), target);
         return link;
     }
 

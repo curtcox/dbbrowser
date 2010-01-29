@@ -15,7 +15,6 @@ import com.cve.model.db.DBValue;
 import com.cve.io.db.DBConnection;
 import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBResultSetIO;
-import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.DBResultSetMetaData;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.stores.ManagedFunction;
@@ -36,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 /**
  * Handles "free-form" SQL select queries.
@@ -57,19 +57,19 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
 
     final DBConnectionFactory connections;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        super(log);
+    private FreeFormQueryHandler(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        super();
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        
+        codec = DBURICodec.of();
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
     }
 
-    public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new FreeFormQueryHandler(serversStore,managedFunction,log);
+    public static FreeFormQueryHandler of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new FreeFormQueryHandler(serversStore,managedFunction);
     }
     
     /**
@@ -152,7 +152,7 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
         boolean more = results.rows.size() > limit.limit;
         ImmutableList<DBRow>         fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue>   fixedValues = ImmutableMap.copyOf(values);
-        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues,log),meta,more);
+        return new ResultsAndMore(DBResultSet.of(databases, tables, columns, fixedRows, fixedValues),meta,more);
     }
 
     /**

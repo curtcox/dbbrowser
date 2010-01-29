@@ -7,7 +7,6 @@ import com.cve.model.db.JDBCURL;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.SelectRenderer;
-import com.cve.log.Log;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
@@ -22,7 +21,7 @@ public interface DBDriver {
 
 
     public interface Factory {
-        DBDriver of(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore);
+        DBDriver of(ManagedFunction.Factory managedFunction, DBServersStore serversStore);
     }
 
     boolean handles(JDBCURL url);

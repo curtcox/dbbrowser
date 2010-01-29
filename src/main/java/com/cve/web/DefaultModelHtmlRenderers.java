@@ -2,13 +2,13 @@ package com.cve.web;
 
 import com.cve.io.db.DBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
 import com.cve.web.alt.AltModelHtmlRenderers;
 import com.cve.web.db.DatabaseModelHtmlRenderers;
 import com.cve.web.log.LogModelHtmlRenderers;
-import static com.cve.util.Check.notNull;
 
 /**
  * Renders models into HTML, JPG, PNG, etc...
@@ -16,28 +16,28 @@ import static com.cve.util.Check.notNull;
  */
 public final class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final ModelHtmlRenderer renderer;
 
     private DefaultModelHtmlRenderers(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction,Log log)
+        ManagedFunction.Factory managedFunction)
     {
-        this.log = notNull(log);
-        renderer = CompositeModelHtmlRenderer.of(log,
-            DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction,log),
-            LogModelHtmlRenderers.of(log),
-            AltModelHtmlRenderers.of(log),
-            GlobalHtmlRenderers.of(log)
+        
+        renderer = CompositeModelHtmlRenderer.of(
+            DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction),
+            LogModelHtmlRenderers.of(),
+            AltModelHtmlRenderers.of(),
+            GlobalHtmlRenderers.of()
         );
     }
 
     public static DefaultModelHtmlRenderers of(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction,Log log)
+        ManagedFunction.Factory managedFunction)
     {
-        return new DefaultModelHtmlRenderers(db,serversStore,hintsStore,managedFunction,log);
+        return new DefaultModelHtmlRenderers(db,serversStore,hintsStore,managedFunction);
     }
     
 

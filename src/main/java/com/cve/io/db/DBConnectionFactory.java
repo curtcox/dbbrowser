@@ -3,6 +3,7 @@ package com.cve.io.db;
 import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
@@ -22,20 +23,20 @@ public final class DBConnectionFactory {
 
     final ManagedFunction.Factory managedFunction;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private DBConnectionFactory(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
+    private DBConnectionFactory(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         this.serversStore = notNull(serversStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
+        
     }
 
-    public static DBConnectionFactory of(DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new DBConnectionFactory(serversStore,managedFunction,log);
+    public static DBConnectionFactory of(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
+        return new DBConnectionFactory(serversStore,managedFunction);
     }
 
     public DBConnection getConnection(DBConnectionInfo info) {
-        return DefaultDBConnection.of(info,serversStore,managedFunction,log);
+        return DefaultDBConnection.of(info,serversStore,managedFunction);
     }
 
     public DBConnection getConnection(DBServer server) {
@@ -45,13 +46,13 @@ public final class DBConnectionFactory {
             String message = server + " not found in store";
             throw new IllegalArgumentException(message);
         }
-        return DefaultDBConnection.of(info,serversStore,managedFunction,log);
+        return DefaultDBConnection.of(info,serversStore,managedFunction);
     }
 
     public DBMetaDataIO getDbmdIO(DBServer server,DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
         log.args(server,serversStore,managedFunction);
         DefaultDBConnection connection = (DefaultDBConnection) getConnection(server);
-        DBDriver driver = DBDrivers.of(managedFunction,serversStore,log).url(connection.info.url);
+        DBDriver driver = DBDrivers.of(managedFunction,serversStore).url(connection.info.url);
         DBMetaDataIO io = driver.getDBMetaDataIO(connection);
         return io;
     }

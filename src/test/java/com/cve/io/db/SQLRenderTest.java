@@ -27,11 +27,11 @@ import static org.junit.Assert.*;
  */
 public class SQLRenderTest {
 
-    Log log;
+    ;
 
     @Test
     public void renderSelectPerson() {
-        DBServer      server = DBServer.uri(URIs.of("server"),log);
+        DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -48,7 +48,7 @@ public class SQLRenderTest {
 
     @Test
     public void renderSelectPersonAccount() {
-        DBServer        server = DBServer.uri(URIs.of("server"),log);
+        DBServer        server = DBServer.uri(URIs.of("server"));
         Database    database = server.databaseName("customer");
         DBTable         person = database.tableName("person");
         DBTable        account = database.tableName("account");

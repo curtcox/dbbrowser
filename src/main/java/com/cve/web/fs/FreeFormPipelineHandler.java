@@ -1,13 +1,13 @@
 package com.cve.web.fs;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.Model;
 import com.cve.web.PageRequest;
 import com.cve.web.RequestHandler;
-import static com.cve.util.Check.notNull;
 
 /**
  * For handling pipelines typed in from the user.
@@ -15,15 +15,15 @@ import static com.cve.util.Check.notNull;
  */
 final class FreeFormPipelineHandler extends AbstractRequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private FreeFormPipelineHandler(FSServersStore store, ManagedFunction.Factory managedFunction, Log log) {
-        super(log);
-        this.log = notNull(log);
+    private FreeFormPipelineHandler(FSServersStore store, ManagedFunction.Factory managedFunction) {
+        super();
+        
     }
 
-    public static RequestHandler of(FSServersStore store, ManagedFunction.Factory managedFunction,Log log) {
-        return new FreeFormPipelineHandler(store,managedFunction,log);
+    public static RequestHandler of(FSServersStore store, ManagedFunction.Factory managedFunction) {
+        return new FreeFormPipelineHandler(store,managedFunction);
     }
 
     /**

@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class ServerTest {
 
-    Log log;
+    ;
 
     public ServerTest() {}
 
@@ -20,8 +20,8 @@ public class ServerTest {
      */
     @Test
     public void equality() {
-        DBServer server1 = DBServer.uri(URIs.of("server"),log);
-        DBServer server2 = DBServer.uri(URIs.of("server"),log);
+        DBServer server1 = DBServer.uri(URIs.of("server"));
+        DBServer server2 = DBServer.uri(URIs.of("server"));
         assertEquals(server1,server2);
     }
 

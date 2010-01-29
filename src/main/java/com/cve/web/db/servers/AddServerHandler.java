@@ -2,6 +2,7 @@ package com.cve.web.db.servers;
 
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.DBConnectionInfo;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
@@ -24,15 +25,15 @@ final class AddServerHandler extends AbstractFormHandler {
 
     final DBServersStore serversStore;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private AddServerHandler(DBServersStore serversStore, Log log) {
+    private AddServerHandler(DBServersStore serversStore) {
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
+        
     }
 
-    public static AddServerHandler of(DBServersStore serversStore, Log log) {
-        return new AddServerHandler(serversStore,log);
+    public static AddServerHandler of(DBServersStore serversStore) {
+        return new AddServerHandler(serversStore);
     }
 
     @Override
@@ -42,7 +43,7 @@ final class AddServerHandler extends AbstractFormHandler {
 
     @Override
     public PageResponse get(PageRequest request) {
-        return PageResponse.of(request,SAMPLE,null);
+        return PageResponse.of(request,SAMPLE);
     }
 
     @Override
@@ -54,22 +55,22 @@ final class AddServerHandler extends AbstractFormHandler {
         String   serverName = params.get(SERVER);
         URI             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
-        DBServer       server = DBServer.uri(URIs.of(serverName),log);
+        DBServer       server = DBServer.uri(URIs.of(serverName));
         DBDriver       driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password, driver, log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcurl, user, password, driver);
         if (serversStore.keys().contains(server)) {
             String message = "There is already a server for " + url;
             return PageResponse.of(
-                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
+                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
         try {
             serversStore.put(server, info);
-            return PageResponse.newRedirect(request,server.linkTo().getTarget(),log);
+            return PageResponse.newRedirect(request,server.linkTo().getTarget());
         } catch (RuntimeException e) {
             String message = e.getMessage();
             return PageResponse.of(
-                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url),log
+                request,AddServerPage.messageServerUserPasswordJdbcUrl(message, server, user, password, url)
             );
         }
     }

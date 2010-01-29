@@ -1,6 +1,7 @@
 package com.cve.web.db.databases;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.Database;
 import com.cve.model.db.SelectResults;
 import com.cve.web.*;
@@ -19,16 +20,16 @@ public final class DatabaseContentsSearchPage implements Model {
 
     final Database database;
 
-    final Log log;
+    final Log log = Logs.of();
 
     /**
      * The tables on the page
      */
     final ImmutableList<SelectResults> resultsList;
 
-    private DatabaseContentsSearchPage(Search search, Database database, List<SelectResults> resultsList, Log log) {
+    private DatabaseContentsSearchPage(Search search, Database database, List<SelectResults> resultsList) {
         log.args(search,database,resultsList);
-        this.log = notNull(log);
+        
         this.search      = notNull(search);
         this.database    = notNull(database);
         this.resultsList = ImmutableList.copyOf(notNull(resultsList));
@@ -40,7 +41,7 @@ public final class DatabaseContentsSearchPage implements Model {
         }
     }
 
-    public static DatabaseContentsSearchPage of(Search search, Database database, List<SelectResults> resultsList, Log log) {
-        return new DatabaseContentsSearchPage(search,database,resultsList,log);
+    public static DatabaseContentsSearchPage of(Search search, Database database, List<SelectResults> resultsList) {
+        return new DatabaseContentsSearchPage(search,database,resultsList);
     }
 }

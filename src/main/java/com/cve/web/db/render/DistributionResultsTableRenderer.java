@@ -10,6 +10,7 @@ import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
@@ -18,7 +19,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
-import static com.cve.html.HTML.*;
 import static com.cve.util.Check.notNull;
 import static com.cve.web.db.render.DBResultSetRenderer.*;
 
@@ -39,29 +39,28 @@ public final class DistributionResultsTableRenderer {
      */
     private final ClientInfo client;
 
-    final Log log;
+    final Log log = Logs.of();
     
     /**
      * Utility methods for rendering select results.
      */
     private final DBResultSetRenderer tools;
 
-    private DistributionResultsTableRenderer(SelectResults results, ClientInfo client, Log log) {
+    private DistributionResultsTableRenderer(SelectResults results, ClientInfo client) {
         this.results = notNull(results);
         this.client  = notNull(client);
-        this.log     = notNull(log);
-        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client,log);
+        tools = DBResultSetRenderer.resultsOrdersHintsClient(results.resultSet, results.select.orders, results.hints, client);
     }
 
-    static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client, Log log) {
-        return new DistributionResultsTableRenderer(results,client,log);
+    static DistributionResultsTableRenderer results(SelectResults results, ClientInfo client) {
+        return new DistributionResultsTableRenderer(results,client);
     }
 
-    static String render(SelectResults results, ClientInfo client,Log log) {
-        return new DistributionResultsTableRenderer(results,client,log).resultsTable();
+    static String render(SelectResults results, ClientInfo client) {
+        return new DistributionResultsTableRenderer(results,client).resultsTable();
     }
 
-    public String    tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of(log).q(width) + ">" + s + "</td>"; }
+    public String    tdRowspan(String s, int width) { return "<td rowspan=" + HTMLTags.of().q(width) + ">" + s + "</td>"; }
 
 
     /**
@@ -74,13 +73,13 @@ public final class DistributionResultsTableRenderer {
         rows.add(row(tools.tableRow(),      CSS.TABLE));
         rows.add(row(columnNameRow()));
         rows.addAll(valueRows());
-        return UITable.of(rows,log).toString();
+        return UITable.of(rows).toString();
     }
 
-    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
-    UIRow row(List<UIDetail> details)          { return UIRow.of(details,log); }
-    UIDetail detail(String value, CSS css)     { return UIDetail.of(value,css,log); }
-    UIDetail detail(String value)              { return UIDetail.of(value,log); }
+    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css); }
+    UIRow row(List<UIDetail> details)          { return UIRow.of(details); }
+    UIDetail detail(String value, CSS css)     { return UIDetail.of(value,css); }
+    UIDetail detail(String value)              { return UIDetail.of(value); }
 
      /**
      * A table row where each cell represents a different column.

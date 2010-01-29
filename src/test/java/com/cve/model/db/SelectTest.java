@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 public class SelectTest {
 
 
-    Log log;
+    ;
 
     public SelectTest() {
     }
@@ -24,7 +24,7 @@ public class SelectTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         ImmutableList<Database>   databases = ImmutableList.of(server.databaseName("database"));
         ImmutableList<DBTable>       tables = ImmutableList.of();
         ImmutableList<DBColumn>     columns = ImmutableList.of();

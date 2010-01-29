@@ -2,7 +2,6 @@ package com.cve.web;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import static com.cve.util.Check.notNull;
 
 /**
  * Shutdown the server, if required.
@@ -12,23 +11,23 @@ final class ExitHandler
     extends AbstractFormHandler
 {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private static final ExitHandler HANDLER = new ExitHandler(Logs.of());
+    private static final ExitHandler HANDLER = new ExitHandler();
 
     static ExitHandler of() {
         return HANDLER;
     }
 
-    private ExitHandler(Log log) {
+    private ExitHandler() {
         super("^/exit");
-        this.log = notNull(log);
+        
     }
 
     @Override
     public PageResponse get(PageRequest request) {
-        ExitPage question = ExitPage.of(log);
-        return PageResponse.of(request,question,log);
+        ExitPage question = ExitPage.of();
+        return PageResponse.of(request,question);
     }
 
     @Override

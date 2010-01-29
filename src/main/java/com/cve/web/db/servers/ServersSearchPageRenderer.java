@@ -1,6 +1,7 @@
 package com.cve.web.db.servers;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.db.*;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
@@ -24,16 +25,16 @@ import static com.cve.util.Check.notNull;
 final class ServersSearchPageRenderer implements ModelHtmlRenderer {
 
 
-    final Log log;
+    final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
-    private ServersSearchPageRenderer(Log log) {
-        this.log = notNull(log);
+    private ServersSearchPageRenderer() {
+        
     }
 
-    public static ServersSearchPageRenderer of(Log log) {
-        return new ServersSearchPageRenderer(log);
+    public static ServersSearchPageRenderer of() {
+        return new ServersSearchPageRenderer();
     }
 
     @Override
@@ -42,12 +43,12 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
         ServersSearchPage page = (ServersSearchPage) model;
         Search          search = page.search;
         String title = "Occurences of " + search.target;
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String[] navigation = new String[] {
             b.ADD_SERVER, b.REMOVE_SERVER , b.SHUTDOWN, title, b.search(search)
         };
-        String guts  = Helper.render(page,log);
-        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP,log);
+        String guts  = Helper.render(page);
+        return HtmlPage.gutsTitleNavHelp(guts,title,navigation,HELP);
     }
 
 /**
@@ -56,7 +57,7 @@ final class ServersSearchPageRenderer implements ModelHtmlRenderer {
  */
 static final class Helper {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final RenderingTools tools;
 
@@ -64,23 +65,23 @@ static final class Helper {
 
     final UIDetail EMPTY_CELL;
 
-    Helper(ServersSearchPage page, Log log) {
+    Helper(ServersSearchPage page) {
         this.page = notNull(page);
-        this.log = notNull(log);
-        tools = RenderingTools.of(log);
-        EMPTY_CELL = UIDetail.of("",log);
+        
+        tools = RenderingTools.of();
+        EMPTY_CELL = UIDetail.of("");
     }
 
-    static String render(ServersSearchPage page, Log log) {
-        log.args(page);
-        return new Helper(page,log).render();
+    static String render(ServersSearchPage page) {
+        Logs.of().args(page);
+        return new Helper(page).render();
     }
     
     /**
      * Return a table of all the available servers.
      */
     String render() {
-        UITableBuilder out = UITableBuilder.of(log);
+        UITableBuilder out = UITableBuilder.of();
         out.add(row(detail("Database Server"),detail("Database"),detail("Table"),detail("Columns")));
         for (DBServer server : page.servers) {
             if (isLeaf(server)) {
@@ -205,7 +206,7 @@ static final class Helper {
     }
 
     UIRow row(UIDetail... details) {
-        return UIRow.of(log, details);
+        return UIRow.of( details);
     }
 
     UIDetail cell(DBTable table) {
@@ -213,7 +214,7 @@ static final class Helper {
     }
 
     UIDetail detail(String s) {
-        return UIDetail.of(s, log);
+        return UIDetail.of(s);
     }
 
     UIDetail cell(Collection<DBColumn> columns) {

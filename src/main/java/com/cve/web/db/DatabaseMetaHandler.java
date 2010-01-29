@@ -10,6 +10,7 @@ import com.cve.io.db.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.Throwables;
@@ -38,7 +39,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     final DBServersStore serversStore;
 
-    final Log log;
+    final Log log = Logs.of();
 
     
     final DBURICodec codec;
@@ -57,22 +58,22 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     private static final String PREFIX = "/meta/";
 
     private DatabaseMetaHandler(
-        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
-        super("^" + PREFIX,log);
+        super("^" + PREFIX);
         this.db = notNull(db);
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
-        tags = HTMLTags.of(log);
+        
+        codec = DBURICodec.of();
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
+        tags = HTMLTags.of();
     }
 
     public static DatabaseMetaHandler of(
-        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction, Log log)
+        DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
-        return new DatabaseMetaHandler(db,serversStore,managedFunction,log);
+        return new DatabaseMetaHandler(db,serversStore,managedFunction);
     }
 
     @Override
@@ -164,7 +165,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
 
     String tableLinkRow(String label, String target, String description) {
          return tr(
-             td( Link.textTarget(Label.of(label,log), URIs.of(target)).toString() ) +
+             td( Link.textTarget(Label.of(label), URIs.of(target)).toString() ) +
              td(description));
     }
 
@@ -198,7 +199,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
             try {
                 out.append(render(metaFor(server).getColumns(catalog,schemaPattern,tableNamePattern,columnNamePattern)));
             } catch (SQLException e) {
-                out.append(Throwables.of(log).toHtml(e));
+                out.append(Throwables.of().toHtml(e));
             }
         }
         return out.toString();

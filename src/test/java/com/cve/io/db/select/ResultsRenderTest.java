@@ -41,13 +41,13 @@ import static org.junit.Assert.*;
  */
 public class ResultsRenderTest {
 
-    Log log;
+    ;
 
     @Test
     public void renderSelectPerson() throws SQLException, ClassNotFoundException {
         DBConnection connection = newMemoryDB();
 
-        DBServer         server = DBServer.uri(URIs.of("server"),log);
+        DBServer         server = DBServer.uri(URIs.of("server"));
         Hints           hints = Hints.NONE;
 
         Database       database = server.databaseName("INFORMATION_SCHEMA");
@@ -64,10 +64,10 @@ public class ResultsRenderTest {
         }
         ImmutableList<DBRow> fixedRows = ImmutableList.copyOf(rows);
         ImmutableMap<Cell,DBValue> fixedValues = ImmutableMap.copyOf(values);
-        DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues,log);
-        SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true,log);
+        DBResultSet     resultSet = DBResultSet.of(database,tables,tableCatalog,fixedRows,fixedValues);
+        SelectResults  expected = SelectResults.selectResultsHintsCountMore(select,resultSet,Hints.NONE,28,true);
         SelectContext   context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults    actual = SelectExecutor.of(log).run(context);
+        SelectResults    actual = SelectExecutor.of().run(context);
 
         assertEquals(expected.server          ,actual.server);
         assertEquals(expected.count           ,actual.count);
@@ -90,10 +90,10 @@ public class ResultsRenderTest {
         String user = "";
         String password = "";
         DBDriver driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password,driver,log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(url, user, password,driver);
         DBServersStore serversStore = MemoryDBServersStore.of();
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
 
-        return DBConnectionFactory.of(serversStore, managedFunction, log).getConnection(info);
+        return DBConnectionFactory.of(serversStore, managedFunction).getConnection(info);
     }
 }

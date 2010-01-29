@@ -1,7 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import static com.cve.util.Check.notNull;
+import com.cve.log.Logs;
 
 /**
  * Request handlers not having to do with anything specific, like
@@ -10,23 +10,23 @@ import static com.cve.util.Check.notNull;
  */
 public class CoreServerHandler implements RequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final RequestHandler handler;
 
-    private CoreServerHandler(Log log) {
-        this.log = notNull(log);
+    private CoreServerHandler() {
+        
         handler = CompositeRequestHandler.of(
             // handler                         // for URLs of the form
             ExitHandler.of(),         // /exit
-            ResourceHandler.of(log),     // /resource
-            UserLoginHandler.of(log),            // /login
-            UserLogoutHandler.of(log)            // /logout
+            ResourceHandler.of(),     // /resource
+            UserLoginHandler.of(),            // /login
+            UserLogoutHandler.of()            // /logout
         );
     }
 
-    public static CoreServerHandler of(Log log) {
-        return new CoreServerHandler(log);
+    public static CoreServerHandler of() {
+        return new CoreServerHandler();
     }
     
     @Override

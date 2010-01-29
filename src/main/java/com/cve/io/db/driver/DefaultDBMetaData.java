@@ -21,6 +21,7 @@ import com.cve.io.db.DBMetaDataIO.ReferencedKeyInfo;
 import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
@@ -56,16 +57,16 @@ public class DefaultDBMetaData implements DBMetaData {
 
     final DBConnectionFactory connections;
     
-    final Log log;
+    final Log log = Logs.of();
 
     public final DBMetaDataIO dbmd;
 
-    protected DefaultDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
+    protected DefaultDBMetaData(DBMetaDataIO dbmd, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.dbmd = notNull(dbmd);
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
     }
 
     @Override

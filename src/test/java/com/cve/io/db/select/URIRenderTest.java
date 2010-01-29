@@ -26,11 +26,11 @@ import static org.junit.Assert.*;
  */
 public class URIRenderTest {
 
-    Log log;
+    ;
 
     @Test
     public void renderSelectCustomerPersonName() {
-        DBServer      server = DBServer.uri(URIs.of("server"),log);
+        DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -42,7 +42,7 @@ public class URIRenderTest {
 
     @Test
     public void renderSelectCustomerPersonNameAge() {
-        DBServer      server = DBServer.uri(URIs.of("server"),log);
+        DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
@@ -55,7 +55,7 @@ public class URIRenderTest {
 
     @Test
     public void renderSelectCustomerPersonNameAgeAccount() {
-        DBServer      server = DBServer.uri(URIs.of("server"),log);
+        DBServer      server = DBServer.uri(URIs.of("server"));
         Database  database = server.databaseName("customer");
         DBTable       person = database.tableName("person");
         DBTable      account = database.tableName("account");

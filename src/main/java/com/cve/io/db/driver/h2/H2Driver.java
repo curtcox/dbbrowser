@@ -10,6 +10,7 @@ import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
@@ -24,7 +25,7 @@ import com.cve.web.Search;
  */
 public final class H2Driver implements DBDriver {
 
-    final Log log;
+    final Log log = Logs.of();
     final ManagedFunction.Factory managedFunction;
     final DBServersStore serversStore;
 
@@ -45,31 +46,29 @@ public final class H2Driver implements DBDriver {
 
     public static final class Factory implements DBDriver.Factory {
 
-        final Log log;
+        final Log log = Logs.of();
 
-        public Factory(Log log) {
-            this.log = notNull(log);
-        }
+        public Factory() {}
 
-        public static Factory of(Log log) {
-            return new Factory(log);
+        public static Factory of() {
+            return new Factory();
         }
 
         @Override
-        public DBDriver of(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-            return H2Driver.of(log,managedFunction,serversStore);
+        public DBDriver of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+            return H2Driver.of(managedFunction,serversStore);
         }
 
     }
 
-    private H2Driver(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        this.log = notNull(log);
+    private H2Driver(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
     }
 
-    public static H2Driver of(Log log, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
-        return new H2Driver(log,managedFunction,serversStore);
+    public static H2Driver of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        return new H2Driver(managedFunction,serversStore);
     }
     
     @Override
@@ -80,7 +79,7 @@ public final class H2Driver implements DBDriver {
 
     @Override
     public DBMetaData getDBMetaData(DBConnection connection) {
-        return H2MetaData.of(connection,managedFunction,serversStore,log);
+        return H2MetaData.of(connection,managedFunction,serversStore);
     }
 
     @Override
@@ -90,12 +89,12 @@ public final class H2Driver implements DBDriver {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return H2ResultSetMetaDataFactory.of(server, meta,log);
+        return H2ResultSetMetaDataFactory.of(server, meta);
     }
 
     @Override
     public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
-        return H2MetaDataIO.of(connection, managedFunction,log);
+        return H2MetaDataIO.of(connection, managedFunction);
     }
 
 

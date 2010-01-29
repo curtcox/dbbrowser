@@ -10,6 +10,7 @@ import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
@@ -25,16 +26,16 @@ public final class OracleDriver implements DBDriver {
 
     final ManagedFunction.Factory managedFunction;
     final DBServersStore serversStore;
-    final Log log;
+    final Log log = Logs.of();
 
-    private OracleDriver(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
+    private OracleDriver(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
+        
     }
 
-    public static OracleDriver of(ManagedFunction.Factory managedFunction, DBServersStore serversStore,Log log) {
-        return new OracleDriver(managedFunction,serversStore,log);
+    public static OracleDriver of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        return new OracleDriver(managedFunction,serversStore);
     }
     
     @Override
@@ -45,7 +46,7 @@ public final class OracleDriver implements DBDriver {
 
     @Override
     public DBMetaData getDBMetaData(DBConnection connection) {
-        return OracleMetaData.of(connection,managedFunction,serversStore,log);
+        return OracleMetaData.of(connection,managedFunction,serversStore);
     }
 
     @Override
@@ -55,12 +56,12 @@ public final class OracleDriver implements DBDriver {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return new OracleResultSetMetaDataFactory(server, meta,log);
+        return new OracleResultSetMetaDataFactory(server, meta);
     }
 
     @Override
     public DBMetaDataIO getDBMetaDataIO(DBConnection connection) {
-        return OracleMetaDataIO.of(connection, managedFunction,log);
+        return OracleMetaDataIO.of(connection, managedFunction);
     }
 
     @Override

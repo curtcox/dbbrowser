@@ -10,6 +10,7 @@ import com.cve.web.db.render.DBResultSetRenderer;
 import com.cve.io.db.select.SelectParser;
 import com.cve.io.db.select.DBURIRenderer;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.ui.UIForm;
 import com.cve.util.AnnotatedStackTrace;
@@ -25,7 +26,6 @@ import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
 import java.sql.SQLException;
-import static com.cve.util.Check.notNull;
 
 /**
  * For rendering the free-form query page.
@@ -40,18 +40,18 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
     final DBHintsStore hintsStore;
 
-    final Log log;
+    final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/Select.html");
 
-    private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore, Log log) {
+    private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore) {
         this.db = db;
         this.hintsStore = hintsStore;
-        this.log = notNull(log);
+        
     }
 
-    static FreeFormQueryRenderer of(DBMetaData.Factory db, DBHintsStore hintsStore, Log log) {
-        return new FreeFormQueryRenderer(db,hintsStore,log);
+    static FreeFormQueryRenderer of(DBMetaData.Factory db, DBHintsStore hintsStore) {
+        return new FreeFormQueryRenderer(db,hintsStore);
     }
     
     @Override
@@ -77,25 +77,25 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         DBResultSet results = page.results;
         String[] nav = new String[] {};
         String title = "Select...";
-        UIForm form = UIForm.postAction(URIs.of("select"),log)
+        UIForm form = UIForm.postAction(URIs.of("select"))
             .with(textArea(Q,sql.toString(),8,120))
             .with(label("<p>"))
             .with(submit("Execute"))
         ;
         if (sql.toString().isEmpty()) {
             String guts = page.message + form.toString();
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         AnnotatedStackTrace trace = page.trace;
         if (trace!=AnnotatedStackTrace.NULL) {
-            String guts = page.message + form.toString() + ObjectLink.of(log).to("details",trace);
-            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+            String guts = page.message + form.toString() + ObjectLink.of().to("details",trace);
+            return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         Hints hints = hintsStore.get(results.columns);
         ImmutableList<Order> orders = ImmutableList.of();
-        DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client,log);
+        DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();
         URI base = base(page);
-        return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base,log);
+        return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);
     }
 }

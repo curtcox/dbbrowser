@@ -11,12 +11,12 @@ import com.cve.web.log.ObjectRegistry.Key;
  */
 final class RequestBrowserHandler extends AbstractRequestHandler {
 
-    private RequestBrowserHandler(Log log) {
-        super("^/request/",log);
+    private RequestBrowserHandler() {
+        super("^/request/");
     }
 
-    static RequestBrowserHandler of(Log log) {
-        return new RequestBrowserHandler(log);
+    static RequestBrowserHandler of() {
+        return new RequestBrowserHandler();
     }
 
     @Override

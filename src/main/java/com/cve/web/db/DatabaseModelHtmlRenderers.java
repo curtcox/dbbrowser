@@ -26,25 +26,25 @@ public final class DatabaseModelHtmlRenderers implements ModelHtmlRenderer {
 
     private DatabaseModelHtmlRenderers(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.put(TablesPage.class,                 PageDecorator.of(TablesPageRenderer.of(log)));
-        map.put(TablesSearchPage.class,           PageDecorator.of(TablesSearchPageRenderer.of(log)));
-        map.put(SelectResults.class,              PageDecorator.of(SelectResultsRenderer.of(serversStore,managedFunction,log)));
-        map.put(FreeFormQueryModel.class,         PageDecorator.of(FreeFormQueryRenderer.of(db,hintsStore,log)));
+        map.put(TablesPage.class,                 PageDecorator.of(TablesPageRenderer.of()));
+        map.put(TablesSearchPage.class,           PageDecorator.of(TablesSearchPageRenderer.of()));
+        map.put(SelectResults.class,              PageDecorator.of(SelectResultsRenderer.of(serversStore,managedFunction)));
+        map.put(FreeFormQueryModel.class,         PageDecorator.of(FreeFormQueryRenderer.of(db,hintsStore)));
 
-        renderer = CompositeModelHtmlRenderer.of(log,
-            ClassMapModelHtmlRenderer.of(map, log),
-            ServerModelHtmlRenderers.of(managedFunction, serversStore,log)
+        renderer = CompositeModelHtmlRenderer.of(
+            ClassMapModelHtmlRenderer.of(map),
+            ServerModelHtmlRenderers.of(managedFunction, serversStore)
         );
     }
 
     public static DatabaseModelHtmlRenderers of(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
-        return new DatabaseModelHtmlRenderers(db,serversStore,hintsStore,managedFunction,log);
+        return new DatabaseModelHtmlRenderers(db,serversStore,hintsStore,managedFunction);
     }
 
     @Override

@@ -28,12 +28,12 @@ import java.sql.Statement;
  */
 public final class SampleH2Server {
 
-    public static final Log log = Logs.of();
+    public static final Log log  = Logs.of();
 
     /**
      * Our sample server.
      */
-    public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"),log);
+    public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
     private static final SampleH2Server SERVER = newSampleH2Server();
 
@@ -64,8 +64,8 @@ public final class SampleH2Server {
         final JDBCURL jdbcURL = JDBCURL.uri(URIs.of(url));
         ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
         DBServersStore dbServersStore = MemoryDBServersStore.of();
-        DBDriver driver = DBDrivers.of(managedFunction, dbServersStore, log).url(jdbcURL);
-        return DBConnectionInfo.urlUserPassword(jdbcURL, user, password,driver,log);
+        DBDriver driver = DBDrivers.of(managedFunction, dbServersStore).url(jdbcURL);
+        return DBConnectionInfo.urlUserPassword(jdbcURL, user, password,driver);
     }
 
     /**

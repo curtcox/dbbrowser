@@ -63,34 +63,32 @@ public final class HtmlPage {
      */
     private static final URI EMPTY = URIs.of("");
 
-    public final Log log;
-
-    private static final Log LOG = Logs.of();
+    public final Log log = Logs.of();
 
     final HTMLTags tags;
 
     /**
      * Link to the we server root directory.
      */
-    private static final String HOME = home(LOG);
+    private static final String HOME = home();
 
-    static String home(Log log) {
+    static String home() {
         String tip = "Home";
-        Label text = Label.of("Home",log);
+        Label text = Label.of("Home");
         URI target = URIs.of("/");
         URI  image = Icons.HOME;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    static String help(URI uri, Log log) {
+    static String help(URI uri) {
         String tip = "Help";
-        Label text = Label.of("Help",log);
+        Label text = Label.of("Help");
         URI target = uri;
         URI  image = Icons.HELP;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    private HtmlPage(String title, String guts, String[] navigation, URI base, URI help, String head, String body, Log log) {
+    private HtmlPage(String title, String guts, String[] navigation, URI base, URI help, String head, String body) {
         this.title = notNull(title);
         this.guts = notNull(guts);
         this.navigation = notNull(navigation);
@@ -98,48 +96,48 @@ public final class HtmlPage {
         this.help = notNull(help);
         this.head = notNull(head);
         this.body = notNull(body);
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+        
+        tags = HTMLTags.of();
     }
 
-    public static HtmlPage guts(String guts, Log log) {
+    public static HtmlPage guts(String guts) {
         String title = "";
         String[] navigation = new String[] {};
         URI base = EMPTY;
         URI help = EMPTY;
         String head = "";
-        String body = body(title,guts,navigation,help,log);
-        return new HtmlPage(title, guts, navigation, base, help, head, body,log);
+        String body = body(title,guts,navigation,help);
+        return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
-    public static HtmlPage gutsHelp(String guts, URI help, Log log) {
+    public static HtmlPage gutsHelp(String guts, URI help) {
         String title = "";
         String[] navigation = new String[] {};
         URI base = EMPTY;
         String head = "";
-        String body = body(title,guts,navigation,help,log);
-        return new HtmlPage(title, guts, navigation, base, help, head, body,log);
+        String body = body(title,guts,navigation,help);
+        return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
-    public static HtmlPage gutsTitleNavHelp(String guts, String title, String[] nav, URI help, Log log) {
+    public static HtmlPage gutsTitleNavHelp(String guts, String title, String[] nav, URI help) {
         URI base = EMPTY;
         String head = "";
-        String body = body(title,guts,nav,help,log);
-        return new HtmlPage(title, guts, nav, base, help, head, body,log);
+        String body = body(title,guts,nav,help);
+        return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
-    public static HtmlPage gutsTitleNavHelpBase(String guts, String title, String[] nav, URI help, URI base, Log log) {
-        HTMLTags tags = HTMLTags.of(log);
+    public static HtmlPage gutsTitleNavHelpBase(String guts, String title, String[] nav, URI help, URI base) {
+        HTMLTags tags = HTMLTags.of();
         String head = tags.base(base);
-        String body = body(title,guts,nav,help,log);
-        return new HtmlPage(title, guts, nav, base, help, head, body,log);
+        String body = body(title,guts,nav,help);
+        return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
-    static String body(String title, String guts, String nav[], URI help, Log log) {
+    static String body(String title, String guts, String nav[], URI help) {
         StringBuilder out = new StringBuilder();
-        HTMLTags tags = HTMLTags.of(log);
+        HTMLTags tags = HTMLTags.of();
         out.append(tags.td(HOME));
-        out.append(tags.td(help(help,log)));
+        out.append(tags.td(help(help)));
         for (String n : nav) {
             out.append(tags.td(n));
         }
@@ -147,8 +145,8 @@ public final class HtmlPage {
     }
 
     public HtmlPage withGuts(String guts) {
-        String newBody = body(title,guts,navigation,help,log);
-        return new HtmlPage(title, guts, navigation, base, help, head, newBody,log);
+        String newBody = body(title,guts,navigation,help);
+        return new HtmlPage(title, guts, navigation, base, help, head, newBody);
     }
 
     @Override

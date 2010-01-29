@@ -1,6 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.log.AnnotatedStackTraceModel;
 
 import static com.cve.util.Check.notNull;
@@ -10,20 +11,20 @@ import static com.cve.util.Check.notNull;
  */
 public final class ErrorReportHandler implements RequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
     /**
      * The thing that handles the requests that go OK.
      */
     private final RequestHandler handler;
 
-    private ErrorReportHandler(RequestHandler handler, Log log) {
+    private ErrorReportHandler(RequestHandler handler) {
         this.handler = notNull(handler);
-        this.log = notNull(log);
+        
     }
 
-    public static RequestHandler of(RequestHandler handler, Log log) {
-        return new ErrorReportHandler(handler,log);
+    public static RequestHandler of(RequestHandler handler) {
+        return new ErrorReportHandler(handler);
     }
 
     @Override
@@ -32,7 +33,7 @@ public final class ErrorReportHandler implements RequestHandler {
         try {
             return handler.produce(request);
         } catch (Throwable t) {
-            return PageResponse.of(request,AnnotatedStackTraceModel.throwable(t,log),log);
+            return PageResponse.of(request,AnnotatedStackTraceModel.throwable(t));
         }
     }
 

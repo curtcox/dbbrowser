@@ -19,11 +19,11 @@ import static org.junit.Assert.*;
  */
 public class HintsStoreTest {
 
-    Log log;
+    ;
     
     @Test
     public void findsHintsWithJoin() throws SQLException {
-        DBServer         server = DBServer.uri(URIs.of("server"),log);
+        DBServer         server = DBServer.uri(URIs.of("server"));
 
         Database         database = server.databaseName("DB1");
         DBTable             account = database.tableName("ACCOUNT");

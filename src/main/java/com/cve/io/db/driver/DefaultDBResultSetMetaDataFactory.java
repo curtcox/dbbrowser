@@ -5,6 +5,7 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.DBResultSetMetaData;
 import com.cve.io.db.DBConnection;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
@@ -30,12 +31,12 @@ public class DefaultDBResultSetMetaDataFactory {
 
     public final DBResultSetMetaDataIO meta;
 
-    final Log log;
+    final Log log = Logs.of();
 
-    protected DefaultDBResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
+    protected DefaultDBResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
         this.server = notNull(server);
         this.meta = notNull(meta);
-        this.log = notNull(log);
+        
     }
 
     public DBResultSetMetaData of(DBServer server, DBConnection connection, DBResultSetIO results) {

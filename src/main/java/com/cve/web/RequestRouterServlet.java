@@ -2,6 +2,7 @@ package com.cve.web;
 
 import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 
 import java.sql.SQLException;
 import javax.servlet.http.*;
@@ -41,7 +42,7 @@ public final class RequestRouterServlet extends HttpServlet {
     /**
      * Where we log to.
      */
-    final Log log;
+    final Log log = Logs.of();
 
     /**
      * Renders models into HTML, JPG, PNG, etc...
@@ -57,17 +58,17 @@ public final class RequestRouterServlet extends HttpServlet {
         RequestHandler      router = webapp.handler;
         ModelHtmlRenderer renderer = webapp.renderer;
         Log                    log = webapp.log;
-        return new RequestRouterServlet(router, renderer,log);
+        return new RequestRouterServlet(router, renderer);
     }
 
     /**
      * Use the factory.
      */
-    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer, Log log) {
+    private RequestRouterServlet(RequestHandler router, ModelHtmlRenderer renderer) {
         this.router = notNull(router);
         this.renderer = notNull(renderer);
-        this.log = notNull(log);
-        dumper = RequestDumpServlet.of(log);
+        
+        dumper = RequestDumpServlet.of();
     }
 
     @Override
@@ -78,7 +79,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(PageRequest.request(request),t,log),response);
+            write(PageResponse.of(PageRequest.request(request),t),response);
         }
 
     }
@@ -91,7 +92,7 @@ public final class RequestRouterServlet extends HttpServlet {
         try {
             route(request,response);
         } catch (Throwable t) {
-            write(PageResponse.of(PageRequest.request(request),t,log),response);
+            write(PageResponse.of(PageRequest.request(request),t),response);
         }
 
     }

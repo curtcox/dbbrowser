@@ -1,13 +1,13 @@
 package com.cve.web.log.browsers;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.log.AbstractBrowser;
 import com.cve.web.log.ObjectLink;
 import java.util.*;
-import static com.cve.util.Check.notNull;
 
 /**
  * @author ccox
@@ -16,15 +16,15 @@ public final class CollectionBrowser
     extends AbstractBrowser
 {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private CollectionBrowser(Log log) {
+    private CollectionBrowser() {
         super(Collection.class);
-        this.log = notNull(log);
+        
     }
 
-    public static CollectionBrowser of(Log log) {
-        return new CollectionBrowser(log);
+    public static CollectionBrowser of() {
+        return new CollectionBrowser();
     }
 
     /* (non-Javadoc)
@@ -32,10 +32,10 @@ public final class CollectionBrowser
     @Override
     public String getComponentFor(Object o) {
         Collection c = (Collection) o;
-        UITable table = UITable.of(log);
+        UITable table = UITable.of();
         int i = 0;
         for (Object value : c) {
-            UIRow row = UIRow.of(log,UIDetail.of("" + i,log),link(value));
+            UIRow row = UIRow.of(UIDetail.of("" + i),link(value));
             table = table.with(row);
             i++;
         }
@@ -43,6 +43,6 @@ public final class CollectionBrowser
     }
 
     private UIDetail link(Object o) {
-        return UIDetail.of(ObjectLink.of(log).to("" + o,o),log);
+        return UIDetail.of(ObjectLink.of().to("" + o,o));
     }
 }

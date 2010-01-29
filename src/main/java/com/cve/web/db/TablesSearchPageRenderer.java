@@ -7,6 +7,7 @@ import com.cve.model.db.DBServer;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.*;
 
 import com.cve.ui.UIDetail;
@@ -16,7 +17,6 @@ import com.cve.util.Replace;
 import com.cve.util.URIs;
 import java.net.URI;
 import java.util.Collection;
-import static com.cve.util.Check.notNull;
 
 /**
  * For finding stuff in a database server.
@@ -25,17 +25,17 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
 
     private final DBURICodec codec;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/TablesSearch.html");
 
-    private TablesSearchPageRenderer(Log log) {
-        this.log = notNull(log);
-        codec = DBURICodec.of(log);
+    private TablesSearchPageRenderer() {
+        
+        codec = DBURICodec.of();
     }
 
-    public static TablesSearchPageRenderer of(Log log) {
-        return new TablesSearchPageRenderer(log);
+    public static TablesSearchPageRenderer of() {
+        return new TablesSearchPageRenderer();
     }
 
     @Override
@@ -47,22 +47,22 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         Database database = page.database;
         DBServer     server = database.server;
         String title = "Occurences of " + target + " on "+ server.uri + "/" + database.name;
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String[] nav = new String[] {
             Replace.bracketQuote(
                 "Occurences of " + target + " on <a href=[/]>server</a> /" +
                 server.linkTo() + "/" + database.linkTo()
             ), b.search(page.search)
         };
-        String guts  = Helper.of(page,log).render(page) + searchContentsLink(page);
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        String guts  = Helper.of(page).render(page) + searchContentsLink(page);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
     String searchContentsLink(TablesSearchPage page) {
         Search     search = Search.contents(page.search.target);
         Database database = page.database;
         String    alt = "Search the table rows";
-        Label    text = Label.of(alt,log);
+        Label    text = Label.of(alt);
         URI    target = codec.encode(search.ofContents(),database);
         URI     image = Icons.PLUS;
         return Link.textTargetImageAlt(text, target, image, alt).toString();
@@ -75,23 +75,22 @@ static final class Helper {
 
     final TablesSearchPage page;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final UIDetail EMPTY_CELL;
 
-    Helper(TablesSearchPage page, Log log) {
+    Helper(TablesSearchPage page) {
         this.page = page;
-        this.log = log;
-        EMPTY_CELL = UIDetail.of("",log);
+        EMPTY_CELL = UIDetail.of("");
     }
 
-    static Helper of(TablesSearchPage page, Log log) {
-        return new Helper(page,log);
+    static Helper of(TablesSearchPage page) {
+        return new Helper(page);
     }
 
     String render(TablesSearchPage page) {
         log.args(page);
-        return new Helper(page,log).render();
+        return new Helper(page).render();
     }
     
     /**
@@ -102,7 +101,7 @@ static final class Helper {
         if (page.columns.isEmpty()) {
             return search.target + " not found on " + page.database.linkTo();
         }
-        UITableBuilder out = UITableBuilder.of(log);
+        UITableBuilder out = UITableBuilder.of();
         out.add(row(detail("Table"),detail("Columns")));
         for (DBTable table : page.tables) {
             if (isLeaf(table)) {
@@ -119,23 +118,23 @@ static final class Helper {
     }
 
     UIDetail cell(DBTable table) {
-        return RenderingTools.of(log).cell(table);
+        return RenderingTools.of().cell(table);
     }
 
     UIDetail cell(Collection<DBColumn> columns) {
-        return RenderingTools.of(log).cell(columns);
+        return RenderingTools.of().cell(columns);
     }
 
     UIRow row(DBTable table) {
-        return UIRow.of(log,cell(table));
+        return UIRow.of(cell(table));
     }
 
     UIRow row(UIDetail... details) {
-        return UIRow.of(log,details);
+        return UIRow.of(details);
     }
 
     UIDetail detail(String s) {
-        return UIDetail.of(s,log);
+        return UIDetail.of(s);
     }
 
     UIRow columnsRow(Collection<DBColumn> columns) {
@@ -143,9 +142,9 @@ static final class Helper {
         DBTable     table = column.table;
         UIDetail tableCell = cell(table);
         if (tableCell==EMPTY_CELL) {
-            return UIRow.of(log, cell(columns));
+            return UIRow.of( cell(columns));
         }
-        return UIRow.of(log,  tableCell, cell(columns) );
+        return UIRow.of(  tableCell, cell(columns) );
     }
 }
 

@@ -14,13 +14,13 @@ import com.cve.io.db.DBMetaDataIO.TableInfo;
 import com.cve.io.db.DBMetaDataIO.TableSpecifier;
 import com.cve.io.db.driver.DefaultDBMetaData;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.CurrentValue;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;
-import static com.cve.util.Check.notNull;
 
 /**
  * Meta data driver for H2 database.
@@ -28,16 +28,16 @@ import static com.cve.util.Check.notNull;
  */
 final class OracleMetaData extends DefaultDBMetaData {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private OracleMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
-        super(io,managedFunction,serversStore,log);
-        this.log = notNull(log);
+    private OracleMetaData(DBMetaDataIO io, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        super(io,managedFunction,serversStore);
+        
     }
 
-    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore, Log log) {
-        DBMetaDataIO io = OracleMetaDataIO.of(connection,managedFunction,log);
-        return new OracleMetaData(io,managedFunction,serversStore,log);
+    static DBMetaData of(DBConnection connection, ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
+        DBMetaDataIO io = OracleMetaDataIO.of(connection,managedFunction);
+        return new OracleMetaData(io,managedFunction,serversStore);
     }
 
     /**

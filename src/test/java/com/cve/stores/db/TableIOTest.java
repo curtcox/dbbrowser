@@ -12,13 +12,13 @@ import org.junit.Test;
  */
 public class TableIOTest {
 
-    Log log;
-    TableIO io = TableIO.of(log);
+    ;
+    TableIO io = TableIO.of();
 
     @Test
     public void both() {
-        both(DBServer.uri(URIs.of("one"),log).databaseName("db").tableName("t1"));
-        both(DBServer.uri(URIs.of("two"),log).databaseName("db").tableName("t2"));
+        both(DBServer.uri(URIs.of("one")).databaseName("db").tableName("t1"));
+        both(DBServer.uri(URIs.of("two")).databaseName("db").tableName("t2"));
     }
 
     void both(DBTable t) {

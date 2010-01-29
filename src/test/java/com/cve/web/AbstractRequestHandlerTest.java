@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 public class AbstractRequestHandlerTest {
 
     static class TestHandler extends AbstractRequestHandler {
-        TestHandler(String regexp) { super(regexp,null); }
+        TestHandler(String regexp) { super(regexp); }
         @Override
         public Model get(PageRequest request) {
             throw new UnsupportedOperationException("Not supported yet.");

@@ -11,8 +11,8 @@ import com.cve.log.Log;
  */
 final class DerbyResultSetMetaDataFactory extends DefaultDBResultSetMetaDataFactory {
 
-    public DerbyResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta, Log log) {
-        super(server,meta,log);
+    public DerbyResultSetMetaDataFactory(DBServer server, DBResultSetMetaDataIO meta) {
+        super(server,meta);
     }
 
 }

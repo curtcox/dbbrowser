@@ -14,12 +14,12 @@ import com.cve.web.RequestHandler;
  */
 final class PipelineBuilderHandler extends AbstractRequestHandler {
 
-    private PipelineBuilderHandler(FSMetaData.Factory fs, FSServersStore store, Log log) {
-        super(log);
+    private PipelineBuilderHandler(FSMetaData.Factory fs, FSServersStore store) {
+        super();
     }
 
-    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store, Log log) {
-        return new PipelineBuilderHandler(fs,store,log);
+    public static RequestHandler of(FSMetaData.Factory fs, FSServersStore store) {
+        return new PipelineBuilderHandler(fs,store);
     }
 
     @Override

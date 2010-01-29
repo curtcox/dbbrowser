@@ -17,7 +17,7 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class DBServer {
 
-    public final Log log;
+    public final Log log = Logs.of();
 
     /**
      * How the server is represented in URLs.
@@ -28,20 +28,20 @@ public final class DBServer {
 
     private static final Canonicalizer<DBServer> CANONICALIZER = Canonicalizer.of();
 
-    public static DBServer NULL = new DBServer(URIs.of(""),Logs.of());
+    public static DBServer NULL = new DBServer(URIs.of(""));
 
 
     private static DBServer canonical(DBServer server) {
         return CANONICALIZER.canonical(server);
     }
 
-    private DBServer(URI uri, Log log) {
+    private DBServer(URI uri) {
         this.uri = notNull(uri);
-        this.log = notNull(log);
+        
     }
 
-    public static DBServer uri(URI uri, Log log) {
-        return canonical(new DBServer(uri,log));
+    public static DBServer uri(URI uri) {
+        return canonical(new DBServer(uri));
     }
 
     @Override
@@ -65,7 +65,7 @@ public final class DBServer {
     public String toString() { return uri.toString(); }
 
     public Link linkTo() {
-        Label text = Label.of(toString(),log);
+        Label text = Label.of(toString());
         URI target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }

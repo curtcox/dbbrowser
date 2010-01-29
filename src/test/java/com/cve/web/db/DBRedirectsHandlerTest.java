@@ -22,13 +22,13 @@ import static org.junit.Assert.*;
  */
 public class DBRedirectsHandlerTest {
 
-    Log log;
+    ;
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
-    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction,log);
-    final DBRedirectsHandler   handler = DBRedirectsHandler.of(db,log);
+    final DBMetaData.Factory db = LocalDBMetaDataFactory.of(serversStore,managedFunction);
+    final DBRedirectsHandler   handler = DBRedirectsHandler.of(db);
     {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         serversStore.put(server, DBConnectionInfo.NULL);
     }
 

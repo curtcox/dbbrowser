@@ -1,7 +1,7 @@
 package com.cve.web;
 
 import com.cve.log.Log;
-import static com.cve.util.Check.notNull;
+import com.cve.log.Logs;
 
 /**
  * For rendering strings to HTML.
@@ -9,20 +9,20 @@ import static com.cve.util.Check.notNull;
  */
 public final class StringModelRenderer implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private StringModelRenderer(Log log) {
-        this.log = notNull(log);
+    private StringModelRenderer() {
+        
     }
 
-    public static StringModelRenderer of(Log log) {
-        return new StringModelRenderer(log);
+    public static StringModelRenderer of() {
+        return new StringModelRenderer();
     }
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         StringModel objectModel = (StringModel) model;
         String s = objectModel.string;
-        return HtmlPage.guts(s,log);
+        return HtmlPage.guts(s);
     }
 
 }

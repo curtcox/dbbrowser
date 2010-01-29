@@ -10,6 +10,7 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -34,31 +35,31 @@ public final class AlternateViewHandler implements RequestHandler {
     private final RequestHandler handler;
     private final DBURICodec codec;
     private final DBConnectionFactory connections;
-    private final Log log;
+    private final Log log = Logs.of();
 
     private AlternateViewHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
+        
         handler = CompositeRequestHandler.of(
             // handler            // for URLs of the form
-            CSVHandler.of(db,serversStore,hintsStore,managedFunction,log),      // /view/CSV/
-            XLSHandler.of(log),     // /view/XLS/
-            PDFHandler.of(log),     // /view/PDF/
-            JSONHandler.of(log),    // /view/JSON/
-            XMLHandler.of(log)  // /view/XML/
+            CSVHandler.of(db,serversStore,hintsStore,managedFunction),      // /view/CSV/
+            XLSHandler.of(),     // /view/XLS/
+            PDFHandler.of(),     // /view/PDF/
+            JSONHandler.of(),    // /view/JSON/
+            XMLHandler.of()  // /view/XML/
         );
-        codec = DBURICodec.of(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
+        codec = DBURICodec.of();
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
     }
 
     public static AlternateViewHandler of(
-        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction, Log log) {
-        return new AlternateViewHandler(db,serversStore,hintsStore,managedFunction,log);
+        DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore, ManagedFunction.Factory managedFunction) {
+        return new AlternateViewHandler(db,serversStore,hintsStore,managedFunction);
     }
 
 
@@ -81,7 +82,7 @@ public final class AlternateViewHandler implements RequestHandler {
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults results = SelectExecutor.of(log).run(context);
+        SelectResults results = SelectExecutor.of().run(context);
         return results;
     }
 

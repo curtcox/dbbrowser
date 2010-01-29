@@ -1,9 +1,9 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.google.common.collect.Maps;
 import java.util.Map;
-import static com.cve.util.Check.notNull;
 
 /**
  * For injecting debugging into an HTML page.
@@ -12,10 +12,10 @@ import static com.cve.util.Check.notNull;
  */
 final class DebugPageInjector {
 
-     final Log log;
+     final Log log = Logs.of();
 
-     private DebugPageInjector(Log log) {
-         this.log = notNull(log);
+     private DebugPageInjector() {
+         
      }
      
     /**

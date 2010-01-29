@@ -1,6 +1,7 @@
 package com.cve.web.alt;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
 import com.cve.web.PageRequest;
@@ -11,15 +12,14 @@ import com.cve.web.PageRequest;
  */
 final class PDFHandler extends AbstractBinaryRequestHandler {
 
-    final Log log;
+    final Log log = Logs.of();
 
-    private PDFHandler(Log log) {
-        super("^/view/PDF/", ContentType.PDF,log);
-        this.log = log;
+    private PDFHandler() {
+        super("^/view/PDF/", ContentType.PDF);
     }
 
-    public static PDFHandler of(Log log) {
-        return new PDFHandler(log);
+    public static PDFHandler of() {
+        return new PDFHandler();
     }
     
     @Override

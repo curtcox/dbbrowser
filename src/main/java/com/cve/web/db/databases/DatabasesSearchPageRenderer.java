@@ -1,6 +1,7 @@
 package com.cve.web.db.databases;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.web.db.*;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
@@ -24,16 +25,16 @@ import static com.cve.util.Check.notNull;
  */
 final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
-    private DatabasesSearchPageRenderer(Log log) {
-        this.log = notNull(log);
+    private DatabasesSearchPageRenderer() {
+        
     }
 
-    static DatabasesSearchPageRenderer of(Log log) {
-        return new DatabasesSearchPageRenderer(log);
+    static DatabasesSearchPageRenderer of() {
+        return new DatabasesSearchPageRenderer();
     }
     
     @Override
@@ -43,13 +44,13 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
         String target = page.search.target;
         DBServer server = page.server;
         String title = "Occurences of " + target + " on " + server.toString();
-        NavigationButtons b = NavigationButtons.of(log);
+        NavigationButtons b = NavigationButtons.of();
         String nav[] = new String[] {
             Replace.bracketQuote("Occurences of " + target + " on <a href=[/]>server</a> ") + server,
             b.search(page.search)
         };
-        String guts  = Helper.render(page,log);
-        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP,log);
+        String guts  = Helper.render(page);
+        return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
 /**
@@ -62,27 +63,27 @@ static final class Helper {
 
     final RenderingTools tools;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final UIDetail EMPTY_CELL;
 
-    Helper(DatabasesSearchPage page, Log log) {
+    Helper(DatabasesSearchPage page) {
         this.page = notNull(page);
-        this.log = notNull(log);
-        tools = RenderingTools.of(log);
-        EMPTY_CELL = UIDetail.of("",log);
+        
+        tools = RenderingTools.of();
+        EMPTY_CELL = UIDetail.of("");
     }
 
-    static String render(DatabasesSearchPage page, Log log) {
-        log.args(page);
-        return new Helper(page,log).render();
+    static String render(DatabasesSearchPage page) {
+        Logs.of().args(page);
+        return new Helper(page).render();
     }
     
     /**
      * Return a table of all the available servers.
      */
     String render() {
-        UITableBuilder out = UITableBuilder.of(log);
+        UITableBuilder out = UITableBuilder.of();
         out.add(row(detail("Database"),detail("Table"),detail("Columns")));
         for (Database database : page.databases) {
             if (isLeaf(database)) {
@@ -130,7 +131,7 @@ static final class Helper {
     }
 
     UIDetail detail(String s) {
-        return UIDetail.of(s, log);
+        return UIDetail.of(s);
     }
 
     UIDetail cell(DBTable table) {
@@ -142,11 +143,11 @@ static final class Helper {
     }
     
     UIRow row(Database database) {
-        return UIRow.of(log,cell(database));
+        return UIRow.of(cell(database));
     }
 
     UIRow row(UIDetail... details) {
-        return UIRow.of(log,details);
+        return UIRow.of(details);
     }
 
     UIRow row(DBTable table) {

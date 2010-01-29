@@ -23,12 +23,12 @@ import static org.junit.Assert.*;
  */
 public class DefaultDBMetaDataTest {
 
-    Log log;
+    ;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
-    final DBMetaData dbmd = H2Driver.of(log,managedFunction,serversStore).getDBMetaData(connection);
+    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
+    final DBMetaData dbmd = H2Driver.of(managedFunction,serversStore).getDBMetaData(connection);
 
     @Test
     public void getColumnsForServer() {

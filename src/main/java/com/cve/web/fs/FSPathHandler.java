@@ -15,13 +15,13 @@ final class FSPathHandler extends AbstractRequestHandler  {
 
     private final FSMetaData.Factory fs;
 
-    private FSPathHandler(FSMetaData.Factory fs, Log log) {
-        super(log);
+    private FSPathHandler(FSMetaData.Factory fs) {
+        super();
         this.fs = fs;
     }
 
-    public static RequestHandler of(FSMetaData.Factory fs, Log log) {
-        return new FSPathHandler(fs,log);
+    public static RequestHandler of(FSMetaData.Factory fs) {
+        return new FSPathHandler(fs);
     }
 
     @Override

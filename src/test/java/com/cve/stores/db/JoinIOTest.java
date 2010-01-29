@@ -15,13 +15,13 @@ import static org.junit.Assert.*;
  */
 public class JoinIOTest {
 
-    Log log;
+    ;
 
-    JoinIO io = JoinIO.of(log);
+    JoinIO io = JoinIO.of();
 
     @Test
     public void both() {
-        Database db = DBServer.uri(URIs.of("one"),log).databaseName("db");
+        Database db = DBServer.uri(URIs.of("one")).databaseName("db");
         DBColumn c1 = db.tableName("t1").columnName("c1");
         DBColumn c2 = db.tableName("t2").columnName("c2");
         Join join = Join.of(c1, c2);

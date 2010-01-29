@@ -23,13 +23,13 @@ import static org.junit.Assert.*;
  */
 public class DBURIParserTest {
 
-    Log log;
-    DBURICodec codec = DBURICodec.of(log);
+    ;
+    DBURICodec codec = DBURICodec.of();
 
     @Test
     public void getAllFull() {
         String uri = "//server/db/db.t1+db.t2/db.t1.c1+db.t2.c2+count(c1)/db.t1.c1=db.t2.c2/db.t1.c1=only/db.t1.c1=ASC/db.t1.c1/";
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
@@ -56,7 +56,7 @@ public class DBURIParserTest {
     @Test
     public void getAllShortened() {
         String uri = "//server/db/db.t1+db.t2/c1+0c2+count(c1)/c1=0c2/c1=only/c1=ASC/c1/";
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         Database database = server.databaseName("db");
         DBTable          t1 = database.tableName("t1");
         DBTable          t2 = database.tableName("t2");
@@ -83,7 +83,7 @@ public class DBURIParserTest {
     @Test
     public void getServerWhenOnlyServer() {
         String uri = "//server/";
-        DBServer     server = DBServer.uri(URIs.of("server"),log);
+        DBServer     server = DBServer.uri(URIs.of("server"));
         assertEquals(server,  codec.getServer(uri));
     }
 
@@ -103,7 +103,7 @@ public class DBURIParserTest {
     public void getWithEmptyGroupBy() {
         String uri = "//SAMPLE/PUBLIC/PUBLIC.CITY/CITY_ID+CITY+COUNTRY_ID+LAST_UPDATE/////20+20/";
         Select select = codec.getSelect(uri);
-        DBServer     server = DBServer.uri(URIs.of("SAMPLE"),log);
+        DBServer     server = DBServer.uri(URIs.of("SAMPLE"));
         Database database = server.databaseName("PUBLIC");
         assertEquals(database,select.databases.get(0));
         assertEquals(server,select.databases.get(0).server);

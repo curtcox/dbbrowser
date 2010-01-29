@@ -20,6 +20,7 @@ import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
 import com.cve.web.ClientInfo;
@@ -61,23 +62,23 @@ public final class DBResultSetRenderer {
      */
     private final ClientInfo client;
 
-    private final Log log;
+    private final Log log = Logs.of();
 
     private final HTMLTags tags;
 
-    private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
+    private DBResultSetRenderer(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
         this.results = notNull(results);
         this.orders  = notNull(orders);
         this.hints   = notNull(hints);
         this.client  = notNull(client);
-        this.log = notNull(log);
-        tags = HTMLTags.of(log);
+        
+        tags = HTMLTags.of();
     }
 
-    public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client, Log log) {
+    public static DBResultSetRenderer resultsOrdersHintsClient(DBResultSet results, ImmutableList<Order> orders, Hints hints, ClientInfo client) {
         notNull(results);
         notNull(client);
-        return new DBResultSetRenderer(results,orders,hints,client,log);
+        return new DBResultSetRenderer(results,orders,hints,client);
     }
 
     public String    tdRowspan(String s, int width) { return "<td rowspan=" + tags.q(width) + ">" + s + "</td>"; }
@@ -92,11 +93,11 @@ public final class DBResultSetRenderer {
         rows.add(row(columnNameRow()));
         rows.add(row(columnActionsRow(), CSS.ACTIONS));
         rows.addAll(valueRowsList());
-        return UITable.of(rows,log).toString();
+        return UITable.of(rows).toString();
     }
 
-    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css,log); }
-    UIRow row(List<UIDetail> details)          { return UIRow.of(details,log); }
+    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css); }
+    UIRow row(List<UIDetail> details)          { return UIRow.of(details); }
 
     /**
      * The rows that contain all of the result set values.
@@ -121,9 +122,9 @@ public final class DBResultSetRenderer {
         return out;
     }
 
-    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css, log); }
-    UIDetail detail(String value) { return UIDetail.of(value, log); }
-    UIDetail detail(String value,int width) { return UIDetail.of(value, width, log); }
+    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css); }
+    UIDetail detail(String value) { return UIDetail.of(value); }
+    UIDetail detail(String value,int width) { return UIDetail.of(value, width); }
 
     /**
      * A table row where each cell represents a different database.
@@ -222,7 +223,7 @@ public final class DBResultSetRenderer {
      */
     String nameCell(Database database) {
         log.args(database);
-        Label  text = Label.of(database.name,log);
+        Label  text = Label.of(database.name);
         URI  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
     }
@@ -232,7 +233,7 @@ public final class DBResultSetRenderer {
      */
     String nameCell(DBTable table) {
         log.args(table);
-        Label  text = Label.of(table.name,log);
+        Label  text = Label.of(table.name);
         URI  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
     }
@@ -251,7 +252,7 @@ public final class DBResultSetRenderer {
         if (columnName.length() > width) {
             columnName = columnName.substring(0,width);
         }
-        Label                    text = Label.of(columnName,log);
+        Label                    text = Label.of(columnName);
         URI                    target = column.linkTo().getTarget();
         ImmutableList<DBColumn> joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<DBRowFilter> filters = hints.getFiltersFor(column);
@@ -312,7 +313,7 @@ public final class DBResultSetRenderer {
     }
 
     String actionCell(DBColumn column, Order.Direction direction) {
-        Label  text = Label.of("Hide or sort",log);
+        Label  text = Label.of("Hide or sort");
         URI  target = SelectBuilderAction.HIDE.withArgs(column.fullName());
         Tooltip tip = ColumnActionTooltip.columnDirection(column,direction);
         URI   image = Icons.CONFIGURE;
@@ -322,7 +323,7 @@ public final class DBResultSetRenderer {
     String valueCell(Cell cell, DBValue value) {
         Object       object = value.value;
         String  valueString = "" + object;
-        Label          text = Label.of(valueString,log);
+        Label          text = Label.of(valueString);
         DBColumn     column = cell.column;
         DBRowFilter       filter = DBRowFilter.of(column, value);
         URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());

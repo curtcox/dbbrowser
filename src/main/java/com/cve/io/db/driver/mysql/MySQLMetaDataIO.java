@@ -12,12 +12,12 @@ import com.cve.stores.ManagedFunction;
  */
 final class MySQLMetaDataIO extends DefaultDBMetaDataIO {
 
-    protected MySQLMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        super(connection,managedFunction,log);
+    protected MySQLMetaDataIO(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        super(connection,managedFunction);
     }
 
-    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction, Log log) {
-        return new MySQLMetaDataIO(connection,managedFunction,log);
+    static DBMetaDataIO of(DBConnection connection, ManagedFunction.Factory managedFunction) {
+        return new MySQLMetaDataIO(connection,managedFunction);
     }
 
 }

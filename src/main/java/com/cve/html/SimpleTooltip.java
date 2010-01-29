@@ -21,8 +21,8 @@ public final class SimpleTooltip
         return new SimpleTooltip(html);
     }
 
-    public static SimpleTooltip of(String html, Log log) {
-        return new SimpleTooltip(HTML.of(html,log));
+    public static SimpleTooltip of(String html) {
+        return new SimpleTooltip(HTML.of(html));
     }
 
     @Override

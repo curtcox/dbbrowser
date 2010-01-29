@@ -3,12 +3,12 @@ package com.cve.web.db;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UISearchBox;
 import com.cve.util.URIs;
 import com.cve.web.Icons;
 import com.cve.web.Search;
 import java.net.URI;
-import static com.cve.util.Check.notNull;
 
 /**
  * Navigation buttons that are used on lots of different pages.
@@ -16,7 +16,7 @@ import static com.cve.util.Check.notNull;
  */
 public final class NavigationButtons {
 
-    final Log log;
+    final Log log = Logs.of();
 
     public final String ADD_SERVER;
 
@@ -30,8 +30,8 @@ public final class NavigationButtons {
 
     public final String LOGOUT;
 
-    private NavigationButtons(Log log) {
-        this.log = notNull(log);
+    private NavigationButtons() {
+        
         ADD_SERVER = addServer();
         REMOVE_SERVER = removeServer();
         SEARCH = search(Search.EMPTY);
@@ -40,13 +40,13 @@ public final class NavigationButtons {
         LOGOUT = logout();
     }
 
-    public static NavigationButtons of(Log log) {
-        return new NavigationButtons(log);
+    public static NavigationButtons of() {
+        return new NavigationButtons();
     }
 
     public String addServer() {
         String tip = "Add a database server";
-        Label text = Label.of("+",log);
+        Label text = Label.of("+");
         URI target = URIs.of("add");
         URI  image = Icons.PLUS;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
@@ -54,7 +54,7 @@ public final class NavigationButtons {
 
     public String removeServer() {
         String tip = "Remove a database server";
-        Label text = Label.of("-",log);
+        Label text = Label.of("-");
         URI target = URIs.of("remove");
         URI  image = Icons.MINUS;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
@@ -64,23 +64,23 @@ public final class NavigationButtons {
      * Return a search box
      */
     public String search(Search search) {
-        return UISearchBox.contents(search,log).toString();
+        return UISearchBox.contents(search).toString();
     }
 
     public String shutdown() {
         String tip = "Shutdown DBBrowser";
-        Label text = Label.of("X",log);
+        Label text = Label.of("X");
         URI target = URIs.of("exit");
         URI  image = Icons.OFF;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     public String login() {
-        return Link.textTarget(Label.of("login",log), URIs.of("login")).toString();
+        return Link.textTarget(Label.of("login"), URIs.of("login")).toString();
     }
 
     public String logout() {
-        return Link.textTarget(Label.of("logout",log), URIs.of("logout")).toString();
+        return Link.textTarget(Label.of("logout"), URIs.of("logout")).toString();
     }
 
 }

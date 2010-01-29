@@ -15,6 +15,7 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.select.SelectExecutor;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
@@ -44,29 +45,29 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
     final DBURICodec codec;
 
-    final Log log;
+    final Log log = Logs.of();
 
     final DBConnectionFactory connections;
 
     private ColumnValueDistributionHandler(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
-        super(log);
+        super();
         this.db = notNull(db);
         this.serversStore = notNull(serversStore);
         this.hintsStore = notNull(hintsStore);
         this.managedFunction = notNull(managedFunction);
-        this.log = notNull(log);
-        connections = DBConnectionFactory.of(serversStore, managedFunction, log);
-        codec = DBURICodec.of(log);
+        
+        connections = DBConnectionFactory.of(serversStore, managedFunction);
+        codec = DBURICodec.of();
     }
 
     static ColumnValueDistributionHandler of(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
-        ManagedFunction.Factory managedFunction, Log log)
+        ManagedFunction.Factory managedFunction)
     {
-        return new ColumnValueDistributionHandler(db,serversStore,hintsStore, managedFunction,log);
+        return new ColumnValueDistributionHandler(db,serversStore,hintsStore, managedFunction);
     }
 
     @Override
@@ -120,7 +121,7 @@ final class ColumnValueDistributionHandler extends AbstractRequestHandler {
 
         // run the select
         SelectContext context = SelectContext.of(select, Search.EMPTY, server, connection, hints);
-        SelectResults results = SelectExecutor.of(log).run(context);
+        SelectResults results = SelectExecutor.of().run(context);
         return results;
     }
 }

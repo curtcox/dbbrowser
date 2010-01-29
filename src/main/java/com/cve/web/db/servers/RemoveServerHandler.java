@@ -11,12 +11,12 @@ import com.cve.web.PageRequest;
  */
 final class RemoveServerHandler extends AbstractRequestHandler {
 
-    private RemoveServerHandler(DBServersStore serversStore,Log log) {
-        super(log);
+    private RemoveServerHandler(DBServersStore serversStore) {
+        super();
     }
 
-    public static RemoveServerHandler of(DBServersStore serversStore, Log log) {
-        return new RemoveServerHandler(serversStore,log);
+    public static RemoveServerHandler of(DBServersStore serversStore) {
+        return new RemoveServerHandler(serversStore);
     }
 
     @Override

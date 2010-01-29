@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 public class SelectParserTest {
 
-    Log log;
+    ;
 
     @Test(expected=IllegalArgumentException.class)
     public void emptyMetaIsIllegalArgument() {
@@ -44,7 +44,7 @@ public class SelectParserTest {
         List<DBTable>              tables = Lists.newArrayList();
         List<DBColumn>            columns = Lists.newArrayList();
         List<AggregateFunction> functions = Lists.newArrayList();
-        Database database = DBServer.uri(URIs.of("server"),log).databaseName("database");
+        Database database = DBServer.uri(URIs.of("server")).databaseName("database");
         databases.add(database);
         DBTable table = database.tableName("table");
         tables.add(table);

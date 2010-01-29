@@ -10,6 +10,7 @@ import com.cve.io.db.SelectRenderer;
 import com.cve.io.db.driver.DefaultDBResultSetMetaDataFactory;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
@@ -25,16 +26,16 @@ public final class DerbyDriver implements DBDriver {
 
     final ManagedFunction.Factory managedFunction;
     final DBServersStore serversStore;
-    final Log log;
+    final Log log = Logs.of();
 
-    private DerbyDriver(ManagedFunction.Factory managedFunction,  DBServersStore serversStore, Log log) {
+    private DerbyDriver(ManagedFunction.Factory managedFunction,  DBServersStore serversStore) {
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.log = notNull(log);
+        
     }
 
-    public static DerbyDriver of(ManagedFunction.Factory managedFunction,  DBServersStore serversStore, Log log) {
-        return new DerbyDriver(managedFunction,serversStore,log);
+    public static DerbyDriver of(ManagedFunction.Factory managedFunction,  DBServersStore serversStore) {
+        return new DerbyDriver(managedFunction,serversStore);
     }
     
     @Override
@@ -45,7 +46,7 @@ public final class DerbyDriver implements DBDriver {
 
     @Override
     public DBMetaData getDBMetaData(DBConnection dbmd) {
-        return DerbyMetaData.of(dbmd,managedFunction,serversStore,log);
+        return DerbyMetaData.of(dbmd,managedFunction,serversStore);
     }
 
     @Override
@@ -55,7 +56,7 @@ public final class DerbyDriver implements DBDriver {
 
     @Override
     public DefaultDBResultSetMetaDataFactory getResultSetFactory(DBServer server, DBResultSetMetaDataIO meta) {
-        return new DerbyResultSetMetaDataFactory(server, meta,log);
+        return new DerbyResultSetMetaDataFactory(server, meta);
     }
 
     @Override

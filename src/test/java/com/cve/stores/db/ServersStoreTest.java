@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 public class ServersStoreTest {
 
-    Log log;
+    ;
 
     @Test
     public void getServers() {
@@ -26,10 +26,10 @@ public class ServersStoreTest {
 
     @Test
     public void getConnection() {
-        DBServer server = DBServer.uri(URIs.of("server"),log);
+        DBServer server = DBServer.uri(URIs.of("server"));
         JDBCURL jdbcURL = JDBCURL.uri(URIs.of("jdbc:h2:mem:db1"));
         DBDriver driver = null;
-        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL,"","",driver,log);
+        DBConnectionInfo info = DBConnectionInfo.urlUserPassword(jdbcURL,"","",driver);
         DBServersStore  store = MemoryDBServersStore.of();
         DBConnectionInfo info2 = store.get(server);
         assertEquals(info,info2);

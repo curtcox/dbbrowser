@@ -26,13 +26,12 @@ import static org.junit.Assert.*;
  */
 public class H2DriverTest {
 
-    final Log log = null;
     final DBServer server = SampleH2Server.SAMPLE;
     final ManagedFunction.Factory managedFunction = UnmanagedFunctionFactory.of();
     final DBServersStore serversStore = MemoryDBServersStore.of();
     final DBConnectionInfo info = SampleH2Server.getConnectionInfo();
-    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction,log);
-    final H2Driver driver = H2Driver.of(log, managedFunction,serversStore);
+    final DefaultDBConnection connection = DefaultDBConnection.of(info,serversStore,managedFunction);
+    final H2Driver driver = H2Driver.of( managedFunction,serversStore);
     final DBMetaData dbmd = driver.getDBMetaData(connection);
 
 

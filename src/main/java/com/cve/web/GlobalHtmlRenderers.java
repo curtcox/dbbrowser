@@ -1,9 +1,9 @@
 package com.cve.web;
 
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.google.common.collect.Maps;
 import java.util.Map;
-import static com.cve.util.Check.notNull;
 
 /**
  * Defines the mapping we use for the entire application.
@@ -11,20 +11,20 @@ import static com.cve.util.Check.notNull;
  */
 final class GlobalHtmlRenderers implements ModelHtmlRenderer {
 
-    final Log log;
+    final Log log = Logs.of();
 
     final ModelHtmlRenderer renderer;
 
-    private GlobalHtmlRenderers(Log log) {
-        this.log = notNull(log);
+    private GlobalHtmlRenderers() {
+        
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
-        map.put(ExitPage.class,         PageDecorator.of(ExitPageRenderer.of(log)));
-        map.put(StringModel.class,      PageDecorator.of(StringModelRenderer.of(log)));
-        renderer = ClassMapModelHtmlRenderer.of(map, log);
+        map.put(ExitPage.class,         PageDecorator.of(ExitPageRenderer.of()));
+        map.put(StringModel.class,      PageDecorator.of(StringModelRenderer.of()));
+        renderer = ClassMapModelHtmlRenderer.of(map);
     }
 
-    public static GlobalHtmlRenderers of(Log log) {
-        return new GlobalHtmlRenderers(log);
+    public static GlobalHtmlRenderers of() {
+        return new GlobalHtmlRenderers();
     }
     
     @Override

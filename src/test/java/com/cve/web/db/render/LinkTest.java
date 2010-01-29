@@ -18,16 +18,16 @@ import com.cve.util.Replace;
  */
 public class LinkTest {
 
-    Log log;
+    ;
 
     public LinkTest() {}
 
     private final Tooltip DUMMY_TOOLTIP = new Tooltip() {
-        public HTML toHTML() { return HTML.of("dummy tooltip",log); }
+        public HTML toHTML() { return HTML.of("dummy tooltip"); }
     };
 
     private String linkHTML() {
-        Label text = Label.of("foo",log);
+        Label text = Label.of("foo");
         URI target = uri("bar");
         Tooltip tip = DUMMY_TOOLTIP;
         String html = Link.textTargetTip(text,target,tip).toString();

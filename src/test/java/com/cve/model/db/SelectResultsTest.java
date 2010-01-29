@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 public class SelectResultsTest {
 
-    Log log;
+    ;
 
     public SelectResultsTest() {}
 
@@ -21,13 +21,13 @@ public class SelectResultsTest {
      */
     @Test
     public void selectGetterEqualsConstructor() {
-        DBServer           server = DBServer.uri(URIs.of("server"),log);
+        DBServer           server = DBServer.uri(URIs.of("server"));
         Database       database = server.databaseName("database");
         DBTable             table = database.tableName("table");
         DBColumn           column = DBColumn.tableNameType(table,"column",String.class);
         Select    givenSelect   = Select.from(database,table,column);
-        DBResultSet givenResults  = DBResultSet.of(database,table,column,log);
-        SelectResults results   = SelectResults.selectResultsHintsMore(givenSelect,givenResults,Hints.NONE,false,log);
+        DBResultSet givenResults  = DBResultSet.of(database,table,column);
+        SelectResults results   = SelectResults.selectResultsHintsMore(givenSelect,givenResults,Hints.NONE,false);
         Select returnSelect = results.select;
         assertEquals(givenSelect, returnSelect);
     }

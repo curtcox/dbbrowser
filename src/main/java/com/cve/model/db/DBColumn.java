@@ -1,10 +1,10 @@
 package com.cve.model.db;
 
-import com.cve.html.HTML;
 import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
@@ -50,7 +50,7 @@ public final class DBColumn {
      */
     public final Keyness keyness;
 
-    public final Log log;
+    public final Log log = Logs.of();
 
     final DBURICodec codec;
     
@@ -73,8 +73,7 @@ public final class DBColumn {
         this.name    = notNull(name);
         this.type    = notNull(type);
         this.keyness = notNull(keyness);
-        log = table.log;
-        codec = DBURICodec.of(log);
+        codec = DBURICodec.of();
     }
 
     private static DBColumn canonical(DBColumn column) {
@@ -172,14 +171,14 @@ public final class DBColumn {
     public Link linkTo() {
         URI target = codec.encode(this);
         String markedName = name;
-        HTMLTags tags = HTMLTags.of(log);
+        HTMLTags tags = HTMLTags.of();
         if (keyness==Keyness.PRIMARY) {
             markedName = tags.b(name);
         }
         if (keyness==Keyness.FOREIGN) {
             markedName = tags.i(name);
         }
-        Label text = Label.of(markedName,log);
+        Label text = Label.of(markedName);
         return Link.textTarget(text, target);
     }
 

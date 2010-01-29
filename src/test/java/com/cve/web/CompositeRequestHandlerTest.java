@@ -25,7 +25,7 @@ public class CompositeRequestHandlerTest {
     static class TestHandler extends AbstractRequestHandler {
         final String regexp;
         TestHandler(String regexp) {
-            super(regexp,null);
+            super(regexp);
             this.regexp = regexp;
         }
         @Override
