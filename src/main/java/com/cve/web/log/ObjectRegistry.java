@@ -79,6 +79,10 @@ public final class ObjectRegistry {
     }
 
     static ImmutableList index() {
+        return ImmutableList.copyOf(objects.keySet());
+    }
+
+    static ImmutableList values() {
         return ImmutableList.copyOf(objects.values());
     }
 

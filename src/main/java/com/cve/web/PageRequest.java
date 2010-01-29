@@ -28,8 +28,46 @@ public final class PageRequest {
     /**
      * Unique id for a request.
      */
-    public static class ID {
-        final Timestamp timestamp = Timestamp.of();
+    public static class ID implements Comparable<ID> {
+
+        public final Timestamp timestamp;
+
+        static final ThreadLocal<ID> local = new ThreadLocal() {
+            @Override protected ID initialValue() {
+                 return new ID();
+            }
+        };
+
+        private ID() {
+            timestamp = Timestamp.of();
+        }
+
+        private ID(Timestamp timestamp) {
+            this.timestamp = Check.notNull(timestamp);
+        }
+
+        /**
+         * This will be different for every thread, but always the same when
+         * called from the same thread.
+         */
+        public static ID of() {
+            return local.get();
+        }
+
+        public static ID parse(String string) {
+            long code = Long.parseLong(string,16);
+            return new ID(Timestamp.of(code));
+        }
+
+        @Override
+        public int compareTo(ID other) {
+            return timestamp.compareTo(other.timestamp);
+        }
+
+        @Override
+        public String toString() {
+            return "id=" + timestamp;
+        }
     }
 
     /**
@@ -141,5 +179,17 @@ public final class PageRequest {
                cookies.hashCode()     ^
                method.hashCode()      ^
                id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "<PageRequest>" +
+                " requestURI=" + requestURI +
+                " queryString=" + queryString +
+                " parameters=" + parameters +
+                " cookies=" + cookies +
+                " method=" + method +
+                " id=" + id +
+               "</PageRequest>";
     }
 }

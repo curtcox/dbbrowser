@@ -140,12 +140,22 @@ public final class SimpleCache<K,V> implements Map {
     // thought through with respect to modifciation during iteration
     @Override
     public Set keySet() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        lock.lock();
+        try {
+            return map.keySet();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override
     public Collection values() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        lock.lock();
+        try {
+            return map.values();
+        } finally {
+            lock.unlock();
+        }
     }
 
     @Override

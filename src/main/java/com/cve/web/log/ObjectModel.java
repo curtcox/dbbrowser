@@ -10,8 +10,11 @@ final class ObjectModel implements Model {
 
     public final Object object;
     
-    public ObjectModel(Object object) {
+    private ObjectModel(Object object) {
         this.object = object;
     }
 
+    static ObjectModel of(Object object) {
+        return new ObjectModel(object);
+    }
 }

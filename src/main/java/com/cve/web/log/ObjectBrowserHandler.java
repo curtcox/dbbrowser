@@ -25,7 +25,7 @@ final class ObjectBrowserHandler extends AbstractRequestHandler {
         String idString = uri.substring(uri.lastIndexOf("/") + 1);
         Key key = ObjectRegistry.Key.parse(idString);
         Object object = ObjectRegistry.get(key);
-        return new ObjectModel(object);
+        return ObjectModel.of(object);
     }
 
 }

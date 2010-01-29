@@ -2,6 +2,7 @@ package com.cve.log;
 
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
+import com.cve.web.PageRequest;
 import com.cve.web.log.ObjectRegistry;
 import com.google.common.collect.Maps;
 import java.util.Map;
@@ -21,7 +22,9 @@ final class SimpleLog implements Log {
     }
 
     /**
-     * Where in the stack -> arguments
+     * Where in the stack -> arguments.
+     * This is wrapped in a ThreadLocal, so different threads don't overlay
+     * each others info.
      */
     private final ThreadLocal<Map<StackTraceElement,Object[]>> stackArgs = new ThreadLocal() {
          @Override protected Map<StackTraceElement,Object[]> initialValue() {
@@ -88,33 +91,58 @@ final class SimpleLog implements Log {
         // System.out.println(element + " " + Arrays.asList(objects));
     }
 
-    private String caller() {
-        return "";
-    }
 
     @Override
     public void debug(String message) {
+        LogLevel            level = LogLevel.DEBUG;
+        PageRequest.ID         id = PageRequest.ID.of();
+        AnnotatedStackTrace trace = annotatedStackTrace();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
         //System.out.println(clazz + ":" + message);
     }
 
     @Override
     public void info(String message) {
-        System.out.println(caller() + ":" + message);
+        LogLevel            level = LogLevel.DEBUG;
+        PageRequest.ID         id = PageRequest.ID.of();
+        AnnotatedStackTrace trace = annotatedStackTrace();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
+        print(message);
     }
 
     @Override
     public void warn(String message) {
-        System.out.println(caller() + ":" + message);
+        LogLevel            level = LogLevel.DEBUG;
+        PageRequest.ID         id = PageRequest.ID.of();
+        AnnotatedStackTrace trace = annotatedStackTrace();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
+        print(message);
     }
 
     @Override
     public void warn(Throwable t) {
+        LogLevel            level = LogLevel.DEBUG;
+        PageRequest.ID         id = PageRequest.ID.of();
+        AnnotatedStackTrace trace = annotatedStackTrace(t);
+        String            message = t.getMessage();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
         t.printStackTrace();
     }
 
     @Override
     public void severe(String message) {
-        System.out.println(caller() + ":" + message);
+        LogLevel            level = LogLevel.DEBUG;
+        PageRequest.ID         id = PageRequest.ID.of();
+        AnnotatedStackTrace trace = annotatedStackTrace();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
+        print(message);
     }
 
+    private String caller() {
+        return "";
+    }
+
+    void print(String message) {
+        System.out.println(caller() + ":" + message);
+    }
 }

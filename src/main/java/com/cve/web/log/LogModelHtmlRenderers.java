@@ -23,7 +23,9 @@ public final class LogModelHtmlRenderers implements ModelHtmlRenderer {
         
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(AnnotatedStackTraceModel.class, AnnotatedStackTraceRenderer.of());
-        map.put(ObjectModel.class, ObjectModelRenderer.of());
+        map.put(ObjectModel.class,  ObjectModelRenderer.of());
+        map.put(RequestModel.class, RequestModelRenderer.of());
+        map.put(RequestIndexModel.class, RequestIndexRenderer.of());
         renderer = ClassMapModelHtmlRenderer.of(map);
     }
 
