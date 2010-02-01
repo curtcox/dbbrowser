@@ -9,7 +9,7 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class Timestamp implements Comparable<Timestamp> {
 
-    final long value;
+    public final long value;
 
     private Timestamp(long value) {
         this.value = value;

@@ -21,14 +21,11 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     private final Log log = Logs.of();
 
-    private final HTMLTags tags;
+    private final HTMLTags tags = HTMLTags.of();
 
     private static URI HELP = URIs.of("/resource/help/Tables.html");
 
-    private TablesPageRenderer() {
-        
-        tags = HTMLTags.of();
-    }
+    private TablesPageRenderer() {}
 
     public static TablesPageRenderer of() {
         return new TablesPageRenderer();

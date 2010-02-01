@@ -49,6 +49,15 @@ public final class ObjectLink {
     /**
      * Return a labeled link to the given object.
      */
+    public URI uri(Object object) {
+        String hash = ObjectRegistry.put(object).toHexString();
+        Label text = Label.of(getLabel(object) + "/" + hash);
+        return URIs.of("/object/" + hash);
+    }
+
+    /**
+     * Return a labeled link to the given object.
+     */
     public String to(String labelText, Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(labelText);

@@ -2,7 +2,6 @@ package com.cve.web.db;
 
 import com.cve.model.db.SelectResults;
 import com.cve.io.db.DBMetaData;
-import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;

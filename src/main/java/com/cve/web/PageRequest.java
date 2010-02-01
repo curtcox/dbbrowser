@@ -1,13 +1,17 @@
 
 package com.cve.web;
 
+import com.cve.html.Label;
+import com.cve.html.Link;
 import javax.annotation.concurrent.Immutable;
 import javax.servlet.http.HttpServletRequest;
 import com.cve.util.Check;
 import com.cve.util.Timestamp;
+import com.cve.web.log.LogCodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import java.net.URI;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 
@@ -31,6 +35,8 @@ public final class PageRequest {
     public static class ID implements Comparable<ID> {
 
         public final Timestamp timestamp;
+
+        final LogCodec codec = LogCodec.of();
 
         static final ThreadLocal<ID> local = new ThreadLocal() {
             @Override protected ID initialValue() {
@@ -67,6 +73,12 @@ public final class PageRequest {
         @Override
         public String toString() {
             return "id=" + timestamp;
+        }
+
+        public Object linkTo() {
+            Label text = Label.of("" + timestamp.value);
+            URI target = codec.encode(this);
+            return Link.textTarget(text, target);
         }
     }
 

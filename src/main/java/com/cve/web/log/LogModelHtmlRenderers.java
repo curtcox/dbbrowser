@@ -7,6 +7,7 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import com.cve.web.PageDecorator;
 import com.google.common.collect.Maps;
 import java.util.Map;
 
@@ -23,9 +24,9 @@ public final class LogModelHtmlRenderers implements ModelHtmlRenderer {
         
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(AnnotatedStackTraceModel.class, AnnotatedStackTraceRenderer.of());
-        map.put(ObjectModel.class,  ObjectModelRenderer.of());
-        map.put(RequestModel.class, RequestModelRenderer.of());
-        map.put(RequestIndexModel.class, RequestIndexRenderer.of());
+        map.put(ObjectModel.class,              ObjectModelRenderer.of());
+        map.put(RequestModel.class,             RequestModelRenderer.of());
+        map.put(RequestIndexModel.class,        PageDecorator.of(RequestIndexRenderer.of()));
         renderer = ClassMapModelHtmlRenderer.of(map);
     }
 

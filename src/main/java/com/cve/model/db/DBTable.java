@@ -30,7 +30,7 @@ public final class DBTable {
 
     final Log log = Logs.of();
 
-    final DBURICodec codec;
+    final DBURICodec codec = DBURICodec.of();
 
     private static final Canonicalizer<DBTable> CANONICALIZER = Canonicalizer.of();
 
@@ -46,7 +46,6 @@ public final class DBTable {
     private DBTable(Database database, String name) {
         this.database = notNull(database);
         this.name     = notNull(name);
-        codec = DBURICodec.of();
     }
 
     public static DBTable databaseName(Database database, String name) {
