@@ -3,6 +3,8 @@ package com.cve.web;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.log.Log;
+import com.cve.log.Logs;
 import javax.annotation.concurrent.Immutable;
 import javax.servlet.http.HttpServletRequest;
 import com.cve.util.Check;
@@ -32,10 +34,13 @@ public final class PageRequest {
     /**
      * Unique id for a request.
      */
+    @Immutable
     public static class ID implements Comparable<ID> {
 
         public final Timestamp timestamp;
 
+        static final Log log = Logs.of();
+        
         final LogCodec codec = LogCodec.of();
 
         static final ThreadLocal<ID> local = new ThreadLocal() {
@@ -53,14 +58,24 @@ public final class PageRequest {
         }
 
         /**
+         * Start using a new request.
+         * The thread local isn't enough.  Web servers will tend to use thread
+         * pools, so thread doesn't really imply request.
+         */
+        static void next() {
+            local.set(new ID());
+        }
+
+        /**
          * This will be different for every thread, but always the same when
-         * called from the same thread.
+         * called from the same thread, between calls to next.
          */
         public static ID of() {
             return local.get();
         }
 
         public static ID parse(String string) {
+            log.args(string);
             long code = Long.parseLong(string,16);
             return new ID(Timestamp.of(code));
         }
@@ -75,10 +90,21 @@ public final class PageRequest {
             return "id=" + timestamp;
         }
 
-        public Object linkTo() {
+        public Link linkTo() {
             Label text = Label.of("" + timestamp.value);
             URI target = codec.encode(this);
             return Link.textTarget(text, target);
+        }
+
+        @Override
+        public int hashCode() {
+            return timestamp.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            ID other = (ID) o;
+            return timestamp.equals(other.timestamp);
         }
     }
 

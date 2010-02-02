@@ -44,10 +44,6 @@ public final class DefaultDBConnection implements DBConnection {
 
     public final DBDriver driver;
 
-    private final DBServersStore serversStore;
-
-    private final ManagedFunction.Factory managedFunction;
-
     private final ManagedFunction<SQL,DBResultSetIO> resultSets;
 
     private final Log log = Logs.of();
@@ -57,8 +53,6 @@ public final class DefaultDBConnection implements DBConnection {
     {
         this.driver = notNull(driver);
         this.info = notNull(info);
-        this.serversStore = notNull(serversStore);
-        this.managedFunction = notNull(managedFunction);
         resultSets = managedFunction.of(new ExecuteSQL(),SQL.class,DBResultSetIO.class,DBResultSetIO.NULL);
     }
 

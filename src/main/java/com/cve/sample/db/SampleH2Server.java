@@ -35,22 +35,20 @@ public final class SampleH2Server {
      */
     public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
-    private static final SampleH2Server SERVER = newSampleH2Server();
+    private static final SampleH2Server SERVER = new SampleH2Server();
 
-    private static SampleH2Server newSampleH2Server() {
-        try {
-            SampleH2Server server = new SampleH2Server();
-            server.loadServer();
-            return server;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError(e);
-        }
-    }
+    private boolean loaded = false;
 
     private SampleH2Server() {}
 
-    public static SampleH2Server of() {
+    public static synchronized SampleH2Server of() {
+        if (!SERVER.loaded) {
+            try {
+                SERVER.loadServer();
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
+        }
         return SERVER;
     }
 
@@ -78,12 +76,12 @@ public final class SampleH2Server {
     /**
      * Load the databases and tables
      */
-    void loadServer() throws SQLException, IOException {
-        SampleGeoDB.of().createAndLoadTables();
-        SakilaDB.of().createAndLoadTables();
+    private void loadServer() throws SQLException, IOException {
+        SampleGeoDB.of(this).createAndLoadTables();
+        SakilaDB.of(this).createAndLoadTables();
     }
 
-    static void createSchema(Database database) throws SQLException {
+    void createSchema(Database database) throws SQLException {
         String sql = "CREATE SCHEMA " + database.name + ";";
         update(SQL.of(sql));
     }
@@ -91,7 +89,7 @@ public final class SampleH2Server {
     /**
      * For inserting rows into a table.
      */
-    static class Inserter {
+    class Inserter {
 
         /**
          * The table we insert into.
@@ -116,7 +114,7 @@ public final class SampleH2Server {
      * Given a list of values, create CSV for them.
      * This is used for building insert statements.
      */
-    static String commaSeperated(Object... values) {
+    private static String commaSeperated(Object... values) {
         StringBuilder out = new StringBuilder();
         for (int i=0; i<values.length; i++) {
             Object value = values[i];
@@ -136,7 +134,7 @@ public final class SampleH2Server {
     /**
      * Create the given table and return a way to fill it.
      */
-    static Inserter makeTable(DBTable table, String columns) throws SQLException {
+    Inserter makeTable(DBTable table, String columns) throws SQLException {
         createTable(table,columns);
         return new Inserter(table);
     }
@@ -144,7 +142,7 @@ public final class SampleH2Server {
     /**
      * Create a new database table.
      */
-    static void createTable(DBTable table, String columns)
+    void createTable(DBTable table, String columns)
         throws SQLException
     {
         String sql = "CREATE TABLE " + table + "(" + columns + ");";
@@ -153,7 +151,7 @@ public final class SampleH2Server {
         select(SQL.of("SELECT * FROM " + table));
     }
 
-    static void update(SQL sql) throws SQLException {
+    void update(SQL sql) throws SQLException {
         final DBConnectionInfo info = getConnectionInfo();
         Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();

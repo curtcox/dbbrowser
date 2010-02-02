@@ -102,12 +102,15 @@ public final class DBResultSetIO {
     }
 
     public static DBResultSetIO of(DBResultSetMetaDataIO meta, ImmutableList<ImmutableMap> rows) {
-        return new DBResultSetIO(meta,rows);
+        DBResultSetIO io = new DBResultSetIO(meta,rows);
+        debug(io);
+        return io;
     }
 
     public static DBResultSetIO of(ResultSet results) {
         try {
             DBResultSetIO resultsIO = doOf(results);
+            debug(resultsIO);
             return resultsIO;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -158,7 +161,7 @@ public final class DBResultSetIO {
             Map row = Maps.newHashMap();
             for (int c=1; c<=cols; c++) {
                 Object v = getObject(results,c);
-                log.debug(c + "->" + v);
+                log.debug(c,v);
                 if (v!=null) {
                     row.put(c-1,v);
                     row.put(meta.columnNames.get(c-1), v);
@@ -221,6 +224,6 @@ public final class DBResultSetIO {
     /**
      * Logging stuff.
      */
-    private void info(String mesage) { log.info(mesage);  }
-    private void debug(String mesage) { log.debug(mesage);  }
+    private static void info(String mesage) { log.info(mesage);  }
+    private static void debug(Object... args) { log.debug(args);  }
 }

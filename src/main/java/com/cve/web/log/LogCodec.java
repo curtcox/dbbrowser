@@ -1,6 +1,8 @@
 package com.cve.web.log;
 
 import com.cve.log.LogEntry;
+import com.cve.util.AnnotatedStackTrace;
+import com.cve.util.URIs;
 import com.cve.web.PageRequest.ID;
 import java.net.URI;
 
@@ -19,11 +21,15 @@ public final class LogCodec {
     }
 
     public URI encode(ID id) {
-        return links.uri(id);
+        return URIs.of("/request/" + Long.toHexString(id.timestamp.value));
     }
 
     public URI encode(LogEntry entry) {
         return links.uri(entry);
+    }
+
+    public URI encode(AnnotatedStackTrace trace) {
+        return links.uri(trace);
     }
 
 }

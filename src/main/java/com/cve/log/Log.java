@@ -27,7 +27,7 @@ public interface Log {
      */
     void args(Object... objects);
 
-    void debug(String message);
+    void debug(Object... args);
 
     void info(String message);
 

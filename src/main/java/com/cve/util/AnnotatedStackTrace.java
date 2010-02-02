@@ -1,14 +1,22 @@
 package com.cve.util;
 
+import com.cve.html.Label;
+import com.cve.html.Link;
+import com.cve.web.log.LogCodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import java.net.URI;
 import java.util.Map;
+import javax.annotation.concurrent.Immutable;
 
 /**
  * Like a throwable, but perhaps with some method arguments.
  * @author curt
  */
+@Immutable
 public final class AnnotatedStackTrace {
+
+    final LogCodec codec = LogCodec.of();
 
     /**
      * The throwable this is generated from.
@@ -51,8 +59,14 @@ public final class AnnotatedStackTrace {
         this.args = ImmutableMap.copyOf(args);
     }
 
-    public static AnnotatedStackTrace throwableArgs(Throwable t, Map<StackTraceElement,Object[]> args)
-    {
+    public static AnnotatedStackTrace throwableArgs(Throwable t, Map<StackTraceElement,Object[]> args) {
         return new AnnotatedStackTrace(t,args);
     }
+
+    public Link linkTo() {
+        Label text = Label.of("trace");
+        URI target = codec.encode(this);
+        return Link.textTarget(text, target);
+    }
+
 }

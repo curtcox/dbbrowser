@@ -38,4 +38,17 @@ public final class Timestamp implements Comparable<Timestamp> {
     public String toString() {
         return Long.toString(value);
     }
+
+    @Override
+    public int hashCode() {
+        return new Long(value).hashCode();
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        Timestamp other = (Timestamp) o;
+        return value == other.value;
+    }
+
 }

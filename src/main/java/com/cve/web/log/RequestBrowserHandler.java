@@ -1,6 +1,8 @@
 package com.cve.web.log;
 
+import com.cve.log.Log;
 import com.cve.log.LogEntry;
+import com.cve.log.Logs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.Model;
 import com.cve.web.PageRequest;
@@ -18,6 +20,8 @@ import java.util.Set;
  */
 final class RequestBrowserHandler extends AbstractRequestHandler {
 
+    private final Log log = Logs.of();
+    
     private RequestBrowserHandler() {
         super("^/request/");
     }
@@ -34,7 +38,7 @@ final class RequestBrowserHandler extends AbstractRequestHandler {
                 return requestModel;
             }
         } catch (NumberFormatException e) {
-            // OK
+            log.warn(e);
         }
         return getIndex();
     }

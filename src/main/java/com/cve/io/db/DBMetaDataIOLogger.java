@@ -26,26 +26,31 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
 
     @Override
     public CurrentValue<ImmutableList<TableInfo>> getTables(TableSpecifier specifier) {
+        log.args(specifier);
         return log(io.getTables(specifier));
     }
 
     @Override
     public CurrentValue<ImmutableList<ColumnInfo>> getColumns(ColumnSpecifier specifier) {
+        log.args(specifier);
         return log(io.getColumns(specifier));
     }
 
     @Override
     public CurrentValue<ImmutableList<ReferencedKeyInfo>> getImportedKeys(KeySpecifier specifier) {
+        log.args(specifier);
         return log(io.getImportedKeys(specifier));
     }
 
     @Override
     public CurrentValue<ImmutableList<PrimaryKeyInfo>> getPrimaryKeys(KeySpecifier specifier) {
+        log.args(specifier);
         return log(io.getPrimaryKeys(specifier));
     }
 
     @Override
     public CurrentValue<ImmutableList<ReferencedKeyInfo>> getExportedKeys(KeySpecifier specifier) {
+        log.args(specifier);
         return log( io.getExportedKeys(specifier));
     }
 
@@ -64,15 +69,15 @@ public final class DBMetaDataIOLogger implements DBMetaDataIO {
         return log( io.getMetaData());
     }
 
-    <T> T log(T t) {
-        debug("" + t);
+    private <T> T log(T t) {
+        debug(t);
         return t;
     }
 
     /**
      * Logging stuff.
      */
-    final Log log = Logs.of();
+    private final Log log = Logs.of();
     private void info(String mesage) { log.info(mesage);  }
-    private void debug(String mesage) { log.debug(mesage);  }
+    private void debug(Object arg) { log.debug(arg);  }
 }

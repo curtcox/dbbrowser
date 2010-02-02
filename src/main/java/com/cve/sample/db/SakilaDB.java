@@ -1,6 +1,5 @@
 package com.cve.sample.db;
 
-import com.cve.log.Log;
 import com.cve.model.db.Database;
 import com.cve.model.db.SQL;
 import com.cve.util.Check;
@@ -18,17 +17,20 @@ import java.util.List;
  */
 public final class SakilaDB {
 
+    final SampleH2Server h2;
+
     public static final Database SAKILA = Database.serverName(SampleH2Server.SAMPLE, "SAKILA");
 
+    private SakilaDB(SampleH2Server h2) {
+        this.h2 = h2;
+    }
 
-    private SakilaDB() {}
-
-    public static SakilaDB of() {
-        return new SakilaDB();
+    public static SakilaDB of(SampleH2Server h2) {
+        return new SakilaDB(h2);
     }
 
     void createAndLoadTables() throws SQLException, IOException {
-        SampleH2Server.createSchema(SAKILA);
+        h2.createSchema(SAKILA);
         createTables();
         loadTables();
     }
@@ -71,7 +73,7 @@ public final class SakilaDB {
     }
 
     private void update(SQL sql) throws SQLException {
-        SampleH2Server.update(sql);
+        h2.update(sql);
     }
 
 }

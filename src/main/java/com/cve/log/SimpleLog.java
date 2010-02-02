@@ -4,20 +4,25 @@ import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
 import com.cve.web.PageRequest;
 import com.cve.web.log.ObjectRegistry;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Our own private logging abstraction.
  */
 final class SimpleLog implements Log {
 
-    private static SimpleLog SINGLETON = new SimpleLog();
+    private static int OFFSET_FOR_CALLER = 4;
+    
+    private static Log SINGLETON = LogWrapper.of(new SimpleLog());
 
 
     private SimpleLog() {}
 
-    public static SimpleLog of() {
+    public static Log of() {
         return SINGLETON;
     }
 
@@ -32,14 +37,21 @@ final class SimpleLog implements Log {
          }
     };
 
-    Map<StackTraceElement,Object[]> copyStackArgs() {
+    /**
+     * Make a copy of the arg stack as it exists for this thread, now.
+     * @return
+     */
+    private Map<StackTraceElement,Object[]> copyStackArgs() {
         Map<StackTraceElement,Object[]> copy = Maps.newHashMap();
         Map<StackTraceElement,Object[]> thisThread = stackArgs.get();
         copy.putAll(thisThread);
         return copy;
     }
 
-    void putArgs(StackTraceElement element, Object[] args) {
+    /**
+     * Note that the element had the given args.
+     */
+    private void note(StackTraceElement element, Object[] args) {
         stackArgs.get().put(element, args);
     }
 
@@ -65,8 +77,8 @@ final class SimpleLog implements Log {
     @Override
     public void possiblyNullArgs(Object... objects) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        StackTraceElement element = elements[3];
-        putArgs(element,objects);
+        StackTraceElement element = elements[OFFSET_FOR_CALLER];
+        note(element,objects);
         for (Object o : objects) {
             ObjectRegistry.put(o);
         }
@@ -83,8 +95,8 @@ final class SimpleLog implements Log {
             Check.notNull(o);
         }
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        StackTraceElement element = elements[3];
-        putArgs(element,objects);
+        StackTraceElement element = elements[OFFSET_FOR_CALLER];
+        note(element,objects);
         for (Object o : objects) {
             ObjectRegistry.put(o);
         }
@@ -93,11 +105,19 @@ final class SimpleLog implements Log {
 
 
     @Override
-    public void debug(String message) {
+    public void debug(Object... args) {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        StackTraceElement element = elements[3];
+        note(element,args);
+        for (Object o : args) {
+            ObjectRegistry.put(o);
+        }
         LogLevel            level = LogLevel.DEBUG;
         PageRequest.ID         id = PageRequest.ID.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
-        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
+        Class              logger = caller(trace);
+        String            message = logger.getName();
+        ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message,args));
         //System.out.println(clazz + ":" + message);
     }
 
@@ -106,8 +126,9 @@ final class SimpleLog implements Log {
         LogLevel            level = LogLevel.DEBUG;
         PageRequest.ID         id = PageRequest.ID.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
-        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
-        print(message);
+        Class               logger = caller(trace);
+        ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
+        print(logger,message);
     }
 
     @Override
@@ -115,8 +136,9 @@ final class SimpleLog implements Log {
         LogLevel            level = LogLevel.DEBUG;
         PageRequest.ID         id = PageRequest.ID.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
-        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
-        print(message);
+        Class               logger = caller(trace);
+        ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
+        print(logger,message);
     }
 
     @Override
@@ -125,7 +147,8 @@ final class SimpleLog implements Log {
         PageRequest.ID         id = PageRequest.ID.of();
         AnnotatedStackTrace trace = annotatedStackTrace(t);
         String            message = t.getMessage();
-        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
+        Class               logger = caller(trace);
+        ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
         t.printStackTrace();
     }
 
@@ -134,15 +157,35 @@ final class SimpleLog implements Log {
         LogLevel            level = LogLevel.DEBUG;
         PageRequest.ID         id = PageRequest.ID.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
-        ObjectRegistry.put(LogEntry.of(level,id,trace,message));
-        print(message);
+        Class               logger = caller(trace);
+        ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
+        print(logger,message);
     }
 
-    private String caller() {
-        return "";
+    static ImmutableSet<String> IGNORE_AS_CALLERS = callersToIgnore();
+
+    static ImmutableSet<String> callersToIgnore() {
+        Set<String> ignore = Sets.newHashSet();
+        ignore.add(SimpleLog.class.getName());
+        ignore.add(LogWrapper.class.getName());
+        return ImmutableSet.copyOf(ignore);
     }
 
-    void print(String message) {
-        System.out.println(caller() + ":" + message);
+    Class caller(AnnotatedStackTrace t) {
+        for (StackTraceElement element : t.elements) {
+            String name = element.getClassName();
+            if (!IGNORE_AS_CALLERS.contains(name)) {
+                try {
+                    return Class.forName(name);
+                } catch (ClassNotFoundException e) {
+                    return e.getClass();
+                }
+            }
+        }
+        return null;
+    }
+
+    void print(Class logger, String message) {
+        System.out.println(logger.getSimpleName() + ":" + message);
     }
 }

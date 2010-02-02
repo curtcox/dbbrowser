@@ -75,6 +75,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
+        PageRequest.ID.next();
         log.args(request,response);
         try {
             route(request,response);
@@ -88,6 +89,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
+        PageRequest.ID.next();
         log.args(request,response);
         try {
             route(request,response);
@@ -153,6 +155,7 @@ public final class RequestRouterServlet extends HttpServlet {
         PageResponse  uriResponse = router.produce(pageRequest);
         if (uriResponse!=null) {
             write(uriResponse,response);
+            log.debug(pageRequest,response);
             return;
         }
         // Any request that we couldn't process gets dumped, too.
