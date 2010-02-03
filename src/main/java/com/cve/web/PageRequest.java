@@ -32,83 +32,6 @@ public final class PageRequest {
     }
 
     /**
-     * Unique id for a request.
-     */
-    @Immutable
-    public static class ID implements Comparable<ID> {
-
-        public final Timestamp timestamp;
-
-        static final Log log = Logs.of();
-        
-        final LogCodec codec = LogCodec.of();
-
-        static final ThreadLocal<ID> local = new ThreadLocal() {
-            @Override protected ID initialValue() {
-                 return new ID();
-            }
-        };
-
-        private ID() {
-            timestamp = Timestamp.of();
-        }
-
-        private ID(Timestamp timestamp) {
-            this.timestamp = Check.notNull(timestamp);
-        }
-
-        /**
-         * Start using a new request.
-         * The thread local isn't enough.  Web servers will tend to use thread
-         * pools, so thread doesn't really imply request.
-         */
-        static void next() {
-            local.set(new ID());
-        }
-
-        /**
-         * This will be different for every thread, but always the same when
-         * called from the same thread, between calls to next.
-         */
-        public static ID of() {
-            return local.get();
-        }
-
-        public static ID parse(String string) {
-            log.args(string);
-            long code = Long.parseLong(string,16);
-            return new ID(Timestamp.of(code));
-        }
-
-        @Override
-        public int compareTo(ID other) {
-            return timestamp.compareTo(other.timestamp);
-        }
-
-        @Override
-        public String toString() {
-            return "id=" + timestamp;
-        }
-
-        public Link linkTo() {
-            Label text = Label.of("" + timestamp.value);
-            URI target = codec.encode(this);
-            return Link.textTarget(text, target);
-        }
-
-        @Override
-        public int hashCode() {
-            return timestamp.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            ID other = (ID) o;
-            return timestamp.equals(other.timestamp);
-        }
-    }
-
-    /**
      * The part of the URL given to the server, but ending at the
      * question mark for the query string.  In this case:
      * http://host:port/requestURI?queryString
@@ -142,9 +65,9 @@ public final class PageRequest {
     public final Method method;
 
     /**
-     * Unique ID for this request.
+     * The request id this page request is for.
      */
-    public final ID id;
+    public final PageRequestProcessor id;
 
     private PageRequest(
         Method type, String requestURI, String queryString,
@@ -155,7 +78,7 @@ public final class PageRequest {
         this.queryString = Check.notNull(queryString);
         this.parameters  = Check.notNull(parameters);
         this.cookies     = Check.notNull(cookies);
-        id = new ID();
+        id = PageRequestProcessor.of();
     }
 
     public static PageRequest path(String pathInfo)

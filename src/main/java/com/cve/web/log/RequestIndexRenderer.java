@@ -11,6 +11,7 @@ import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.PageRequest;
+import com.cve.web.PageRequestProcessor;
 import com.cve.web.db.NavigationButtons;
 import java.net.URI;
 
@@ -48,8 +49,8 @@ final class RequestIndexRenderer implements ModelHtmlRenderer {
     String tableOfEntries(RequestIndexModel page) {
         log.args(page);
         StringBuilder out = new StringBuilder();
-        out.append(th("Request ID") + th("Entries") + th("Entries"));
-        for (PageRequest.ID id : page.requests) {
+        out.append(th("Request PageRequestProcessor") + th("Entries") + th("Entries"));
+        for (PageRequestProcessor id : page.requests) {
             out.append(tr(
                 td(id.linkTo().toString()           ,CSS.TABLE) +
                 td("" + page.entries.get(id).size() ,CSS.ROW_COUNT) +
@@ -59,7 +60,7 @@ final class RequestIndexRenderer implements ModelHtmlRenderer {
         return table(out.toString());
     }
 
-    String entriesFor(RequestIndexModel page, PageRequest.ID id) {
+    String entriesFor(RequestIndexModel page, PageRequestProcessor id) {
         log.args(page,id);
         StringBuilder out = new StringBuilder();
         int i = 0;

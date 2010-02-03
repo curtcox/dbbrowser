@@ -75,7 +75,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
-        PageRequest.ID.next();
+        PageRequestProcessor.next();
         log.args(request,response);
         try {
             route(request,response);
@@ -89,7 +89,7 @@ public final class RequestRouterServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response)
         throws IOException
     {
-        PageRequest.ID.next();
+        PageRequestProcessor.next();
         log.args(request,response);
         try {
             route(request,response);

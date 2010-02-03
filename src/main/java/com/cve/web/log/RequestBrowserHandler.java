@@ -6,6 +6,7 @@ import com.cve.log.Logs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.Model;
 import com.cve.web.PageRequest;
+import com.cve.web.PageRequestProcessor;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
@@ -44,17 +45,17 @@ final class RequestBrowserHandler extends AbstractRequestHandler {
     }
 
     RequestIndexModel getIndex() {
-        Set<PageRequest.ID> requests = Sets.newHashSet();
+        Set<PageRequestProcessor> requests = Sets.newHashSet();
         Multimap entries = HashMultimap.create();
         for (Object object : ObjectRegistry.values()) {
             if (object instanceof LogEntry) {
                 LogEntry entry = (LogEntry) object;
-                PageRequest.ID id = entry.request;
+                PageRequestProcessor id = entry.request;
                 requests.add(id);
                 entries.put(id, entry);
             }
         }
-        List<PageRequest.ID> sorted = Lists.newArrayList(requests); 
+        List<PageRequestProcessor> sorted = Lists.newArrayList(requests);
         Collections.sort(sorted);
         return RequestIndexModel.of(sorted,entries);
     }
@@ -62,7 +63,7 @@ final class RequestBrowserHandler extends AbstractRequestHandler {
     RequestModel getRequest(PageRequest request) {
         String uri = request.requestURI;
         String idString = uri.substring(uri.lastIndexOf("/") + 1);
-        PageRequest.ID id = PageRequest.ID.parse(idString);
+        PageRequestProcessor id = PageRequestProcessor.parse(idString);
         List<LogEntry> entries = Lists.newArrayList();
         for (Object object : ObjectRegistry.values()) {
             if (object instanceof LogEntry) {

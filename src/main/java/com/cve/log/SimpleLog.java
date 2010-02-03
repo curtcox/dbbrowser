@@ -3,6 +3,7 @@ package com.cve.log;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Check;
 import com.cve.web.PageRequest;
+import com.cve.web.PageRequestProcessor;
 import com.cve.web.log.ObjectRegistry;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
@@ -14,6 +15,7 @@ import java.util.Set;
  * Our own private logging abstraction.
  */
 final class SimpleLog implements Log {
+
 
     private static int OFFSET_FOR_CALLER = 4;
     
@@ -113,7 +115,7 @@ final class SimpleLog implements Log {
             ObjectRegistry.put(o);
         }
         LogLevel            level = LogLevel.DEBUG;
-        PageRequest.ID         id = PageRequest.ID.of();
+        PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
         Class              logger = caller(trace);
         String            message = logger.getName();
@@ -124,7 +126,7 @@ final class SimpleLog implements Log {
     @Override
     public void info(String message) {
         LogLevel            level = LogLevel.DEBUG;
-        PageRequest.ID         id = PageRequest.ID.of();
+        PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
         Class               logger = caller(trace);
         ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
@@ -134,7 +136,7 @@ final class SimpleLog implements Log {
     @Override
     public void warn(String message) {
         LogLevel            level = LogLevel.DEBUG;
-        PageRequest.ID         id = PageRequest.ID.of();
+        PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
         Class               logger = caller(trace);
         ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));
@@ -144,7 +146,7 @@ final class SimpleLog implements Log {
     @Override
     public void warn(Throwable t) {
         LogLevel            level = LogLevel.DEBUG;
-        PageRequest.ID         id = PageRequest.ID.of();
+        PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace(t);
         String            message = t.getMessage();
         Class               logger = caller(trace);
@@ -155,7 +157,7 @@ final class SimpleLog implements Log {
     @Override
     public void severe(String message) {
         LogLevel            level = LogLevel.DEBUG;
-        PageRequest.ID         id = PageRequest.ID.of();
+        PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
         Class               logger = caller(trace);
         ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message));

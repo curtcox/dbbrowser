@@ -5,6 +5,7 @@ import com.cve.html.Link;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.Timestamp;
 import com.cve.web.PageRequest;
+import com.cve.web.PageRequestProcessor;
 import com.cve.web.log.LogCodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
@@ -20,7 +21,7 @@ public final class LogEntry implements Comparable<LogEntry> {
 
     public final Timestamp timeStamp = Timestamp.of();
 
-    public final PageRequest.ID request;
+    public final PageRequestProcessor request;
 
     public final Class logger;
 
@@ -34,7 +35,7 @@ public final class LogEntry implements Comparable<LogEntry> {
 
     static final Object[] NO_ARGS = new Object[0];
 
-    private LogEntry(LogLevel level, PageRequest.ID request, AnnotatedStackTrace trace, Class logger, String message, Object[] args) {
+    private LogEntry(LogLevel level, PageRequestProcessor request, AnnotatedStackTrace trace, Class logger, String message, Object[] args) {
         this.level   = notNull(level);
         this.request = notNull(request);
         this.trace   = notNull(trace);
@@ -43,11 +44,11 @@ public final class LogEntry implements Comparable<LogEntry> {
         this.args    = notNull(args);
     }
 
-    public static LogEntry of(LogLevel level, PageRequest.ID request, AnnotatedStackTrace trace, Class logger, String message) {
+    public static LogEntry of(LogLevel level, PageRequestProcessor request, AnnotatedStackTrace trace, Class logger, String message) {
         return new LogEntry(level,request,trace,logger,message,NO_ARGS);
     }
 
-    public static LogEntry of(LogLevel level, PageRequest.ID request, AnnotatedStackTrace trace, Class logger, String message, Object[] args) {
+    public static LogEntry of(LogLevel level, PageRequestProcessor request, AnnotatedStackTrace trace, Class logger, String message, Object[] args) {
         return new LogEntry(level,request,trace,logger,message,args);
     }
 

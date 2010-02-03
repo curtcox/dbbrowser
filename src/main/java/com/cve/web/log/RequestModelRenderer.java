@@ -11,6 +11,7 @@ import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.PageRequest;
+import com.cve.web.PageRequestProcessor;
 import com.cve.web.db.NavigationButtons;
 import java.net.URI;
 
@@ -70,7 +71,7 @@ final class RequestModelRenderer implements ModelHtmlRenderer {
         return out.toString();
     }
 
-    String entriesFor(RequestIndexModel page, PageRequest.ID id) {
+    String entriesFor(RequestIndexModel page, PageRequestProcessor id) {
         log.args(page,id);
         StringBuilder out = new StringBuilder();
         int i = 0;

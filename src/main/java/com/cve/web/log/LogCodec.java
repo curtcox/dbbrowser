@@ -3,7 +3,7 @@ package com.cve.web.log;
 import com.cve.log.LogEntry;
 import com.cve.util.AnnotatedStackTrace;
 import com.cve.util.URIs;
-import com.cve.web.PageRequest.ID;
+import com.cve.web.PageRequestProcessor;
 import java.net.URI;
 
 /**
@@ -20,7 +20,7 @@ public final class LogCodec {
         return new LogCodec();
     }
 
-    public URI encode(ID id) {
+    public URI encode(PageRequestProcessor id) {
         return URIs.of("/request/" + Long.toHexString(id.timestamp.value));
     }
 
