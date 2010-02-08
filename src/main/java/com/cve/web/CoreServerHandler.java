@@ -8,7 +8,7 @@ import com.cve.log.Logs;
  * databases, logs, or object browsing.
  * @author Curt
  */
-public class CoreServerHandler implements RequestHandler {
+public final class CoreServerHandler implements RequestHandler {
 
     final Log log = Logs.of();
 

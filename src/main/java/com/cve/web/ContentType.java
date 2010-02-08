@@ -23,6 +23,9 @@ public enum ContentType {
         return TEXT;
     }
 
+    /**
+     * Given a path, return a guess at the content type.
+     */
     public static ContentType guessByExtension(String path) {
         if (path.endsWith("html")) { return HTML; }
         if (path.endsWith("png"))  { return PNG; }

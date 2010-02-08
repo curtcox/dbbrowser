@@ -2,9 +2,14 @@ package com.cve.web;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.List;
 
 import static com.cve.util.Check.notNull;
 
@@ -33,6 +38,9 @@ public final class ResourceHandler extends AbstractRequestHandler {
         log.args(request);
         String uri = request.requestURI;
         if (handles(uri)) {
+            if (uri.endsWith(".java")) {
+                return PageResponse.of(request,serveTextFile(request));
+            }
             return PageResponse.of(request,serveResource(request),ContentType.guessByExtension(uri));
         }
         return null;
@@ -54,6 +62,20 @@ public final class ResourceHandler extends AbstractRequestHandler {
         }
     }
 
+    static TextFileModel serveTextFile(PageRequest request) {
+        String       uri = request.requestURI;
+        String  resource = uri.substring("/resource".length());
+        InputStream   in = notNull(ResourceHandler.class.getResourceAsStream(resource),resource);
+        try {
+            return TextFileModel.of(readLines(in));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Copy the input stream to the byte array
+     */
     static byte[] copyStream(InputStream in) throws IOException {
 
           ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -72,4 +94,22 @@ public final class ResourceHandler extends AbstractRequestHandler {
 
           return out.toByteArray();
       }
+
+    /**
+     * Copy the input stream to the byte array
+     */
+    static ImmutableList<String> readLines(InputStream in) throws IOException {
+          List<String> lines = Lists.newArrayList();
+          try {
+              BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+              for (String line = reader.readLine(); line!=null; line = reader.readLine()) {
+                  lines.add(line);
+              }
+          } finally {
+              in.close();
+          }
+
+          return ImmutableList.copyOf(lines);
+      }
+
 }

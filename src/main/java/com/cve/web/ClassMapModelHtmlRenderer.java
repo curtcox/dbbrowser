@@ -9,6 +9,8 @@ import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 /**
  * Finds the proper renderer from those it is given and delegates.
+ * The name "ClassMap" comes from the fact that this renderer uses the class
+ * of the model to determine which renderer to delegate to.
  * @author curt
  */
 public final class ClassMapModelHtmlRenderer implements ModelHtmlRenderer {

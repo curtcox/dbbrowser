@@ -21,6 +21,11 @@ public interface ModelHtmlRenderer {
      * they are given, rather than throw an exception.  This allows the 
      * chaining and composition of renderers.
      * <p>
+     * However, it is also common and reasonable for Renderers to immediately
+     * cast from model to whatever they handle.  These Renderers will need to
+     * be guarded (with a ClassMap, for instance), to ensure they aren't given
+     * the wrong kind of model.
+     * <p>
      * See PageDecorator.
      */
     HtmlPage render(Model model, ClientInfo client);
