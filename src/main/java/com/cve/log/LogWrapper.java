@@ -1,10 +1,10 @@
 package com.cve.log;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import static com.cve.util.Check.notNull;
 
 /**
- *
+ * Wraps a log to provide thread safety.
  * @author curt
  */
 final class LogWrapper implements Log {

@@ -1,6 +1,7 @@
 package com.cve.log;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTraceElement;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -18,7 +19,7 @@ public class LogTest {
         String ARG = "arg";
         Throwable t = methodThatTakesAn(ARG);
         AnnotatedStackTrace trace = log.annotatedStackTrace(t);
-        for (StackTraceElement element : trace.elements) {
+        for (AnnotatedStackTraceElement element : trace.elements) {
             Object[] args = trace.args.get(element);
             if (args!=null && args.length==1 && args[0].equals(ARG)) {
                 return;
@@ -37,7 +38,7 @@ public class LogTest {
         String ARG = "arg";
         Throwable t = methodThatTakesAn(ARG);
         AnnotatedStackTrace trace = log.annotatedStackTrace(t);
-        StackTraceElement element = trace.elements.get(1);
+        AnnotatedStackTraceElement element = trace.elements.get(1);
         Object[] args = trace.args.get(element);
         Assert.assertEquals(ARG, args[0]);
     }

@@ -1,6 +1,6 @@
 package com.cve.web.db;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 
 /**
  *

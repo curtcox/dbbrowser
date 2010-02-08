@@ -1,6 +1,10 @@
 package com.cve.web.log;
 
+import com.cve.lang.ExecutableElement;
+import com.cve.lang.ExecutableConstructor;
+import com.cve.lang.ExecutableMethod;
 import com.cve.html.HTMLTags;
+import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
@@ -78,70 +82,6 @@ public static enum Mask {
     }
 } // Mask
 
-/**
- * So that we can treat the common methods between Constructor and Method
- * using a common interface.
- */
-interface Executable extends Member {
-    Class   getReturnType();
-    Class[] getParameterTypes();
-    Class[] getExceptionTypes();
-}
-
-/**
- * A wrapper to make a constructor executable. 
- */
-private static final class ExecutableConstructor implements Executable {
-
-    private Constructor inner;
-
-    ExecutableConstructor(Constructor constructor) {
-        inner = constructor;
-    }
-
-    @Override
-    public Class       getReturnType() { return inner.getDeclaringClass(); }
-    @Override
-    public Class[] getParameterTypes() { return inner.getParameterTypes(); }
-    @Override
-    public Class[] getExceptionTypes() { return inner.getExceptionTypes(); }
-    @Override
-    public Class   getDeclaringClass() { return inner.getDeclaringClass(); }
-    @Override
-    public String            getName() { return inner.getName();           }
-    @Override
-    public int          getModifiers() { return inner.getModifiers();      }
-    @Override
-    public boolean       isSynthetic() { return inner.isSynthetic();       }
-} // Executable Constructor
-
-/**
- * A wrapper to make a method executable. 
- */
-private static final class ExecutableMethod implements Executable {
-
-    private Method inner;
-
-    ExecutableMethod(Method method) {
-        inner = method;
-    }
-
-    @Override
-    public Class       getReturnType() { return inner.getReturnType();     }
-    @Override
-    public Class[] getParameterTypes() { return inner.getParameterTypes(); }
-    @Override
-    public Class[] getExceptionTypes() { return inner.getExceptionTypes(); }
-    @Override
-    public Class   getDeclaringClass() { return inner.getDeclaringClass(); }
-    @Override
-    public String            getName() { return inner.getName();           }
-    @Override
-    public int          getModifiers() { return inner.getModifiers();      }
-    public Method          getMethod() { return inner;                     }
-    @Override
-    public boolean       isSynthetic() { return inner.isSynthetic();       }
-} // Executable Method
 
 /**
  * A DeferredMethod is a wrapper around a method so that it can be executed
@@ -312,10 +252,10 @@ private String showField(Field f, Object o) {
 
 private String showConstructors() {
     Class c = target.getClass();
-    List<Executable> list = Lists.newArrayList();
+    List<ExecutableElement> list = Lists.newArrayList();
     for (Constructor constructor : c.getConstructors()) {
         if (mask.passes(constructor)) {
-            list.add(new ExecutableConstructor(constructor));
+            list.add(Executables.of(constructor));
         }
     }
     return showExecutables(list);
@@ -323,19 +263,19 @@ private String showConstructors() {
 
 private String showMethods() {
     Class c = target.getClass();
-    List<Executable> list = Lists.newArrayList();
+    List<ExecutableElement> list = Lists.newArrayList();
     for (Method method : c.getMethods()) {
         if (mask.passes(method)) {
-            list.add(new ExecutableMethod(method));
+            list.add(Executables.of(method));
         }
     }
     return showExecutables(list);
 }
 
-private String showExecutables(Collection<Executable> executables) {
+private String showExecutables(Collection<ExecutableElement> executables) {
     StringBuffer out = new StringBuffer();
-    Multimap<Class,Executable> grouped = HashMultimap.create();
-    for (Executable executable : executables) {
+    Multimap<Class,ExecutableElement> grouped = HashMultimap.create();
+    for (ExecutableElement executable : executables) {
         Class clazz = executable.getDeclaringClass();
         grouped.put(clazz,executable);
     }
@@ -346,11 +286,11 @@ private String showExecutables(Collection<Executable> executables) {
     return out.toString();
 }
 
-private String showExecutablesFromOneClass(Collection<Executable> executables) {
+private String showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
     StringBuffer out = new StringBuffer();
     String headerRow = tr(th("Modifiers") + th("Return Type") + th("Name")+ th("Arguments")+ th("Throws"));
     out.append(headerRow);
-    for (Executable executable : executables) {
+    for (ExecutableElement executable : executables) {
         out.append(showExecutable(executable));
     }
     out.append(headerRow);
@@ -361,7 +301,7 @@ private String showExecutablesFromOneClass(Collection<Executable> executables) {
  * Print the modifiers, return type, name, parameter types, and exception
  *  type of an executable (method or constructor).
  */
-private String showExecutable(Executable method){
+private String showExecutable(ExecutableElement method){
 
     final Class   returnType = method.getReturnType();
     final Class[] parameters = method.getParameterTypes();

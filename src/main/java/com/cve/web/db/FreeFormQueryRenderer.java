@@ -13,7 +13,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.ui.UIForm;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;

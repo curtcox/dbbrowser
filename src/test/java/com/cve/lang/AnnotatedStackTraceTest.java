@@ -1,4 +1,4 @@
-package com.cve.util;
+package com.cve.lang;
 
 import com.google.common.collect.Maps;
 import java.util.Map;

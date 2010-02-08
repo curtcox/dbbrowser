@@ -1,6 +1,6 @@
 package com.cve.log;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 
 /**
  * Our own private logging abstraction.

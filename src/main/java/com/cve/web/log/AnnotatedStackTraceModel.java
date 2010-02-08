@@ -3,7 +3,7 @@ package com.cve.web.log;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.*;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import static com.cve.util.Check.notNull;
 
 /**

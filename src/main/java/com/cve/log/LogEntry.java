@@ -2,9 +2,8 @@ package com.cve.log;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.Timestamp;
-import com.cve.web.PageRequest;
 import com.cve.web.PageRequestProcessor;
 import com.cve.web.log.LogCodec;
 import java.net.URI;

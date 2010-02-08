@@ -4,7 +4,7 @@ import com.cve.model.db.Database;
 import com.cve.web.*;
 import com.cve.model.db.DBServer;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMultimap;
 

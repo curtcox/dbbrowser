@@ -1,8 +1,8 @@
 package com.cve.log;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTraceElement;
 import com.cve.util.Check;
-import com.cve.web.PageRequest;
 import com.cve.web.PageRequestProcessor;
 import com.cve.web.log.ObjectRegistry;
 import com.google.common.collect.ImmutableSet;
@@ -174,8 +174,8 @@ final class SimpleLog implements Log {
     }
 
     Class caller(AnnotatedStackTrace t) {
-        for (StackTraceElement element : t.elements) {
-            String name = element.getClassName();
+        for (AnnotatedStackTraceElement element : t.elements) {
+            String name = element.clazz.clazz.getName();
             if (!IGNORE_AS_CALLERS.contains(name)) {
                 try {
                     return Class.forName(name);

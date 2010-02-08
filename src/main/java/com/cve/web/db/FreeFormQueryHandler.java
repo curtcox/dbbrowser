@@ -19,7 +19,7 @@ import com.cve.io.db.DBResultSetMetaData;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;

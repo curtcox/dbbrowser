@@ -1,7 +1,7 @@
 package com.cve.web.log;
 
 import com.cve.log.LogEntry;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.PageRequestProcessor;
 import java.net.URI;

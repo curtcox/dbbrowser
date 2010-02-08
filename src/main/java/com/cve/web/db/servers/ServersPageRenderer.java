@@ -8,7 +8,7 @@ import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
 import com.cve.web.log.ObjectLink;

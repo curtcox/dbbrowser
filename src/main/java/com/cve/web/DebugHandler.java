@@ -1,6 +1,6 @@
 package com.cve.web;
 
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTrace;
 import com.cve.web.log.ObjectLink;
 import com.cve.log.Log;
 import com.cve.log.Logs;

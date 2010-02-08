@@ -6,7 +6,9 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.util.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedClass;
+import com.cve.lang.AnnotatedStackTrace;
+import com.cve.lang.AnnotatedStackTraceElement;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
@@ -54,10 +56,10 @@ public final class AnnotatedStackTraceRenderer
             String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line"));
             table.append(header);
 
-            ImmutableList<StackTraceElement> elements = trace.elements;
+            ImmutableList<AnnotatedStackTraceElement> elements = trace.elements;
             for (int i=0; i<elements.size(); i++) {
-                StackTraceElement e     = elements.get(i);
-                StackTraceElement next  = (i < elements.size() - 1 ) ? elements.get(i + 1) : null;
+                AnnotatedStackTraceElement e     = elements.get(i);
+                AnnotatedStackTraceElement next  = (i < elements.size() - 1 ) ? elements.get(i + 1) : null;
                 Object[] args = trace.args.get(next);
                 table.append(row(e,args));
             }
@@ -74,18 +76,19 @@ public final class AnnotatedStackTraceRenderer
     /**
      * Return the HTML for a stack trace element.
      */
-    String row(StackTraceElement e, Object[] args) {
+    String row(AnnotatedStackTraceElement e, Object[] args) {
         if (args==null) {
             args = new Object[0];
         }
-        String className = e.getClassName();
-        String  fileName = e.getFileName();
+        AnnotatedClass c = e.clazz;
+        String className = c.clazz.getName();
+        String  fileName = c.file.toString();
         return tr(
             td(className) +
             td(linkToSource(className,fileName).toString()) +
-            td(e.getMethodName()) +
+            td(e.executable.getName()) +
             td(argsCell(args)) +
-            td("" + e.getLineNumber())
+            td("" + e.line)
         );
     }
 
