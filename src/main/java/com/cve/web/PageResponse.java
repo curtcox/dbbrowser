@@ -39,13 +39,26 @@ public final class PageResponse {
     public final Log log = Logs.of();
 
     /**
+     * Use this in place of null.
+     */
+    public static PageResponse NULL = new PageResponse();
+
+    /**
+     * Just for null above.
+     */
+    private PageResponse() {
+        this.request = PageRequest.NULL;
+        this.model   = Model.NULL;
+        redirect     = null;
+    }
+
+    /**
      * Normal constructor -- use a factory.
      */
     private PageResponse(PageRequest request, Model model) {
         this.request = notNull(request);
         this.model = notNull(model);
         redirect   = null;
-        
     }
 
     /**

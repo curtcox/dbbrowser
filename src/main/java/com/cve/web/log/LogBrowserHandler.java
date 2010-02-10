@@ -15,7 +15,7 @@ public final class LogBrowserHandler implements RequestHandler {
         handler = CompositeRequestHandler.of(
         // handler                         // for URLs of the form
         ObjectBrowserHandler.of(),      // /object/
-        RequestBrowserHandler.of());       // /request/
+        PageRequestBrowserHandler.of());       // /request/
     }
 
     public static RequestHandler of() {

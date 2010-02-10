@@ -4,9 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
@@ -63,9 +63,18 @@ public final class AnnotatedClass {
      */
     ExecutableElement getExecutable(StackTraceElement e) {
         String name = e.getMethodName();
+        // We could probably do better here by trying to match the method
+        // by args and not just by name
         for (Method method : clazz.getDeclaredMethods()) {
             if (name.equals(method.getName())) {
                 return Executables.of(method);
+            }
+        }
+        // Alternatively, we could parse the source somehow, which we would
+        // need for better constructor resolution
+        if (name.equals("<init>")) {
+            for (Constructor constructor : clazz.getDeclaredConstructors()) {
+                return Executables.of(constructor);
             }
         }
         String message = e.toString();

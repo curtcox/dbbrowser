@@ -19,6 +19,10 @@ public interface Log {
     AnnotatedStackTrace annotatedStackTrace(Throwable t);
 
 
+    /**
+     * Note the given arguments for the method being executed.
+     * Don't throw an exception if any are null.
+     */
     void possiblyNullArgs(Object... objects);
 
     /**
@@ -27,14 +31,29 @@ public interface Log {
      */
     void args(Object... objects);
 
+    /**
+     * Log this at the debug level.
+     */
     void debug(Object... args);
 
+    /**
+     * Log this at the info level.
+     */
     void info(String message);
 
+    /**
+     * Log this at the warning level.
+     */
     void warn(String message);
 
+    /**
+     * Log this at the warning level.
+     */
     void warn(Throwable t);
 
+    /**
+     * Log this at the severe level.
+     */
     void severe(String message);
 
 }

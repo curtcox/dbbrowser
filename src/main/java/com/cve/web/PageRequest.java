@@ -1,19 +1,12 @@
 
 package com.cve.web;
 
-import com.cve.html.Label;
-import com.cve.html.Link;
-import com.cve.log.Log;
-import com.cve.log.Logs;
+import com.cve.util.Check;
 import javax.annotation.concurrent.Immutable;
 import javax.servlet.http.HttpServletRequest;
-import com.cve.util.Check;
-import com.cve.util.Timestamp;
-import com.cve.web.log.LogCodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import java.net.URI;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 
@@ -69,6 +62,26 @@ public final class PageRequest {
      */
     public final PageRequestProcessor id;
 
+    /**
+     * The PageRequest to use instead of null;
+     */
+    public static PageRequest NULL = new PageRequest();
+
+    /**
+     * Just for null.
+     */
+    private PageRequest() {
+        this.method      = Method.GET;
+        this.requestURI  = "";
+        this.queryString = "";
+        this.parameters  = ImmutableMap.of();
+        this.cookies     = ImmutableList.of();
+        id = PageRequestProcessor.of();
+    }
+
+    /**
+     * Use a factory.
+     */
     private PageRequest(
         Method type, String requestURI, String queryString,
         ImmutableMap<String,String> parameters, ImmutableList<Cookie> cookies)
@@ -122,6 +135,7 @@ public final class PageRequest {
     }
 
     @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     public boolean equals(Object o) {
         PageRequest other = (PageRequest) o;
         return requestURI.equals(other.requestURI) &&

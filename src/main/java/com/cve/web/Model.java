@@ -2,6 +2,7 @@ package com.cve.web;
 
 /**
  * The logical version of something to be presented to the user.
+ * This should arguable be PresentationModel instead.
  * A model more-or-less corresponds to a page.  As a matter of fact, model
  * classes are often indicated with a page name.
  * <p>
@@ -13,4 +14,8 @@ package com.cve.web;
  */
 public interface Model {
 
+    /**
+     * Use this in place of null
+     */
+    public static final Model NULL = new Model() {};
 }

@@ -19,26 +19,26 @@ import java.net.URI;
  *
  * @author Curt
  */
-final class RequestIndexRenderer implements ModelHtmlRenderer {
+final class PageRequestModelRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
+
+    final ObjectLink link = ObjectLink.of();
 
     private final HTMLTags tags = HTMLTags.of();
 
     private static URI HELP = URIs.of("/resource/help/request.html");
 
-    private RequestIndexRenderer() {
-        
-    }
+    private PageRequestModelRenderer() {}
 
-    public static RequestIndexRenderer of() {
-        return new RequestIndexRenderer();
+    public static PageRequestModelRenderer of() {
+        return new PageRequestModelRenderer();
     }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.args(model,client);
-        RequestIndexModel page = (RequestIndexModel) model;
+        PageRequestServiceModel page = (PageRequestServiceModel) model;
         String guts = tableOfEntries(page);
         String title = "Log Entries";
         NavigationButtons b = NavigationButtons.of();
@@ -46,25 +46,36 @@ final class RequestIndexRenderer implements ModelHtmlRenderer {
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
-    String tableOfEntries(RequestIndexModel page) {
+    String tableOfEntries(PageRequestServiceModel page) {
         log.args(page);
         StringBuilder out = new StringBuilder();
-        out.append(th("Request PageRequestProcessor") + th("Entries") + th("Entries"));
-        for (PageRequestProcessor id : page.requests) {
+        out.append(th("Timestamp") + th("Level") + th("Logger") + th("Message") + th("Trace") + th("Args"));
+        for (LogEntry entry : page.entries) {
             out.append(tr(
-                td(id.linkTo().toString()           ,CSS.TABLE) +
-                td("" + page.entries.get(id).size() ,CSS.ROW_COUNT) +
-                td(entriesFor(page,id)              ,CSS.COLUMN)
+                td(entry.timeStamp.toString()       ,CSS.TABLE) +
+                td(entry.level.toString()           ,CSS.ROW_COUNT) +
+                td(entry.logger.toString()          ,CSS.ROW_COUNT) +
+                td(entry.message.toString()         ,CSS.ROW_COUNT) +
+                td(entry.trace.linkTo().toString()  ,CSS.ROW_COUNT) +
+                td(argLinks(entry.args)             ,CSS.ROW_COUNT)
             ));
         }
         return table(out.toString());
     }
 
-    String entriesFor(RequestIndexModel page, PageRequestProcessor id) {
+    String argLinks(Object[] args) {
+        StringBuilder out = new StringBuilder();
+        for (Object arg : args) {
+            out.append(link.to(arg));
+        }
+        return out.toString();
+    }
+
+    String entriesFor(PageRequestIndexModel page, PageRequestProcessor id) {
         log.args(page,id);
         StringBuilder out = new StringBuilder();
         int i = 0;
-        for (LogEntry entry : page.entries.get(id)) {
+        for (LogEntry entry : page.pages.get(id).entries) {
             out.append(entry.linkTo() + " ");
             i++;
             if (i>20) {

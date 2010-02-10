@@ -118,7 +118,7 @@ final class SimpleLog implements Log {
         PageRequestProcessor         id = PageRequestProcessor.of();
         AnnotatedStackTrace trace = annotatedStackTrace();
         Class              logger = caller(trace);
-        String            message = logger.getName();
+        String            message = callingMethod(trace);
         ObjectRegistry.put(LogEntry.of(level,id,trace,logger,message,args));
         //System.out.println(clazz + ":" + message);
     }
@@ -182,6 +182,16 @@ final class SimpleLog implements Log {
                 } catch (ClassNotFoundException e) {
                     return e.getClass();
                 }
+            }
+        }
+        return null;
+    }
+
+    String callingMethod(AnnotatedStackTrace t) {
+        for (AnnotatedStackTraceElement element : t.elements) {
+            String name = element.clazz.clazz.getName();
+            if (!IGNORE_AS_CALLERS.contains(name)) {
+                return element.executable.getName();
             }
         }
         return null;

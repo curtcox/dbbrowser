@@ -11,10 +11,13 @@ import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 
 /**
+ * The basic idea is that one of these corresponds to each HTTP request.
+ * <p>
  * The thing that processes a page request.
  * This is sort of like a thread id.request.
  * A single PageRequestProcessor can have many PageRequests, because one
  * PageRequest can wrap another.
+ * 
  */
 @Immutable
 public final class PageRequestProcessor implements Comparable<PageRequestProcessor> {

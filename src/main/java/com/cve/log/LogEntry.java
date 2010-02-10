@@ -16,22 +16,49 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class LogEntry implements Comparable<LogEntry> {
 
+    /**
+     * How important this entry is.
+     */
     public final LogLevel level;
 
+    /**
+     * When this entry was made.
+     */
     public final Timestamp timeStamp = Timestamp.of();
 
+    /**
+     * The request being served when the entry was made.
+     */
     public final PageRequestProcessor request;
 
+    /**
+     * The class that requested the entry.
+     */
     public final Class logger;
 
+    /**
+     * Where this was logged from.
+     */
     public final AnnotatedStackTrace trace;
 
+    /**
+     * The message to log.
+     */
     public final String message;
 
+    /**
+     * Arguments associated with this entry.
+     */
     public final Object[] args;
 
+    /**
+     * For mapping to and from URLs dealing with logging.
+     */
     final LogCodec codec = LogCodec.of();
 
+    /**
+     * Used for args when log entries have no args.
+     */
     static final Object[] NO_ARGS = new Object[0];
 
     private LogEntry(LogLevel level, PageRequestProcessor request, AnnotatedStackTrace trace, Class logger, String message, Object[] args) {
