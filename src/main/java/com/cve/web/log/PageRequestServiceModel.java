@@ -38,10 +38,10 @@ public final class PageRequestServiceModel implements Model {
     private PageRequestServiceModel(
         PageRequestProcessor id, PageRequest request, PageResponse response, Collection<LogEntry> entries)
     {
-        this.id = notNull(id);
-        this.request = notNull(request);
+        this.id       = notNull(id);
+        this.request  = notNull(request);
         this.response = notNull(response);
-        this.entries = ImmutableList.copyOf(entries);
+        this.entries  = ImmutableList.copyOf(entries);
     }
 
     public static PageRequestServiceModel of(PageRequestProcessor id, PageRequest request, PageResponse response, Collection<LogEntry> entries) {

@@ -23,7 +23,7 @@ final class TextFileModelHtmlRenderer implements ModelHtmlRenderer {
 
     HtmlPage render(TextFileModel model) {
         StringBuilder out = new StringBuilder();
-        int num = 0;
+        int num = 1;
         for (String line : model.lines) {
             out.append(line(num) + " " + line + "\r");
             num++;

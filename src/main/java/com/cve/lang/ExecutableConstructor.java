@@ -7,46 +7,29 @@ import static com.cve.util.Check.notNull;
  * A wrapper to make a constructor executable.
  */
 @Immutable
-public final class ExecutableConstructor implements ExecutableElement {
+public final class ExecutableConstructor extends ExecutableElement {
 
-    final Constructor inner;
+    public final Constructor inner;
 
     ExecutableConstructor(Constructor constructor) {
+        super(constructor);
         inner = notNull(constructor);
     }
 
-    @Override
-    public Class getReturnType() {
-        return inner.getDeclaringClass();
+    static ExecutableElement of(Constructor constructor) {
+        return new ExecutableConstructor(constructor);
     }
 
     @Override
-    public Class[] getParameterTypes() {
-        return inner.getParameterTypes();
+    public int hashCode() {
+        return super.hashCode() ^ inner.hashCode();
     }
 
     @Override
-    public Class[] getExceptionTypes() {
-        return inner.getExceptionTypes();
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        ExecutableConstructor other = (ExecutableConstructor) o;
+        return super.equals(other) && inner.equals(other.inner);
     }
 
-    @Override
-    public Class getDeclaringClass() {
-        return inner.getDeclaringClass();
-    }
-
-    @Override
-    public String getName() {
-        return inner.getName();
-    }
-
-    @Override
-    public int getModifiers() {
-        return inner.getModifiers();
-    }
-
-    @Override
-    public boolean isSynthetic() {
-        return inner.isSynthetic();
-    }
 }

@@ -40,7 +40,7 @@ final class PageRequestBrowserHandler extends AbstractRequestHandler {
     @Override
     public Model get(PageRequest request) {
         try {
-            PageRequestServiceModel requestModel = getRequest(request);
+            PageRequestServiceModel requestModel = getRequestModel(request);
             if (!requestModel.entries.isEmpty()) {
                 return requestModel;
             }
@@ -92,17 +92,25 @@ final class PageRequestBrowserHandler extends AbstractRequestHandler {
         return PageRequestServiceModel.of(processor, request, response, entries);
     }
 
-    PageRequestServiceModel getRequest(PageRequest request) {
+    /**
+     * Use the ObjectRegistry to generate to model for the given request.
+     */
+    PageRequestServiceModel getRequestModel(PageRequest request) {
         String uri = request.requestURI;
         String idString = uri.substring(uri.lastIndexOf("/") + 1);
         PageRequestProcessor id = PageRequestProcessor.parse(idString);
-        PageResponse response = null;
+        PageResponse response = PageResponse.NULL;
         List<LogEntry> entries = Lists.newArrayList();
         for (Object object : ObjectRegistry.values()) {
             if (object instanceof LogEntry) {
                 LogEntry entry = (LogEntry) object;
                 if (entry.request.equals(id)) {
                     entries.add(entry);
+                    for (Object arg : entry.args) {
+                        if (arg instanceof PageResponse) {
+                            response = (PageResponse) arg;
+                        }
+                    }
                 }
             }
         }

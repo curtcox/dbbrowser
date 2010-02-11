@@ -6,50 +6,28 @@ import static com.cve.util.Check.notNull;
 /**
  * A wrapper to make a method executable.
  */
-public final class ExecutableMethod implements ExecutableElement {
+public final class ExecutableMethod extends ExecutableElement {
 
-    final Method inner;
+    public final Method inner;
 
-    ExecutableMethod(Method method) {
+    private ExecutableMethod(Method method) {
+        super(method);
         inner = notNull(method);
     }
 
-    @Override
-    public Class getReturnType() {
-        return inner.getReturnType();
+    public static ExecutableMethod of(Method method) {
+        return new ExecutableMethod(method);
     }
 
     @Override
-    public Class[] getParameterTypes() {
-        return inner.getParameterTypes();
+    public int hashCode() {
+        return super.hashCode() ^ inner.hashCode();
     }
 
     @Override
-    public Class[] getExceptionTypes() {
-        return inner.getExceptionTypes();
-    }
-
-    @Override
-    public Class getDeclaringClass() {
-        return inner.getDeclaringClass();
-    }
-
-    @Override
-    public String getName() {
-        return inner.getName();
-    }
-
-    @Override
-    public int getModifiers() {
-        return inner.getModifiers();
-    }
-
-    public Method getMethod() {
-        return inner;
-    }
-
-    @Override
-    public boolean isSynthetic() {
-        return inner.isSynthetic();
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        ExecutableMethod other = (ExecutableMethod) o;
+        return super.equals(other) && inner.equals(other.inner);
     }
 }

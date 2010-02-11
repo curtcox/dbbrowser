@@ -4,8 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -13,49 +14,99 @@ import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
 /**
- *
+ * A little more information than a class alone provides.
  * @author curt
  */
 @Immutable
 public final class AnnotatedClass {
 
+    /**
+     * The class we annotate.
+     */
     public final Class clazz;
 
+    /**
+     * The file where we found the source code.
+     */
     public final File file;
 
+    /**
+     * The source code.
+     */
     public final ImmutableList<String> source;
 
+    /**
+     * Use the factory.
+     */
     private AnnotatedClass(Class clazz, File file, List<String> source) {
-        this.clazz = notNull(clazz);
-        this.file = notNull(file);
+        this.clazz  = notNull(clazz);
+        this.file   = notNull(file);
         this.source = ImmutableList.copyOf(source);
     }
 
+    private static final List<String> NO_SOURCE_AVAILABLE = ImmutableList.of();
+
+    static AnnotatedClass of(Class c) {
+        String    className = c.getName();
+        File           file = new File("");
+        String     resource = sourceFileResource(className);
+           InputStream   in = AnnotatedClass.class.getResourceAsStream(resource);
+        List<String> source = (in==null)
+            ? NO_SOURCE_AVAILABLE
+            : readLines(in)
+        ;
+
+        return new AnnotatedClass(c,file,source);
+    }
+
+    /**
+     * Return a new AnnotatedClass for the class indicated in this element.
+     */
     static AnnotatedClass of(StackTraceElement element) {
         try {
-            Class clazz = Class.forName(element.getClassName());
-            File file = new File(element.getFileName());
-            List<String> source = readSource(file);
+            String    className = element.getClassName();
+            Class         clazz = Class.forName(className);
+            File           file = new File(element.getFileName());
+            String     resource = sourceFileResource(className);
+               InputStream   in = AnnotatedClass.class.getResourceAsStream(resource);
+            List<String> source = (in==null)
+                ? NO_SOURCE_AVAILABLE
+                : readLines(in)
+            ;
+
             return new AnnotatedClass(clazz,file,source);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    static ImmutableList<String> readSource(File file) {
-        if (!file.exists()) {
-            return ImmutableList.of();
-        }
-        List<String> lines = Lists.newArrayList();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
-            for (String line = reader.readLine(); line!=null; line = reader.readLine() ) {
-                lines.add(line);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return ImmutableList.copyOf(lines);
+    /**
+     * Return the  name of the resource that holds the source code for this
+     * class name.
+     */
+    static String sourceFileResource(String className) {
+        return "/" + className.replace(".", "/") + ".java";
+    }
+
+    /**
+     * Read the resource as lines.
+     */
+    static ImmutableList<String> readLines(InputStream in) {
+          try {
+              try {
+                  List<String> lines = Lists.newArrayList();
+                  BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                  for (String line = reader.readLine(); line!=null; line = reader.readLine()) {
+                      lines.add(line);
+                  }
+                  return ImmutableList.copyOf(lines);
+              } finally {
+                  in.close();
+              }
+          } catch (IOException e) {
+              throw new RuntimeException(e);
+          }
+
     }
     
     /**
@@ -81,4 +132,17 @@ public final class AnnotatedClass {
         throw new IllegalArgumentException(message);
     }
 
+    @Override
+    public int hashCode() {
+        return clazz.hashCode() ^ file.hashCode() ^ source.hashCode();    
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        AnnotatedClass other = (AnnotatedClass) o;
+        return clazz.equals(other.clazz) &&
+                 file.equals(other.file) &&
+               source.equals(other.source);
+    }
 }

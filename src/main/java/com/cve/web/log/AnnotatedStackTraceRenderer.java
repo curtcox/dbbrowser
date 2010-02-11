@@ -53,7 +53,7 @@ public final class AnnotatedStackTraceRenderer
             Throwable throwable = trace.throwable;
             out.append("<b>" + throwable.getClass().getName() + "</b> " + throwable.getMessage());
             StringBuilder table = new StringBuilder();
-            String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line"));
+            String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line") + th("source"));
             table.append(header);
 
             ImmutableList<AnnotatedStackTraceElement> elements = trace.elements;
@@ -83,12 +83,14 @@ public final class AnnotatedStackTraceRenderer
         AnnotatedClass c = e.clazz;
         String className = c.clazz.getName();
         String  fileName = c.file.toString();
+        int line = e.line;
         return tr(
             td(className) +
             td(linkToSource(className,fileName).toString()) +
             td(e.executable.getName()) +
             td(argsCell(args)) +
-            td("" + e.line)
+            td("" + line) +
+            td(e.source)
         );
     }
 

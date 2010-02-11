@@ -21,11 +21,24 @@ public class AnnotatedStackTraceTest {
         }
         AnnotatedStackTrace trace = AnnotatedStackTrace.throwableArgs(t, args);
         for (StackTraceElement element : t.getStackTrace()) {
-            equals((StackTraceElement) trace.args.get(element)[0],element);
+            AnnotatedStackTraceElement annotatedElement = AnnotatedStackTraceElement.of(element);
+            equals((StackTraceElement) trace.args.get(annotatedElement)[0],element);
         }
     }
     
     static void equals(StackTraceElement a, StackTraceElement b) {
          assertEquals(a,b);
+    }
+
+    @Test
+    public void twoTracesWithSameThrowableAndArgsAreEqual() {
+        Throwable t = new Throwable();
+        Map<StackTraceElement,Object[]> args = Maps.newHashMap();
+        for (StackTraceElement element : t.getStackTrace()) {
+            args.put(element, new Object[] { element });
+        }
+        AnnotatedStackTrace a = AnnotatedStackTrace.throwableArgs(t, args);
+        AnnotatedStackTrace b = AnnotatedStackTrace.throwableArgs(t, args);
+        assertEquals(a,b);
     }
 }

@@ -10,11 +10,11 @@ import java.lang.reflect.Method;
 public final class Executables {
 
     public static ExecutableElement of(Method method) {
-        return new ExecutableMethod(method);
+        return ExecutableMethod.of(method);
     }
 
     public static ExecutableElement of(Constructor constructor) {
-        return new ExecutableConstructor(constructor);
+        return ExecutableConstructor.of(constructor);
     }
 
 }

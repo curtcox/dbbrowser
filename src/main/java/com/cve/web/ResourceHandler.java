@@ -62,6 +62,9 @@ public final class ResourceHandler extends AbstractRequestHandler {
         }
     }
 
+    /**
+     * Return a TextFileModel fro the given request.
+     */
     static TextFileModel serveTextFile(PageRequest request) {
         String       uri = request.requestURI;
         String  resource = uri.substring("/resource".length());
@@ -96,7 +99,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
       }
 
     /**
-     * Copy the input stream to the byte array
+     * Read the resource as lines.
      */
     static ImmutableList<String> readLines(InputStream in) throws IOException {
           List<String> lines = Lists.newArrayList();
@@ -110,6 +113,6 @@ public final class ResourceHandler extends AbstractRequestHandler {
           }
 
           return ImmutableList.copyOf(lines);
-      }
+    }
 
 }

@@ -18,8 +18,6 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class AnnotatedStackTrace {
 
-    final LogCodec codec = LogCodec.of();
-
     /**
      * The throwable this is generated from.
      */
@@ -38,12 +36,17 @@ public final class AnnotatedStackTrace {
     /**
      * Map from element -> method arguments
      */
-    public final Map<AnnotatedStackTraceElement,Object[]> args;
+    public final ImmutableMap<AnnotatedStackTraceElement,Object[]> args;
 
     /**
      * Use in place of null
      */
     public static final AnnotatedStackTrace NULL = Null();
+
+    /**
+     * For mapping to and from URLs.
+     */
+    private static final LogCodec codec = LogCodec.of();
 
     private static AnnotatedStackTrace Null() {
         return new AnnotatedStackTrace();
@@ -91,5 +94,22 @@ public final class AnnotatedStackTrace {
         URI target = codec.encode(this);
         return Link.textTarget(text, target);
     }
+
+    @Override
+    public int hashCode() {
+        return throwable.hashCode() ^ elements.hashCode() ^ args.hashCode();
+    }
+
+    @Override
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    public boolean equals(Object o) {
+        AnnotatedStackTrace other = (AnnotatedStackTrace) o;
+        return throwable.equals(other.throwable) &&
+               Objects.equals(cause,other.cause) &&
+               elements.equals(other.elements) &&
+               args.equals(other.args)
+               ;
+    }
+
 
 }

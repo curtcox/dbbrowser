@@ -9,6 +9,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -303,9 +304,9 @@ private String showExecutablesFromOneClass(Collection<ExecutableElement> executa
  */
 private String showExecutable(ExecutableElement method){
 
-    final Class   returnType = method.getReturnType();
-    final Class[] parameters = method.getParameterTypes();
-    final Class[] exceptions = method.getExceptionTypes();
+    final Class   returnType = method.returnType;
+    final ImmutableList<Class> parameters = method.parameterTypes;
+    final ImmutableList<Class> exceptions = method.exceptionTypes;
 
     StringBuffer r = new StringBuffer();
     r.append(td(modifiers(method.getModifiers())));
@@ -316,19 +317,19 @@ private String showExecutable(ExecutableElement method){
     }
 
     // method name
-    if (method instanceof ExecutableConstructor || parameters.length>0) {
+    if (method instanceof ExecutableConstructor || parameters.size()>0) {
         r.append(td(method.getName()));
     } else {
-        Method m = ((ExecutableMethod) method).getMethod();
+        Method m = ((ExecutableMethod) method).inner;
         r.append(td(link.to(m.getName(),new DeferredMethod(target,m))));
     }
 
     // arguments
     StringBuffer args = new StringBuffer("(");
-    for (int i=0; i<parameters.length; i++) {
-        Class pClass = parameters[i];
+    for (int i=0; i<parameters.size(); i++) {
+        Class pClass = parameters.get(i);
         args.append(link.to(pClass.getName(),pClass));
-        if (i + 1 < parameters.length) {
+        if (i + 1 < parameters.size()) {
             args.append(",");
         }
     }
@@ -336,12 +337,12 @@ private String showExecutable(ExecutableElement method){
     r.append(td(args.toString()));
 
     // throws
-    if (exceptions.length>0) {
+    if (exceptions.size()>0) {
         StringBuffer all = new StringBuffer();
-        for (int i=0; i<exceptions.length; i++) {
-            Class eClass = exceptions[i];
+        for (int i=0; i<exceptions.size(); i++) {
+            Class eClass = exceptions.get(i);
             all.append(link.to(eClass.getName(),eClass));
-            if (i + 1 < exceptions.length) {
+            if (i + 1 < exceptions.size()) {
                 all.append(",");
             }
         }
