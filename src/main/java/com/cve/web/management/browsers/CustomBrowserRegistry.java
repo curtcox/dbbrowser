@@ -1,11 +1,5 @@
-package com.cve.web.management;
+package com.cve.web.management.browsers;
 
-import com.cve.log.Log;
-import com.cve.web.management.browsers.AnnotatedStackTraceBrowser;
-import com.cve.web.management.browsers.ArrayBrowser;
-import com.cve.web.management.browsers.CollectionBrowser;
-import com.cve.web.management.browsers.MapBrowser;
-import com.cve.web.management.browsers.MultimapBrowser;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.util.List;

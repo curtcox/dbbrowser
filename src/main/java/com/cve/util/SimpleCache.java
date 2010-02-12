@@ -1,5 +1,6 @@
 package com.cve.util;
 
+import com.cve.lang.Memory;
 import com.google.common.collect.ImmutableMap;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -9,31 +10,49 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * A simple thread-safe cache.
+ * A simple thread-safe LRU cache.
+ * The cache contents will be discarded when memory is scarce, but this cache
+ * will always retain at least one item.
  * @author Curt
  */
-public final class SimpleCache<K,V> implements Map {
+public final class SimpleCache<K,V> implements Map<K,V> {
 
-    private static final int MAX = 10000;
+    /**
+     * Minimum number of entries a cache will hold before any are evicted.
+     * Don't set this below 1.  Some cache usage depends on it being able to
+     * store at least one thing, no matter what.
+     */
+    private final int min;
+
+    /**
+     * Maximum number of entries a cache can ever hold.
+     */
+    private static final int MAX = 1000;
 
     private final Lock lock = new ReentrantLock();
 
-    private final LinkedHashMap map = new LinkedHashMap() {
+    private final LinkedHashMap<K,V> map = new LinkedHashMap() {
         // Oddly enough, the Javadoc seems to indicate that you can't just
         // specify a maximum size in the constructor.
         @Override
        protected boolean removeEldestEntry(Map.Entry eldest) {
-           return size() > MAX;
+            int size = size();
+           return size > MAX || (size > min && Memory.isLow());
        }
     };
 
     /**
      * Use the factory.
      */
-    private SimpleCache() {}
+    private SimpleCache(int min) {
+        this.min = min;
+        if (min<1) {
+            throw new IllegalArgumentException(min + " < 1");
+        }
+    }
 
     public static SimpleCache of() {
-        return new SimpleCache();
+        return new SimpleCache(1000);
     }
 
     public Map copy() {
@@ -86,7 +105,7 @@ public final class SimpleCache<K,V> implements Map {
     }
 
     @Override
-    public Object get(Object key) {
+    public V get(Object key) {
         lock.lock();
         try {
             return map.get(key);
@@ -96,10 +115,10 @@ public final class SimpleCache<K,V> implements Map {
     }
 
     @Override
-    public Object put(Object key, Object value) {
+    public V put(K key, V value) {
         lock.lock();
         try {
-            Object result = map.put(key, value);
+            V result = map.put(key, value);
             return result;
         } finally {
              lock.unlock();
@@ -107,7 +126,7 @@ public final class SimpleCache<K,V> implements Map {
     }
 
     @Override
-    public Object remove(Object key) {
+    public V remove(Object key) {
         lock.lock();
         try {
             return map.remove(key);

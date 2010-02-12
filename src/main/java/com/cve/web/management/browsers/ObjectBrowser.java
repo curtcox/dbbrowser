@@ -1,23 +1,24 @@
-package com.cve.web.management;
+package com.cve.web.management.browsers;
 
 import com.cve.lang.ExecutableElement;
-import com.cve.lang.ExecutableConstructor;
 import com.cve.lang.ExecutableMethod;
 import com.cve.html.HTMLTags;
 import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import static com.cve.util.Check.*;
+import com.cve.util.Check;
+import com.cve.util.Strings;
+import com.cve.web.management.ObjectLink;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import com.google.common.collect.Multimap;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 /**
@@ -31,122 +32,56 @@ public final class ObjectBrowser {
      */
     private final Object target;
 
+    /**
+     * For creating links to other objects.
+     */
     private final ObjectLink link;
 
     /**
      * What visibility to show.  Public, private, etc...
      */
-    private final Mask mask;
+    private final ModifierMask mask;
 
     private final Log log = Logs.of();
 
+    /**
+     * For creating HTML tags
+     */
     private final HTMLTags tags;
 
-/**
- * Something that limits the kind of methods and variables we are interested in.
- *
- * @author ccox
- */
-public static enum Mask {
-
-    /**
-     * Public or protected, but not private.
-     */
-    PUBLIC(Modifier.PUBLIC | Modifier.PROTECTED, Modifier.PRIVATE),
-
-    /**
-     * Everything.
-     */
-    PRIVATE(0,0);
-
-    private final int required;
-    private final int prohibited;
-
-    Mask(int required, int prohibited) {
-        this.required   = required;
-        this.prohibited = prohibited;
-    }
-
-    /**
-     * Return true, if the member passes this mask.
-     */
-    boolean passes(Member member) {
-        int modifiers = member.getModifiers();
-        // if there are some requirements and they aren't met, fail
-        if (required!=0 && ((modifiers & required) == 0)) {
-            return false;
-        }
-        if (prohibited!=0 && ((modifiers & prohibited) != 0)) {
-            return false;
-        }
-        return true;
-    }
-} // Mask
-
-
-/**
- * A DeferredMethod is a wrapper around a method so that it can be executed
- * later.  It is necessary, because we want to be able to browse any objects 
- * that would be returned by a method invocation, but we don't want to actually
- * invoke the method, unless the link for that method is followed. 
- */
-private static class DeferredMethod {
-
-    final Object target;
-    final Method method;
-
-    DeferredMethod(Object target, Method method) {
-        this.target = notNull(target);
-        this.method = notNull(method);
-    }
-
-    public Object invoke() {
-        try {
-            method.setAccessible(true);
-            return method.invoke(target,null);
-        } catch (Throwable t) {
-            return t;
-        }
-    }
-} // Deferred Method
-
-public ObjectBrowser(Object o) {
-    this(o,Mask.PRIVATE);
+private ObjectBrowser(Object o) {
+    this(o,ModifierMask.PRIVATE);
 }
 
-public ObjectBrowser(Object target, Mask mask) {
-    this.mask   = mask;
+private ObjectBrowser(Object target, ModifierMask mask) {
+    this.mask   = Check.notNull(mask);
     this.target = target;
     link = ObjectLink.of();
     tags = HTMLTags.of();
+}
+
+public static ObjectBrowser of(Object o) {
+    return new ObjectBrowser(o);
 }
 
 /**
  * Return the HTML for our target object.
  * 
  */
-String toHTML() {
-    StringBuffer out = new StringBuffer();
-    out.append(checkSpecialHandling(target));
-    out.append(h1(link.to(target)));
-
-    out.append(h1("toString"));
-    out.append("" + target);
-
+public String toHTML() {
     if (target==null) {
-        return out.toString();
+        return "null";
     }
-    
-    out.append(h1("Fields"));
-    out.append(showFields());
 
-    out.append(h1("Constructors"));
-    out.append(showConstructors());
+    return
+        checkSpecialHandling(target) +
+        h1(link.to(target)) +
+        h1("toString")     + target +
+        h1("Fields")       + showFields() +
+        h1("Constructors") + showConstructors() +
+        h1("Methods")      + showMethods()
+    ;
 
-    out.append(h1("Methods"));
-    out.append(showMethods());
-
-    return out.toString();
 } // show Object
 
 String h1(String s) { return tags.h1(s); }
@@ -159,22 +94,22 @@ String borderTable(String s) { return tags.borderTable(s); }
 /**
  * Return a new browser for this object using public visibility.
  */
-private static ObjectBrowser newPublic(Object o) {
+static ObjectBrowser newPublic(Object o) {
     return new ObjectBrowser(o);
 }
 
 /**
  * Return a new browser for this object using private visibility.
  */
-private static ObjectBrowser newPrivate(Object o) {
-    return new ObjectBrowser(o,Mask.PRIVATE);
+static ObjectBrowser newPrivate(Object o) {
+    return new ObjectBrowser(o,ModifierMask.PRIVATE);
 }
 
 /**
  * Show the given object in a new frame using public visibility.
  * @param o the object to show
  */
-private static String showPublic(Object o) {
+static String showPublic(Object o) {
     return newPublic(o).toHTML();
 }
 
@@ -203,7 +138,7 @@ private String checkSpecialHandling(Object o) {
 /**
  * Show all of the fields for this link.
  */
-private String showFields() {
+String showFields() {
     Object o = target;
     Class  c = o.getClass();
     Field[] fields = c.getDeclaredFields();
@@ -249,7 +184,10 @@ private String showField(Field f, Object o) {
     return tr(row.toString());
 }
 
-private String showConstructors() {
+/**
+ * Return HTML describing all of the constructors for the class of our target.
+ */
+String showConstructors() {
     Class c = target.getClass();
     List<ExecutableElement> list = Lists.newArrayList();
     for (Constructor constructor : c.getConstructors()) {
@@ -260,7 +198,10 @@ private String showConstructors() {
     return showExecutables(list);
 }
 
-private String showMethods() {
+/**
+ * Return HTML describing all of the methods of our target.
+ */
+String showMethods() {
     Class c = target.getClass();
     List<ExecutableElement> list = Lists.newArrayList();
     for (Method method : c.getMethods()) {
@@ -271,7 +212,10 @@ private String showMethods() {
     return showExecutables(list);
 }
 
-private String showExecutables(Collection<ExecutableElement> executables) {
+/**
+ * Return HTML describing all of the executables given.
+ */
+String showExecutables(Collection<ExecutableElement> executables) {
     StringBuffer out = new StringBuffer();
     Multimap<Class,ExecutableElement> grouped = HashMultimap.create();
     for (ExecutableElement executable : executables) {
@@ -285,9 +229,10 @@ private String showExecutables(Collection<ExecutableElement> executables) {
     return out.toString();
 }
 
-private String showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
+
+String showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
     StringBuffer out = new StringBuffer();
-    String headerRow = tr(th("Modifiers") + th("Return Type") + th("Name")+ th("Arguments")+ th("Throws"));
+    String headerRow = tr(th("Modifiers") + th("Return Type") + th("Return Value") + th("Name")+ th("Arguments")+ th("Throws"));
     out.append(headerRow);
     for (ExecutableElement executable : executables) {
         out.append(showExecutable(executable));
@@ -297,64 +242,80 @@ private String showExecutablesFromOneClass(Collection<ExecutableElement> executa
 }
 
 /**
+ * Return HTML for the return type of the given executable
+ */
+String returnType(ExecutableElement executable){
+    // only show return type for methods
+    if (executable instanceof ExecutableMethod) {
+        return typeName(executable.returnType);
+    } else {
+        return "";
+    }
+}  
+
+/**
+ * Return HTML for the value of the given executable.
+ */
+String returnValue(ExecutableElement executable){
+    if (executable.name.startsWith("get") && executable.parameterTypes.isEmpty()) {
+        if (executable instanceof ExecutableMethod) {
+            Method method = ((ExecutableMethod) executable).inner;
+            method.setAccessible(true);
+            try {
+                Object result = method.invoke(target, null);
+                return link.to("" + result,result);
+            } catch (IllegalAccessException e) {
+                return link.to("IllegalAccessException" + e,e);
+            } catch (InvocationTargetException e) {
+                return link.to("InvocationTargetException" + e,e);
+            }
+        }
+    }
+    return "?";
+}
+
+/**
  * Print the modifiers, return type, name, parameter types, and exception
  *  type of an executable (method or constructor).
  */
-private String showExecutable(ExecutableElement method){
+String showExecutable(ExecutableElement method){
 
-    final Class   returnType = method.returnType;
     final ImmutableList<Class> parameters = method.parameterTypes;
     final ImmutableList<Class> exceptions = method.exceptionTypes;
 
-    StringBuffer r = new StringBuffer();
-    r.append(td(modifiers(method.getModifiers())));
+    return
+         tr(
+             td( modifiers(method.getModifiers())     ) +
+             td( returnType(method)                   ) +
+             td( returnValue(method)                  ) +
+             td( method.name                          ) +
+             td( "(" + csv(classes(parameters)) + ")" ) +
+             td( csv(classes(exceptions))             )
+         );
+}  // print method
 
-    // only show return type for methods
-    if (method instanceof ExecutableMethod) {
-        r.append(td(typeName(returnType)));
+/**
+ * Return comma separated values.
+ */
+static String csv(List<String> list) {
+    return Strings.separated(list, ",");
+}
+
+/**
+ * Return one string for each exception that could be thrown.
+ */
+ImmutableList<String> classes(final ImmutableList<Class> exceptions) {
+    List<String> list = Lists.newArrayList();
+    for (Class eClass : exceptions) {
+        list.add(link.to(eClass.getName(),eClass));
     }
-
-    // method name
-    if (method instanceof ExecutableConstructor || parameters.size()>0) {
-        r.append(td(method.getName()));
-    } else {
-        Method m = ((ExecutableMethod) method).inner;
-        r.append(td(link.to(m.getName(),new DeferredMethod(target,m))));
-    }
-
-    // arguments
-    StringBuffer args = new StringBuffer("(");
-    for (int i=0; i<parameters.size(); i++) {
-        Class pClass = parameters.get(i);
-        args.append(link.to(pClass.getName(),pClass));
-        if (i + 1 < parameters.size()) {
-            args.append(",");
-        }
-    }
-    args.append(")");
-    r.append(td(args.toString()));
-
-    // throws
-    if (exceptions.size()>0) {
-        StringBuffer all = new StringBuffer();
-        for (int i=0; i<exceptions.size(); i++) {
-            Class eClass = exceptions.get(i);
-            all.append(link.to(eClass.getName(),eClass));
-            if (i + 1 < exceptions.size()) {
-                all.append(",");
-            }
-        }
-        r.append(td(all.toString()));
-    }
-
-    return tr(r.toString());
-}  // print method 
-
+    return ImmutableList.copyOf(list);
+}
 
 /**
  * Return the name of an interface or primitive type, handling arrays.
  */
-private String typeName(Class t) {
+String typeName(Class t) {
     String brackets = "";
     while(t.isArray()) {
         brackets += "[]";

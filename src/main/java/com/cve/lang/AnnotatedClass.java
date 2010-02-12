@@ -1,5 +1,6 @@
 package com.cve.lang;
 
+import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.io.BufferedReader;
@@ -46,7 +47,7 @@ public final class AnnotatedClass {
 
     private static final List<String> NO_SOURCE_AVAILABLE = ImmutableList.of();
 
-    static AnnotatedClass of(Class c) {
+    private static AnnotatedClass of0(Class c) {
         String    className = c.getName();
         File           file = new File("");
         String     resource = sourceFileResource(className);
@@ -59,10 +60,20 @@ public final class AnnotatedClass {
         return new AnnotatedClass(c,file,source);
     }
 
+    private static SimpleCache<StackTraceElement,AnnotatedClass> ELEMENT_CACHE = SimpleCache.of();
+    static AnnotatedClass of(StackTraceElement element) {
+        if (ELEMENT_CACHE.containsKey(element)) {
+            return ELEMENT_CACHE.get(element);
+        }
+        AnnotatedClass c = of0(element);
+        ELEMENT_CACHE.put(element, c);
+        return c;
+    }
+
     /**
      * Return a new AnnotatedClass for the class indicated in this element.
      */
-    static AnnotatedClass of(StackTraceElement element) {
+    private static AnnotatedClass of0(StackTraceElement element) {
         try {
             String    className = element.getClassName();
             Class         clazz = Class.forName(className);

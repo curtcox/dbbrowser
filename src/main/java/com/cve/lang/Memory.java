@@ -64,4 +64,17 @@ public class Memory {
     }
     dumpInfo();
   }
+
+    /**
+     * Return true, if memory is currently low, and false otherwise.
+     * @return
+     */
+    public static boolean isLow() {
+        for(MemoryPoolMXBean pool : ManagementFactory.getMemoryPoolMXBeans()) {
+            if (pool.isUsageThresholdExceeded()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

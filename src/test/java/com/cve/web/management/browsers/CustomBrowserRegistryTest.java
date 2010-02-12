@@ -1,4 +1,4 @@
-package com.cve.web.management;
+package com.cve.web.management.browsers;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;

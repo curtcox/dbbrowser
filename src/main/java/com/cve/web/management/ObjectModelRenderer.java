@@ -1,5 +1,6 @@
 package com.cve.web.management;
 
+import com.cve.web.management.browsers.ObjectBrowser;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
@@ -33,6 +34,6 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
 
     String render(Object o) {
         HTMLTags tags = HTMLTags.of();
-        return tags.html(tags.body(new ObjectBrowser(o).toHTML()));
+        return tags.html(tags.body(ObjectBrowser.of(o).toHTML()));
     }
 }
