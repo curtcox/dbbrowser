@@ -6,7 +6,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.cve.util.Timestamp;
-import com.cve.web.log.LogCodec;
+import com.cve.web.management.LogCodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 

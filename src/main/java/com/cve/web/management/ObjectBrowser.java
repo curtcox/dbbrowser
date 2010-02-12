@@ -1,4 +1,4 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
 import com.cve.lang.ExecutableElement;
 import com.cve.lang.ExecutableConstructor;
@@ -7,7 +7,7 @@ import com.cve.html.HTMLTags;
 import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.util.Check;
+import static com.cve.util.Check.*;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -92,17 +92,15 @@ public static enum Mask {
  */
 private static class DeferredMethod {
 
-    private Object target;
-    private Method method;
+    final Object target;
+    final Method method;
 
     DeferredMethod(Object target, Method method) {
-        Check.notNull(target);
-        Check.notNull(method);
-        this.target = target;
-        this.method = method;
+        this.target = notNull(target);
+        this.method = notNull(method);
     }
 
-    Object invoke() {
+    public Object invoke() {
         try {
             method.setAccessible(true);
             return method.invoke(target,null);

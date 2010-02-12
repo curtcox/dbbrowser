@@ -1,35 +1,40 @@
-package com.cve.web.log.browsers;
+package com.cve.web.management.browsers;
 
+import com.cve.log.Log;
+import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
-import com.cve.web.log.AbstractBrowser;
-import com.cve.web.log.ObjectLink;
+import com.cve.web.management.AbstractBrowser;
+import com.cve.web.management.ObjectLink;
+import java.util.*;
 
 /**
  * @author ccox
  */
-public final class ArrayBrowser
+public final class CollectionBrowser
     extends AbstractBrowser
 {
 
-    private ArrayBrowser() {
-        super(Object.class); // harmless lie
+    final Log log = Logs.of();
+
+    private CollectionBrowser() {
+        super(Collection.class);
         
     }
 
-    public static ArrayBrowser of() {
-        return new ArrayBrowser();
+    public static CollectionBrowser of() {
+        return new CollectionBrowser();
     }
 
     /* (non-Javadoc)
      */
     @Override
     public String getComponentFor(Object o) {
-        Object[] a = (Object[]) o;
+        Collection c = (Collection) o;
         UITable table = UITable.of();
         int i = 0;
-        for (Object value : a) {
+        for (Object value : c) {
             UIRow row = UIRow.of(UIDetail.of("" + i),link(value));
             table = table.with(row);
             i++;

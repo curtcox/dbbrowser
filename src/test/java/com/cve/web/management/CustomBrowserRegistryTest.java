@@ -1,6 +1,5 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
-import com.cve.log.Log;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -13,8 +12,6 @@ import static org.junit.Assert.*;
  * @author Curt
  */
 public class CustomBrowserRegistryTest {
-
-    ;
 
     @Test
     public void hashmapHasCustom() {

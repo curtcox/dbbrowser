@@ -1,36 +1,36 @@
-package com.cve.web.log.browsers;
+package com.cve.web.management.browsers;
 
 import com.cve.log.Log;
-import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
-import com.cve.web.log.AbstractBrowser;
-import com.cve.web.log.ObjectLink;
-import java.util.*;
+import com.cve.web.management.AbstractBrowser;
+import com.cve.web.management.ObjectLink;
+import com.google.common.collect.Multimap;
+import static com.cve.util.Check.notNull;
 
 /**
  * Map-aware object browser.
  * @author ccox
  */
-public final class MapBrowser
+public final class MultimapBrowser
     extends AbstractBrowser
 {
 
-    final Log log = Logs.of();
+    ;
 
-    private MapBrowser() {
-        super(Map.class);
+    private MultimapBrowser() {
+        super(Multimap.class);
         
     }
 
-    public static MapBrowser of() {
-        return new MapBrowser();
+    public static MultimapBrowser of() {
+        return new MultimapBrowser();
     }
-    
+
     @Override
     public String getComponentFor(Object o) {
-        Map map = (Map) o;
+        Multimap map = (Multimap) o;
         UITable table = UITable.of();
         for (Object key : map.keySet()) {
             Object value = map.get(key);
@@ -43,4 +43,5 @@ public final class MapBrowser
     private UIDetail link(Object o) {
         return UIDetail.of(ObjectLink.of().to("" + o,o));
     }
+
 }

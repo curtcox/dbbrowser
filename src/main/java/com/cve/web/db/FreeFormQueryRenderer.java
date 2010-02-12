@@ -20,7 +20,7 @@ import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
 import com.cve.web.Search;
-import com.cve.web.log.ObjectLink;
+import com.cve.web.management.ObjectLink;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;

@@ -1,4 +1,4 @@
-package com.cve.web.log.browsers;
+package com.cve.web.management.browsers;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
@@ -6,9 +6,9 @@ import com.cve.lang.AnnotatedStackTrace;
 import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
-import com.cve.web.log.AbstractBrowser;
-import com.cve.web.log.AnnotatedStackTraceModel;
-import com.cve.web.log.AnnotatedStackTraceRenderer;
+import com.cve.web.management.AbstractBrowser;
+import com.cve.web.management.AnnotatedStackTraceModel;
+import com.cve.web.management.AnnotatedStackTraceRenderer;
 
 /**
  * @author ccox

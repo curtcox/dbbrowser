@@ -8,7 +8,7 @@ import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
 import com.cve.web.alt.AltModelHtmlRenderers;
 import com.cve.web.db.DatabaseModelHtmlRenderers;
-import com.cve.web.log.LogModelHtmlRenderers;
+import com.cve.web.management.ManagementModelHtmlRenderers;
 
 /**
  * Renders models into HTML, JPG, PNG, etc...
@@ -27,7 +27,7 @@ public final class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
         
         renderer = CompositeModelHtmlRenderer.of(
             DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction),
-            LogModelHtmlRenderers.of(),
+            ManagementModelHtmlRenderers.of(),
             AltModelHtmlRenderers.of(),
             GlobalHtmlRenderers.of()
         );

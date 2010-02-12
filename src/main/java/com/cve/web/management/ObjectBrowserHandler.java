@@ -1,9 +1,9 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
 import com.cve.log.Log;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.PageRequest;
-import com.cve.web.log.ObjectRegistry.Key;
+import com.cve.web.management.ObjectRegistry.Key;
 
 /**
  * Handle requests for an object.

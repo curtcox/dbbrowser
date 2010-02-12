@@ -22,7 +22,7 @@ import com.cve.web.RequestHandler;
 import com.cve.web.SearchRedirectsHandler;
 import com.cve.web.alt.AlternateViewHandler;
 import com.cve.web.db.DBBrowserHandler;
-import com.cve.web.log.LogBrowserHandler;
+import com.cve.web.management.ManagementHandler;
 
 /**
  * A request handler for resources accessible via the local machine.
@@ -50,7 +50,7 @@ final class LocalRequestHandler implements RequestHandler {
                             CoreServerHandler.of(),
                             SearchRedirectsHandler.of(),              // search?find=what
                             AlternateViewHandler.of(db,dbServersStore,hintsStore,managedFunction),
-                            LogBrowserHandler.of(),
+                            ManagementHandler.of(),
                             FSBrowserHandler.of(fs,fsServersStore,managedFunction),
                             DBBrowserHandler.of(db,dbServersStore,hintsStore,managedFunction)
                        )

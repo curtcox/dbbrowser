@@ -1,6 +1,5 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
-import com.cve.log.Log;
 import com.cve.web.*;
 
 /**

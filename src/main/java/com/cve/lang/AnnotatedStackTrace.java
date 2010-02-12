@@ -2,7 +2,7 @@ package com.cve.lang;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.web.log.LogCodec;
+import com.cve.web.management.LogCodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;

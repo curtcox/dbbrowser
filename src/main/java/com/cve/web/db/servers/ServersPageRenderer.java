@@ -11,7 +11,7 @@ import com.cve.log.Logs;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
-import com.cve.web.log.ObjectLink;
+import com.cve.web.management.ObjectLink;
 import java.net.URI;
 
 

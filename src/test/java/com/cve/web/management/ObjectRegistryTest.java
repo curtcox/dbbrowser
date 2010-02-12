@@ -1,6 +1,6 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
-import com.cve.web.log.ObjectRegistry.Key;
+import com.cve.web.management.ObjectRegistry.Key;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

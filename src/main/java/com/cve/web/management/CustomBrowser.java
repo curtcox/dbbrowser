@@ -1,4 +1,4 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
 /**
  * A browser that is specifically designed to browse a certain type of object.

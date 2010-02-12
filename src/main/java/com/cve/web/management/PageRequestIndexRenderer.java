@@ -1,4 +1,4 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
 import com.cve.html.CSS;
 import com.cve.html.HTMLTags;
@@ -10,35 +10,34 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
-import com.cve.web.PageRequest;
 import com.cve.web.PageRequestProcessor;
 import com.cve.web.db.NavigationButtons;
 import java.net.URI;
 
 /**
- *
+ * Renders a PageRequestIndex as a HTML page.
  * @author Curt
  */
-final class PageRequestModelRenderer implements ModelHtmlRenderer {
+final class PageRequestIndexRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
-
-    final ObjectLink link = ObjectLink.of();
 
     private final HTMLTags tags = HTMLTags.of();
 
     private static URI HELP = URIs.of("/resource/help/request.html");
 
-    private PageRequestModelRenderer() {}
+    private PageRequestIndexRenderer() {
+        
+    }
 
-    public static PageRequestModelRenderer of() {
-        return new PageRequestModelRenderer();
+    public static PageRequestIndexRenderer of() {
+        return new PageRequestIndexRenderer();
     }
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
         log.args(model,client);
-        PageRequestServiceModel page = (PageRequestServiceModel) model;
+        PageRequestIndexModel page = (PageRequestIndexModel) model;
         String guts = tableOfEntries(page);
         String title = "Log Entries";
         NavigationButtons b = NavigationButtons.of();
@@ -46,29 +45,20 @@ final class PageRequestModelRenderer implements ModelHtmlRenderer {
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
-    String tableOfEntries(PageRequestServiceModel page) {
-        log.args(page);
+    String tableOfEntries(PageRequestIndexModel index) {
+        log.args(index);
         StringBuilder out = new StringBuilder();
-        out.append(th("Timestamp") + th("Level") + th("Logger") + th("Message") + th("Trace") + th("Args"));
-        for (LogEntry entry : page.entries) {
+        out.append(th("Request") + th("URI") + th("Entries") + th("Entries"));
+        for (PageRequestProcessor id : index.requests) {
+            PageRequestServiceModel page = index.pages.get(id);
             out.append(tr(
-                td(entry.timeStamp.toString()       ,CSS.TABLE) +
-                td(entry.level.toString()           ,CSS.ROW_COUNT) +
-                td(entry.logger.toString()          ,CSS.ROW_COUNT) +
-                td(entry.message.toString()         ,CSS.ROW_COUNT) +
-                td(entry.trace.linkTo().toString()  ,CSS.ROW_COUNT) +
-                td(argLinks(entry.args)             ,CSS.ROW_COUNT)
+                td(id.linkTo().toString()   ,CSS.TABLE) +
+                td(page.request.requestURI  ,CSS.TABLE) +
+                td("" + page.entries.size() ,CSS.ROW_COUNT) +
+                td(entriesFor(index,id)     ,CSS.COLUMN)
             ));
         }
         return table(out.toString());
-    }
-
-    String argLinks(Object[] args) {
-        StringBuilder out = new StringBuilder();
-        for (Object arg : args) {
-            out.append(link.to(arg));
-        }
-        return out.toString();
     }
 
     String entriesFor(PageRequestIndexModel page, PageRequestProcessor id) {

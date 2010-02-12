@@ -1,4 +1,4 @@
-package com.cve.web.log;
+package com.cve.web.management;
 
 import com.cve.log.LogEntry;
 import com.cve.web.Model;
