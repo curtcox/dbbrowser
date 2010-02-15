@@ -14,6 +14,8 @@ import javax.annotation.concurrent.Immutable;
  * Like a HTML table.
  * By constructing an object graph, rather than a string, it will be easier
  * to render to something other than HTML later.
+ *
+ * @see UITableBuilder
  * @author curt
  */
 @Immutable

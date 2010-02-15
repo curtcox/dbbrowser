@@ -15,9 +15,10 @@ public final class UITableBuilder {
 
     private List<UIRow> rows = Lists.newArrayList();
 
-    private UITableBuilder() {
-        
-    }
+    /**
+     * Use the factory.
+     */
+    private UITableBuilder() {}
 
     public static UITableBuilder of() {
         return new UITableBuilder();

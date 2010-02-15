@@ -7,9 +7,10 @@ import com.cve.web.DebugHandler;
 import com.cve.web.PageRequest;
 import java.net.URI;
 /**
- * A typesafe string for HMTL, plus some string-based static methods to make
- * constructing it easier.  Also, use of this class enables some debugging
- * functionality.
+ * Some string-based static methods to make constructing HMTL easier.
+ * Also, use of this class enables some debugging functionality.
+ * Most of the places this class is used should be replaced by references to
+ * classes in the ui package.
  */
 public final class HTMLTags {
 

@@ -3,6 +3,7 @@ package com.cve.ui;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.util.Check;
+import com.cve.web.management.ObjectLink;
 import java.net.URI;
 
 /**
@@ -14,8 +15,26 @@ public final class UILink implements UIElement {
 
     private final String value;
 
+    /**
+     * Use a factory.
+     * @param value
+     */
     private UILink(String value) {
         this.value = Check.notNull(value);
+    }
+
+    /**
+     * Return a link to the given object.
+     */
+    public static UILink to(Object o) {
+        return new UILink(ObjectLink.of().to(o));
+    }
+
+    /**
+     * Return a link to the given object.
+     */
+    public static UILink to(String label, Object o) {
+        return new UILink(ObjectLink.of().to(label,o));
     }
 
     public static UILink textTarget(Label of, URI target) {

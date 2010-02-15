@@ -5,16 +5,17 @@ import com.cve.log.Logs;
 import java.net.URI;
 
 /**
- * Convenient static methods for building a UI.
+ * Convenient methods for building a UI.
  * @author curt
  */
 public final class UIBuilder {
 
     final Log log = Logs.of();
 
-    private UIBuilder() {
-        
-    }
+    /**
+     * Don't make me.
+     */
+    private UIBuilder() {}
 
     public static UIBuilder of() {
         return new UIBuilder();
@@ -48,7 +49,7 @@ public final class UIBuilder {
     }
 
     public static UILabel label(String value) {
-        return UILabel.value(value);
+        return UILabel.of(value);
     }
 
     public static UISubmit submit(String value) {

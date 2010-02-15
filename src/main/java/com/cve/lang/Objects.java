@@ -1,5 +1,9 @@
 package com.cve.lang;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
 /**
  * Handy static methods for dealing with objects.
  * @author curt
@@ -23,4 +27,15 @@ public final class Objects {
         throw new IllegalStateException();
     }
 
+    /**
+     * Return the size, in bytes, of the given object.
+     * @return
+     */
+    public static long sizeOf(Object o) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        ObjectOutputStream oOut = new ObjectOutputStream(bytes);
+        oOut.writeObject(o);
+        oOut.close();
+        return bytes.toByteArray().length;
+    }
 }

@@ -15,7 +15,7 @@ public final class UILabel implements UIElement {
         this.value = Check.notNull(value);
     }
     
-    public static UILabel value(String value) {
+    public static UILabel of(String value) {
         return new UILabel(value);
     }
 

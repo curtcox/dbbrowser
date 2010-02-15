@@ -8,18 +8,21 @@ import com.cve.web.ClientInfo;
 import com.cve.web.HtmlPage;
 import com.cve.web.Model;
 import com.cve.web.ModelHtmlRenderer;
+import javax.annotation.concurrent.Immutable;
 
 /**
- *
+ * For rendering ObjectModels to HTML.
  * @author Curt
  */
+@Immutable
 final class ObjectModelRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    private ObjectModelRenderer() {
-        
-    }
+    /**
+     * Use the factory
+     */
+    private ObjectModelRenderer() {}
 
     public static ObjectModelRenderer of() {
         return new ObjectModelRenderer();

@@ -25,6 +25,7 @@ public final class ManagementModelHtmlRenderers implements ModelHtmlRenderer {
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(AnnotatedStackTraceModel.class,     AnnotatedStackTraceRenderer.of());
         map.put(ObjectModel.class,                  ObjectModelRenderer.of());
+        map.put(ObjectRegistryModel.class,          ObjectRegistryModelRenderer.of());
         map.put(ManagementFactoryModel.class,       ManagementFactoryModelRenderer.of());
         map.put(PageRequestServiceModel.class,      PageDecorator.of(PageRequestModelRenderer.of()));
         map.put(PageRequestIndexModel.class,        PageDecorator.of(PageRequestIndexRenderer.of()));

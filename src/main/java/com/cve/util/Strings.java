@@ -56,4 +56,14 @@ public final class Strings {
         }
         return s.substring(0,count) + "...";
     }
+
+    /**
+     * Return true, if the given string is null or empty.
+     */
+    public static boolean isEmpty(String s) {
+        if (s==null) {
+            return true;
+        }
+        return s.trim().isEmpty();
+    }
 }

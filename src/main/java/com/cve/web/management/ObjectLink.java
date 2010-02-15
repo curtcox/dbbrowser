@@ -14,9 +14,7 @@ public final class ObjectLink {
 
     final Log log = Logs.of();
 
-    private ObjectLink() {
-        
-    }
+    private ObjectLink() {}
 
     public static ObjectLink of() {
         return new ObjectLink();
