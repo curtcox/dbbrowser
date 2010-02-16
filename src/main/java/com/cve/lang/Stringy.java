@@ -1,4 +1,4 @@
-package com.cve.util;
+package com.cve.lang;
 
 /**
  * Like a string, but requiring less memory.

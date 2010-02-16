@@ -3,7 +3,6 @@ package com.cve.web.management.browsers;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
-import com.cve.web.management.AbstractBrowser;
 import com.cve.web.management.ObjectLink;
 
 /**

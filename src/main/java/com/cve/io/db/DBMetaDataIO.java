@@ -2,7 +2,7 @@
 package com.cve.io.db;
 
 import com.cve.stores.CurrentValue;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import com.google.common.collect.ImmutableList;
 import java.sql.DatabaseMetaData;
 import javax.annotation.concurrent.Immutable;

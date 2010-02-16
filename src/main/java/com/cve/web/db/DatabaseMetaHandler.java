@@ -13,7 +13,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
-import com.cve.util.Throwables;
+import com.cve.lang.Throwables;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

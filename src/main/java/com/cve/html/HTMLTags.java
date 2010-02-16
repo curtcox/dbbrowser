@@ -56,6 +56,11 @@ public final class HTMLTags {
     public String    th(String s, CSS css)   { return debug("<th class=" + q(css.toString()) + ">",s,"</th>"); }
     public String    tr(String s, CSS css)   { return debug("<tr class=" + q(css.toString()) + ">",s,"</tr>\r"); }
 
+    public String escape(String s) {
+        return s.replace("<", "&lt;").
+                 replace(">","&gt;");
+    }
+
     /**
      * Image for the given URI.
      * "Alt text is an alternative, not a tooltip"

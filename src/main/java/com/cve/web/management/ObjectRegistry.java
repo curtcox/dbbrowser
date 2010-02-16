@@ -24,11 +24,11 @@ public final class ObjectRegistry {
         return o;
     }
 
-    static ImmutableList index() {
+    public static ImmutableList index() {
         return ImmutableList.copyOf(objects.keySet());
     }
 
-    static ImmutableList values() {
+    public static ImmutableList values() {
         return ImmutableList.copyOf(objects.values());
     }
 

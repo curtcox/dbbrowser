@@ -1,4 +1,4 @@
-package com.cve.util;
+package com.cve.lang;
 
 import java.util.List;
 

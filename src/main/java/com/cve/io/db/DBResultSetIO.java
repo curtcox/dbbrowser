@@ -2,7 +2,7 @@ package com.cve.io.db;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -173,14 +173,21 @@ public final class DBResultSetIO {
     }
 
     public long getLong(int rowNumber, int columnNumber) {
-        Object value = rows.get(rowNumber).get(columnNumber);
+        ImmutableMap row = rows.get(rowNumber);
+        Object value = row.get(columnNumber);
         if (value instanceof Long)    { return (Long)    value; }
         if (value instanceof Integer) { return (Integer) value; }
-        throw new IllegalArgumentException(value + " can't be converted to a long");
+        String message = value + " can't be converted to a long.";
+        if (value==null) {
+            String validColumns = "Columns are " + row.keySet();
+            throw new IllegalArgumentException(message + validColumns);
+        }
+        throw new IllegalArgumentException(message);
     }
 
     public long getLong(int rowNumber, String columnName) {
-        Object value = rows.get(rowNumber).get(columnName);
+        ImmutableMap row = rows.get(rowNumber);
+        Object value = row.get(columnName);
         if (value instanceof Long)    { return (Long)    value; }
         if (value instanceof Integer) { return (Integer) value; }
         throw new IllegalArgumentException(value + " can't be converted to a long");

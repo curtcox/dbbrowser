@@ -28,6 +28,7 @@ final class CustomBrowserRegistry {
         register(MapBrowser.of());
         register(MultimapBrowser.of());
         register(AnnotatedStackTraceBrowser.of());
+        register(AnnotatedClassBrowser.of());
         // add new custom browsers here
         ARRAY_BROWSER = ArrayBrowser.of();
     }

@@ -5,7 +5,6 @@ import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
-import com.cve.web.management.AbstractBrowser;
 import com.cve.web.management.ObjectLink;
 import java.util.*;
 

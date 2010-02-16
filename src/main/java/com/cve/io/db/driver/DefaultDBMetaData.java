@@ -133,7 +133,9 @@ public class DefaultDBMetaData implements DBMetaData {
         DBConnection connection = connections.getConnection(server);
         SQL sql = SQL.of("SELECT count(*) FROM " + table.fullName());
         DBResultSetIO results = connection.select(sql).value;
-        return CurrentValue.of(new Long(results.getLong(0,1)));
+        int row = 0;
+        int column = 0;
+        return CurrentValue.of(new Long(results.getLong(row,column)));
     }
 
     /**

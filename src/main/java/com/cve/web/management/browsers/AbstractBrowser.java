@@ -1,6 +1,5 @@
-package com.cve.web.management;
+package com.cve.web.management.browsers;
 
-import com.cve.web.management.browsers.CustomBrowser;
 import com.cve.util.Check;
 
 /**

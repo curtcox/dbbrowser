@@ -1,5 +1,6 @@
-package com.cve.util;
+package com.cve.lang;
 
+import com.cve.lang.Strings;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

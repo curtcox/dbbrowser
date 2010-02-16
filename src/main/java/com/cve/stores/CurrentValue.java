@@ -1,7 +1,7 @@
 package com.cve.stores;
 
 import com.cve.util.Check;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import javax.annotation.concurrent.Immutable;
 /**
  * The current value of something -- as far as we know.

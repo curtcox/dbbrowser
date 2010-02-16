@@ -7,7 +7,7 @@ import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import com.cve.web.management.ObjectLink;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;

@@ -11,7 +11,7 @@ import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import com.cve.web.AbstractBinaryRequestHandler;
 import com.cve.web.ContentType;
 import com.cve.web.PageRequest;

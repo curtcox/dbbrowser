@@ -1,10 +1,11 @@
-package com.cve.util;
+package com.cve.lang;
 
 import com.cve.html.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.util.URIs;
 import com.cve.web.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;

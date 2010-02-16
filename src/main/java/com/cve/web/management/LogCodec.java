@@ -1,7 +1,7 @@
 package com.cve.web.management;
 
 import com.cve.lang.AnnotatedClass;
-import com.cve.util.Strings;
+import com.cve.lang.Strings;
 import com.cve.util.URIs;
 import com.cve.web.PageRequestProcessor;
 import java.net.URI;
@@ -56,7 +56,8 @@ public final class LogCodec {
      * Return the given class as a URL fragment
      */
     static String urlFragment(Class c) {
-        return c.getName().replace(".", "/");
+        return c.getName().replace(".", "/")
+                          .replace("[L", "");
     }
 
 
