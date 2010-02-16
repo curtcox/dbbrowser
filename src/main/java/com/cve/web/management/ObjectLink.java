@@ -12,6 +12,8 @@ import java.net.URI;
  */
 public final class ObjectLink {
 
+    final LogCodec codec = LogCodec.of();
+    
     final Log log = Logs.of();
 
     private ObjectLink() {}
@@ -40,26 +42,17 @@ public final class ObjectLink {
     public String to(Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(getLabel(object) + "/" + hash);
-        URI target = URIs.of("/object/" + hash);
+        URI target = codec.encode(object);
         return link(text, target).toString();
     }
 
-    /**
-     * Return a labeled link to the given object.
-     */
-    public URI uri(Object object) {
-        String hash = ObjectRegistry.put(object).toHexString();
-        Label text = Label.of(getLabel(object) + "/" + hash);
-        return URIs.of("/object/" + hash);
-    }
 
     /**
      * Return a labeled link to the given object.
      */
     public String to(String labelText, Object object) {
-        String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(labelText);
-        URI target = URIs.of("/object/" + hash);
+        URI target = codec.encode(object);
         return link(text, target).toString();
     }
 

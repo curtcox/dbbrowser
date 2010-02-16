@@ -5,73 +5,19 @@ import com.google.common.collect.ImmutableList;
 import java.util.Map;
 
 /**
- * Gloabl map of registered objects.
+ * Global map of registered objects.
  */
 public final class ObjectRegistry {
-
-    /**
-     * We might want to replace this in the future, with something like
-     * the MD5 of the serialized bytes.
-     */
-    public static class Key {
-
-        final int value;
-
-        static final Key NULL = new Key();
-
-        private Key() { value = 0; }
-
-        private Key(Object o) {
-            value = System.identityHashCode(o);
-        }
-
-        private Key(int value) {
-            this.value = value;
-        }
-
-        static Key of(Object o) {
-            if (o==null) {
-                return NULL;
-            }
-            return new Key(o);
-        }
-
-        String toHexString() {
-            return Integer.toHexString(value);
-        }
-
-        static Key parse(String string) {
-            int code = Integer.parseInt(string,16);
-            return new Key(code);
-        }
-
-        @Override
-        public int hashCode() {
-            return value;
-        }
-
-        @Override
-        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
-        public boolean equals(Object other) {
-            Key key = (Key) other;
-            return value == key.value;
-        }
-
-        @Override
-        public String toString() {
-            return Integer.toHexString(value);
-        }
-    } // Key
 
     /**
      * We use a simple cache to keep from running out of memory.
      * We can't use anything like a WeakHashMap, because the references will
      * be on the page in the user's browser.
      */
-    static final Map<Key,Object> objects = SimpleCache.of();
+    static final Map<UniqueObjectKey,Object> objects = SimpleCache.of();
 
-    static Object get(Key key) {
-        if (key==Key.NULL) {
+    static Object get(UniqueObjectKey key) {
+        if (key==UniqueObjectKey.NULL) {
             return null;
         }
         Object o = objects.get(key);
@@ -86,11 +32,11 @@ public final class ObjectRegistry {
         return ImmutableList.copyOf(objects.values());
     }
 
-    public static Key put(Object o) {
+    public static UniqueObjectKey put(Object o) {
         if (o==null) {
-            return Key.NULL;
+            return UniqueObjectKey.NULL;
         }
-        Key key = Key.of(o);
+        UniqueObjectKey key = UniqueObjectKey.of(o);
         objects.put(key, o);
         return key;
     }

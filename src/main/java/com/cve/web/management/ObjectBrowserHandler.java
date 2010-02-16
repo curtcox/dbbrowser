@@ -1,10 +1,9 @@
 package com.cve.web.management;
 
-import com.cve.util.Strings;
+import com.cve.util.URIs;
 import com.cve.web.AbstractRequestHandler;
 import com.cve.web.Model;
 import com.cve.web.PageRequest;
-import com.cve.web.management.ObjectRegistry.Key;
 
 /**
  * Handle requests for an object.
@@ -12,8 +11,12 @@ import com.cve.web.management.ObjectRegistry.Key;
  */
 final class ObjectBrowserHandler extends AbstractRequestHandler {
 
+    final LogCodec codec  = LogCodec.of();
+    
+    private static final String PREFIX = "/object/";
+
     private ObjectBrowserHandler() {
-        super("^/object/");
+        super("^" + PREFIX);
     }
 
     static ObjectBrowserHandler of() {
@@ -27,15 +30,12 @@ final class ObjectBrowserHandler extends AbstractRequestHandler {
     @Override
     public Model get(PageRequest request) {
         String uri = request.requestURI;
-        String idString = uri.substring(uri.lastIndexOf("/") + 1);
-        if (Strings.isEmpty(idString)) {
+        // /object/ -> registry
+        if (uri.equals(PREFIX)) {
             return ObjectRegistryModel.of();
         }
-        Key key = ObjectRegistry.Key.parse(idString);
-        Object object = ObjectRegistry.get(key);
-        if (object ==null) {
-            return ObjectRegistryModel.of();
-        }
+
+        Object object = codec.decode(URIs.of(uri));
         return ObjectModel.of(object);
     }
 

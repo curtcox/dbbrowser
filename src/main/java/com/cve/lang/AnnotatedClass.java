@@ -21,6 +21,7 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public final class AnnotatedClass {
 
+
     /**
      * The class we annotate.
      */
@@ -46,6 +47,16 @@ public final class AnnotatedClass {
     }
 
     private static final List<String> NO_SOURCE_AVAILABLE = ImmutableList.of();
+
+    private static SimpleCache<Class,AnnotatedClass> CLASS_CACHE = SimpleCache.of();
+    public static AnnotatedClass of(Class c) {
+        if (CLASS_CACHE.containsKey(c)) {
+            return CLASS_CACHE.get(c);
+        }
+        AnnotatedClass annotated = of0(c);
+        CLASS_CACHE.put(c, annotated);
+        return annotated;
+    }
 
     private static AnnotatedClass of0(Class c) {
         String    className = c.getName();

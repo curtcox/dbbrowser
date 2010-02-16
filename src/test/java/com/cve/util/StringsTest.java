@@ -47,4 +47,16 @@ public class StringsTest {
         assertFalse(Strings.equals(null, "foo"));
     }
 
+    @Test
+    public void afterLastSlash() {
+        assertEquals("bar",Strings.afterLast("foo/bar", "/"));
+        assertEquals("baz",Strings.afterLast("/foo/bar/baz", "/"));
+    }
+
+    @Test
+    public void afterLastFoo() {
+        assertEquals("/bar",Strings.afterLast("foo/bar", "foo"));
+        assertEquals("/bar/baz",Strings.afterLast("/foo/bar/baz", "foo"));
+    }
+
 }

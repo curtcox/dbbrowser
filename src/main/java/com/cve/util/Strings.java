@@ -66,4 +66,12 @@ public final class Strings {
         }
         return s.trim().isEmpty();
     }
+
+    /**
+     * Return the portion of the string after the last occurence of the substring.
+     */
+    public static String afterLast(String s, String sub) {
+        int at = s.lastIndexOf(sub);
+        return s.substring(at + sub.length());
+    }
 }
