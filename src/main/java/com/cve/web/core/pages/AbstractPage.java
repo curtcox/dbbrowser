@@ -1,5 +1,6 @@
 package com.cve.web.core.pages;
 
+import com.cve.html.HTMLTags;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
@@ -8,6 +9,8 @@ import com.cve.web.core.Page;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
 import com.cve.web.core.RequestHandler;
+import com.cve.web.core.handlers.AbstractRequestHandler;
+import com.cve.web.management.browsers.ObjectBrowser;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -51,6 +54,32 @@ public abstract class AbstractPage implements Page {
     }
 
     /**
+     * Use this if you intend to override produce and get.
+     */
+    protected AbstractPage(final String regexp, final ModelHtmlRenderer renderer) {
+        this.handler  = new AbstractRequestHandler(regexp){
+            @Override
+            public AbstractPage get(PageRequest request) {
+                return AbstractPage.this.get(request);
+            }
+        };
+        this.renderer = notNull(renderer);
+    }
+
+    /**
+     * Use this if you intend to override produce and get.
+     */
+    protected AbstractPage(final String regexp) {
+        this.handler  = new AbstractRequestHandler(regexp){
+            @Override
+            public AbstractPage get(PageRequest request) {
+                return AbstractPage.this.get(request);
+            }
+        };
+        this.renderer = null;
+    }
+
+    /**
      * Use this for producing instances that will be used as Models.
      * In other words, this constructor is usually used when overriding the
      * produce method.
@@ -71,14 +100,23 @@ public abstract class AbstractPage implements Page {
         return response;
     }
 
+    /**
+     * Override this method if you are implementing a subtype that uses the
+     * regexp constructor.
+     */
+    public AbstractPage get(PageRequest request) {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
-        if (renderer==null) {
-            String message = "Render must be overridden if no handler is specified";
-            throw new IllegalStateException(message);
-        }
         check(model);
-        return renderer.render(model, client);
+        if (renderer!=null) {
+            return renderer.render(model, client);
+        }
+        HTMLTags tags = HTMLTags.of();
+        ObjectBrowser browser = ObjectBrowser.of(model);
+        return HtmlPage.guts(tags.html(tags.body(browser.toHTML())));
     }
 
     void check(Model model) {

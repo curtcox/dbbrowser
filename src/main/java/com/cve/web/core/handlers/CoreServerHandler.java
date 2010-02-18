@@ -19,12 +19,12 @@ public final class CoreServerHandler implements RequestHandler {
 
     private CoreServerHandler() {
         
-        handler = CompositeRequestHandler.of(
-            // handler                         // for URLs of the form
-            ExitHandler.of(),         // /exit
-            ResourceHandler.of(),     // /resource
-            UserLoginHandler.of(),            // /login
-            UserLogoutHandler.of()            // /logout
+        handler = PrefixMapRequestHandler.of(
+             // for URLs of the form handler
+            "^/exit",      ExitHandler.of(),
+            "^/resource/", ResourceHandler.of(),
+            "^/login",     UserLoginHandler.of(),
+            "^/logout",    UserLogoutHandler.of()
         );
     }
 

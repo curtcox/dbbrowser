@@ -1,6 +1,7 @@
 package com.cve.web.management;
 
-import com.cve.web.core.Model;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.pages.AbstractPage;
 import com.google.common.collect.ImmutableList;
 import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.CompilationMXBean;
@@ -20,9 +21,9 @@ import static java.lang.management.ManagementFactory.*;
  * @author curt
  */
 @Immutable
-final class ManagementFactoryModel implements Model {
+public final class JMXPage extends AbstractPage {
 
-    /**
+        /**
     * The managed bean for the class loading system of the Java virtual machine.
     */
     public final ClassLoadingMXBean	classLoading;
@@ -72,7 +73,8 @@ final class ManagementFactoryModel implements Model {
     */
     public final ThreadMXBean thread;
 
-    private ManagementFactoryModel() {
+    private JMXPage() {
+        super("^/jmx/");
         classLoading = getClassLoadingMXBean();
         compilation  = getCompilationMXBean();
         garbageCollector = ImmutableList.copyOf(getGarbageCollectorMXBeans());
@@ -85,8 +87,10 @@ final class ManagementFactoryModel implements Model {
         thread = getThreadMXBean();
     }
 
-    static ManagementFactoryModel of() {
-        return new ManagementFactoryModel();
-    }
+    static JMXPage of() { return new JMXPage(); }
 
+    @Override
+    public AbstractPage get(PageRequest request) {
+        return this;
+    }
 }

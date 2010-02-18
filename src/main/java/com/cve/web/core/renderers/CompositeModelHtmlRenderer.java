@@ -13,6 +13,8 @@ import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
  * Finds the proper renderer from those it is given and delegates.
+ * The renderers are each asked to render the model.  The result returned will
+ * be the first non-null returned, or null if all nulls are returned.
  * @author curt
  */
 public final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {

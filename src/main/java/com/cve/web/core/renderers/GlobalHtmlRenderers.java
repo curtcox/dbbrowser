@@ -24,7 +24,6 @@ final class GlobalHtmlRenderers implements ModelHtmlRenderer {
     final ModelHtmlRenderer renderer;
 
     private GlobalHtmlRenderers() {
-        
         Map<Class,ModelHtmlRenderer> map = Maps.newHashMap();
         map.put(ExitPage.class,         PageDecorator.of(ExitPageRenderer.of()));
         map.put(StringModel.class,      PageDecorator.of(StringModelRenderer.of()));

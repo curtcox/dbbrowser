@@ -3,13 +3,11 @@ package com.cve.web.db.servers;
 import com.cve.web.core.PageResponse;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.RequestHandler;
-import com.cve.web.core.handlers.CompositeRequestHandler;
 import com.cve.io.db.DBMetaData;
-import com.cve.log.Log;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.web.db.*;
-import com.cve.web.*;
+import com.cve.web.core.handlers.PrefixMapRequestHandler;
 
 /**
  * The {@link RequestHandler} for requests that just specify the 
@@ -21,12 +19,12 @@ public final class DBServersHandler implements RequestHandler {
     private final RequestHandler handler;
 
     private DBServersHandler(DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
-        handler = CompositeRequestHandler.of(
-            // handler                         // for URLs of the form
-            ServersHandler.of(db,serversStore),             // /
-            AddServerHandler.of(serversStore),           // /add
-            RemoveServerHandler.of(serversStore),         // /remove
-            DatabaseMetaHandler.of(db,serversStore,managedFunction)  // /meta/server/
+        handler = PrefixMapRequestHandler.of(
+            // URLs of the form           handler
+            "^/",           ServersHandler.of(db,serversStore),
+            "^/add",        AddServerHandler.of(serversStore),
+            "^/remove",     RemoveServerHandler.of(serversStore),
+            "^/meta/",      DatabaseMetaHandler.of(db,serversStore,managedFunction)
         );
     }
 

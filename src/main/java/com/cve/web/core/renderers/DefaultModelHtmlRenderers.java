@@ -16,19 +16,23 @@ import com.cve.web.management.ManagementModelHtmlRenderers;
 
 /**
  * Renders models into HTML, JPG, PNG, etc...
+ * Generally, this is the top-level renderer and the only one directly
+ * given to the router servlet.
  * @author curt
  */
 public final class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
+    /**
+     * The composite model we delegate to.
+     */
     final ModelHtmlRenderer renderer;
 
     private DefaultModelHtmlRenderers(
         DBMetaData.Factory db, DBServersStore serversStore, DBHintsStore hintsStore,
         ManagedFunction.Factory managedFunction)
     {
-        
         renderer = CompositeModelHtmlRenderer.of(
             DatabaseModelHtmlRenderers.of(db,serversStore,hintsStore,managedFunction),
             ManagementModelHtmlRenderers.of(),
@@ -47,6 +51,11 @@ public final class DefaultModelHtmlRenderers implements ModelHtmlRenderer {
 
     @Override
     public HtmlPage render(Model model, ClientInfo client) {
+        log.args(model,client);
+        if (model instanceof ModelHtmlRenderer) {
+            ModelHtmlRenderer selfRendering = (ModelHtmlRenderer) model;
+            return selfRendering.render(model, client);
+        }
         return renderer.render(model, client);
     }
 }
