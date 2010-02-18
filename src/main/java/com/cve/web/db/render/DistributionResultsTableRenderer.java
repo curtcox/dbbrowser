@@ -14,7 +14,7 @@ import com.cve.log.Logs;
 import com.cve.ui.UIDetail;
 import com.cve.ui.UIRow;
 import com.cve.ui.UITable;
-import com.cve.web.ClientInfo;
+import com.cve.web.core.ClientInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;

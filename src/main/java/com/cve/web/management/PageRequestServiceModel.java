@@ -1,10 +1,10 @@
 package com.cve.web.management;
 
 import com.cve.log.LogEntry;
-import com.cve.web.Model;
-import com.cve.web.PageRequest;
-import com.cve.web.PageRequestProcessor;
-import com.cve.web.PageResponse;
+import com.cve.web.core.Model;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.PageRequestProcessor;
+import com.cve.web.core.PageResponse;
 import com.google.common.collect.ImmutableList;
 import java.util.Collection;
 import java.util.List;

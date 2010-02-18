@@ -1,6 +1,6 @@
 package com.cve.web.alt;
 
-import com.cve.web.Icons;
+import com.cve.web.core.Icons;
 import java.net.URI;
 
 /**

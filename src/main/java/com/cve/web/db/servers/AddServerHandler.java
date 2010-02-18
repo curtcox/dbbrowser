@@ -8,9 +8,9 @@ import com.cve.model.db.JDBCURL;
 import com.cve.model.db.DBServer;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
-import com.cve.web.AbstractFormHandler;
-import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
+import com.cve.web.core.handlers.AbstractFormHandler;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.PageResponse;
 import com.google.common.collect.ImmutableMap;
 import java.net.URI;
 

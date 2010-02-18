@@ -1,6 +1,6 @@
 package com.cve.web.management;
 
-import com.cve.web.Model;
+import com.cve.web.core.Model;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;

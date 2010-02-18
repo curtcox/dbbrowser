@@ -4,10 +4,10 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
-import com.cve.web.AbstractRequestHandler;
-import com.cve.web.Model;
-import com.cve.web.PageRequest;
-import com.cve.web.RequestHandler;
+import com.cve.web.core.handlers.AbstractRequestHandler;
+import com.cve.web.core.Model;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.RequestHandler;
 
 /**
  * For handling pipelines typed in from the user.

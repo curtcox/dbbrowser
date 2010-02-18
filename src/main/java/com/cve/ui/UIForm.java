@@ -4,7 +4,7 @@ import static com.cve.util.Check.notNull;
 import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.PageRequest;
+import com.cve.web.core.PageRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;

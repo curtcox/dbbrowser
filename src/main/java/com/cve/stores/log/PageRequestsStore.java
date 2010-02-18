@@ -2,7 +2,7 @@ package com.cve.stores.log;
 
 import com.cve.log.LogEntry;
 import com.cve.stores.Store;
-import com.cve.web.PageRequestProcessor;
+import com.cve.web.core.PageRequestProcessor;
 import com.google.common.collect.ImmutableList;
 
 /**

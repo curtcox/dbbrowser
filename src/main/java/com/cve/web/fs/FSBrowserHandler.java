@@ -5,10 +5,10 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.fs.FSServersStore;
-import com.cve.web.CompositeRequestHandler;
-import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
-import com.cve.web.RequestHandler;
+import com.cve.web.core.handlers.CompositeRequestHandler;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.PageResponse;
+import com.cve.web.core.RequestHandler;
 /**
  *
  * @author curt

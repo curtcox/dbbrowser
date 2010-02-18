@@ -6,7 +6,7 @@ import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.URIs;
-import com.cve.web.ResourceHandler;
+import com.cve.web.core.handlers.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.net.URI;

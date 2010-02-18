@@ -2,7 +2,7 @@ package com.cve.io.db;
 
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 /**
  * Renders a {@link Select} as {@link SQL}.
  * This is how a select is turned into SQL.

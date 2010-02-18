@@ -14,13 +14,13 @@ import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
-import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.PageResponse;
 import com.cve.web.db.DBURICodec;
 import com.cve.util.URIs;
-import com.cve.web.CompositeRequestHandler;
-import com.cve.web.RequestHandler;
-import com.cve.web.Search;
+import com.cve.web.core.handlers.CompositeRequestHandler;
+import com.cve.web.core.RequestHandler;
+import com.cve.web.core.Search;
 import java.net.URI;
 import static com.cve.util.Check.notNull;
 

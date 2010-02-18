@@ -3,8 +3,8 @@ package com.cve.html;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Replace;
-import com.cve.web.DebugHandler;
-import com.cve.web.PageRequest;
+import com.cve.web.core.handlers.DebugHandler;
+import com.cve.web.core.PageRequest;
 import java.net.URI;
 /**
  * Some string-based static methods to make constructing HMTL easier.

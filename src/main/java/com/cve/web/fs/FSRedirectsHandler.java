@@ -6,10 +6,10 @@ import com.cve.io.fs.FSMetaData;
 import com.cve.io.fs.pipeline.FSURIRenderer;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.PageRequest;
-import com.cve.web.PageResponse;
-import com.cve.web.RequestHandler;
-import com.cve.web.Search;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.PageResponse;
+import com.cve.web.core.RequestHandler;
+import com.cve.web.core.Search;
 import java.net.URI;
 
 import static com.cve.util.Check.*;

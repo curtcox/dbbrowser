@@ -21,7 +21,7 @@ import com.cve.log.Log;
 import static com.cve.util.Replace.bracketQuote;
 import static com.cve.util.Replace.escapeQuotes;
 import com.cve.util.URIs;
-import com.cve.web.ClientInfo;
+import com.cve.web.core.ClientInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

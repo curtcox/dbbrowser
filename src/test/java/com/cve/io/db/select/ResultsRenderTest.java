@@ -23,7 +23,7 @@ import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.MemoryDBServersStore;
 import com.cve.util.URIs;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

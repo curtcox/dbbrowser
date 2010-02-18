@@ -7,7 +7,7 @@ import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.model.db.SelectResults;
-import com.cve.web.Icons;
+import com.cve.web.core.Icons;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;

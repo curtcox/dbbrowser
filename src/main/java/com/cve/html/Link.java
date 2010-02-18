@@ -1,7 +1,7 @@
 package com.cve.html;
 
 import com.cve.util.Replace;
-import com.cve.web.DebugHandler;
+import com.cve.web.core.handlers.DebugHandler;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;

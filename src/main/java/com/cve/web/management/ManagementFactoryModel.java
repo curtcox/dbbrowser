@@ -1,6 +1,6 @@
 package com.cve.web.management;
 
-import com.cve.web.Model;
+import com.cve.web.core.Model;
 import com.google.common.collect.ImmutableList;
 import java.lang.management.ClassLoadingMXBean;
 import java.lang.management.CompilationMXBean;

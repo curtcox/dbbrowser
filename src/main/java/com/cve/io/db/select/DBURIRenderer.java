@@ -11,7 +11,7 @@ import com.cve.model.db.Select;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Group;
 import com.cve.util.URIs;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;

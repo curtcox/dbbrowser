@@ -12,7 +12,7 @@ import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIImage;
 import com.cve.ui.UILink;
-import com.cve.web.Icons;
+import com.cve.web.core.Icons;
 import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.ImmutableList;
 

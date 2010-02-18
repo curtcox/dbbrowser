@@ -2,9 +2,9 @@ package com.cve.web.alt;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.AbstractBinaryRequestHandler;
-import com.cve.web.ContentType;
-import com.cve.web.PageRequest;
+import com.cve.web.core.handlers.AbstractBinaryRequestHandler;
+import com.cve.web.core.ContentType;
+import com.cve.web.core.PageRequest;
 
 /**
  *

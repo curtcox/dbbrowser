@@ -1,7 +1,7 @@
 package com.cve.web.management;
 
-import com.cve.web.Model;
-import com.cve.web.PageRequestProcessor;
+import com.cve.web.core.Model;
+import com.cve.web.core.PageRequestProcessor;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import java.util.List;

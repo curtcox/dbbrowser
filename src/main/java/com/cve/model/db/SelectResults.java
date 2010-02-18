@@ -2,8 +2,8 @@ package com.cve.model.db;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.Model;
-import com.cve.web.Search;
+import com.cve.web.core.Model;
+import com.cve.web.core.Search;
 import java.sql.ResultSet;
 import javax.annotation.concurrent.Immutable;
 import org.h2.tools.Server;

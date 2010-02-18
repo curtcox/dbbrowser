@@ -8,7 +8,7 @@ import com.cve.html.Tooltip;
 import com.cve.ui.UICascadingMenu;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILink;
-import com.cve.web.Icons;
+import com.cve.web.core.Icons;
 import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.Lists;
 import java.net.URI;

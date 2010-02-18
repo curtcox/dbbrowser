@@ -20,9 +20,9 @@ import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
-import com.cve.web.AbstractRequestHandler;
-import com.cve.web.PageRequest;
-import com.cve.web.Search;
+import com.cve.web.core.handlers.AbstractRequestHandler;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import static com.cve.util.Check.notNull;
 

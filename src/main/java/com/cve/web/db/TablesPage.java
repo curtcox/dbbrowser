@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.web.core.Model;
 import com.cve.model.db.DBColumn;
 import com.cve.web.*;
 import com.cve.model.db.Database;

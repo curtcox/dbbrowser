@@ -18,7 +18,7 @@ import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.Lists;
 import java.util.List;
 /**

@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.web.core.Model;
 import com.cve.web.*;
 
 /**

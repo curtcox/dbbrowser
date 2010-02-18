@@ -17,7 +17,7 @@ import com.cve.log.Logs;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
 import static com.cve.util.Check.notNull;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 
 /**
  *

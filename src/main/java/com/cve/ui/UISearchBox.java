@@ -2,8 +2,8 @@ package com.cve.ui;
 
 import com.cve.log.Log;
 import com.cve.util.URIs;
-import com.cve.web.Icons;
-import com.cve.web.Search;
+import com.cve.web.core.Icons;
+import com.cve.web.core.Search;
 import java.net.URI;
 import static com.cve.ui.UIBuilder.*;
 

@@ -15,7 +15,7 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.DBValue;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 

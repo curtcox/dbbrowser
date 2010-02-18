@@ -2,12 +2,12 @@ package com.cve.web.management;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.ClassMapModelHtmlRenderer;
-import com.cve.web.ClientInfo;
-import com.cve.web.HtmlPage;
-import com.cve.web.Model;
-import com.cve.web.ModelHtmlRenderer;
-import com.cve.web.PageDecorator;
+import com.cve.web.core.renderers.ClassMapModelHtmlRenderer;
+import com.cve.web.core.ClientInfo;
+import com.cve.web.core.HtmlPage;
+import com.cve.web.core.Model;
+import com.cve.web.core.ModelHtmlRenderer;
+import com.cve.web.core.PageDecorator;
 import com.google.common.collect.Maps;
 import java.util.Map;
 

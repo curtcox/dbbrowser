@@ -1,7 +1,7 @@
 package com.cve.io.fs.pipeline;
 
 import com.cve.model.fs.FSPipeline;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import java.net.URI;
 
 /**

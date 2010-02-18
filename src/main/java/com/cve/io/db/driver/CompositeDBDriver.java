@@ -9,7 +9,7 @@ import com.cve.model.db.DBServer;
 import com.cve.model.db.JDBCURL;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 
 /**
  *

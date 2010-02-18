@@ -8,7 +8,7 @@ import com.cve.model.db.DBLimit;
 import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.util.Check;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 
 /**
  *

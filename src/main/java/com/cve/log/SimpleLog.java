@@ -3,7 +3,7 @@ package com.cve.log;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.AnnotatedStackTraceElement;
 import com.cve.util.Check;
-import com.cve.web.PageRequestProcessor;
+import com.cve.web.core.PageRequestProcessor;
 import com.cve.web.management.ObjectRegistry;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;

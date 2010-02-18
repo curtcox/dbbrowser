@@ -5,7 +5,7 @@ import com.cve.model.db.SQL;
 import com.cve.io.db.DBResultSetMetaData;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.Check;
-import com.cve.web.Model;
+import com.cve.web.core.Model;
 import javax.annotation.concurrent.Immutable;
 
 /**

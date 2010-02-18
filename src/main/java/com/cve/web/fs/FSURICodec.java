@@ -8,7 +8,7 @@ import com.cve.model.fs.FSPipeline;
 import com.cve.model.fs.FSServer;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.net.URI;

@@ -6,11 +6,11 @@ import com.cve.model.db.Database;
 import com.cve.model.db.SelectResults;
 import com.cve.web.db.render.ResultsTableRenderer;
 import com.cve.util.URIs;
-import com.cve.web.ClientInfo;
-import com.cve.web.HtmlPage;
-import com.cve.web.Model;
-import com.cve.web.ModelHtmlRenderer;
-import com.cve.web.Search;
+import com.cve.web.core.ClientInfo;
+import com.cve.web.core.HtmlPage;
+import com.cve.web.core.Model;
+import com.cve.web.core.ModelHtmlRenderer;
+import com.cve.web.core.Search;
 import com.cve.web.db.NavigationButtons;
 import java.net.URI;
 

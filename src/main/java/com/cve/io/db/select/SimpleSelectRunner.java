@@ -19,7 +19,7 @@ import com.cve.io.db.DBResultSetMetaDataIO;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

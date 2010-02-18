@@ -4,7 +4,7 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.Timestamp;
-import com.cve.web.PageRequestProcessor;
+import com.cve.web.core.PageRequestProcessor;
 import com.cve.web.management.LogCodec;
 import java.net.URI;
 import javax.annotation.concurrent.Immutable;

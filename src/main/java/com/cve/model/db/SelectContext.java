@@ -1,7 +1,7 @@
 package com.cve.model.db;
 
 import com.cve.io.db.DBConnection;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.sql.SQLException;

@@ -3,7 +3,7 @@ package com.cve.web.management;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.Strings;
 import com.cve.util.URIs;
-import com.cve.web.PageRequestProcessor;
+import com.cve.web.core.PageRequestProcessor;
 import java.net.URI;
 
 /**

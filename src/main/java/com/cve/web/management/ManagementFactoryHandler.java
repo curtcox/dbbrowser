@@ -2,9 +2,9 @@ package com.cve.web.management;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.web.AbstractRequestHandler;
-import com.cve.web.Model;
-import com.cve.web.PageRequest;
+import com.cve.web.core.handlers.AbstractRequestHandler;
+import com.cve.web.core.Model;
+import com.cve.web.core.PageRequest;
 
 /**
  *

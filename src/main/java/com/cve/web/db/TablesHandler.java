@@ -1,6 +1,8 @@
 package com.cve.web.db;
 
-import com.cve.web.*;
+import com.cve.web.core.Model;
+import com.cve.web.core.PageRequest;
+import com.cve.web.core.handlers.AbstractRequestHandler;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
@@ -12,7 +14,8 @@ import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
 import com.cve.util.URIs;
-import com.cve.web.Search.Space;
+import com.cve.web.core.Search;
+import com.cve.web.core.Search.Space;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;

@@ -10,7 +10,7 @@ import com.cve.model.db.DBRowFilter;
 import com.cve.model.db.Group;
 import com.cve.model.db.DBLimit;
 import com.cve.model.db.Order;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import java.util.List;

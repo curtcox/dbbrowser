@@ -5,8 +5,8 @@ import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.fs.FSServersStore;
-import com.cve.web.DefaultModelHtmlRenderers;
-import com.cve.web.WebApp;
+import com.cve.web.core.renderers.DefaultModelHtmlRenderers;
+import com.cve.web.core.WebApp;
 import java.io.IOException;
 
 

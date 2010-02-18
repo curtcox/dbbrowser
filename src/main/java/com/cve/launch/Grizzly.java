@@ -1,7 +1,7 @@
 package com.cve.launch;
 
-import com.cve.web.RequestRouterServlet;
-import com.cve.web.WebApp;
+import com.cve.web.core.RequestRouterServlet;
+import com.cve.web.core.WebApp;
 import java.io.IOException;
 
 import com.sun.grizzly.http.embed.GrizzlyWebServer;

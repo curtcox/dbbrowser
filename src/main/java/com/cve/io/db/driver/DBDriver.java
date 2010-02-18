@@ -11,7 +11,7 @@ import com.cve.model.db.SQL;
 import com.cve.model.db.Select;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
-import com.cve.web.Search;
+import com.cve.web.core.Search;
 
 /**
  *
