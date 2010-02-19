@@ -64,7 +64,7 @@ public final class ColumnNameTooltip
         URI    target = SelectBuilderAction.JOIN.withArgs(
              source.fullName() + "=" + destName
         );
-        UILink link = UILink.textTarget(Label.of(text), target);
+        UILink link = UILink.textTarget(text, target);
         if (dest.keyness==Keyness.PRIMARY) {
             return UIComposite.of(UIImage.textURI("Primary key", Icons.PRIMARY_KEY),link);
         }
@@ -77,7 +77,7 @@ public final class ColumnNameTooltip
         String value  = filter.value.toString();
         String text   = "show only " + value;
         URI    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
-        UILink   link = UILink.textTarget(Label.of(text), target);
+        UILink   link = UILink.textTarget(text, target);
         return link;
     }
 

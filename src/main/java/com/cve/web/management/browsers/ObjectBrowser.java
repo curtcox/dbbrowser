@@ -2,7 +2,7 @@ package com.cve.web.management.browsers;
 
 import com.cve.lang.ExecutableElement;
 import com.cve.lang.ExecutableMethod;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;

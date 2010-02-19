@@ -1,6 +1,6 @@
 package com.cve.model.db;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;

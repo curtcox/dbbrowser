@@ -1,6 +1,6 @@
 package com.cve.web.core.pages;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;

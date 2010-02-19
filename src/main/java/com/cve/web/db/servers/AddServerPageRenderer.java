@@ -1,19 +1,19 @@
 package com.cve.web.db.servers;
 
-import com.cve.html.HTMLTags;
 import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
+import com.cve.ui.HTMLTags;
 import com.cve.ui.UIForm;
 import com.cve.ui.UITable;
 import com.cve.ui.UIBuilder;
-import com.cve.ui.UIDetail;
+import com.cve.ui.UITableDetail;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UISubmit;
 import com.cve.ui.UIText;
 import com.cve.util.URIs;
@@ -30,8 +30,6 @@ import static com.cve.util.Check.notNull;
  */
 final class AddServerPageRenderer implements ModelHtmlRenderer {
 
-    final HTMLTags tags;
-
     final UIBuilder builder;
 
     final Log log = Logs.of();
@@ -45,16 +43,15 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     private AddServerPageRenderer(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);
-        this.tags    = HTMLTags.of();
         this.builder = UIBuilder.of();
     }
 
-    UIRow     row(UIDetail... details)     { return builder.row(details);  }
-    UIRow     row(UIElement... details)    { return builder.row(details);  }
-    UILabel label(String value)            { return builder.label(value);  }
-    UIText text(String name, String value) { return builder.text(name,value); }
-    UITable table(UIRow... rows)           { return builder.table(rows); }
-    UISubmit submit(String value)          { return builder.submit(value); }
+    UITableRow     row(UITableDetail... details)     { return builder.row(details);  }
+    UITableRow     row(UIElement... details)    { return builder.row(details);  }
+    UILabel      label(String value)            { return builder.label(value);  }
+    UIText        text(String name, String value) { return builder.text(name,value); }
+    UITable      table(UITableRow... rows)           { return builder.table(rows); }
+    UISubmit    submit(String value)          { return builder.submit(value); }
 
     static AddServerPageRenderer of(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         return new AddServerPageRenderer(managedFunction,serversStore);
@@ -86,6 +83,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     String supportedFormats() {
         StringBuilder out = new StringBuilder();
+        HTMLTags tags = HTMLTags.of();
         for (DBDriver driver : DBDrivers.of(managedFunction,serversStore).values()) {
             out.append(tags.li(driver.getJDBCURL("server").toString()));
         }

@@ -16,7 +16,7 @@ import com.cve.model.db.Select;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import static com.cve.util.Replace.bracketQuote;
 import static com.cve.util.Replace.escapeQuotes;

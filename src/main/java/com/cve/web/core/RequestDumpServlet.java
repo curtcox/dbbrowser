@@ -1,10 +1,10 @@
 package com.cve.web.core;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.google.common.collect.Lists;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public final class RequestDumpServlet {
     }
 
     String tableOf(HttpServletRequest r) {
-        List<UIRow> rows = Lists.newArrayList();
+        List<UITableRow> rows = Lists.newArrayList();
         add(rows,"Description","Value"                    ) ;
         add(rows,"Auth Type",            r.getAuthType() );
         add(rows,"Character Encoding",   r.getCharacterEncoding()   );
@@ -85,11 +85,11 @@ public final class RequestDumpServlet {
         return UITable.of(rows).toString();
     }
 
-    void add(List<UIRow> rows, String key, Object value) {
-        rows.add(UIRow.of(detail(key),detail("" + value)));
+    void add(List<UITableRow> rows, String key, Object value) {
+        rows.add(UITableRow.of(detail(key),detail("" + value)));
     }
     
-    UIDetail detail(String key) {
-        return UIDetail.of(key);
+    UITableDetail detail(String key) {
+        return UITableDetail.of(key);
     }
 }

@@ -1,6 +1,6 @@
 package com.cve.web.db.render;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.model.db.Cell;
 import com.cve.model.db.SelectResults;

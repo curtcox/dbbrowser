@@ -3,11 +3,11 @@ package com.cve.web.management;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.Objects;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
+import com.cve.ui.UITableDetail;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
 import com.cve.ui.UILink;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UISeries;
 import com.cve.ui.UITableBuilder;
 import com.cve.web.core.ClientInfo;
@@ -49,7 +49,7 @@ final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {
         return ui.build().toString();
     }
 
-    UIRow row(ImmutableMultimap<Class,Object> objects, Class c) {
+    UITableRow row(ImmutableMultimap<Class,Object> objects, Class c) {
         List<UIElement> list = Lists.newArrayList();
         int i = 1;
         long memory = 0;
@@ -70,14 +70,14 @@ final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {
         }
         UISeries links = UISeries.of(list);
         if (computable) {
-            return UIRow.of(
+            return UITableRow.of(
                 detail(link(c.getName(),c)),
                 detail(label(list.size())),
                 detail(label(memory)),
                 detail(links)
             );
         }
-        return UIRow.of(
+        return UITableRow.of(
             detail(link(c.getName(),c)),
             detail(label(list.size())),
             detail(link("Uncomputable",trace)),
@@ -89,8 +89,8 @@ final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {
         return UILink.to(label,target);
     }
 
-    UIDetail detail(UIElement e) {
-        return UIDetail.of(e);
+    UITableDetail detail(UIElement e) {
+        return UITableDetail.of(e);
     }
 
     UILabel label(long i) {

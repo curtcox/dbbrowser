@@ -56,7 +56,7 @@ public class UniqueObjectKey {
         return new UniqueObjectKey(o);
     }
 
-    String toHexString() {
+    public String toHexString() {
         return Long.toHexString(hash64);
     }
 

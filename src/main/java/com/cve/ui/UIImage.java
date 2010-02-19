@@ -1,6 +1,5 @@
 package com.cve.ui;
 
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import static com.cve.util.Check.notNull;
 import java.net.URI;

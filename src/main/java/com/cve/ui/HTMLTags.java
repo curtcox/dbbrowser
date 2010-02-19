@@ -1,5 +1,6 @@
-package com.cve.html;
+package com.cve.ui;
 
+import com.cve.html.CSS;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Replace;
@@ -16,9 +17,7 @@ public final class HTMLTags {
 
     final Log log = Logs.of();
 
-    private HTMLTags() {
-        
-    }
+    private HTMLTags() {}
 
     public static HTMLTags of() {
         return new HTMLTags();
@@ -53,7 +52,14 @@ public final class HTMLTags {
     public String    td(String s, int width) { return debug("<td colspan=" + q(width) + ">",s,"</td>"); }
     public String    td(String s, CSS css)   { return debug("<td class=" + q(css.toString()) + ">",s,"</td>"); }
     public String    td(String s, CSS... css)   { return debug("<td class=" + q(spaces(css)) + ">",s,"</td>"); }
+
+    public String    th(String s, CSS css, int width, int height) {
+        return debug("<th class=" + q(css.toString()) + " colspan=" + q(width) + "rowspan=" + q(height)+ ">",s,"</th>");
+    }
+    public String    th(String s, int width) { return debug("<th colspan=" + q(width) + ">",s,"</th>"); }
     public String    th(String s, CSS css)   { return debug("<th class=" + q(css.toString()) + ">",s,"</th>"); }
+    public String    th(String s, CSS... css)   { return debug("<th class=" + q(spaces(css)) + ">",s,"</th>"); }
+
     public String    tr(String s, CSS css)   { return debug("<tr class=" + q(css.toString()) + ">",s,"</tr>\r"); }
 
     public String escape(String s) {

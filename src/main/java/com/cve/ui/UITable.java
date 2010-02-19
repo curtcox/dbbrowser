@@ -1,7 +1,6 @@
 
 package com.cve.ui;
 
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
@@ -25,30 +24,30 @@ public final class UITable implements UIElement {
 
     private final HTMLTags tags;
 
-    private final ImmutableList<UIRow> rows;
+    private final ImmutableList<UITableRow> rows;
 
-    private UITable(List<UIRow> rows) {
-        ImmutableList<UIRow> copy = ImmutableList.copyOf(Check.notNull(rows));
+    private UITable(List<UITableRow> rows) {
+        ImmutableList<UITableRow> copy = ImmutableList.copyOf(Check.notNull(rows));
         this.rows = copy;
         
         tags = HTMLTags.of();
     }
 
     public static UITable of() {
-        ImmutableList<UIRow> rows = ImmutableList.of();
+        ImmutableList<UITableRow> rows = ImmutableList.of();
         return new UITable(rows);
     }
 
-    public static UITable of(List<UIRow> rows) {
+    public static UITable of(List<UITableRow> rows) {
         return new UITable(ImmutableList.copyOf(rows));
     }
 
-    public static UITable of(UIRow... rows) {
+    public static UITable of(UITableRow... rows) {
         return new UITable(ImmutableList.of(rows));
     }
 
-    public UITable with(UIRow row) {
-        List<UIRow> list = Lists.newArrayList();
+    public UITable with(UITableRow row) {
+        List<UITableRow> list = Lists.newArrayList();
         list.addAll(rows);
         list.add(row);
         return new UITable(ImmutableList.copyOf(list));
@@ -57,7 +56,7 @@ public final class UITable implements UIElement {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        for (UIRow row : rows) {
+        for (UITableRow row : rows) {
             out.append(row.toString());
         }
         return tags.borderTable(out.toString());

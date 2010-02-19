@@ -42,7 +42,7 @@ public final class ObjectLink {
         String hash = ObjectRegistry.put(object).toHexString();
         Label text = Label.of(getLabel(object) + "/" + hash);
         URI target = codec.encode(object);
-        return link(text, target).toString();
+        return link(text, target);
     }
 
 
@@ -52,7 +52,7 @@ public final class ObjectLink {
     public String to(String labelText, Object object) {
         Label text = Label.of(labelText);
         URI target = codec.encode(object);
-        return link(text, target).toString();
+        return link(text, target);
     }
 
     private static String link(Label text, URI target) {

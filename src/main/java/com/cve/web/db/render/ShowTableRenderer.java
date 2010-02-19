@@ -1,6 +1,5 @@
 package com.cve.web.db.render;
 
-import com.cve.html.HTMLTags;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -9,6 +8,10 @@ import com.cve.log.Logs;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBTable;
+import com.cve.ui.UITableBuilder;
+import com.cve.ui.UITableCell;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
@@ -33,7 +36,6 @@ public final class ShowTableRenderer {
 
     private final Log log = Logs.of();
 
-    private final HTMLTags tags;
     /**
      * The results we render
      */
@@ -41,8 +43,6 @@ public final class ShowTableRenderer {
 
     private ShowTableRenderer(SelectResults results) {
         this.results = notNull(results);
-        
-        this.tags = HTMLTags.of();
     }
 
     static ShowTableRenderer results(SelectResults results) {
@@ -65,7 +65,7 @@ public final class ShowTableRenderer {
      * ------|
      */
     String showTable() {
-        StringBuilder tableOut = new StringBuilder();
+        UITableBuilder tableOut = UITableBuilder.of();
         ImmutableList<DBTable> tables = getTablesWithHiddenColumns();
         if (tables.isEmpty()) {
             return "";
@@ -73,23 +73,30 @@ public final class ShowTableRenderer {
         int tableCount = 0;
         for (DBTable table : results.resultSet.tables) {
             ImmutableList<DBColumn> columns = getHiddenColumnsFor(table);
-            StringBuilder rowOut = new StringBuilder();
+            List<UITableCell>  cells = Lists.newArrayList();
+            List<UITableCell> rowOut = Lists.newArrayList();
             if (tableCount==0) {
-                rowOut.append(tdRowspan("Show",tables.size()));
+                rowOut.add(tdRowspan("Show",tables.size()));
             }
-            rowOut.append(td(table.fullName()));
+            rowOut.add(detail(table.fullName()));
             tableCount++;
             StringBuilder shows = new StringBuilder();
             for (DBColumn column : columns) {
                 shows.append(showCell(column) + " ");
             }
-            String row = rowOut.toString() + td(shows.toString());
-            tableOut.append(tr(row));
+            String row = rowOut.toString() + detail(shows.toString());
+            tableOut.add( row(cells) );
         }
-        return borderTable(tableOut.toString());
+        return tableOut.build().toString();
     }
 
-    public String    tdRowspan(String s, int height) { return "<td rowspan=" + HTMLTags.of().q(height) + ">" + s + "</td>"; }
+    UITableRow     row(List<UITableCell> cells) { return UITableRow.of(cells); }
+    UITableDetail detail(String s) { return UITableDetail.of(s); }
+
+    public UITableDetail tdRowspan(String s, int height) {
+        throw new UnsupportedOperationException();
+        // return "<td rowspan=" + HTMLTags.of().q(height) + ">" + s + "</td>";
+    }
 
     ImmutableList<DBTable> getTablesWithHiddenColumns() {
         return ImmutableList.copyOf(Collections2.filter(results.resultSet.tables, new Predicate() {
@@ -128,13 +135,5 @@ public final class ShowTableRenderer {
         URI  target = SelectBuilderAction.SHOW.withArgs(column.fullName());
         return Link.textTarget(text, target).toString();
     }
-
-    String h1(String s) { return tags.h1(s); }
-    String h2(String s) { return tags.h2(s); }
-    String tr(String s) { return tags.tr(s); }
-    String td(String s) { return tags.td(s); }
-String th(String s) { return tags.th(s); }
-String table(String s) { return tags.table(s); }
-String borderTable(String s) { return tags.borderTable(s); }
 
 }

@@ -10,12 +10,13 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
+import com.cve.ui.UITableCell;
 import com.cve.web.core.ClientInfo;
 import com.google.common.collect.Lists;
 import java.util.List;
@@ -76,9 +77,9 @@ public final class ResultsTableRenderer {
      * Return a portrait table where every result set row maps to a table column.
      */
     String portraitTable() {
-        List<UIRow> out = Lists.newArrayList();
+        List<UITableRow> out = Lists.newArrayList();
         DBResultSet resultSet = results.resultSet;
-        UIRow headerRow = row(
+        UITableRow headerRow = row(
             detail("Database",CSS.DATABASE),
             detail("Table",CSS.TABLE),
             detail("Column",CSS.COLUMN),
@@ -88,7 +89,7 @@ public final class ResultsTableRenderer {
         Database lastDatabase = Database.NULL;
         DBTable     lastTable = DBTable.NULL;
         for (DBColumn column : resultSet.columns) {
-            List<UIDetail> details = Lists.newArrayList();
+            List<UITableCell> details = Lists.newArrayList();
             DBTable          table = column.table;
             Database      database = table.database;
             if (database.equals(lastDatabase)) {
@@ -116,10 +117,10 @@ public final class ResultsTableRenderer {
         return UITable.of(out).toString();
     }
 
-    UIRow       row(List<UIDetail> details) { return UIRow.of(details);       }
-    UIRow       row(UIDetail... details)    { return UIRow.of( details);       }
-    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css); }
-    UIDetail detail(String value)           { return UIDetail.of(value); }
+    UITableRow       row(List<UITableCell> details) { return UITableRow.of(details);       }
+    UITableRow       row(UITableCell... details)    { return UITableRow.of( details);       }
+    UITableDetail detail(String value , CSS css) { return UITableDetail.of(value, css); }
+    UITableDetail detail(String value)           { return UITableDetail.of(value); }
     String nameCell(DBColumn column)        { return tools.nameCell(column);   }
     String nameCell(Database database)      { return tools.nameCell(database); }
     String nameCell(DBTable table)          { return tools.nameCell(table);  }

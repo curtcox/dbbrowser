@@ -1,10 +1,10 @@
 package com.cve.web.management.browsers;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.Strings;
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.cve.web.management.ObjectLink;
 import com.cve.web.management.ObjectRegistry;
@@ -34,7 +34,7 @@ public final class AnnotatedClassBrowser
         AnnotatedClass c = (AnnotatedClass) o;
         UITable table = UITable.of();
         for (Object value : instancesOf(c)) {
-            UIRow row = UIRow.of(link(value));
+            UITableRow row = UITableRow.of(link(value));
             table = table.with(row);
         }
         return table.toString();
@@ -50,10 +50,10 @@ public final class AnnotatedClassBrowser
         return ImmutableList.copyOf(list);
     }
 
-    private UIDetail link(Object o) {
+    private UITableDetail link(Object o) {
         ObjectLink link = ObjectLink.of();
         HTMLTags tags = HTMLTags.of();
         String string = tags.escape(Strings.first(150, "" + o));
-        return UIDetail.of(link.to(string,o));
+        return UITableDetail.of(link.to(string,o));
     }
 }

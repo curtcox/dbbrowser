@@ -8,12 +8,13 @@ import com.cve.model.db.DBRow;
 import com.cve.model.db.SelectResults;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
+import com.cve.ui.UITableCell;
 import com.cve.web.core.ClientInfo;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -68,7 +69,7 @@ public final class DistributionResultsTableRenderer {
      */
     String resultsTable() {
 
-        List<UIRow> rows = Lists.newArrayList();
+        List<UITableRow> rows = Lists.newArrayList();
         rows.add(row(tools.databaseRow(),   CSS.DATABASE));
         rows.add(row(tools.tableRow(),      CSS.TABLE));
         rows.add(row(columnNameRow()));
@@ -76,18 +77,18 @@ public final class DistributionResultsTableRenderer {
         return UITable.of(rows).toString();
     }
 
-    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css); }
-    UIRow row(List<UIDetail> details)          { return UIRow.of(details); }
-    UIDetail detail(String value, CSS css)     { return UIDetail.of(value,css); }
-    UIDetail detail(String value)              { return UIDetail.of(value); }
+    UITableRow row(List<UITableCell> details, CSS css) { return UITableRow.of(details,css); }
+    UITableRow row(List<UITableCell> details)          { return UITableRow.of(details); }
+    UITableDetail detail(String value, CSS css)     { return UITableDetail.of(value,css); }
+    UITableDetail detail(String value)              { return UITableDetail.of(value); }
 
      /**
      * A table row where each cell represents a different column.
      * Cells in this row map one-to-one to columns in the result set.
      */
-    ImmutableList<UIDetail> columnNameRow() {
+    ImmutableList<UITableCell> columnNameRow() {
         DBResultSet resultSet = results.resultSet;
-        List<UIDetail> out = Lists.newArrayList();
+        List<UITableCell> out = Lists.newArrayList();
         DBColumn column = resultSet.columns.get(0);
         out.add(detail(column.name,tools.classOf(column)));
         out.add(detail("count"));
@@ -97,12 +98,12 @@ public final class DistributionResultsTableRenderer {
     /**
      * The rows that contain all of the result set values.
      */
-    List<UIRow> valueRows() {
+    List<UITableRow> valueRows() {
         DBResultSet resultSet = results.resultSet;
-        List<UIRow> out = Lists.newArrayList();
+        List<UITableRow> out = Lists.newArrayList();
         CSS cssClass = CSS.ODD_ROW;
         for (DBRow row : resultSet.rows) {
-            List<UIDetail> details = Lists.newArrayList();
+            List<UITableCell> details = Lists.newArrayList();
             DBColumn column = resultSet.columns.get(0);
 
             Cell   valueCell = Cell.at(row, column);

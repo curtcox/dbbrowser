@@ -4,15 +4,18 @@ import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.ModelHtmlRenderer;
-import com.cve.web.*;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 
 import com.cve.lang.AnnotatedStackTrace;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
+import com.cve.ui.UITableBuilder;
+import com.cve.ui.UITableCell;
+import com.cve.ui.UITableHeader;
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
 import com.cve.web.management.ObjectLink;
@@ -29,20 +32,15 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
 
     private static URI HELP = URIs.of("/resource/help/Servers.html");
 
-    private final HTMLTags tags;
-    String h1(String s) { return tags.h1(s); }
-    String h2(String s) { return tags.h2(s); }
-    String tr(String s) { return tags.tr(s); }
-    String td(String s) { return tags.td(s); }
-    String td(String s, CSS css) { return tags.td(s,css); }
-    String th(String s) { return tags.th(s); }
-    String table(String s) { return tags.table(s); }
-    String borderTable(String s) { return tags.borderTable(s); }
+    UITableRow    row(UITableCell... details) { return UITableRow.of(details); }
+    UITableDetail detail(String s) { return UITableDetail.of(s); }
+    UITableDetail detail(String s, CSS css) { return UITableDetail.of(s,css); }
+    UITableHeader header(String s) { return UITableHeader.of(s); }
 
-    private ServersPageRenderer() {
-        
-        tags = HTMLTags.of();
-    }
+   /**
+    * Use the factory
+    */
+    private ServersPageRenderer() {}
 
     public static ServersPageRenderer of() {
         return new ServersPageRenderer();
@@ -71,17 +69,17 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
      */
     String tableOfServers(ServersPage page) {
         log.args(page);
-        StringBuilder out = new StringBuilder();
-        out.append(tr(th("Database Server") + th("Databases")));
+        UITableBuilder out = UITableBuilder.of();
+        out.add(row(header("Database Server"),header("Databases")));
         for (DBServer server : page.servers) {
-            out.append(
-                tr(
-                    td(server.linkTo().toString(),  CSS.SERVER) +
-                    td(databasesOn(page,server),    CSS.DATABASE))
+            out.add(
+                row(
+                    detail(server.linkTo().toString(),  CSS.SERVER),
+                    detail(databasesOn(page,server),    CSS.DATABASE))
             );
         }
         
-        return borderTable(out.toString());
+        return out.build().toString();
     }
 
     /**

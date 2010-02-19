@@ -1,7 +1,7 @@
 package com.cve.web.management;
 
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.LogEntry;
 import com.cve.log.Logs;

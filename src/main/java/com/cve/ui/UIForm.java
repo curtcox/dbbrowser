@@ -1,7 +1,6 @@
 package com.cve.ui;
 
 import static com.cve.util.Check.notNull;
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.core.PageRequest;

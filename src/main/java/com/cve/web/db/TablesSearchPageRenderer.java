@@ -16,8 +16,8 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.*;
 
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
@@ -83,11 +83,11 @@ static final class Helper {
 
     final Log log = Logs.of();
 
-    final UIDetail EMPTY_CELL;
+    final UITableDetail EMPTY_CELL;
 
     Helper(TablesSearchPage page) {
         this.page = page;
-        EMPTY_CELL = UIDetail.of("");
+        EMPTY_CELL = UITableDetail.of("");
     }
 
     static Helper of(TablesSearchPage page) {
@@ -123,34 +123,34 @@ static final class Helper {
         return !page.columns.containsKey(table);
     }
 
-    UIDetail cell(DBTable table) {
+    UITableDetail cell(DBTable table) {
         return RenderingTools.of().cell(table);
     }
 
-    UIDetail cell(Collection<DBColumn> columns) {
+    UITableDetail cell(Collection<DBColumn> columns) {
         return RenderingTools.of().cell(columns);
     }
 
-    UIRow row(DBTable table) {
-        return UIRow.of(cell(table));
+    UITableRow row(DBTable table) {
+        return UITableRow.of(cell(table));
     }
 
-    UIRow row(UIDetail... details) {
-        return UIRow.of(details);
+    UITableRow row(UITableDetail... details) {
+        return UITableRow.of(details);
     }
 
-    UIDetail detail(String s) {
-        return UIDetail.of(s);
+    UITableDetail detail(String s) {
+        return UITableDetail.of(s);
     }
 
-    UIRow columnsRow(Collection<DBColumn> columns) {
+    UITableRow columnsRow(Collection<DBColumn> columns) {
         DBColumn   column = columns.iterator().next();
         DBTable     table = column.table;
-        UIDetail tableCell = cell(table);
+        UITableDetail tableCell = cell(table);
         if (tableCell==EMPTY_CELL) {
-            return UIRow.of( cell(columns));
+            return UITableRow.of( cell(columns));
         }
-        return UIRow.of(  tableCell, cell(columns) );
+        return UITableRow.of(  tableCell, cell(columns) );
     }
 }
 

@@ -13,6 +13,6 @@ package com.cve.web.core;
  * @see AbstractPage
  * @author curt
  */
-public interface Page extends RequestHandler, Model, ModelHtmlRenderer {
+public interface Page extends RequestHandler, SelfRenderingModel {
 
 }

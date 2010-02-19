@@ -4,14 +4,14 @@ import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.ModelHtmlRenderer;
-import com.cve.web.*;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import static com.cve.ui.UIBuilder.*;
+import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
@@ -24,22 +24,11 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
     private final NavigationButtons buttons;
-    private final HTMLTags tags;
 
     private static URI HELP = URIs.of("/resource/help/Databases.html");
 
-    String tr(String s) { return tags.tr(s); }
-    String td(String s, CSS css) { return tags.td(s,css); }
-    String h1(String s) { return tags.h1(s); }
-    String h2(String s) { return tags.h2(s); }
-    String td(String s) { return tags.td(s); }
-    String th(String s) { return tags.th(s); }
-    String borderTable(String s) { return tags.borderTable(s); }
-
     private DatabasesPageRenderer() {
-        
         buttons = NavigationButtons.of();
-        tags = HTMLTags.of();
     }
 
     public static DatabasesPageRenderer of() {
@@ -60,17 +49,17 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
     }
 
     String tableOfDatabases(DatabasesPage page) {
-        StringBuilder out = new StringBuilder();
-        out.append(th("Database") + th("Tables"));
+        UITableBuilder out = UITableBuilder.of();
+        out.add(row(header("Database"),header("Tables")));
         for (Database database : page.databases) {
-            out.append(
-                tr(
-                    td(database.linkTo().toString(), CSS.DATABASE) +
-                    td(tablesOn(page,database),      CSS.TABLE)
+            out.add(
+                row(
+                    detail(database.linkTo().toString(), CSS.DATABASE),
+                    detail(tablesOn(page,database),      CSS.TABLE)
                 )
             );
         }
-        return borderTable(out.toString());
+        return out.build().toString();
     }
 
     String tablesOn(DatabasesPage page, Database database) {

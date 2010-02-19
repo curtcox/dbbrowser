@@ -11,10 +11,9 @@ import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
-import com.cve.web.*;
 
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
@@ -69,13 +68,13 @@ static final class Helper {
 
     final Log log = Logs.of();
 
-    final UIDetail EMPTY_CELL;
+    final UITableDetail EMPTY_CELL;
 
     Helper(DatabasesSearchPage page) {
         this.page = notNull(page);
         
         tools = RenderingTools.of();
-        EMPTY_CELL = UIDetail.of("");
+        EMPTY_CELL = UITableDetail.of("");
     }
 
     static String render(DatabasesSearchPage page) {
@@ -125,7 +124,7 @@ static final class Helper {
     }
 
     final Set<Database> databasesOut = Sets.newHashSet();
-    UIDetail cell(Database database) {
+    UITableDetail cell(Database database) {
         if (databasesOut.contains(database)) {
             return EMPTY_CELL;
         }
@@ -134,41 +133,41 @@ static final class Helper {
         return tools.cell(database,height);
     }
 
-    UIDetail detail(String s) {
-        return UIDetail.of(s);
+    UITableDetail detail(String s) {
+        return UITableDetail.of(s);
     }
 
-    UIDetail cell(DBTable table) {
+    UITableDetail cell(DBTable table) {
         return tools.cell(table);
     }
 
-    UIDetail cell(Collection<DBColumn> columns) {
+    UITableDetail cell(Collection<DBColumn> columns) {
         return tools.cell(columns);
     }
     
-    UIRow row(Database database) {
-        return UIRow.of(cell(database));
+    UITableRow row(Database database) {
+        return UITableRow.of(cell(database));
     }
 
-    UIRow row(UIDetail... details) {
-        return UIRow.of(details);
+    UITableRow row(UITableDetail... details) {
+        return UITableRow.of(details);
     }
 
-    UIRow row(DBTable table) {
+    UITableRow row(DBTable table) {
         Database database = table.database;
-        UIDetail databaseCell = cell(database);
+        UITableDetail databaseCell = cell(database);
         if (databaseCell==EMPTY_CELL) {
             return row(cell(table));
         }
         return row(databaseCell, cell(table));
     }
 
-    UIRow columnsRow(Collection<DBColumn> columns) {
+    UITableRow columnsRow(Collection<DBColumn> columns) {
         DBColumn   column = columns.iterator().next();
         DBTable     table = column.table;
         Database database = table.database;
-        UIDetail databaseCell = cell(database);
-        UIDetail tableCell = cell(table);
+        UITableDetail databaseCell = cell(database);
+        UITableDetail tableCell = cell(table);
         if (tableCell==EMPTY_CELL) {
             return row(cell(columns));
         }

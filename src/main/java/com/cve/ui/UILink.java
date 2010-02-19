@@ -2,8 +2,10 @@ package com.cve.ui;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
-import com.cve.util.Check;
+import static com.cve.util.Check.notNull;
+import com.cve.web.management.LogCodec;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectRegistry;
 import java.net.URI;
 
 /**
@@ -13,42 +15,70 @@ import java.net.URI;
  */
 public final class UILink implements UIElement {
 
-    private final String value;
+    final URI target;
+
+    final String text;
+
+    final URI image;
+
+    final String alt;
 
     /**
      * Use a factory.
      * @param value
      */
-    private UILink(String value) {
-        this.value = Check.notNull(value);
+    private UILink(URI target, String text, URI image, String alt) {
+        this.target = notNull(target);
+        this.text   = notNull(text);
+        this.image  = image;
+        this.alt    = alt;
     }
 
     /**
      * Return a link to the given object.
      */
-    public static UILink to(Object o) {
-        return new UILink(ObjectLink.of().to(o));
+    public static UILink to(Object object) {
+        String hash = ObjectRegistry.put(object).toHexString();
+        String text = getLabel(object) + "/" + hash;
+        return to(text,object);
+    }
+
+    /**
+     * Return the label for the URL, or an empty string if there is none.
+     */
+    static String getLabel(Object object) {
+        if (object==null) {
+            return "null";
+        }
+        if (object instanceof Class) {
+            return object.toString();
+        }
+        return object.getClass().toString();
     }
 
     /**
      * Return a link to the given object.
      */
-    public static UILink to(String label, Object o) {
-        return new UILink(ObjectLink.of().to(label,o));
+    public static UILink to(String text, Object object) {
+        LogCodec codec = LogCodec.of();
+        URI target = codec.encode(object);
+        return new UILink(target,text,null,null);
     }
 
-    public static UILink textTarget(Label of, URI target) {
-        String value = Link.textTarget(of, target).toString();
-        return new UILink(value);
+    public static UILink textTarget(String text, URI target) {
+        return new UILink(target,text,null,null);
     }
 
-    public static UILink textTargetImageAlt(Label text, URI target, URI image, String alt) {
-        String value = Link.textTargetImageAlt(text, target, image, alt).toString();
-        return new UILink(value);
+    public static UILink textTargetImageAlt(String text, URI target, URI image, String alt) {
+        return new UILink(target,text,image,alt);
     }
 
     @Override
     public String toString() {
-        return value;
+        Label label = Label.of(text);
+        if (image!=null) {
+            return Link.textTargetImageAlt(label, target, image, alt).toString();
+        }
+        return Link.textTarget(label, target).toString();
     }
 }

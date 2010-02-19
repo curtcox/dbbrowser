@@ -5,7 +5,7 @@ import com.cve.model.db.Cell;
 import com.cve.html.Label;
 import com.cve.html.Tooltip;
 import com.cve.html.Link;
-import com.cve.ui.UIDetail;
+import com.cve.ui.UITableDetail;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBColumn.Keyness;
 import com.cve.model.db.Database;
@@ -18,11 +18,12 @@ import com.cve.model.db.DBTable;
 import com.cve.model.db.Order;
 import com.cve.model.db.DBValue;
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
+import com.cve.ui.UITableCell;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.Icons;
 import com.google.common.collect.ImmutableList;
@@ -87,7 +88,7 @@ public final class DBResultSetRenderer {
      * Return a landscape table where every result set row maps to a table row.
      */
     public String landscapeTable() {
-        List<UIRow> rows = Lists.newArrayList();
+        List<UITableRow> rows = Lists.newArrayList();
         rows.add(row(databaseRow(),   CSS.DATABASE));
         rows.add(row(tableRow(),      CSS.TABLE));
         rows.add(row(columnNameRow()));
@@ -96,17 +97,17 @@ public final class DBResultSetRenderer {
         return UITable.of(rows).toString();
     }
 
-    UIRow row(List<UIDetail> details, CSS css) { return UIRow.of(details,css); }
-    UIRow row(List<UIDetail> details)          { return UIRow.of(details); }
+    UITableRow row(List<UITableCell> details, CSS css) { return UITableRow.of(details,css); }
+    UITableRow row(List<UITableCell> details)          { return UITableRow.of(details); }
 
     /**
      * The rows that contain all of the result set values.
      */
-    List<UIRow> valueRowsList() {
-        List<UIRow> out = Lists.newArrayList();
+    List<UITableRow> valueRowsList() {
+        List<UITableRow> out = Lists.newArrayList();
         CSS cssClass = CSS.ODD_ROW;
         for (DBRow row : results.rows) {
-            List<UIDetail> details = Lists.newArrayList();
+            List<UITableCell> details = Lists.newArrayList();
             for (DBColumn column : results.columns) {
                 Cell cell = Cell.at(row, column);
                 DBValue value = results.getValue(row, column);
@@ -122,16 +123,16 @@ public final class DBResultSetRenderer {
         return out;
     }
 
-    UIDetail detail(String value , CSS css) { return UIDetail.of(value, css); }
-    UIDetail detail(String value) { return UIDetail.of(value); }
-    UIDetail detail(String value,int width) { return UIDetail.of(value, width); }
+    UITableDetail detail(String value , CSS css) { return UITableDetail.of(value, css); }
+    UITableDetail detail(String value) { return UITableDetail.of(value); }
+    UITableDetail detail(String value,int width) { return UITableDetail.of(value, width); }
 
     /**
      * A table row where each cell represents a different database.
      * Cells from this row may span multiple columns of rows below.
      */
-    ImmutableList<UIDetail> databaseRow() {
-        List<UIDetail> out = Lists.newArrayList();
+    ImmutableList<UITableCell> databaseRow() {
+        List<UITableCell> out = Lists.newArrayList();
         for (Database database : results.databases) {
             int width = results.columns.size();
             out.add(detail(nameCell(database),width));
@@ -143,8 +144,8 @@ public final class DBResultSetRenderer {
      * A table row where each cell represents a different table.
      * Cells from this row may span multiple columns of rows below.
      */
-    ImmutableList<UIDetail> tableRow() {
-        List<UIDetail> out = Lists.newArrayList();
+    ImmutableList<UITableCell> tableRow() {
+        List<UITableCell> out = Lists.newArrayList();
         for (DBTable table : results.tables) {
             int width = 0;
             for (DBColumn c: results.columns) {
@@ -161,8 +162,8 @@ public final class DBResultSetRenderer {
      * A table row where each cell represents a different column.
      * Cells in this row map one-to-one to columns in the result set.
      */
-    ImmutableList<UIDetail> columnNameRow() {
-        List<UIDetail> out = Lists.newArrayList();
+    ImmutableList<UITableCell> columnNameRow() {
+        List<UITableCell> out = Lists.newArrayList();
         int columnCount = results.columns.size();
         for (DBColumn column : results.columns) {
             if (columnCount < 5 ) {
@@ -178,8 +179,8 @@ public final class DBResultSetRenderer {
      * A table row where each cell a link to hide the column.
      * Cells in this row map one-to-one to columns in the result set.
      */
-    ImmutableList<UIDetail> columnActionsRow() {
-        List<UIDetail> out = Lists.newArrayList();
+    ImmutableList<UITableCell> columnActionsRow() {
+        List<UITableCell> out = Lists.newArrayList();
         for (DBColumn column : results.columns) {
             out.add(detail(actionCell(column,direction(column))));
         }

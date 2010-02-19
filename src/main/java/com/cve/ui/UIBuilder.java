@@ -1,8 +1,10 @@
 package com.cve.ui;
 
+import com.cve.html.CSS;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import java.net.URI;
+import java.util.List;
 
 /**
  * Convenient methods for building a UI.
@@ -21,20 +23,28 @@ public final class UIBuilder {
         return new UIBuilder();
     }
 
-    public UITable table(UIRow... rows) {
+    public UITable table(UITableRow... rows) {
         return UITable.of(rows);
     }
 
-    public UIDetail detail(String value) {
-        return UIDetail.of(value);
+    public UITableDetail detail(String value) {
+        return UITableDetail.of(value);
     }
 
-    public UIRow row(UIDetail... details) {
-        return UIRow.of(details);
+    public UITableRow row(UITableDetail... details) {
+        return UITableRow.of(details);
     }
 
-    public UIRow row(UIElement... elements) {
-        return UIRow.of(elements);
+    public UITableRow row(UIElement... elements) {
+        return UITableRow.of(elements);
+    }
+
+     public UITableRow row(CSS css, UITableCell... elements) {
+        return UITableRow.of(css, elements);
+    }
+
+    public UITableRow row(List<UITableCell> elements, CSS css) {
+        return UITableRow.of(elements,css);
     }
 
     /**
@@ -59,5 +69,9 @@ public final class UIBuilder {
     public static UISubmit submit(String value, URI icon) {
         return UISubmit.valueIcon(value,icon);
     }
+
+    public static UITableHeader header(String s)          { return UITableHeader.of(s);   }
+    public static UITableDetail detail(String s, CSS css) { return UITableDetail.of(s,css); }
+    public static UITableRow row(UITableCell... cells)    { return UITableRow.of(cells); }
 
 }

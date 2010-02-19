@@ -7,7 +7,7 @@ import com.cve.model.db.DBServer;
 import com.cve.html.CSS;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
+import com.cve.ui.UITableDetail;
 import java.util.Collection;
 
 /**
@@ -26,24 +26,24 @@ public final class RenderingTools {
         return new RenderingTools();
     }
     
-    public UIDetail cell(DBServer server,int height) {
-        return UIDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height);
+    public UITableDetail cell(DBServer server,int height) {
+        return UITableDetail.valueCssWidthHeight(server.linkTo().toString(),CSS.SERVER,1,height);
     }
 
-    public UIDetail cell(Database database, int height) {
-        return UIDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height);
+    public UITableDetail cell(Database database, int height) {
+        return UITableDetail.valueCssWidthHeight(database.linkTo().toString(),CSS.DATABASE,1,height);
     }
 
-    public UIDetail cell(DBTable table) {
-        return UIDetail.of(table.linkTo().toString(),CSS.TABLE);
+    public UITableDetail cell(DBTable table) {
+        return UITableDetail.of(table.linkTo().toString(),CSS.TABLE);
     }
 
-    public UIDetail cell(Collection<DBColumn> columns) {
+    public UITableDetail cell(Collection<DBColumn> columns) {
         StringBuilder out = new StringBuilder();
         for (DBColumn column : columns) {
             out.append(column.linkTo() + " ");
         }
-        return UIDetail.of(out.toString(),CSS.COLUMN);
+        return UITableDetail.of(out.toString(),CSS.COLUMN);
     }
 
 }

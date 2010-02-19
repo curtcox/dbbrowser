@@ -2,8 +2,8 @@ package com.cve.web.management.browsers;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.ui.UIDetail;
-import com.cve.ui.UIRow;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.cve.web.management.ObjectLink;
 import java.util.*;
@@ -34,14 +34,14 @@ public final class CollectionBrowser
         UITable table = UITable.of();
         int i = 0;
         for (Object value : c) {
-            UIRow row = UIRow.of(UIDetail.of("" + i),link(value));
+            UITableRow row = UITableRow.of(UITableDetail.of("" + i),link(value));
             table = table.with(row);
             i++;
         }
         return table.toString();
     }
 
-    private UIDetail link(Object o) {
-        return UIDetail.of(ObjectLink.of().to("" + o,o));
+    private UITableDetail link(Object o) {
+        return UITableDetail.of(ObjectLink.of().to("" + o,o));
     }
 }

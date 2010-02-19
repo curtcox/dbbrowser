@@ -1,7 +1,7 @@
 
 package com.cve.web.db;
 
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.io.db.DBMetaData;
 import com.cve.io.db.LocalDBMetaDataFactory;
 import com.cve.io.db.driver.DBDriver;

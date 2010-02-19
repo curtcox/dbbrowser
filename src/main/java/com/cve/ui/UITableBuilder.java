@@ -13,7 +13,7 @@ public final class UITableBuilder {
 
     final Log log = Logs.of();
 
-    private List<UIRow> rows = Lists.newArrayList();
+    private List<UITableRow> rows = Lists.newArrayList();
 
     /**
      * Use the factory.
@@ -24,7 +24,7 @@ public final class UITableBuilder {
         return new UITableBuilder();
     }
 
-    public void add(UIRow row) {
+    public void add(UITableRow row) {
         rows.add(row);
     }
 

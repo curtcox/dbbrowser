@@ -1,7 +1,6 @@
 package com.cve.ui;
 
 import com.cve.html.CSS;
-import com.cve.html.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.google.common.collect.ImmutableList;
@@ -15,44 +14,48 @@ import javax.annotation.concurrent.Immutable;
  * to render to something other than HTML later.
  */
 @Immutable
-public final class UIRow {
+public final class UITableRow {
 
     private final HTMLTags tags;
-    private final ImmutableList<UIDetail> details;
+    private final ImmutableList<UITableCell> details;
     private final CSS css;
     private final Log log = Logs.of();
 
-    private UIRow(List<UIDetail> details, CSS css) {
+    private UITableRow(List<UITableCell> details, CSS css) {
         this.details = ImmutableList.copyOf(details);
         this.css     = css;
         
         tags = HTMLTags.of();
     }
 
-    public static UIRow of(List<UIDetail> details, CSS css) {
-        return new UIRow(details,css);
+    public static UITableRow of(List<UITableCell> details, CSS css) {
+        return new UITableRow(details,css);
     }
 
-    public static UIRow of(List<UIDetail> details) {
-        return new UIRow(details,null);
+    public static UITableRow of(List<UITableCell> details) {
+        return new UITableRow(details,null);
     }
 
-    public static UIRow of(UIDetail... details) {
-        return new UIRow(ImmutableList.of(details),null);
+    public static UITableRow of(UITableCell... details) {
+        return new UITableRow(ImmutableList.of(details),null);
     }
 
-    public static UIRow of(UIElement... elements) {
-        List<UIDetail> details = Lists.newArrayList();
+    public static UITableRow of(CSS css, UITableCell... details) {
+        return new UITableRow(ImmutableList.of(details),css);
+    }
+
+    public static UITableRow of(UIElement... elements) {
+        List<UITableCell> details = Lists.newArrayList();
         for (UIElement element : elements) {
-            details.add(UIDetail.of(element));
+            details.add(UITableDetail.of(element));
         }
-        return new UIRow(ImmutableList.copyOf(details),null);
+        return new UITableRow(ImmutableList.copyOf(details),null);
     }
 
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder();
-        for (UIDetail detail : details) {
+        for (UITableCell detail : details) {
             out.append(detail.toString());
         }
         if (css==null) {

@@ -5,7 +5,7 @@ import com.cve.web.core.Model;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.core.handlers.ResourceHandler;
-import com.cve.html.HTMLTags;
+import com.cve.ui.HTMLTags;
 import com.cve.web.*;
 import com.cve.html.Label;
 import com.cve.html.Link;

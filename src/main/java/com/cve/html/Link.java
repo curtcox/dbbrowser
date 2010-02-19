@@ -1,5 +1,6 @@
 package com.cve.html;
 
+import com.cve.ui.HTMLTags;
 import com.cve.util.Replace;
 import com.cve.web.core.handlers.DebugHandler;
 import java.net.URI;
