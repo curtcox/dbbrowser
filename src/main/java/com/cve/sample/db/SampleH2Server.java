@@ -14,6 +14,7 @@ import com.cve.stores.ManagedFunction;
 import com.cve.stores.UnmanagedFunctionFactory;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.MemoryDBServersStore;
+import com.cve.util.Check;
 import com.cve.util.URIs;
 import java.io.IOException;
 import java.sql.Connection;
@@ -28,18 +29,22 @@ import java.sql.Statement;
  */
 public final class SampleH2Server {
 
-    public static final Log log  = Logs.of();
+    private final Connection connection;
+
+    private final Log log  = Logs.of();
 
     /**
      * Our sample server.
      */
     public static final DBServer SAMPLE = DBServer.uri(URIs.of("SAMPLE"));
 
-    private static final SampleH2Server SERVER = new SampleH2Server();
+    private static final SampleH2Server SERVER = new SampleH2Server(getConnection());
 
     private boolean loaded = false;
 
-    private SampleH2Server() {}
+    private SampleH2Server(Connection connection) {
+        this.connection = Check.notNull(connection);
+    }
 
     public static synchronized SampleH2Server of() {
         if (!SERVER.loaded) {
@@ -152,8 +157,6 @@ public final class SampleH2Server {
     }
 
     void update(SQL sql) throws SQLException {
-        final DBConnectionInfo info = getConnectionInfo();
-        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
         info(sql.toString());
         boolean isResultSet = statement.execute(sql.toString());
@@ -161,9 +164,8 @@ public final class SampleH2Server {
         info("Result Set? " + isResultSet);
     }
 
-    public static ResultSet select(SQL sql) throws SQLException {
+    public ResultSet select(SQL sql) throws SQLException {
         final DBConnectionInfo info = getConnectionInfo();
-        Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
         Statement statement = connection.createStatement();
         info(sql.toString());
         boolean isResultSet = statement.execute(sql.toString());
@@ -176,10 +178,20 @@ public final class SampleH2Server {
         // System.out.println(message);
     }
 
+    private static Connection getConnection() {
+        try {
+            final DBConnectionInfo info = getConnectionInfo();
+            Connection connection = DriverManager.getConnection(info.url.toString(), info.user, info.password);
+            return connection;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) throws SQLException, IOException {
-        SampleH2Server.of();
+        SampleH2Server server = SampleH2Server.of();
         SQL sql = SQL.of("SELECT COUNT(*) FROM GEO.CITIES");
-        ResultSet results = SampleH2Server.select(sql);
+        ResultSet results = server.select(sql);
         results.next();
         System.out.println(results.getObject(1));
         System.out.println("Done.");

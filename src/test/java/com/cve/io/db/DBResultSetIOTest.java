@@ -33,7 +33,7 @@ public class DBResultSetIOTest {
     public void cities() throws Exception {
         SampleH2Server.of();
         SQL sql = SQL.of("SELECT * FROM GEO.CITIES");
-        ResultSet results = SampleH2Server.select(sql);
+        ResultSet results = SampleH2Server.of().select(sql);
         DBResultSetIO io = DBResultSetIO.of(results);
         assertEquals(4,io.meta.columnCount);
 

@@ -1,6 +1,5 @@
 package com.cve.io.db;
 
-import com.cve.log.Log;
 import com.cve.model.db.SQL;
 import com.cve.sample.db.SampleH2Server;
 import java.sql.ResultSet;
@@ -31,7 +30,7 @@ public class DBResultSetMetaDataIOTest {
     public void cities() throws Exception {
         SampleH2Server.of();
         SQL sql = SQL.of("SELECT * FROM GEO.CITIES");
-        ResultSet results = SampleH2Server.select(sql);
+        ResultSet results = SampleH2Server.of().select(sql);
         DBResultSetIO io = DBResultSetIO.of(results);
         DBResultSetMetaDataIO meta = io.meta;
         assertEquals(4,        meta.columnCount);
