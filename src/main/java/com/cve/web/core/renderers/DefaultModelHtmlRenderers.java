@@ -9,7 +9,6 @@ import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
 import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.alt.AltModelHtmlRenderers;
 import com.cve.web.db.DatabaseModelHtmlRenderers;

@@ -1,8 +1,9 @@
 package com.cve.ui.awt;
 
+import com.cve.ui.layout.TableLayout;
+import com.cve.ui.layout.TableLayoutConstants;
 import java.awt.*;
 import java.awt.event.*;
-import info.clearthought.layout.TableLayout;
 
 public class Simple {
 
@@ -14,8 +15,8 @@ public class Simple {
         // Create a TableLayout for the frame
         double border = 10;
         double size[][] =
-            {{border, 0.10, 20, TableLayout.FILL, 20, 0.20, border},  // Columns
-             {border, 0.20, 20, TableLayout.FILL, 20, 0.20, border}}; // Rows
+            {{border, 0.10, 20, TableLayoutConstants.FILL, 20, 0.20, border},  // Columns
+             {border, 0.20, 20, TableLayoutConstants.FILL, 20, 0.20, border}}; // Rows
 
         frame.setLayout (new TableLayout(size));
 

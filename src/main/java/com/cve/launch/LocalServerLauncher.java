@@ -67,7 +67,6 @@ public final class LocalServerLauncher {
         DBServersStore dbServersStore = stores.of(DBServersStore.class);
         FSServersStore fsServersStore = stores.of(FSServersStore.class);
         DBHintsStore       hintsStore = stores.of(DBHintsStore.class);
-        Log                       log = Logs.of();
         DBMetaData.Factory         db = LocalDBMetaDataFactory.of(dbServersStore, managedFunction);
         return new LocalServerLauncher(
            managedFunction,

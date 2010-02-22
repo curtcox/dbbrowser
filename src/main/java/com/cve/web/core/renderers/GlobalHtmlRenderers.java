@@ -6,7 +6,6 @@ import com.cve.log.Logs;
 import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.models.ExitPage;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.PageDecorator;
 import com.cve.web.core.models.StringModel;
@@ -18,7 +17,7 @@ import java.util.Map;
  * Defines the mapping we use for the entire application.
  * @author curt
  */
-final class GlobalHtmlRenderers implements ModelHtmlRenderer {
+public final class GlobalHtmlRenderers implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 

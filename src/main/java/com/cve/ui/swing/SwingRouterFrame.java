@@ -9,6 +9,14 @@ import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
 import com.cve.web.core.RequestHandler;
 import com.cve.web.core.WebApp;
+import com.cve.web.core.handlers.CompositeRequestHandler;
+import com.cve.web.core.handlers.CoreServerHandler;
+import com.cve.web.core.handlers.DebugHandler;
+import com.cve.web.core.handlers.ErrorReportHandler;
+import com.cve.web.core.renderers.CompositeModelHtmlRenderer;
+import com.cve.web.core.renderers.GlobalHtmlRenderers;
+import com.cve.web.management.ManagementHandler;
+import com.cve.web.management.ManagementModelHtmlRenderers;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -21,7 +29,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
- *
+ * Swing client for WebApps.
  * @author Curt
  */
 public final class SwingRouterFrame extends JFrame {
@@ -74,8 +82,18 @@ public final class SwingRouterFrame extends JFrame {
     }
 
     public static void main(String[] args) {
-        RequestHandler     handler = null;
-        ModelHtmlRenderer renderer = null;
+        RequestHandler handler = ErrorReportHandler.of(
+            DebugHandler.of(
+                CompositeRequestHandler.of(
+                    CoreServerHandler.of(),
+                    ManagementHandler.of()
+                )
+            )
+        );
+        ModelHtmlRenderer renderer = CompositeModelHtmlRenderer.of(
+            ManagementModelHtmlRenderers.of(),
+            GlobalHtmlRenderers.of()
+        );
         of(WebApp.of(handler,renderer)).browse(URIs.of("/"));
     }
 
