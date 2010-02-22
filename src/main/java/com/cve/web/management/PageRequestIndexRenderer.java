@@ -5,6 +5,7 @@ import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.LogEntry;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
@@ -35,7 +36,7 @@ final class PageRequestIndexRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         PageRequestIndexModel page = (PageRequestIndexModel) model;
         String guts = tableOfEntries(page);

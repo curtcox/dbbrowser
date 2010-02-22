@@ -4,6 +4,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.model.db.Database;
 import com.cve.model.db.SelectResults;
+import com.cve.ui.UIElement;
 import com.cve.web.db.render.ResultsTableRenderer;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
@@ -33,7 +34,7 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         DatabaseContentsSearchPage page = (DatabaseContentsSearchPage) model;
         Database database = page.database;

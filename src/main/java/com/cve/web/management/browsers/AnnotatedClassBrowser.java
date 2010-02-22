@@ -3,6 +3,7 @@ package com.cve.web.management.browsers;
 import com.cve.ui.HTMLTags;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.Strings;
+import com.cve.ui.UIElement;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
@@ -30,14 +31,14 @@ public final class AnnotatedClassBrowser
     /* (non-Javadoc)
      */
     @Override
-    public String getComponentFor(Object o) {
+    public UIElement getComponentFor(Object o) {
         AnnotatedClass c = (AnnotatedClass) o;
         UITable table = UITable.of();
         for (Object value : instancesOf(c)) {
             UITableRow row = UITableRow.of(link(value));
             table = table.with(row);
         }
-        return table.toString();
+        return table;
     }
 
     ImmutableList instancesOf(AnnotatedClass c) {

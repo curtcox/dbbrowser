@@ -1,6 +1,7 @@
 package com.cve.web.core.pages;
 
 import com.cve.ui.HTMLTags;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
@@ -109,7 +110,7 @@ public abstract class AbstractPage implements Page {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         check(model);
         if (renderer!=null) {
             return renderer.render(model, client);

@@ -2,6 +2,7 @@ package com.cve.web.core.renderers;
 
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.ui.HTMLTags;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
@@ -22,11 +23,11 @@ final class TextFileModelHtmlRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         return render((TextFileModel) model);
     }
 
-    HtmlPage render(TextFileModel model) {
+    UIElement render(TextFileModel model) {
         StringBuilder out = new StringBuilder();
         int num = 1;
         for (String line : model.lines) {

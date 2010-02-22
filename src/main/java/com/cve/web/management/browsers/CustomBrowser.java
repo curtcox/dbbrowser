@@ -1,5 +1,7 @@
 package com.cve.web.management.browsers;
 
+import com.cve.ui.UIElement;
+
 /**
  * A browser that is specifically designed to browse a certain type of object.
  * This interface is used as an extension mechanism to provide additional
@@ -25,6 +27,6 @@ public interface CustomBrowser {
     /**
      * Given an object, return a component for browsing that object.
      */
-    public String getComponentFor(Object o);
+    public UIElement getComponentFor(Object o);
 
 } // Custom Browser

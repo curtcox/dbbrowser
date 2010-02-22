@@ -1,7 +1,5 @@
 package com.cve.web.core;
 
-import com.cve.log.Log;
-import com.cve.log.Logs;
 import static com.cve.util.Check.notNull;
 
 /**
@@ -13,17 +11,12 @@ public final class WebApp {
     /**
      * Turns requests into models.
      */
-    final RequestHandler handler;
+    public final RequestHandler handler;
 
     /**
      * Turns models into pages.
      */
-    final ModelHtmlRenderer renderer;
-
-    /**
-     * Where we log to.
-     */
-    final Log log = Logs.of();
+    public final ModelHtmlRenderer renderer;
 
     /**
      * Use the factory.

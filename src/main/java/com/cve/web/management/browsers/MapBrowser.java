@@ -2,6 +2,7 @@ package com.cve.web.management.browsers;
 
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
@@ -28,7 +29,7 @@ public final class MapBrowser
     }
     
     @Override
-    public String getComponentFor(Object o) {
+    public UIElement getComponentFor(Object o) {
         Map map = (Map) o;
         UITable table = UITable.of();
         for (Object key : map.keySet()) {
@@ -36,7 +37,7 @@ public final class MapBrowser
             UITableRow row = UITableRow.of(link(key),link(value));
             table = table.with(row);
         }
-        return table.toString();
+        return table;
     }
 
     private UITableDetail link(Object o) {

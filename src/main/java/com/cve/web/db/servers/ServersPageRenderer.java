@@ -11,6 +11,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 
 import com.cve.lang.AnnotatedStackTrace;
+import com.cve.ui.UIElement;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITableBuilder;
@@ -47,7 +48,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         ServersPage page = (ServersPage) model;
         String title = "Available Servers";

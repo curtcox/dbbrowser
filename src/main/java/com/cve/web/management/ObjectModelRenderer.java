@@ -4,6 +4,7 @@ import com.cve.web.management.browsers.ObjectBrowser;
 import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
@@ -29,7 +30,7 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         ObjectModel objectModel = (ObjectModel) model;
         Object o = objectModel.object;
         return HtmlPage.guts(render(o));

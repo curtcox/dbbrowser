@@ -4,6 +4,7 @@ import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.util.Check;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
@@ -52,11 +53,11 @@ public final class CompositeModelHtmlRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         Check.notNull(model);
         for (ModelHtmlRenderer renderer : renderers) {
-            HtmlPage page = renderer.render(model, client);
+            UIElement page = renderer.render(model, client);
             if (page!=null) {
                 return page;
             }

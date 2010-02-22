@@ -11,6 +11,7 @@ import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBTable;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
+import com.cve.ui.UIElement;
 
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
@@ -41,7 +42,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         DatabasesSearchPage page = (DatabasesSearchPage) model;
         String target = page.search.target;

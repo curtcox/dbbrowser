@@ -3,6 +3,7 @@ package com.cve.web.core.renderers;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.models.ExitPage;
@@ -28,7 +29,7 @@ public final class ExitPageRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         ExitPage page = (ExitPage) model;
         return HtmlPage.gutsHelp(render(page),HELP);
     }

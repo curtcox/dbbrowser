@@ -14,6 +14,7 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.web.*;
 
 import com.cve.ui.UITableDetail;
@@ -45,7 +46,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         TablesSearchPage page = (TablesSearchPage) model;
         Search     search = page.search;

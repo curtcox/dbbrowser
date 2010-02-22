@@ -1,5 +1,6 @@
 package com.cve.web.management.browsers;
 
+import com.cve.ui.UIElement;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
@@ -24,7 +25,7 @@ public final class ArrayBrowser
     /* (non-Javadoc)
      */
     @Override
-    public String getComponentFor(Object o) {
+    public UIElement getComponentFor(Object o) {
         Object[] a = (Object[]) o;
         UITable table = UITable.of();
         int i = 0;
@@ -33,7 +34,7 @@ public final class ArrayBrowser
             table = table.with(row);
             i++;
         }
-        return table.toString();
+        return table;
     }
 
     private UITableDetail link(Object o) {

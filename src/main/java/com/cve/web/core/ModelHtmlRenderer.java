@@ -1,5 +1,7 @@
 package com.cve.web.core;
 
+import com.cve.ui.UIElement;
+
 
 /**
  * To render models to a HTML string.  This interface is designed to allow
@@ -29,5 +31,6 @@ public interface ModelHtmlRenderer {
      * <p>
      * See PageDecorator.
      */
-    HtmlPage render(Model model, ClientInfo client);
+    UIElement render(Model model, ClientInfo client);
+
 }

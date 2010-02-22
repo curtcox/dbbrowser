@@ -7,6 +7,7 @@ import com.cve.model.db.SelectResults.Type;
 import com.cve.model.db.DBServer;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
+import com.cve.ui.UIElement;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
@@ -50,7 +51,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         SelectResults results = (SelectResults) model;
         if (results.type==Type.COLUMN_VALUE_DISTRIBUTION) {
@@ -60,7 +61,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         }
     }
 
-    public HtmlPage renderColumnValueDistribution(SelectResults results, ClientInfo client) {
+    public UIElement renderColumnValueDistribution(SelectResults results, ClientInfo client) {
         String guts = renderColumnValueDistributionPage(results,client);
         String title = "Values in " + results.select.columns.get(0);
         NavigationButtons b = NavigationButtons.of();
@@ -68,7 +69,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
         return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
     }
 
-    public HtmlPage renderNormalResults(SelectResults results, ClientInfo client) {
+    public UIElement renderNormalResults(SelectResults results, ClientInfo client) {
         String guts = renderSelectBuilderPage(results,client);
         DBServer server = results.server;
         String title = "Data from server " + server.toString();

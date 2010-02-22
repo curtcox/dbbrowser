@@ -14,6 +14,7 @@ import com.cve.log.Logs;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.AnnotatedStackTraceElement;
+import com.cve.ui.UIElement;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
@@ -46,7 +47,7 @@ public final class AnnotatedStackTraceRenderer
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         AnnotatedStackTraceModel objectModel = (AnnotatedStackTraceModel) model;
         AnnotatedStackTrace t = objectModel.trace;
         return HtmlPage.guts(render(t));

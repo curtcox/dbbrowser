@@ -7,8 +7,8 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import static com.cve.util.Check.notNull;
 /**
@@ -47,11 +47,11 @@ public final class ClassMapModelHtmlRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         Check.notNull(model);
         Class toRender = model.getClass();
-        ModelHtmlRenderer renderer = renderers.get(model.getClass());
+        ModelHtmlRenderer renderer = renderers.get(toRender);
         if (renderer==null) {
             return null;
         }

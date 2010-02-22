@@ -58,7 +58,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         String title = "Add a Server";
         String guts = render((AddServerPage) model);

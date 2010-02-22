@@ -35,7 +35,7 @@ final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         ObjectRegistryModel registry = (ObjectRegistryModel) model;
         return HtmlPage.guts(render(registry));
     }

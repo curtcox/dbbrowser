@@ -5,10 +5,10 @@ import com.cve.io.db.DBMetaData;
 import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.stores.db.DBServersStore;
+import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.renderers.ClassMapModelHtmlRenderer;
 import com.cve.web.core.renderers.CompositeModelHtmlRenderer;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.db.render.SelectResultsRenderer;
 import com.cve.web.core.ModelHtmlRenderer;
@@ -47,7 +47,7 @@ public final class DatabaseModelHtmlRenderers implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         return renderer.render(model, client);
     }
 

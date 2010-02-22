@@ -1,10 +1,7 @@
 package com.cve.web.core;
 
-import com.cve.web.core.PageDecorator;
-import com.cve.web.core.HtmlPage;
-import com.cve.web.core.ClientInfo;
+import com.cve.ui.UIElement;
 import com.cve.web.core.renderers.StringModelRenderer;
-import com.cve.log.Log;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -20,7 +17,7 @@ public class PageDecoratorTest {
 
     @Test
     public void renderedContainsHtml() {
-        HtmlPage body = HtmlPage.guts("");
+        UIElement body = HtmlPage.guts("");
         String rendered = decorator.render(body, client).toString();
         assertTrue(rendered.contains("<html>"));
         assertTrue(rendered.contains("</html>"));

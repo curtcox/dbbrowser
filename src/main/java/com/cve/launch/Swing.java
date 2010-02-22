@@ -18,7 +18,7 @@ final class Swing {
     }
 
     static Swing start(WebApp webApp) {
-        return new Swing(SwingRouterFrame.of());
+        return new Swing(SwingRouterFrame.of(webApp));
     }
 
     void browse(URI uri) {

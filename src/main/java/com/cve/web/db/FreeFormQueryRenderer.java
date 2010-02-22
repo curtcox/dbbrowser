@@ -14,6 +14,7 @@ import com.cve.log.Logs;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.ui.UIForm;
 import com.cve.lang.AnnotatedStackTrace;
+import com.cve.ui.UIElement;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
@@ -55,7 +56,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         try {
             return render((FreeFormQueryModel) model,client);
@@ -72,7 +73,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         return uri;
     }
 
-    private HtmlPage render(FreeFormQueryModel page, ClientInfo client) throws SQLException {
+    private UIElement render(FreeFormQueryModel page, ClientInfo client) throws SQLException {
         SQL sql = page.sql;
         DBResultSet results = page.results;
         String[] nav = new String[] {};

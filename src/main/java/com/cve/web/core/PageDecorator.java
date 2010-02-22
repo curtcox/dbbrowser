@@ -1,6 +1,7 @@
 package com.cve.web.core;
 
 import com.cve.html.CSS;
+import com.cve.ui.UIElement;
 import com.cve.util.Check;
 import com.cve.util.Replace;
 
@@ -30,15 +31,16 @@ public final class PageDecorator implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
-        HtmlPage body = renderer.render(model,client);
+    public UIElement render(Model model, ClientInfo client) {
+        UIElement body = renderer.render(model,client);
         return render(body,client);
     }
 
     /**
      * Return the page with CSS and Javascript added.
      */
-    HtmlPage render(HtmlPage page, ClientInfo client) {
-        return page.withGuts(SCRIPTS + CSS.SHEET + page.guts);
+    UIElement render(UIElement page, ClientInfo client) {
+        throw new UnsupportedOperationException();
+        // return page.withGuts(SCRIPTS + CSS.SHEET + page.guts);
     }
 }

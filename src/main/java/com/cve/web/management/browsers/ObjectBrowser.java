@@ -8,6 +8,9 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.cve.lang.Strings;
+import com.cve.ui.UIComposite;
+import com.cve.ui.UIElement;
+import com.cve.ui.UILabel;
 import com.cve.web.management.ObjectLink;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -124,15 +127,15 @@ public static String showPrivate(Object o) {
 /**
  * Return the output of any custom browsers that handle this object.
  */
-private String checkSpecialHandling(Object o) {
-    StringBuffer out = new StringBuffer();
+private UIElement checkSpecialHandling(Object o) {
+    List<UIElement> elements = Lists.newArrayList();
     for (CustomBrowser browser : CustomBrowserRegistry.of().getBrowsersFor(o)) {
-        String title = o.getClass().getName() + System.identityHashCode(o);
-        out.append(title);
-        String component = browser.getComponentFor(o);
-        out.append(component);
+        UIElement title = UILabel.of(o.getClass().getName() + System.identityHashCode(o));
+        elements.add(title);
+        UIElement component = browser.getComponentFor(o);
+        elements.add(component);
     }
-    return out.toString();
+    return UIComposite.of(elements);
 }
 
 /**

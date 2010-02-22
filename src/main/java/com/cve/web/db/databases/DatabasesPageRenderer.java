@@ -10,6 +10,7 @@ import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import static com.cve.ui.UIBuilder.*;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
@@ -36,7 +37,7 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
     }
     
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         DatabasesPage page = (DatabasesPage) model;
         DBServer server = page.server;
         String title = "Available Databases on " + server.toString();

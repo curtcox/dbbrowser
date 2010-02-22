@@ -4,6 +4,7 @@ import com.cve.web.core.models.ByteArrayModel;
 import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 
 import java.sql.SQLException;
 import javax.servlet.http.*;
@@ -58,7 +59,6 @@ public final class RequestRouterServlet extends HttpServlet {
     public static RequestRouterServlet of(WebApp webapp) {
         RequestHandler      router = webapp.handler;
         ModelHtmlRenderer renderer = webapp.renderer;
-        Log                    log = webapp.log;
         return new RequestRouterServlet(router, renderer);
     }
 
@@ -129,7 +129,7 @@ public final class RequestRouterServlet extends HttpServlet {
 
         // Everything else gets rendered, typed, and written to a writer
         ClientInfo client = ClientInfo.of();
-        HtmlPage rendered = renderer.render(model,client);
+        UIElement rendered = renderer.render(model,client);
         response.setContentType(ContentType.HTML.toString());
         PrintWriter pw = response.getWriter();
         pw.print(rendered);

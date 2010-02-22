@@ -13,6 +13,7 @@ import com.cve.html.CSS;
 import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UIElement;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
@@ -36,7 +37,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
     }
 
     @Override
-    public HtmlPage render(Model model, ClientInfo client) {
+    public UIElement render(Model model, ClientInfo client) {
         log.args(model,client);
         TablesPage page = (TablesPage) model;
         DBServer     server = page.server;
