@@ -1,5 +1,7 @@
 package com.cve.launch;
 
+import com.cve.ui.swing.SwingRouterFrame;
+import com.cve.util.Check;
 import com.cve.web.core.WebApp;
 import java.net.URI;
 
@@ -9,12 +11,18 @@ import java.net.URI;
  */
 final class Swing {
 
-    static Swing start(WebApp webApp) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    final SwingRouterFrame frame;
+
+    private Swing(SwingRouterFrame frame) {
+        this.frame = Check.notNull(frame);
     }
 
-    void browse(URI of) {
-        throw new UnsupportedOperationException("Not yet implemented");
+    static Swing start(WebApp webApp) {
+        return new Swing(SwingRouterFrame.of());
+    }
+
+    void browse(URI uri) {
+        frame.browse(uri);
     }
 
 }
