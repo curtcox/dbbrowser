@@ -117,8 +117,6 @@
 
 package com.cve.ui.layout;
 
-
-
 import java.util.*;
 import static com.cve.ui.layout.TableLayout.Justification.*;
 
@@ -130,21 +128,20 @@ import static com.cve.ui.layout.TableLayout.Justification.*;
  * @author  Daniel E. Barbalace
  */
 
-public class TableLayoutConstraints {
-
+public final class TableLayoutConstraints {
 
 
 /** Cell in which the upper left corner of the component lays */
-public int col1, row1;
+public final int col1, row1;
 
 /** Cell in which the lower right corner of the component lays */
-public int col2, row2;
+public final int col2, row2;
 
 /** Horizontal justification if component occupies just one cell */
-public TableLayout.Justification hAlign;
+public final TableLayout.Justification hAlign;
 
 /** Vertical justification if component occupies just one cell */
-public TableLayout.Justification vAlign;
+public final TableLayout.Justification vAlign;
 
 
 
@@ -153,9 +150,12 @@ public TableLayout.Justification vAlign;
  * constructor is equivalent to TableLayoutConstraints(0, 0, 0, 0, FULL, FULL).
  */
 
-public TableLayoutConstraints ()
+private TableLayoutConstraints ()
 {
-    col1 = row1 = col1 = col2 = 0;
+    col1 = 0;
+    row1 = 0;
+    col2 = 0;
+    row2 = 0;
     hAlign = vAlign = TableLayout.Justification.FULL;
 }
 
@@ -168,7 +168,7 @@ public TableLayoutConstraints ()
  * @param row      row where the component is placed
  */
 
-public TableLayoutConstraints (int col, int row)
+private TableLayoutConstraints (int col, int row)
 {
 	this(col, row, col, row, FULL, FULL);
 }
@@ -184,7 +184,7 @@ public TableLayoutConstraints (int col, int row)
  * @param row2      row where lower-right corner of the component is placed
  */
 
-public TableLayoutConstraints (int col1, int row1, int col2, int row2)
+private TableLayoutConstraints (int col1, int row1, int col2, int row2)
 {
 	this(col1, row1, col2, row2, FULL, FULL);
 }
@@ -202,7 +202,7 @@ public TableLayoutConstraints (int col1, int row1, int col2, int row2)
  * @param vAlign    vertical justification of a component in a single cell
  */
 
-public TableLayoutConstraints
+private TableLayoutConstraints
     (int col1, int row1, int col2, int row2, TableLayout.Justification hAlign, TableLayout.Justification vAlign)
 {
     this.col1 = col1;
@@ -218,20 +218,39 @@ public TableLayoutConstraints
         (hAlign == TRAILING))
     {
         this.hAlign = hAlign;
-    }
-    else
+    } else {
         this.hAlign = FULL;
+    }
 
 	if ((vAlign == LEFT) ||
 		(vAlign == RIGHT) ||
 		(vAlign == CENTER))
 	{
 		this.vAlign = vAlign;
-	}
-    else
+	} else {
         this.vAlign = FULL;
+    }
 }
 
+public static TableLayoutConstraints of(int col1, int row1) {
+    return new TableLayoutConstraints(col1,row1);
+}
+
+public static TableLayoutConstraints of(int col1, int row1, int col2, int row2) {
+    return new TableLayoutConstraints(col1,row1,col2,row2);
+}
+
+public static TableLayoutConstraints of(int col1, int row1, int col2, int row2, TableLayout.Justification hAlign, TableLayout.Justification vAlign) {
+    return new TableLayoutConstraints(col1,row1,col2,row2,hAlign,vAlign);
+}
+
+public static TableLayoutConstraints of(int col1, int row1, TableLayout.Justification hAlign, TableLayout.Justification vAlign) {
+    return new TableLayoutConstraints(col1,row1,col1,row1,hAlign,vAlign);
+}
+
+public static Object of(String string) {
+    return new TableLayoutConstraints(string);
+}
 
 
 /**
@@ -247,97 +266,57 @@ public TableLayoutConstraints
  *                       spaces instead of commas.
  */
 
-public TableLayoutConstraints (String constraints)
-{
+private TableLayoutConstraints (String constraints) {
     // Use default values for any parameter not specified or specified
     // incorrectly.  The default parameters place the component in a single
     // cell at column 0, row 0.  The component is fully justified.
-    col1 = 0;
-    row1 = 0;
-    col2 = 0;
-    row2 = 0;
-    hAlign = FULL;
-    vAlign = FULL;
+    int c1 = 0;
+    int r1 = 0;
+    int c2 = 0;
+    int r2 = 0;
+    TableLayout.Justification h = TableLayout.Justification.FULL;
+    TableLayout.Justification v = TableLayout.Justification.FULL;
 
     // Parse constraints using spaces or commas
     StringTokenizer st = new StringTokenizer(constraints, ", ");
     int numToken = st.countTokens();
 
-    try
-    {
+    try {
         // Check constraints
         if ((numToken != 2) && (numToken != 4) && (numToken != 6))
             throw new RuntimeException();
 
         // Get the first column (assume component is in only one column)
         String tokenA = st.nextToken();
-        col1 = new Integer(tokenA).intValue();
-        col2 = col1;
+        c1 = new Integer(tokenA).intValue();
+        c2 = c1;
 
         // Get the first row (assume component is in only one row)
         String tokenB = st.nextToken();
-        row1 = new Integer(tokenB).intValue();
-        row2 = row1;
+        r1 = new Integer(tokenB).intValue();
+        r2 = r1;
 
         // Get next two tokens
         tokenA = st.nextToken();
         tokenB = st.nextToken();
 
-        try
-        {
+        try {
             // Attempt to use tokens A and B as col2 and row2
-            col2 = new Integer(tokenA).intValue();
-            row2 = new Integer(tokenB).intValue();
+            c2 = new Integer(tokenA).intValue();
+            r2 = new Integer(tokenB).intValue();
 
             // Get next two tokens
             tokenA = st.nextToken();
             tokenB = st.nextToken();
-        }
-        catch (NumberFormatException error)
-        {
-            col2 = col1;
-            row2 = row1;
+        } catch (NumberFormatException error) {
+            c2 = c1;
+            r2 = r1;
         }
 
-        // Check if token means horizontally justification the component
-        if ((tokenA.equalsIgnoreCase("L")) || (tokenA.equalsIgnoreCase("LEFT")))
-            hAlign = LEFT;
-        else if ((tokenA.equalsIgnoreCase("C")) ||
-                 (tokenA.equalsIgnoreCase("CENTER")))
-            hAlign = CENTER;
-        else if ((tokenA.equalsIgnoreCase("F")) ||
-                 (tokenA.equalsIgnoreCase("FULL")))
-            hAlign = FULL;
-        else if ((tokenA.equalsIgnoreCase("R")) ||
-                 (tokenA.equalsIgnoreCase("RIGHT")))
-            hAlign = RIGHT;
-        else if ((tokenA.equalsIgnoreCase("LD")) ||
-                 (tokenA.equalsIgnoreCase("LEADING")))
-            hAlign = LEADING;
-        else if ((tokenA.equalsIgnoreCase("TL")) ||
-                 (tokenA.equalsIgnoreCase("TRAILING")))
-            hAlign = TRAILING;
-        else
-            throw new RuntimeException();
-
-        // Check if token means horizontally justification the component
-        if ((tokenB.equalsIgnoreCase("T")) || (tokenB.equalsIgnoreCase("TOP")))
-            vAlign = TOP;
-        else if ((tokenB.equalsIgnoreCase("C")) ||
-                 (tokenB.equalsIgnoreCase("CENTER")))
-            vAlign = CENTER;
-        else if ((tokenB.equalsIgnoreCase("F")) ||
-                 (tokenB.equalsIgnoreCase("FULL")))
-            vAlign = FULL;
-        else if ((tokenB.equalsIgnoreCase("B")) ||
-                 (tokenB.equalsIgnoreCase("BOTTOM")))
-            vAlign = BOTTOM;
-        else
-            throw new RuntimeException();
-    }
-    catch (NoSuchElementException error) {}
-    catch (RuntimeException error)
-    {
+        h = TableLayout.Justification.parse(tokenA);
+        v = TableLayout.Justification.parse(tokenB);
+    } catch (NoSuchElementException error) {
+    } catch (RuntimeException error) {
         throw new IllegalArgumentException
             ("Expected constraints in one of the following formats:\n" +
              "  col1, row1\n  col1, row1, col2, row2\n" +
@@ -347,12 +326,21 @@ public TableLayoutConstraints (String constraints)
     }
 
     // Make sure row2 >= row1
-    if (row2 < row1)
-        row2 = row1;
+    if (r2 < r1) {
+        r2 = r1;
+    }
 
     // Make sure col2 >= col1
-    if (col2 < col1)
-        col2 = col1;
+    if (c2 < c1) {
+        c2 = c1;
+    }
+
+    col1 = c1;
+    col2 = c2;
+    row1 = r1;
+    row2 = r2;
+    hAlign = h;
+    vAlign = v;
 }
 
 
@@ -365,29 +353,11 @@ public TableLayoutConstraints (String constraints)
  */
 
     @Override
-public String toString ()
-{
-    StringBuffer buffer = new StringBuffer();
+public String toString () {
 
-    buffer.append (col1);
-    buffer.append (", ");
-    buffer.append (row1);
-    buffer.append (", ");
-
-    buffer.append (col2);
-    buffer.append (", ");
-    buffer.append (row2);
-    buffer.append (", ");
-
-    final String h[] = {"left", "center", "full", "right", "leading",
-                        "trailing"};
-    final String v[] = {"top", "center", "full", "bottom"};
-
-    buffer.append (h[hAlign.value]);
-    buffer.append (", ");
-    buffer.append (v[vAlign.value]);
-
-    return buffer.toString();
+    return col1 + ", " + row1 + ", " + col2 + ", " + row2 + ", " +
+           hAlign.toString().toLowerCase()+ ", " +
+           vAlign.toString().toLowerCase();
 }
 
 

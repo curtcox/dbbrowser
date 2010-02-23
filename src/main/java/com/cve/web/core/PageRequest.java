@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import java.net.URI;
 import java.util.Map;
 import javax.servlet.http.Cookie;
 
@@ -131,6 +132,15 @@ public final class PageRequest {
     }
 
     public PageRequest withURI(String requestURI) {
+        return new PageRequest(method,requestURI,queryString,parameters,cookies);
+    }
+
+    public static PageRequest of(URI uri) {
+        String requestURI = uri.toString();
+        Method method      = Method.GET;
+        String queryString = "";
+        ImmutableMap<String,String> parameters = ImmutableMap.of();
+        ImmutableList<Cookie>          cookies = ImmutableList.of();
         return new PageRequest(method,requestURI,queryString,parameters,cookies);
     }
 

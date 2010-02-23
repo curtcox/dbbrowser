@@ -1,6 +1,7 @@
 package com.cve.ui.swing;
 
 import com.cve.ui.layout.TableLayout;
+import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.ui.layout.TableLayoutConstants;
 import java.awt.*;
 import javax.swing.JButton;
@@ -49,13 +50,13 @@ To justify a component, simply specify the first letter of the desired justifica
 e.g., 'l' for left.
 */
         // Add buttons
-        frame.add (new JButton("cell 1,1 to cell 5,1"),      "1, 1, 5, 1");
-        frame.add (new JButton("cell 1,5 to cell 5,5"),      "1, 5, 5, 5");
-        frame.add (new JButton("Cell 1,3"),                  "1, 3      ");
-        frame.add (new JButton("Cell 5,3"),                  "5, 3      ");
-        frame.add (new JButton("cell 3,3 center, center"),   "3, 3, c, c");
-        frame.add (new JButton("cell 3,3 to cell 3,5"),      "3, 3, 3, 5");
-
+        TableLayout.Justification C = TableLayout.Justification.CENTER;
+        frame.add (new JButton("cell 1,1 to cell 5,1"),      TableLayoutConstraints.of(1, 1, 5, 1));
+        frame.add (new JButton("cell 1,5 to cell 5,5"),      TableLayoutConstraints.of(1, 5, 5, 5));
+        frame.add (new JButton("Cell 1,3"),                  TableLayoutConstraints.of(1, 3));
+        frame.add (new JButton("Cell 5,3"),                  TableLayoutConstraints.of(5, 3));
+        frame.add (new JButton("cell 3,3 center, center"),   TableLayoutConstraints.of(3, 3, C, C));
+        frame.add (new JButton("cell 3,3 to cell 3,5"),      TableLayoutConstraints.of(3, 3, 3, 5));
         // Allow user to close the window to terminate the program
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

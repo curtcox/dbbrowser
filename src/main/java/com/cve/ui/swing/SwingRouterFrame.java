@@ -1,5 +1,8 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.layout.TableLayout;
+import com.cve.ui.layout.TableLayoutConstants;
+import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.util.Check;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
@@ -17,6 +20,7 @@ import com.cve.web.core.renderers.CompositeModelHtmlRenderer;
 import com.cve.web.core.renderers.GlobalHtmlRenderers;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
+import com.cve.web.management.SingleObjectBrowserHandler;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -39,6 +43,7 @@ public final class SwingRouterFrame extends JFrame {
     final JButton    reload  = new JButton("@");
     final JComboBox  address = new JComboBox();
     final JPanel        page = new JPanel();
+
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
 
@@ -69,8 +74,7 @@ public final class SwingRouterFrame extends JFrame {
         }
     }
 
-    public void browse(URI uri) {
-        PageRequest   request = PageRequest.NULL;
+    public void browse(PageRequest request) {
         PageResponse response = handler.produce(request);
         if (response.redirect!=null) {
             browse(response.redirect);
@@ -79,14 +83,21 @@ public final class SwingRouterFrame extends JFrame {
         Model model = response.model;
         ClientInfo info = ClientInfo.of();
         renderer.render(model, info);
+        setVisible(true);
+    }
+
+    public void browse(URI uri) {
+        browse(PageRequest.of(uri));
     }
 
     public static void main(String[] args) {
+        RequestHandler management = ManagementHandler.of();
         RequestHandler handler = ErrorReportHandler.of(
             DebugHandler.of(
                 CompositeRequestHandler.of(
                     CoreServerHandler.of(),
-                    ManagementHandler.of()
+                    management,
+                    SingleObjectBrowserHandler.of(management)
                 )
             )
         );
@@ -94,14 +105,32 @@ public final class SwingRouterFrame extends JFrame {
             ManagementModelHtmlRenderers.of(),
             GlobalHtmlRenderers.of()
         );
-        of(WebApp.of(handler,renderer)).browse(URIs.of("/"));
+        try {
+            of(WebApp.of(handler,renderer)).browse(URIs.of("/"));
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(-1);
+        }
     }
 
     private void layoutComponents() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        setBounds (100, 100, 300, 300);
+
+        // Create a TableLayout for the frame
+        double border = 10;
+        double FILL = TableLayoutConstants.FILL;
+        double[] cols = {border, 20, 20, FILL, 20, border};
+        double[] rows = {border, 20, FILL, border};
+
+        setLayout(new TableLayout(cols,rows));
+
+        add(forward, TableLayoutConstraints.of(1, 1));
+        add(back,    TableLayoutConstraints.of(2, 1));
+        add(address, TableLayoutConstraints.of(3, 1));
+        add(reload,  TableLayoutConstraints.of(4, 1));
+        add(page,    TableLayoutConstraints.of(1, 2));
     }
 
     private void addListeners() {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

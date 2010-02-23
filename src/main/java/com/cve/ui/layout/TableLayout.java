@@ -466,6 +466,7 @@ public TableLayout (double [] col, double [] row) {
 }
 
 public enum Justification {
+
     /** Indicates that the component is left justified in its cell */
     LEFT(0),
 
@@ -506,6 +507,19 @@ public enum Justification {
 
     Justification(int value) {
         this.value = value;
+    }
+
+    public static Justification parse(String s) {
+        String t = s.toUpperCase();
+        if ((t.equals("L"))  || (t.equals("LEFT")))     return LEFT;
+        if ((t.equals("C"))  || (t.equals("CENTER")))   return CENTER;
+        if ((t.equals("F"))  || (t.equals("FULL")))     return FULL;
+        if ((t.equals("R"))  || (t.equals("RIGHT")))    return RIGHT;
+        if ((t.equals("LD")) || (t.equals("LEADING")))  return LEADING;
+        if ((t.equals("TL")) || (t.equals("TRAILING"))) return TRAILING;
+        if ((t.equals("T"))  || (t.equals("TOP")))      return TOP;
+        if ((t.equals("B"))  || (t.equals("BOTTOM")))   return BOTTOM;
+        throw new RuntimeException(s);
     }
 }
 
@@ -586,7 +600,7 @@ public TableLayoutConstraints getConstraints (Component component)
         Entry entry = (Entry) iterator.next();
 
         if (entry.component == component)
-            return new TableLayoutConstraints
+            return TableLayoutConstraints.of
                 (entry.cr1[C], entry.cr1[R], entry.cr2[C], entry.cr2[R],
                  entry.alignment[C], entry.alignment[R]);
     }
@@ -2173,7 +2187,7 @@ public void addLayoutComponent (Component component, Object constraint)
     if (constraint instanceof String)
     {
         // Create an entry to associate component with its constraints
-        constraint = new TableLayoutConstraints((String) constraint);
+        constraint = TableLayoutConstraints.of((String) constraint);
 
         // Add component and constraints to the list
         list.add(new Entry(component, (TableLayoutConstraints) constraint));
@@ -2345,7 +2359,7 @@ public void invalidateLayout (Container target)
         @Override
         public String toString ()
         {
-            TableLayoutConstraints c = new TableLayoutConstraints
+            TableLayoutConstraints c = TableLayoutConstraints.of
                 (cr1[C], cr1[R], cr2[C], cr2[R], alignment[C], alignment[R]);
 
             return "(" + c + ") " + component;
