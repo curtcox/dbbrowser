@@ -4,6 +4,6 @@ package com.cve.ui;
  *
  * @author curt
  */
-public interface UITableCell {
+public interface UITableCell extends UIElement {
 
 }

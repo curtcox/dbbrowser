@@ -9,7 +9,7 @@ import com.cve.util.Check;
  */
 public final class UILabel implements UIElement {
 
-    private final String value;
+    public final String value;
 
     private UILabel(String value) {
         this.value = Check.notNull(value);

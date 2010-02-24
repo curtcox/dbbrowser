@@ -16,10 +16,11 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class UITableRow {
 
-    private final HTMLTags tags;
-    private final ImmutableList<UITableCell> details;
-    private final CSS css;
+    public final ImmutableList<UITableCell> details;
+    public final CSS css;
+
     private final Log log = Logs.of();
+    private final HTMLTags tags;
 
     private UITableRow(List<UITableCell> details, CSS css) {
         this.details = ImmutableList.copyOf(details);

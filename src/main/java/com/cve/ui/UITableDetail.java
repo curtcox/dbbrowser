@@ -17,15 +17,11 @@ public final class UITableDetail implements UITableCell {
     /**
      * Either value or element is not null.
      */
-    private final UIElement element;
+    public final UIElement element;
 
-    /**
-     * Either value or element is not null.
-     */
-    private final String value;
-    private final CSS css;
-    private final int width;
-    private final int height;
+    public final CSS css;
+    public final int width;
+    public final int height;
 
     private final HTMLTags tags;
 
@@ -34,8 +30,7 @@ public final class UITableDetail implements UITableCell {
     private static final int UNSET = -1;
 
     private UITableDetail(String value, int width, CSS css, int height) {
-        this.value = notNull(value);
-        this.element = null;
+        this.element = notNull(UILabel.of(value));
         this.css   = css;
         this.width = width;
         this.height = height;
@@ -45,7 +40,6 @@ public final class UITableDetail implements UITableCell {
 
     private UITableDetail(UIElement element, int width, CSS css, int height) {
         this.element = notNull(element);
-        this.value = null;
         this.css   = css;
         this.width = width;
         this.height = height;
@@ -75,7 +69,7 @@ public final class UITableDetail implements UITableCell {
 
     @Override
     public String toString() {
-        String body = value == null ? element.toString() : value;
+        String body = element.toString();
         if (height!=UNSET) {
             return tags.td(body,css,width,height);
         }

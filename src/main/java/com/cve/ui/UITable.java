@@ -20,17 +20,12 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class UITable implements UIElement {
 
-    private final Log log = Logs.of();
-
-    private final HTMLTags tags;
-
-    private final ImmutableList<UITableRow> rows;
+    public final ImmutableList<UITableRow> rows;
 
     private UITable(List<UITableRow> rows) {
         ImmutableList<UITableRow> copy = ImmutableList.copyOf(Check.notNull(rows));
         this.rows = copy;
         
-        tags = HTMLTags.of();
     }
 
     public static UITable of() {
@@ -59,6 +54,7 @@ public final class UITable implements UIElement {
         for (UITableRow row : rows) {
             out.append(row.toString());
         }
+        HTMLTags tags = HTMLTags.of();
         return tags.borderTable(out.toString());
     }
 }

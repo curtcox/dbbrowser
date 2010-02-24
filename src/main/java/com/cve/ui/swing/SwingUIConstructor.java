@@ -1,14 +1,26 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
-import javax.swing.JButton;
+import com.cve.ui.UILabel;
+import com.cve.ui.UIPage;
+import com.cve.ui.UITable;
+import com.cve.ui.UITableBuilder;
+import com.cve.ui.UITableCell;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableHeader;
+import com.cve.ui.UITableRow;
+import java.awt.EventQueue;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
- *
+ * Constructs a Swing UI from toolkit-independent UIElements.
  * @author curt
  */
-final class SwingUIConstructor {
+final class SwingUIConstructor implements UIConstructor {
 
     private SwingUIConstructor() {}
 
@@ -16,7 +28,68 @@ final class SwingUIConstructor {
         return new SwingUIConstructor();
     }
 
-    JComponent construct(UIElement e) {
-        return new JButton(e.toString());
+    @Override
+    public JComponent construct(UIElement e) {
+        if (e instanceof UILabel)       { return label((UILabel) e);  }
+        if (e instanceof UIPage)        { return page((UIPage) e);   }
+        if (e instanceof UITable)       { return table((UITable) e);   }
+        if (e instanceof UITableDetail) { return tableDetail((UITableDetail) e);   }
+        if (e instanceof UITableHeader) { return tableHeader((UITableHeader) e);   }
+        String message = "Unsupported element " + e.getClass();
+        throw new IllegalArgumentException(message);
     }
+
+    @Override
+    public JLabel label(UILabel label) {
+        return new JLabel(label.value);
+    }
+
+    @Override
+    public JPanel page(UIPage page) {
+        JPanel panel = new JPanel();
+        for (UIElement element : page.items) {
+            panel.add(construct(element));
+        }
+        return panel;
+    }
+
+    private JComponent tableDetail(UITableDetail tableDetail) {
+        return construct(tableDetail.element);
+    }
+
+    private JComponent tableHeader(UITableHeader tableHeader) {
+        return construct(tableHeader.element);
+    }
+
+    @Override
+    public SwingUITable table(UITable table) {
+        return SwingUITable.of(table,this);
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override public void run() {
+                showAllElements();
+            }
+        });
+    }
+
+    static void showAllElements() {
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel();
+        frame.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        UITableBuilder table = UITableBuilder.of();
+        table.addRow(UITableHeader.of("h1"),UITableHeader.of("h2"));
+        table.addRow(UITableDetail.of("d1"),UITableDetail.of("d2"));
+        UIElement ui = UIPage.of(
+            UILabel.of("Label"),
+            table.build()
+        );
+        panel.add(SwingUIConstructor.of().construct(ui));
+        frame.setVisible(true);
+        frame.setSize(800,800);
+    }
+
+
 }

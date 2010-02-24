@@ -14,18 +14,11 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class UITableHeader implements UITableCell {
 
-    /**
-     * Either value or element is not null.
-     */
-    private final UIElement element;
+    public final UIElement element;
 
-    /**
-     * Either value or element is not null.
-     */
-    private final String value;
-    private final CSS css;
-    private final int width;
-    private final int height;
+    public final CSS css;
+    public final int width;
+    public final int height;
 
     private final HTMLTags tags;
 
@@ -34,8 +27,7 @@ public final class UITableHeader implements UITableCell {
     private static final int UNSET = -1;
 
     private UITableHeader(String value, int width, CSS css, int height) {
-        this.value = notNull(value);
-        this.element = null;
+        this.element = UILabel.of(notNull(value));
         this.css   = css;
         this.width = width;
         this.height = height;
@@ -45,7 +37,6 @@ public final class UITableHeader implements UITableCell {
 
     private UITableHeader(UIElement element, int width, CSS css, int height) {
         this.element = notNull(element);
-        this.value = null;
         this.css   = css;
         this.width = width;
         this.height = height;
@@ -75,7 +66,7 @@ public final class UITableHeader implements UITableCell {
 
     @Override
     public String toString() {
-        String body = value == null ? element.toString() : value;
+        String body = element.toString();
         if (height!=UNSET) {
             return tags.th(body,css,width,height);
         }

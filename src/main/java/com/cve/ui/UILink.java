@@ -4,7 +4,6 @@ import com.cve.html.Label;
 import com.cve.html.Link;
 import static com.cve.util.Check.notNull;
 import com.cve.web.management.LogCodec;
-import com.cve.web.management.ObjectLink;
 import com.cve.web.management.ObjectRegistry;
 import java.net.URI;
 
@@ -15,13 +14,13 @@ import java.net.URI;
  */
 public final class UILink implements UIElement {
 
-    final URI target;
+    public final URI target;
 
-    final String text;
+    public final String text;
 
-    final URI image;
+    public final URI image;
 
-    final String alt;
+    public final String alt;
 
     /**
      * Use a factory.
