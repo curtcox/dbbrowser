@@ -28,6 +28,10 @@ public final class UITableBuilder {
         rows.add(row);
     }
 
+    public void addRow(UIElement... elements) {
+        rows.add(UITableRow.of(elements));
+    }
+
     public UITable build() {
         return UITable.of(rows);
     }

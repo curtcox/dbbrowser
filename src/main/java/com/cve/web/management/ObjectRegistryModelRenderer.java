@@ -11,7 +11,6 @@ import com.cve.ui.UITableRow;
 import com.cve.ui.UISeries;
 import com.cve.ui.UITableBuilder;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.google.common.collect.ImmutableMultimap;
@@ -37,16 +36,16 @@ final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {
     @Override
     public UIElement render(Model model, ClientInfo client) {
         ObjectRegistryModel registry = (ObjectRegistryModel) model;
-        return HtmlPage.guts(render(registry));
+        return render(registry);
     }
 
-    private String render(ObjectRegistryModel page) {
+    private UIElement render(ObjectRegistryModel page) {
         UITableBuilder ui = UITableBuilder.of();
         ImmutableMultimap<Class,Object> objects = page.objects;
         for (Class c : objects.keySet()) {
             ui.add(row(objects,c));
         }
-        return ui.build().toString();
+        return ui.build();
     }
 
     UITableRow row(ImmutableMultimap<Class,Object> objects, Class c) {

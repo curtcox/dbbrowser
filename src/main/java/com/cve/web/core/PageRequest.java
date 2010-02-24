@@ -2,6 +2,7 @@
 package com.cve.web.core;
 
 import com.cve.util.Check;
+import com.cve.util.URIs;
 import javax.annotation.concurrent.Immutable;
 import javax.servlet.http.HttpServletRequest;
 import com.google.common.collect.ImmutableList;
@@ -42,6 +43,11 @@ public final class PageRequest {
     public final String queryString;
 
     /**
+     * The requestURI plus the queryString, if there is one. 
+     */
+    public final URI fullURI;
+
+    /**
      * Parameters either parsed from the query string or from form post
      * contents.
      * Often empty, but never null.
@@ -72,12 +78,13 @@ public final class PageRequest {
      * Just for null.
      */
     private PageRequest() {
-        this.method      = Method.GET;
-        this.requestURI  = "";
-        this.queryString = "";
-        this.parameters  = ImmutableMap.of();
-        this.cookies     = ImmutableList.of();
+        method      = Method.GET;
+        requestURI  = "";
+        queryString = "";
+        parameters  = ImmutableMap.of();
+        cookies     = ImmutableList.of();
         id = PageRequestProcessor.of();
+        fullURI = URIs.of("");
     }
 
     /**
@@ -93,6 +100,9 @@ public final class PageRequest {
         this.parameters  = Check.notNull(parameters);
         this.cookies     = Check.notNull(cookies);
         id = PageRequestProcessor.of();
+        fullURI = (queryString.isEmpty())
+            ? URIs.of(requestURI)
+            : URIs.of(requestURI + "?" + queryString);
     }
 
     public static PageRequest path(String pathInfo)

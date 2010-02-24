@@ -74,8 +74,8 @@ final class StagedModelHtmlRenderer implements ModelHtmlRenderer {
                 throw new IllegalArgumentException(message);
             }
             rendered = renderer.render(model,client);
-            if (rendered instanceof String) {
-                return HtmlPage.guts((String) rendered);
+            if (rendered instanceof UIElement) {
+                return ((UIElement) rendered);
             }
             toRender = rendered;
         }

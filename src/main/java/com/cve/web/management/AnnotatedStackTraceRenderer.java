@@ -1,6 +1,5 @@
 package com.cve.web.management;
 
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ClientInfo;
 import com.cve.web.core.ModelHtmlRenderer;
@@ -14,10 +13,20 @@ import com.cve.log.Logs;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.AnnotatedStackTraceElement;
+import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
+import com.cve.ui.UILabel;
+import com.cve.ui.UILink;
+import com.cve.ui.UITableBuilder;
+import com.cve.ui.UITableCell;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableHeader;
+import com.cve.ui.UITableRow;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import java.net.URI;
+import java.util.List;
 
 /**
  * For rendering throwables to HTML.
@@ -30,12 +39,10 @@ public final class AnnotatedStackTraceRenderer
 
     final HTMLTags tags;
 
-    String tr(String s) { return tags.tr(s); }
-    String th(String s) { return tags.th(s); }
-    String td(String s) { return tags.td(s); }
-    String body(String s) { return tags.body(s); }
-    String html(String s) { return tags.html(s); }
-    String borderTable(String s) { return tags.borderTable(s); }
+    UITableRow    tr(UITableCell... cells)  { return UITableRow.of(cells); }
+    UITableHeader th(String s)  { return UITableHeader.of(s); }
+    UITableDetail td(String s)  { return UITableDetail.of(s); }
+    UITableDetail td(UIElement e)  { return UITableDetail.of(e); }
 
     private AnnotatedStackTraceRenderer() {
         
@@ -50,16 +57,16 @@ public final class AnnotatedStackTraceRenderer
     public UIElement render(Model model, ClientInfo client) {
         AnnotatedStackTraceModel objectModel = (AnnotatedStackTraceModel) model;
         AnnotatedStackTrace t = objectModel.trace;
-        return HtmlPage.guts(render(t));
+        return render(t);
     }
 
-    String render(AnnotatedStackTrace trace) {
-        StringBuilder out = new StringBuilder();
+    UIElement render(AnnotatedStackTrace trace) {
+        UITableBuilder out = UITableBuilder.of();
         while (trace!=null) {
             Throwable throwable = trace.throwable;
-            out.append("<b>" + throwable.getClass().getName() + "</b> " + throwable.getMessage());
+            out.add(tr(td("<b>" + throwable.getClass().getName() + "</b> " + throwable.getMessage())));
             StringBuilder table = new StringBuilder();
-            String header = tr(th("class") + th("file") + th("method") + th("arguments") + th("line") + th("source"));
+            UITableRow header = tr(th("class"),th("file"),th("method"),th("arguments"),th("line"),th("source"));
             table.append(header);
 
             ImmutableList<AnnotatedStackTraceElement> elements = trace.elements;
@@ -69,20 +76,19 @@ public final class AnnotatedStackTraceRenderer
                 Object[] args = trace.args.get(next);
                 table.append(row(e,args));
             }
-            out.append(borderTable(table.toString()));
             trace = trace.cause;
             if (trace!=null) {
-                out.append("Caused by");
+                out.add(tr(td("Caused by")));
             }
             table.append(header);
         }
-        return html(body(out.toString()));
+        return out.build();
     }
 
     /**
      * Return the HTML for a stack trace element.
      */
-    String row(AnnotatedStackTraceElement e, Object[] args) {
+    UITableRow row(AnnotatedStackTraceElement e, Object[] args) {
         if (args==null) {
             args = new Object[0];
         }
@@ -90,24 +96,24 @@ public final class AnnotatedStackTraceRenderer
         String className = c.clazz.getName();
         String  fileName = c.file.toString();
         int line = e.line;
-        return tr(
-            td(className) +
-            td(linkToSource(className,fileName).toString()) +
-            td(e.executable.getName()) +
-            td(argsCell(args)) +
-            td("" + line) +
+        return UITableRow.of(
+            td(className),
+            td(linkToSource(className,fileName).toString()),
+            td(e.executable.getName()),
+            td(argsCell(args)),
+            td("" + line),
             td(e.source)
         );
     }
 
-    String argsCell(Object[] args) {
-        StringBuilder out = new StringBuilder();
+    UIElement argsCell(Object[] args) {
+        List<UIElement> out = Lists.newArrayList();
         for (Object arg : args) {
             String label  = "" + arg;
             Object target = arg;
-            out.append(ObjectLink.of().to(label,target) + " ");
+            out.add(UILink.to(label,target));
         }
-        return out.toString();
+        return UIComposite.of(out);
     }
 
     Link linkToSource(String className, String fileName) {

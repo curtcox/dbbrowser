@@ -1,12 +1,10 @@
 package com.cve.web.management;
 
 import com.cve.web.management.browsers.ObjectBrowser;
-import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import javax.annotation.concurrent.Immutable;
@@ -33,11 +31,10 @@ final class ObjectModelRenderer implements ModelHtmlRenderer {
     public UIElement render(Model model, ClientInfo client) {
         ObjectModel objectModel = (ObjectModel) model;
         Object o = objectModel.object;
-        return HtmlPage.guts(render(o));
+        return render(o);
     }
 
-    String render(Object o) {
-        HTMLTags tags = HTMLTags.of();
-        return tags.html(tags.body(ObjectBrowser.of(o).toHTML()));
+    UIElement render(Object o) {
+        return ObjectBrowser.of(o).toHTML();
     }
 }

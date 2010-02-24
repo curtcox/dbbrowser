@@ -115,9 +115,8 @@ public abstract class AbstractPage implements Page {
         if (renderer!=null) {
             return renderer.render(model, client);
         }
-        HTMLTags tags = HTMLTags.of();
         ObjectBrowser browser = ObjectBrowser.of(model);
-        return HtmlPage.guts(tags.html(tags.body(browser.toHTML())));
+        return browser.toHTML();
     }
 
     void check(Model model) {

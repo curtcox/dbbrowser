@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.UIElement;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstants;
 import com.cve.ui.layout.TableLayoutConstraints;
@@ -46,6 +47,7 @@ public final class SwingRouterFrame extends JFrame {
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
+    final SwingUIConstructor constructor = SwingUIConstructor.of();
 
     private SwingRouterFrame(WebApp webApp) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -82,8 +84,18 @@ public final class SwingRouterFrame extends JFrame {
         }
         Model model = response.model;
         ClientInfo info = ClientInfo.of();
-        renderer.render(model, info);
+        setPage(renderer.render(model, info));
+        setAddress(request.fullURI);
         setVisible(true);
+    }
+
+    void setPage(UIElement e) {
+        page.removeAll();
+        page.add(constructor.construct(e));
+    }
+    
+    void setAddress(URI uri) {
+
     }
 
     public void browse(URI uri) {
@@ -114,21 +126,28 @@ public final class SwingRouterFrame extends JFrame {
     }
 
     private void layoutComponents() {
-        setBounds (100, 100, 300, 300);
+        int x = 100;
+        int y = 100;
+        int w = 800;
+        int h = 800;
+        setBounds (x, y, w, h);
 
         // Create a TableLayout for the frame
         double border = 10;
         double FILL = TableLayoutConstants.FILL;
-        double[] cols = {border, 20, 20, FILL, 20, border};
-        double[] rows = {border, 20, FILL, border};
+        int W = 50;
+        int H = 50;
+        double[] cols = {border, W, W, FILL, W, border};
+        double[] rows = {border, H, FILL, border};
 
         setLayout(new TableLayout(cols,rows));
-
-        add(forward, TableLayoutConstraints.of(1, 1));
-        add(back,    TableLayoutConstraints.of(2, 1));
-        add(address, TableLayoutConstraints.of(3, 1));
-        add(reload,  TableLayoutConstraints.of(4, 1));
-        add(page,    TableLayoutConstraints.of(1, 2));
+        int NAV = 1;
+        int PAGE = 2;
+        add(forward, TableLayoutConstraints.of(1, NAV));
+        add(back,    TableLayoutConstraints.of(2, NAV));
+        add(address, TableLayoutConstraints.of(3, NAV));
+        add(reload,  TableLayoutConstraints.of(4, NAV));
+        add(page,    TableLayoutConstraints.of(1, PAGE, 4, PAGE));
     }
 
     private void addListeners() {

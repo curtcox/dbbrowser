@@ -3,8 +3,8 @@ package com.cve.web.core.renderers;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.ui.HTMLTags;
 import com.cve.ui.UIElement;
+import com.cve.ui.UILabel;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.models.TextFileModel;
 
@@ -34,7 +34,7 @@ final class TextFileModelHtmlRenderer implements ModelHtmlRenderer {
             out.append(line(num) + " " + line + "\r");
             num++;
         }
-        return HtmlPage.guts(tags.pre(out.toString()));
+        return UILabel.of(tags.pre(out.toString()));
     }
 
     String line(int i) {

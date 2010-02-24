@@ -17,8 +17,11 @@ import java.net.URI;
 @Immutable
 public final class HtmlPage {
 
+    public static UIElement guts(UIElement... elements) {
+        throw new UnsupportedOperationException();
+    }
 
-    public static UIElement guts(String guts) {
+    private static UIElement guts(String guts) {
         throw new UnsupportedOperationException();
     }
 

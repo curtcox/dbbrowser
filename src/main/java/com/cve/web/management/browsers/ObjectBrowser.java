@@ -11,6 +11,12 @@ import com.cve.lang.Strings;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
+import com.cve.ui.UITable;
+import com.cve.ui.UITableBuilder;
+import com.cve.ui.UITableCell;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableHeader;
+import com.cve.ui.UITableRow;
 import com.cve.web.management.ObjectLink;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -71,28 +77,27 @@ public static ObjectBrowser of(Object o) {
  * Return the HTML for our target object.
  * 
  */
-public String toHTML() {
-    if (target==null) {
-        return "null";
-    }
+public UIElement toHTML() {
+    UILabel toString = (target==null)
+        ? UILabel.of("null")
+        : UILabel.of(target.toString());
+    
 
-    return
-        checkSpecialHandling(target) +
-        h1(link.to(target)) +
-        h1("toString")     + target +
-        h1("Fields")       + showFields() +
-        h1("Constructors") + showConstructors() +
-        h1("Methods")      + showMethods()
-    ;
+    return UIComposite.of(
+        checkSpecialHandling(target),
+        h1(link.to(target)),
+        h1("toString")     , toString,
+        h1("Fields")       , showFields() ,
+        h1("Constructors") , showConstructors() ,
+        h1("Methods")      , showMethods()
+    );
 
 } // show Object
 
-String h1(String s) { return tags.h1(s); }
-String h2(String s) { return tags.h2(s); }
-String tr(String s) { return tags.tr(s); }
-String td(String s) { return tags.td(s); }
-String th(String s) { return tags.th(s); }
-String borderTable(String s) { return tags.borderTable(s); }
+UILabel h1(String s) { return UILabel.of(s); }
+UILabel h2(String s) { return UILabel.of(s); }
+UITableDetail td(String s) { return UITableDetail.of(s); }
+UITableHeader th(String s) { return UITableHeader.of(s); }
 
 /**
  * Return a new browser for this object using public visibility.
@@ -112,7 +117,7 @@ static ObjectBrowser newPrivate(Object o) {
  * Show the given object in a new frame using public visibility.
  * @param o the object to show
  */
-static String showPublic(Object o) {
+static UIElement showPublic(Object o) {
     return newPublic(o).toHTML();
 }
 
@@ -120,7 +125,7 @@ static String showPublic(Object o) {
  * Show the given object in a new frame using private visibility.
  * @param o the object to show
  */
-public static String showPrivate(Object o) {
+public static UIElement showPrivate(Object o) {
     return newPrivate(o).toHTML();
 }
 
@@ -141,26 +146,26 @@ private UIElement checkSpecialHandling(Object o) {
 /**
  * Show all of the fields for this link.
  */
-String showFields() {
+UIElement showFields() {
     Object o = target;
     Class  c = o.getClass();
     Field[] fields = c.getDeclaredFields();
-    StringBuffer out = new StringBuffer();
-    String headerRow = tr(th("Modifiers") + th("Type") + th("Name") + th("Value"));
-    out.append(headerRow);
+    UITableBuilder out = UITableBuilder.of();
+    UITableRow header = UITableRow.of(th("Modifiers"),th("Type"),th("Name"),th("Value"));
+    out.add(header);
     for (Field f : fields) {
-        out.append(showField(f,o));
+        out.add(showField(f,o));
     }
-    out.append(headerRow);
-    return borderTable(out.toString());
+    out.add(header);
+    return out.build();
 }
 
 /**
  * Show a single field.
  */
-private String showField(Field f, Object o) {
+private UITableRow showField(Field f, Object o) {
     if (!mask.passes(f)) {
-        return "";
+        return null;
     }
     Object value = null;
     String valueString;
@@ -174,23 +179,23 @@ private String showField(Field f, Object o) {
     } catch (NullPointerException e) {
         valueString = " null pointer ";
     }
-    StringBuffer row = new StringBuffer();
-    row.append(td(modifiers(f.getModifiers())));
-    row.append(td(typeName(c)));
+    List<UITableCell> row = Lists.newArrayList();
+    row.add(td(modifiers(f.getModifiers())));
+    row.add(td(typeName(c)));
     String fname = f.getName();
     if (value==null) {
-        row.append(td(fname));
+        row.add(td(fname));
     } else {
-        row.append(td(link.to(fname,value)));
+        row.add(td(link.to(fname,value)));
     }
-    row.append(td(valueString) + "\n");
-    return tr(row.toString());
+    row.add(td(valueString));
+    return UITableRow.of(row);
 }
 
 /**
  * Return HTML describing all of the constructors for the class of our target.
  */
-String showConstructors() {
+UIElement showConstructors() {
     Class c = target.getClass();
     List<ExecutableElement> list = Lists.newArrayList();
     for (Constructor constructor : c.getConstructors()) {
@@ -204,7 +209,7 @@ String showConstructors() {
 /**
  * Return HTML describing all of the methods of our target.
  */
-String showMethods() {
+UIElement showMethods() {
     Class c = target.getClass();
     List<ExecutableElement> list = Lists.newArrayList();
     for (Method method : c.getMethods()) {
@@ -218,30 +223,32 @@ String showMethods() {
 /**
  * Return HTML describing all of the executables given.
  */
-String showExecutables(Collection<ExecutableElement> executables) {
-    StringBuffer out = new StringBuffer();
+UIElement showExecutables(Collection<ExecutableElement> executables) {
+    List<UIElement> out = Lists.newArrayList();
     Multimap<Class,ExecutableElement> grouped = HashMultimap.create();
     for (ExecutableElement executable : executables) {
         Class clazz = executable.getDeclaringClass();
         grouped.put(clazz,executable);
     }
     for (Class clazz : grouped.keySet()) {
-        out.append(h2(link.to(clazz.getName(),clazz)));
-        out.append(showExecutablesFromOneClass(grouped.get(clazz)));
+        out.add(h2(link.to(clazz.getName(),clazz)));
+        out.add(showExecutablesFromOneClass(grouped.get(clazz)));
     }
-    return out.toString();
+    return UIComposite.of(out);
 }
 
 
-String showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
-    StringBuffer out = new StringBuffer();
-    String headerRow = tr(th("Modifiers") + th("Return Type") + th("Return Value") + th("Name")+ th("Arguments")+ th("Throws"));
-    out.append(headerRow);
+UITable showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
+    UITableBuilder out = UITableBuilder.of();
+    UITableRow headerRow = UITableRow.of(
+        th("Modifiers"),th("Return Type"),th("Return Value"),th("Name"),th("Arguments"),th("Throws")
+    );
+    out.add(headerRow);
     for (ExecutableElement executable : executables) {
-        out.append(showExecutable(executable));
+        out.add(showExecutable(executable));
     }
-    out.append(headerRow);
-    return borderTable(out.toString());
+    out.add(headerRow);
+    return out.build();
 }
 
 /**
@@ -281,18 +288,18 @@ String returnValue(ExecutableElement executable){
  * Print the modifiers, return type, name, parameter types, and exception
  *  type of an executable (method or constructor).
  */
-String showExecutable(ExecutableElement method){
+UITableRow showExecutable(ExecutableElement method){
 
     final ImmutableList<Class> parameters = method.parameterTypes;
     final ImmutableList<Class> exceptions = method.exceptionTypes;
 
     return
-         tr(
-             td( modifiers(method.getModifiers())     ) +
-             td( returnType(method)                   ) +
-             td( returnValue(method)                  ) +
-             td( method.name                          ) +
-             td( "(" + csv(classes(parameters)) + ")" ) +
+         UITableRow.of(
+             td( modifiers(method.getModifiers())     ),
+             td( returnType(method)                   ),
+             td( returnValue(method)                  ),
+             td( method.name                          ),
+             td( "(" + csv(classes(parameters)) + ")" ),
              td( csv(classes(exceptions))             )
          );
 }  // print method
