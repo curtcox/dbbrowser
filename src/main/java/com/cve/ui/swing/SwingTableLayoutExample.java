@@ -7,6 +7,9 @@ import java.awt.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
+/**
+ * This is an example of TableLayout in action for Swing.
+ */
 final class SwingTableLayoutExample {
 
     public static void main (String args[]) {
@@ -28,7 +31,7 @@ final class SwingTableLayoutExample {
         double[] cols = {border, 0.10, 20, TableLayoutConstants.FILL, 20, 0.20, border};
         double[] rows = {border, 0.20, 20, TableLayoutConstants.FILL, 20, 0.20, border};
 
-        frame.setLayout (new TableLayout(cols,rows));
+        frame.setLayout (TableLayout.of(cols,rows));
 
 /*
 Justification

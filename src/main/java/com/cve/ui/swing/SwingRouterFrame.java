@@ -140,7 +140,7 @@ public final class SwingRouterFrame extends JFrame {
         double[] cols = {border, W, W, FILL, W, border};
         double[] rows = {border, H, FILL, border};
 
-        setLayout(new TableLayout(cols,rows));
+        setLayout(TableLayout.of(cols,rows));
         int NAV = 1;
         int PAGE = 2;
         add(forward, TableLayoutConstraints.of(1, NAV));

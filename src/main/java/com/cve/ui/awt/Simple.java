@@ -18,7 +18,7 @@ public class Simple {
             {{border, 0.10, 20, TableLayoutConstants.FILL, 20, 0.20, border},  // Columns
              {border, 0.20, 20, TableLayoutConstants.FILL, 20, 0.20, border}}; // Rows
 
-        frame.setLayout (new TableLayout(size));
+        frame.setLayout (TableLayout.of(size));
 
         // Create some buttons
         String label[] = {"Top", "Bottom", "Left", "Right", "Center", "Overlap"};

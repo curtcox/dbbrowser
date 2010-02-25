@@ -1,12 +1,21 @@
 package com.cve.ui.swing;
 
 import com.cve.ui.UIConstructor;
+import com.cve.ui.UIElement;
+import com.cve.ui.UIPage;
 import com.cve.ui.UITable;
+import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableCell;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
+import com.cve.ui.layout.TableLayout;
+import com.cve.ui.layout.TableLayoutConstraints;
 import java.awt.Color;
+import java.awt.EventQueue;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -25,15 +34,52 @@ final class SwingUITable extends JPanel {
      static final Border EMPTY          = BorderFactory.createEmptyBorder();
 
      private SwingUITable(UITable table, UIConstructor constructor) {
+        int maxCols = 0;
+        int r = 0;
         for (UITableRow row : table.rows) {
+            r++;
+            int c = 0;
             for (UITableCell cell : row.details) {
-                add((JComponent) constructor.construct(cell));
+                c++;
+                JComponent component = (JComponent) constructor.construct(cell);
+                TableLayoutConstraints constraint = TableLayoutConstraints.of(c, r);
+                System.out.println("" + constraint);
+                add(component, constraint);
+            }
+            if (c > maxCols) {
+                maxCols = c;
             }
         }
-        this.setBorder(BLACK_LINE);
+        setLayout(TableLayout.of(maxCols,r));
+        System.out.println("" + TableLayout.of(maxCols,r));
+        setBorder(BLACK_LINE);
      }
 
      static SwingUITable of(UITable table, UIConstructor constructor) {
          return new SwingUITable(table,constructor);
+     }
+
+     public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+            @Override public void run() {
+                showExampleTable();
+            }
+        });
+     }
+
+     static void showExampleTable() {
+        JFrame frame = new JFrame();
+        JPanel panel = new JPanel();
+        frame.add(panel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        UITableBuilder table = UITableBuilder.of();
+        table.addRow(UITableHeader.of("h1"),UITableHeader.of("h2"));
+        table.addRow(UITableDetail.of("d1"),UITableDetail.of("d2"));
+        UIElement ui = UIPage.of(
+            table.build()
+        );
+        panel.add(SwingUIConstructor.of().construct(ui));
+        frame.setVisible(true);
+        frame.setSize(300,300);
      }
 }
