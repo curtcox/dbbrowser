@@ -11,6 +11,7 @@ import com.cve.lang.Strings;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
+import com.cve.ui.UILink;
 import com.cve.ui.UITable;
 import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableCell;
@@ -18,6 +19,7 @@ import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -44,7 +46,7 @@ public final class ObjectBrowser {
     /**
      * For creating links to other objects.
      */
-    private final ObjectLink link;
+    private final ObjectLinks link;
 
     /**
      * What visibility to show.  Public, private, etc...
@@ -65,7 +67,7 @@ private ObjectBrowser(Object o) {
 private ObjectBrowser(Object target, ModifierMask mask) {
     this.mask   = Check.notNull(mask);
     this.target = target;
-    link = ObjectLink.of();
+    link = ObjectLinks.of();
     tags = HTMLTags.of();
 }
 
@@ -81,7 +83,6 @@ public UIElement toHTML() {
     UILabel toString = (target==null)
         ? UILabel.of("null")
         : UILabel.of(target.toString());
-    
 
     return UIComposite.of(
         checkSpecialHandling(target),
@@ -94,10 +95,13 @@ public UIElement toHTML() {
 
 } // show Object
 
+UIElement h1(UIElement e) { return e; }
 UILabel h1(String s) { return UILabel.of(s); }
-UILabel h2(String s) { return UILabel.of(s); }
 UITableDetail td(String s) { return UITableDetail.of(s); }
 UITableHeader th(String s) { return UITableHeader.of(s); }
+UITableDetail td(UIElement s) { return UITableDetail.of(s); }
+UITableDetail td(UIElement... e) { return UITableDetail.of(UIComposite.of(e)); }
+UITableHeader th(UIElement s) { return UITableHeader.of(s); }
 
 /**
  * Return a new browser for this object using public visibility.
@@ -231,7 +235,7 @@ UIElement showExecutables(Collection<ExecutableElement> executables) {
         grouped.put(clazz,executable);
     }
     for (Class clazz : grouped.keySet()) {
-        out.add(h2(link.to(clazz.getName(),clazz)));
+        out.add(h1(link.to(clazz.getName(),clazz)));
         out.add(showExecutablesFromOneClass(grouped.get(clazz)));
     }
     return UIComposite.of(out);
@@ -254,19 +258,19 @@ UITable showExecutablesFromOneClass(Collection<ExecutableElement> executables) {
 /**
  * Return HTML for the return type of the given executable
  */
-String returnType(ExecutableElement executable){
+UIElement returnType(ExecutableElement executable){
     // only show return type for methods
     if (executable instanceof ExecutableMethod) {
         return typeName(executable.returnType);
     } else {
-        return "";
+        return UILabel.of("");
     }
 }  
 
 /**
  * Return HTML for the value of the given executable.
  */
-String returnValue(ExecutableElement executable){
+UIElement returnValue(ExecutableElement executable){
     if (executable.name.startsWith("get") && executable.parameterTypes.isEmpty()) {
         if (executable instanceof ExecutableMethod) {
             Method method = ((ExecutableMethod) executable).inner;
@@ -281,7 +285,7 @@ String returnValue(ExecutableElement executable){
             }
         }
     }
-    return "?";
+    return UILabel.of("?");
 }
 
 /**
@@ -299,7 +303,7 @@ UITableRow showExecutable(ExecutableElement method){
              td( returnType(method)                   ),
              td( returnValue(method)                  ),
              td( method.name                          ),
-             td( "(" + csv(classes(parameters)) + ")" ),
+             td( UILabel.of("("),csv(classes(parameters)), UILabel.of(")") ),
              td( csv(classes(exceptions))             )
          );
 }  // print method
@@ -307,15 +311,22 @@ UITableRow showExecutable(ExecutableElement method){
 /**
  * Return comma separated values.
  */
-static String csv(List<String> list) {
-    return Strings.separated(list, ",");
+static UIComposite csv(List<UIElement> list) {
+    List<UIElement> out = Lists.newArrayList();
+    for (int i=0; i<list.size(); i++) {
+        out.add(list.get(i));
+        if (i<list.size() - 1) {
+            out.add(UILabel.of(","));
+        }
+    }
+    return UIComposite.of(out);
 }
 
 /**
  * Return one string for each exception that could be thrown.
  */
-ImmutableList<String> classes(final ImmutableList<Class> exceptions) {
-    List<String> list = Lists.newArrayList();
+ImmutableList<UIElement> classes(final ImmutableList<Class> exceptions) {
+    List<UIElement> list = Lists.newArrayList();
     for (Class eClass : exceptions) {
         list.add(link.to(eClass.getName(),eClass));
     }
@@ -325,7 +336,7 @@ ImmutableList<String> classes(final ImmutableList<Class> exceptions) {
 /**
  * Return the name of an interface or primitive type, handling arrays.
  */
-String typeName(Class t) {
+UIElement typeName(Class t) {
     String brackets = "";
     while(t.isArray()) {
         brackets += "[]";
@@ -333,9 +344,9 @@ String typeName(Class t) {
     }
     final String name = t.getName();
     if (t.isPrimitive()) {
-        return name + brackets;
+        return UILabel.of(name + brackets);
     } else {
-        return link.to(name,t) + brackets;
+        return UIComposite.of(link.to(name,t) , UILabel.of(brackets));
     }
 } 
 

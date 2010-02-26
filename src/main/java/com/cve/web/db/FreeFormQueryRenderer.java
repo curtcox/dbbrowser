@@ -22,6 +22,7 @@ import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.core.Search;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 import com.google.common.collect.ImmutableList;
 import java.net.URI;
 import static com.cve.web.db.FreeFormQueryModel.*;
@@ -89,7 +90,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         }
         AnnotatedStackTrace trace = page.trace;
         if (trace!=AnnotatedStackTrace.NULL) {
-            String guts = page.message + form.toString() + ObjectLink.of().to("details",trace);
+            String guts = page.message + form.toString() + ObjectLinks.of().to("details",trace);
             return HtmlPage.gutsTitleNavHelp(guts,title,nav,HELP);
         }
         Hints hints = hintsStore.get(results.columns);

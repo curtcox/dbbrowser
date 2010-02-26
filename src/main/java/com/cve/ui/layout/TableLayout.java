@@ -124,7 +124,6 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.ListIterator;
 import java.util.Map;
 import static com.cve.ui.layout.TableLayoutConstants.*;
 
@@ -1614,7 +1613,7 @@ void layout(Component component, Dimension d, boolean isRightToLeft, Insets inse
 }
 
 void debug(String s) {
-    System.out.println(s);
+    //System.out.println(s);
 }
 
 /**

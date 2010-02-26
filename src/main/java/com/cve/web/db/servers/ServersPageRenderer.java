@@ -20,6 +20,7 @@ import com.cve.ui.UITableHeader;
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 import java.net.URI;
 
 
@@ -98,7 +99,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
             } else if (object instanceof AnnotatedStackTrace) {
                 AnnotatedStackTrace t = (AnnotatedStackTrace) object;
                 String message = t.throwable.getMessage();
-                out.append(ObjectLink.of().to(message, t));
+                out.append(ObjectLinks.of().to(message, t));
             } else {
                 throw new IllegalArgumentException("" + object);
             }

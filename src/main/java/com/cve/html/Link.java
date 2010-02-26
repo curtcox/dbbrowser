@@ -1,6 +1,7 @@
 package com.cve.html;
 
 import com.cve.ui.HTMLTags;
+import com.cve.ui.UILink;
 import com.cve.util.Replace;
 import com.cve.web.core.handlers.DebugHandler;
 import java.net.URI;
@@ -78,7 +79,7 @@ public final class Link {
      * Return a debugging link, if debugging is on.
      * @return
      */
-    private static String debug() {
+    private static UILink debug() {
         return DebugHandler.debugLink();
     }
 

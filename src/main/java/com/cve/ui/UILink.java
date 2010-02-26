@@ -22,6 +22,8 @@ public final class UILink implements UIElement {
 
     public final String alt;
 
+    public static UILink NULL;
+
     /**
      * Use a factory.
      * @param value

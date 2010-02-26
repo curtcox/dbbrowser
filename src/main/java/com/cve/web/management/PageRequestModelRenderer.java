@@ -23,7 +23,7 @@ final class PageRequestModelRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    final ObjectLink link = ObjectLink.of();
+    final ObjectLinks link = ObjectLinks.of();
 
     private final HTMLTags tags = HTMLTags.of();
 

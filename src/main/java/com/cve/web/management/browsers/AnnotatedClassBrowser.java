@@ -8,6 +8,7 @@ import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 import com.cve.web.management.ObjectRegistry;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -52,7 +53,7 @@ public final class AnnotatedClassBrowser
     }
 
     private UITableDetail link(Object o) {
-        ObjectLink link = ObjectLink.of();
+        ObjectLinks link = ObjectLinks.of();
         HTMLTags tags = HTMLTags.of();
         String string = tags.escape(Strings.first(150, "" + o));
         return UITableDetail.of(link.to(string,o));

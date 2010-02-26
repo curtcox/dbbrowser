@@ -4,9 +4,11 @@ import com.cve.lang.AnnotatedStackTrace;
 import com.cve.web.management.ObjectLink;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.ui.UILink;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
 import com.cve.web.core.RequestHandler;
+import com.cve.web.management.ObjectLinks;
 
 import static com.cve.util.Check.notNull;
 
@@ -90,9 +92,9 @@ public final class DebugHandler implements RequestHandler {
      * Return a debugging link, if debugging is on.
      * @return
      */
-    public static String debugLink() {
+    public static UILink debugLink() {
         if (!DebugHandler.isOn()) {
-            return "";
+            return UILink.NULL;
         }
         AnnotatedStackTrace trace = Logs.of().annotatedStackTrace();
         int max = 200;
@@ -103,7 +105,7 @@ public final class DebugHandler implements RequestHandler {
             ;
             throw new IllegalStateException(message);
         }
-        return ObjectLink.of().to(".",trace);
+        return ObjectLinks.of().to(".",trace);
     }
 
 }

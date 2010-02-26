@@ -7,6 +7,7 @@ import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 import java.util.*;
 
 /**
@@ -41,6 +42,6 @@ public final class MapBrowser
     }
 
     private UITableDetail link(Object o) {
-        return UITableDetail.of(ObjectLink.of().to("" + o,o));
+        return UITableDetail.of(ObjectLinks.of().to("" + o,o));
     }
 }

@@ -5,6 +5,7 @@ import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
 import com.cve.ui.UITable;
 import com.cve.web.management.ObjectLink;
+import com.cve.web.management.ObjectLinks;
 
 /**
  * @author ccox
@@ -38,6 +39,6 @@ public final class ArrayBrowser
     }
 
     private UITableDetail link(Object o) {
-        return UITableDetail.of(ObjectLink.of().to("" + o,o));
+        return UITableDetail.of(ObjectLinks.of().to("" + o,o));
     }
 }

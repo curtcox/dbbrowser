@@ -1,5 +1,6 @@
 package com.cve.ui.html;
 
+import com.cve.ui.UIComposite;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
@@ -29,6 +30,11 @@ public final class HtmlUIConstructor implements UIConstructor {
 
     @Override
     public Object table(UITable table) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Object composite(UIComposite composite) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

@@ -1,5 +1,6 @@
 package com.cve.ui.awt;
 
+import com.cve.ui.UIComposite;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
@@ -45,6 +46,15 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Panel page(UIPage page) {
+        Panel panel = new Panel();
+        for (UIElement element : page.items) {
+            panel.add(construct(element));
+        }
+        return panel;
+    }
+
+    @Override
+    public Panel composite(UIComposite page) {
         Panel panel = new Panel();
         for (UIElement element : page.items) {
             panel.add(construct(element));

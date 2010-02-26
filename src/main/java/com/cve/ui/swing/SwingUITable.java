@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.PageViewer;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
@@ -11,8 +12,10 @@ import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
+import com.cve.web.core.PageRequest;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.net.URI;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -32,6 +35,8 @@ final class SwingUITable extends JPanel {
      static final Border RAISED_BEVEL   = BorderFactory.createRaisedBevelBorder();
      static final Border LOWERED_BEVEL  = BorderFactory.createLoweredBevelBorder();
      static final Border EMPTY          = BorderFactory.createEmptyBorder();
+     static final int MATTE_WIDTH = 2;
+     static final Border MATTE          = BorderFactory.createMatteBorder(MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, (Color) null);
 
      private SwingUITable(UITable table, UIConstructor constructor) {
         setLayout(tableLayout(table));
@@ -42,9 +47,11 @@ final class SwingUITable extends JPanel {
             for (UITableCell cell : row.details) {
                 c++;
                 JComponent component = (JComponent) constructor.construct(cell);
+                JPanel panel = new JPanel();
+                panel.setBorder(MATTE);
+                panel.add(component);
                 TableLayoutConstraints constraint = TableLayoutConstraints.of(c, r);
-                System.out.println("" + constraint);
-                add(component, constraint);
+                add(panel, constraint);
             }
         }
         setBorder(BLACK_LINE);
@@ -84,7 +91,19 @@ final class SwingUITable extends JPanel {
         UIElement ui = UIPage.of(
             table.build()
         );
-        panel.add(SwingUIConstructor.of().construct(ui));
+        PageViewer pageViewer = new PageViewer() {
+            @Override
+            public void browse(PageRequest request) {
+                System.out.println("Requested " + request);
+            }
+
+            @Override
+            public void browse(URI uri) {
+                System.out.println("Requested " + uri);
+            }
+        };
+
+        panel.add(SwingUIConstructor.of(pageViewer).construct(ui));
         frame.setVisible(true);
         frame.setSize(300,300);
      }

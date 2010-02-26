@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstants;
@@ -32,22 +33,24 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * Swing client for WebApps.
  * @author Curt
  */
-public final class SwingRouterFrame extends JFrame {
+public final class SwingRouterFrame extends JFrame implements PageViewer {
 
-    final JButton    forward = new JButton(">");
-    final JButton    back    = new JButton("<");
-    final JButton    reload  = new JButton("@");
-    final JComboBox  address = new JComboBox();
-    final JPanel        page = new JPanel();
+    final JButton        forward = new JButton(">");
+    final JButton        back    = new JButton("<");
+    final JButton        reload  = new JButton("@");
+    final JComboBox      address = new JComboBox();
+    final JPanel            page = new JPanel();
+    final JScrollPane scrollPage = new JScrollPane(page);
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
-    final SwingUIConstructor constructor = SwingUIConstructor.of();
+    final SwingUIConstructor constructor = SwingUIConstructor.of(this);
 
     private SwingRouterFrame(WebApp webApp) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -76,6 +79,7 @@ public final class SwingRouterFrame extends JFrame {
         }
     }
 
+    @Override
     public void browse(PageRequest request) {
         PageResponse response = handler.produce(request);
         if (response.redirect!=null) {
@@ -143,11 +147,11 @@ public final class SwingRouterFrame extends JFrame {
         setLayout(TableLayout.of(cols,rows));
         int NAV = 1;
         int PAGE = 2;
-        add(forward, TableLayoutConstraints.of(1, NAV));
-        add(back,    TableLayoutConstraints.of(2, NAV));
-        add(address, TableLayoutConstraints.of(3, NAV));
-        add(reload,  TableLayoutConstraints.of(4, NAV));
-        add(page,    TableLayoutConstraints.of(1, PAGE, 4, PAGE));
+        add(forward,    TableLayoutConstraints.of(1, NAV));
+        add(back,       TableLayoutConstraints.of(2, NAV));
+        add(address,    TableLayoutConstraints.of(3, NAV));
+        add(reload,     TableLayoutConstraints.of(4, NAV));
+        add(scrollPage, TableLayoutConstraints.of(1, PAGE, 4, PAGE));
     }
 
     private void addListeners() {

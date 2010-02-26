@@ -12,7 +12,7 @@ public final class UIComposite implements UIElement {
 
     private final String html;
 
-    private final ImmutableList<UIElement> items;
+    public final ImmutableList<UIElement> items;
 
     private UIComposite(List<UIElement> items) {
         this.items = ImmutableList.copyOf(items);
