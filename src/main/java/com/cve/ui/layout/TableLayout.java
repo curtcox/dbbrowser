@@ -116,13 +116,16 @@
 package com.cve.ui.layout;
 
 import com.cve.util.Check;
+import com.google.common.collect.Maps;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Map;
 import static com.cve.ui.layout.TableLayoutConstants.*;
 
 
@@ -363,15 +366,12 @@ public final class TableLayout implements
 /** Default row/column size */
 static final double defaultSize[][] = {{}, {}};
 
+// TODO: rather than use 0,1 we should use an enum to make how this works clearer.
 /** Indicates a column */
 static final int C = 0;
 
 /** Indicates a row */
 static final int R = 1;
-
-
-
-
 
 /**
  * Sizes of crs expressed in absolute and relative terms
@@ -395,7 +395,7 @@ int crOffset[][] = {null, null};
 /**
  * List of components and their sizes
  */
-LinkedList<Entry> list;
+Map<Component,Entry> entries;
 
 /**
  * Indicates whether or not the size of the cells are known for the last known
@@ -603,26 +603,22 @@ private void init (double [] col, double [] row) {
     System.arraycopy(row, 0, crSpec[R], 0, crSpec[R].length);
 
     // Make sure rows and columns are valid
-    for (int counter = 0; counter < crSpec[C].length; counter++)
-        if ((crSpec[C][counter] < 0.0) &&
-            (crSpec[C][counter] != FILL) &&
-            (crSpec[C][counter] != PREFERRED) &&
-            (crSpec[C][counter] != MINIMUM))
-        {
+    for (int counter = 0; counter < crSpec[C].length; counter++) {
+        double v = crSpec[C][counter];
+        if ((v < 0.0) && (v != FILL) && (v != PREFERRED) && (v != MINIMUM)) {
             crSpec[C][counter] = 0.0;
         }
+    }
 
-    for (int counter = 0; counter < crSpec[R].length; counter++)
-        if ((crSpec[R][counter] < 0.0) &&
-            (crSpec[R][counter] != FILL) &&
-            (crSpec[R][counter] != PREFERRED) &&
-            (crSpec[R][counter] != MINIMUM))
-        {
+    for (int counter = 0; counter < crSpec[R].length; counter++) {
+        double v = crSpec[R][counter];
+        if ((v < 0.0) && (v != FILL) && (v != PREFERRED) && (v != MINIMUM)) {
             crSpec[R][counter] = 0.0;
         }
+    }
 
     // Create an empty list of components
-    list = new LinkedList();
+    entries = Maps.newHashMap();
 
     // Indicate that the cell sizes are not known
     dirty = true;
@@ -646,21 +642,11 @@ private void init (double [] col, double [] row) {
  *         null is returned.
  */
 
-TableLayoutConstraints getConstraints (Component component)
-{
-    ListIterator iterator = list.listIterator(0);
-
-    while (iterator.hasNext())
-    {
-        Entry entry = (Entry) iterator.next();
-
-        if (entry.component == component)
-            return TableLayoutConstraints.of
-                (entry.cr1[C], entry.cr1[R], entry.cr2[C], entry.cr2[R],
-                 entry.alignment[C], entry.alignment[R]);
-    }
-
-    return null;
+TableLayoutConstraints getConstraints(Component component) {
+    Entry entry = Check.notNull(entries.get(component));
+    return TableLayoutConstraints.of
+        (entry.cr1[C], entry.cr1[R], entry.cr2[C], entry.cr2[R],
+         entry.alignment[C], entry.alignment[R]);
 }
 
 
@@ -672,27 +658,10 @@ TableLayoutConstraints getConstraints (Component component)
  * @param constraint    new set of constraints.  This parameter cannot be null.
  */
 
-void setConstraints
-    (Component component, TableLayoutConstraints constraint)
-{
-    // Check parameters
-    if (component == null)
-        throw new IllegalArgumentException
-            ("Parameter component cannot be null.");
-    else if (constraint == null)
-        throw new IllegalArgumentException
-            ("Parameter constraint cannot be null.");
-
-    // Find and update constraints for the given component
-    ListIterator iterator = list.listIterator(0);
-
-    while (iterator.hasNext())
-    {
-        Entry entry = (Entry) iterator.next();
-
-        if (entry.component == component)
-            iterator.set(new Entry(component, constraint));
-    }
+void setConstraints(Component component, TableLayoutConstraints constraint) {
+    Check.notNull(component);
+    Check.notNull(constraint);
+    entries.put(component, new Entry(component, constraint));
 }
 
 
@@ -770,15 +739,12 @@ void setCr (int z, double size[]) {
     System.arraycopy(size, 0, crSpec[z], 0, crSpec[z].length);
 
     // Make sure rows are valid
-    for (int counter = 0; counter < crSpec[z].length; counter++)
-        if ((crSpec[z][counter] < 0.0) &&
-            (crSpec[z][counter] != FILL) &&
-            (crSpec[z][counter] != PREFERRED) &&
-            (crSpec[z][counter] != MINIMUM))
-        {
+    for (int counter = 0; counter < crSpec[z].length; counter++) {
+        double v = crSpec[z][counter];
+        if ((v < 0.0) && (v != FILL) && (v != PREFERRED) && (v != MINIMUM)) {
             crSpec[z][counter] = 0.0;
         }
-
+    }
     // Indicate that the cell sizes are not known
     dirty = true;
 }
@@ -858,11 +824,7 @@ void setRow (int i, double size) {
  */
 void setCr (int z, int i, double size) {
     // Make sure size is valid
-    if ((size < 0.0) &&
-        (size != FILL) &&
-        (size != PREFERRED) &&
-        (size != MINIMUM))
-    {
+    if ((size < 0.0) && (size != FILL) && (size != PREFERRED) && (size != MINIMUM)) {
         size = 0.0;
     }
 
@@ -1017,11 +979,7 @@ void insertCr (int z, int i, double size) {
              crSpec[z].length + "].");
 
     // Make sure row size is valid
-    if ((size < 0.0) &&
-        (size != FILL) &&
-        (size != PREFERRED) &&
-        (size != MINIMUM))
-    {
+    if ((size < 0.0) && (size != FILL) && (size != PREFERRED) && (size != MINIMUM)) {
         size = 0.0;
     }
 
@@ -1034,22 +992,18 @@ void insertCr (int z, int i, double size) {
     cr[i] = size;
     crSpec[z] = cr;
 
-    // Move all components that are below the new cr
-    ListIterator<Entry> iterator = list.listIterator(0);
-
-    while (iterator.hasNext()) {
-        // Get next entry
-        Entry entry = (Entry) iterator.next();
+    for (Entry entry : entries.values()) {
 
         // Is the first cr below the new cr
-        if (entry.cr1[z] >= i)
+        if (entry.cr1[z] >= i) {
             // Move first cr
             entry.cr1[z]++;
-
+        }
         // Is the second cr below the new cr
-        if (entry.cr2[z] >= i)
+        if (entry.cr2[z] >= i) {
             // Move second cr
             entry.cr2[z]++;
+        }
     }
 
     // Indicate that the cell sizes are not known
@@ -1099,10 +1053,11 @@ void deleteRow (int i) {
  */
 void deleteCr (int z, int i) {
     // Make sure position is valid
-    if ((i < 0) || (i >= crSpec[z].length))
+    if ((i < 0) || (i >= crSpec[z].length)) {
         throw new IllegalArgumentException
             ("Parameter i is invalid.  i = " + i + ".  Valid range is [0, " +
              (crSpec[z].length - 1) + "].");
+    }
 
     // Copy rows
     double cr[] = new double[crSpec[z].length - 1];
@@ -1112,13 +1067,7 @@ void deleteCr (int z, int i) {
     // Delete row
     crSpec[z] = cr;
 
-    // Move all components that are to below the row deleted
-    ListIterator<Entry> iterator = list.listIterator(0);
-
-    while (iterator.hasNext()) {
-        // Get next entry
-        Entry entry = iterator.next();
-
+    for (Entry entry : entries.values()) {
         // Is the first row below the new row
         if (entry.cr1[z] > i) {
             // Move first row
@@ -1195,7 +1144,7 @@ public String toString () {
 java.util.List<Entry> getInvalidEntry () {
     LinkedList<Entry> listInvalid = new LinkedList();
     try {
-        for (Entry entry : list) {
+        for (Entry entry : entries.values()) {
             if ((entry.cr1[R] < 0) || (entry.cr1[C] < 0) ||
                 (entry.cr2[R] >= crSpec[R].length) ||
                 (entry.cr2[C] >= crSpec[C].length))
@@ -1228,14 +1177,14 @@ java.util.List<Entry> getOverlappingEntry () {
 
     try {
         // Count constraints
-        int numEntry = list.size();
+        int numEntry = entries.size();
 
         // If there are no components, they can't be overlapping
         if (numEntry == 0)
             return listOverlapping;
 
         // Put entries in an array
-        Entry entry[] = (Entry []) list.toArray(new Entry[numEntry]);
+        Entry entry[] = (Entry []) entries.values().toArray(new Entry[numEntry]);
 
         // Check all components
         for (int knowUnique = 1; knowUnique < numEntry; knowUnique++) {
@@ -1294,11 +1243,13 @@ void calculateSize (Container container) {
     int availableHeight = d.height - inset.top - inset.bottom;
 
     // Compensate for horiztonal and vertical gaps
-    if (crSpec[C].length > 0)
+    if (crSpec[C].length > 0) {
         availableWidth -= hGap * (crSpec[C].length - 1);
+    }
 
-    if (crSpec[R].length > 0)
+    if (crSpec[R].length > 0) {
         availableHeight -= vGap * (crSpec[R].length - 1);
+    }
 
     // Create array to hold actual sizes in pixels
     crSize[C] = new int[crSpec[C].length];
@@ -1348,12 +1299,13 @@ void calculateSize (Container container) {
 int assignAbsoluteSize (int z, int availableSize) {
     int numCr = crSpec[z].length;
 
-    for (int counter = 0; counter < numCr; counter++)
+    for (int counter = 0; counter < numCr; counter++) {
         if ((crSpec[z][counter] >= 1.0) || (crSpec[z][counter] == 0.0))
         {
             crSize[z][counter] = (int) (crSpec[z][counter] + 0.5);
             availableSize -= crSize[z][counter];
         }
+    }
 
     return availableSize;
 }
@@ -1373,7 +1325,7 @@ int assignRelativeSize (int z, int availableSize) {
     int relativeSize = (availableSize < 0) ? 0 : availableSize;
     int numCr = crSpec[z].length;
 
-    for (int counter = 0; counter < numCr; counter++)
+    for (int counter = 0; counter < numCr; counter++) {
         if ((crSpec[z][counter] > 0.0) && (crSpec[z][counter] < 1.0))
         {
             crSize[z][counter] =
@@ -1381,7 +1333,7 @@ int assignRelativeSize (int z, int availableSize) {
 
             availableSize -= crSize[z][counter];
         }
-
+    }
     return availableSize;
 }
 
@@ -1395,16 +1347,17 @@ int assignRelativeSize (int z, int availableSize) {
  */
 void assignFillSize (int z, int availableSize) {
     // Skip if there is no more space to allocate
-    if (availableSize <= 0)
+    if (availableSize <= 0) {
         return;
-
+    }
     // Count the number of "fill" cells
     int numFillSize = 0;
     int numCr = crSpec[z].length;
 
-    for (int counter = 0; counter < numCr; counter++)
+    for (int counter = 0; counter < numCr; counter++) {
         if (crSpec[z][counter] == FILL)
             numFillSize++;
+    }
 
     // If numFillSize is zero, the if statement below will always evaluate to
     // false and the division will not occur.
@@ -1414,13 +1367,13 @@ void assignFillSize (int z, int availableSize) {
     int slackSize = availableSize;
 
     // Assign "fill" cells equal amounts of the remaining space
-    for (int counter = 0; counter < numCr; counter++)
+    for (int counter = 0; counter < numCr; counter++) {
         if (crSpec[z][counter] == FILL)
         {
             crSize[z][counter] = availableSize / numFillSize;
             slackSize -= crSize[z][counter];
         }
-
+    }
     // Assign one pixel of slack to each FILL cr, starting at the last one,
     // until all slack has been consumed
     for (int counter = numCr - 1; (counter >= 0) && (slackSize > 0); counter--)
@@ -1447,9 +1400,10 @@ void calculateOffset (int z, Insets inset) {
     crOffset[z] = new int[numCr + 1];
     crOffset[z][0] = (z == C) ? inset.left : inset.top;
 
-    for (int counter = 0; counter < numCr; counter++)
+    for (int counter = 0; counter < numCr; counter++) {
         crOffset[z][counter + 1] =
             crOffset[z][counter] + crSize[z][counter];
+    }
 }
 
 
@@ -1477,18 +1431,16 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
     // Address every cr
     for (int counter = 0; counter < numCr; counter++)
         // Is the current cr a preferred/minimum (based on typeOfSize) size
-        if (crSpec[z][counter] == typeOfSize)
-        {
+        if (crSpec[z][counter] == typeOfSize) {
             // Assume a maximum width of zero
             int maxSize = 0;
 
             // Find maximum preferred/min width of all components completely
             // or partially contained within this cr
-            ListIterator iterator = list.listIterator(0);
+            Iterator<Entry> iterator = entries.values().iterator();
 
             nextComponent:
-            while (iterator.hasNext())
-            {
+            while (iterator.hasNext()) {
                 Entry entry = (Entry) iterator.next();
 
                 // Skip invalid entries
@@ -1497,8 +1449,7 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
 
                 // Find the maximum desired size of this cr based on all crs
                 // the current component occupies
-                if ((entry.cr1[z] <= counter) && (entry.cr2[z] >= counter))
-                {
+                if ((entry.cr1[z] <= counter) && (entry.cr2[z] >= counter)) {
                     // Setup size and number of adjustable crs
                     Dimension p = (typeOfSize == PREFERRED) ?
                         entry.component.getPreferredSize() :
@@ -1509,33 +1460,27 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
                     int numAdjustable = 0;
 
                     // Calculate for preferred size
-                    if (typeOfSize == PREFERRED)
+                    if (typeOfSize == PREFERRED) {
                         // Consider all crs this component occupies
-                        for (int entryCr = entry.cr1[z];
-                             entryCr <= entry.cr2[z]; entryCr++)
-                        {
+                        for (int entryCr = entry.cr1[z]; entryCr <= entry.cr2[z]; entryCr++) {
                             // Subtract absolute, relative, and minumum cr
                             // sizes, which have already been calculated
-                            if ((crSpec[z][entryCr] >= 0.0) ||
-                                (crSpec[z][entryCr] == MINIMUM))
-                            {
+                            if ((crSpec[z][entryCr] >= 0.0) || (crSpec[z][entryCr] == MINIMUM)) {
                                 size -= crSize[z][entryCr];
-                            }
+                            } else if (crSpec[z][entryCr] == PREFERRED) {
                             // Count preferred/min width columns
-                            else if (crSpec[z][entryCr] == PREFERRED)
                                 numAdjustable++;
                             // Skip any component that occupies a fill cr
                             // because the fill should fulfill the size
                             // requirements
-                            else if (crSpec[z][entryCr] == FILL)
+                            } else if (crSpec[z][entryCr] == FILL) {
                                 continue nextComponent;
+                            }
                         }
                     // Calculate for minimum size
-                    else
+                    } else {
                         // Consider all crs this component occupies
-                        for (int entryCr = entry.cr1[z];
-                             entryCr <= entry.cr2[z]; entryCr++)
-                        {
+                        for (int entryCr = entry.cr1[z]; entryCr <= entry.cr2[z]; entryCr++) {
                             // Subtract absolute and relative cr sizes, which
                             // have already been calculated
                             if (crSpec[z][entryCr] >= 0.0)
@@ -1552,12 +1497,11 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
                             else if (crSpec[z][entryCr] == FILL)
                                 continue nextComponent;
                         }
-
+                    }
                     // Adjust remaining size by eliminating space for gaps between the crs this component occupies
                     int numCrOccupiedByThisComponent = entry.cr2[z] - entry.cr1[z] + 1;
 
-                    if (numCrOccupiedByThisComponent > 1)
-                    {
+                    if (numCrOccupiedByThisComponent > 1) {
                         int gap = (z == 0) ? hGap : vGap;
                         size -= (numCrOccupiedByThisComponent - 1) * gap;
                     }
@@ -1566,8 +1510,9 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
                     size = (int) Math.ceil(size / (double) numAdjustable);
 
                     // Take the maximumn size
-                    if (maxSize < size)
+                    if (maxSize < size) {
                         maxSize = size;
+                    }
                 }
             }
 
@@ -1600,8 +1545,8 @@ int assignPrefMinSize(int z, int availableSize, double typeOfSize) {
  */
 
 @Override
-public void layoutContainer (Container container)
-{
+public void layoutContainer (Container container) {
+    validate(container);
     // Calculate sizes if container has changed size or components were added
     Dimension d = container.getSize();
 
@@ -1614,124 +1559,63 @@ public void layoutContainer (Container container)
     boolean isRightToLeft = (co != null) && !co.isLeftToRight();
     Insets insets = container.getInsets();
 
-    // Get components
-    Component component[] = container.getComponents();
-
     // Layout components
-    for (int counter = 0; counter < component.length; counter++) {
-        try {
-            // Get the entry for the next component
-            ListIterator iterator = list.listIterator(0);
-            Entry entry = null;
-
-            while (iterator.hasNext()) {
-                entry = (Entry) iterator.next();
-
-                if (entry.component == component[counter])
-                    break;
-                else
-                    entry = null;
-            }
-
-            // Skip any components that have not been place in a specific cell,
-            // setting the skip component's bounds to zero
-            if (entry == null) {
-                component[counter].setBounds(0, 0, 0, 0);
-                continue;
-            }
-
-            // The following block of code has been optimized so that the
-            // preferred size of the component is only obtained if it is
-            // needed.  There are components in which the getPreferredSize
-            // method is extremely expensive, such as data driven controls
-            // with a large amount of data.
-
-            // Get the preferred size of the component
-            int preferredWidth = 0;
-            int preferredHeight = 0;
-
-            if ((entry.alignment[C] != Justification.FULL) || (entry.alignment[R] != Justification.FULL)) {
-                Dimension preferredSize = component[counter].getPreferredSize();
-
-                preferredWidth = preferredSize.width;
-                preferredHeight = preferredSize.height;
-            }
-
-            // Calculate the coordinates and size of the component
-            int value[] = calculateSizeAndOffset(entry, preferredWidth, true);
-            int x = value[0];
-            int w = value[1];
-            value = calculateSizeAndOffset(entry, preferredHeight, false);
-            int y = value[0];
-            int h = value[1];
-
-            // Compensate for component orientation.
-            if (isRightToLeft)
-                x = d.width - x - w + insets.left - insets.right;
-
-            // Move and resize component
-            component[counter].setBounds(x, y, w, h);
-        }
-        catch (Exception error) {
-            error.printStackTrace();
-            // If any error occurs, set the bounds of this component to zero
-            // and continue
-            component[counter].setBounds(0, 0, 0, 0);
-            continue;
-        }
+    for (Component component : container.getComponents()) {
+        layout(component, d,isRightToLeft, insets);
     }
 }
 
+void validate(Container container) {
+    int components = container.getComponentCount();
+    int known     = this.entries.size();
+    if (components != known) {
+        String message =
+            "# of components(" + components + ")!=" + " # entries(" + known + ").  " +
+            "Perhaps you changed the layout manager after a component was already added.";
+        throw new IllegalStateException(message);
+    }
+}
 
-///**
-// * Method used to get component orientation while preserving compatibility
-//    with earlier versions of java.awt.Container.  Necessary for supporting
-//    older JDKs and MicroEdition versions of Java.
-// */
-////static Method methodGetComponentOrientation;
-///** Used to minimize reflection calls */
-////static boolean checkForComponentOrientationSupport = true;
-//
-///**
-// * Gets the container's component orientation.  If a JDK that does not support
-// * component orientation is being used, then null is returned.
-// *
-// * @param container    Container whose orientation is being queried
-// *
-// * @return the container's orientation or null if no orientation is supported
-// */
-//
-//ComponentOrientation getComponentOrientation(Container container)
-//{
-//   // This method is implemented to only get the class and method objects
-//    // once so as to reduce expensive reflection operations.  If the reflection
-//    // fails, then component orientation is not supported.
-//
-//    ComponentOrientation co = null;
-//
-//    try
-//    {
-//        if (checkForComponentOrientationSupport)
-//        {
-//            methodGetComponentOrientation =
-//                Class.forName("java.awt.Container").getMethod
-//                    ("getComponentOrientation", new Class[0]);
-//
-//            checkForComponentOrientationSupport = false;
-//        }
-//
-//        if (methodGetComponentOrientation != null)
-//        {
-//            co = (ComponentOrientation)
-//                methodGetComponentOrientation.invoke(container, new Object[0]);
-//        }
-//    }
-//    catch (Exception e) {}
-//
-//    return co;
-//}
+void layout(Component component, Dimension d, boolean isRightToLeft, Insets insets) {
+    Entry entry = Check.notNull(entries.get(component));
 
+    // The following block of code has been optimized so that the
+    // preferred size of the component is only obtained if it is
+    // needed.  There are components in which the getPreferredSize
+    // method is extremely expensive, such as data driven controls
+    // with a large amount of data.
 
+    // Get the preferred size of the component
+    int preferredWidth = 0;
+    int preferredHeight = 0;
+
+    if ((entry.alignment[C] != Justification.FULL) || (entry.alignment[R] != Justification.FULL)) {
+        Dimension preferredSize = component.getPreferredSize();
+
+        preferredWidth = preferredSize.width;
+        preferredHeight = preferredSize.height;
+    }
+
+    // Calculate the coordinates and size of the component
+    int value[] = calculateSizeAndOffset(entry, preferredWidth, true);
+    int x = value[0];
+    int w = value[1];
+    value = calculateSizeAndOffset(entry, preferredHeight, false);
+    int y = value[0];
+    int h = value[1];
+
+    // Compensate for component orientation.
+    if (isRightToLeft) {
+        x = d.width - x - w + insets.left - insets.right;
+    }
+    // Move and resize component
+    debug("Setting " + component + " " + x + ","+ y + w + h);
+    component.setBounds(x, y, w, h);
+}
+
+void debug(String s) {
+    System.out.println(s);
+}
 
 /**
  * Calculates the vertical/horizontal offset and size of a component.
@@ -1900,7 +1784,7 @@ public Dimension minimumLayoutSize (Container container) {
  */
 Dimension calculateLayoutSize (Container container, double typeOfSize) {
     //  Get preferred/minimum sizes
-    Entry[] entryList = (Entry []) list.toArray(new Entry[list.size()]);
+    Entry[] entryList = (Entry []) entries.values().toArray(new Entry[entries.size()]);
     int numEntry = entryList.length;
     Dimension prefMinSize[] = new Dimension[numEntry];
 
@@ -1957,19 +1841,22 @@ int calculateLayoutSize
     double fillSizeRatio = 1.0;
     int numFillSize = 0;
 
-    for (counter = 0; counter < numCr; counter++)
+    for (counter = 0; counter < numCr; counter++) {
         if ((crSpec[z][counter] > 0.0) && (crSpec[z][counter] < 1.0))
             fillSizeRatio -= crSpec[z][counter];
         else if (crSpec[z][counter] == FILL)
             numFillSize++;
+    }
 
     // Adjust fill ratios to reflect number of fill rows/columns
-    if (numFillSize > 1)
+    if (numFillSize > 1) {
         fillSizeRatio /= numFillSize;
+    }
 
     // Cap fill ratio bottoms to 0.0
-    if (fillSizeRatio < 0.0)
+    if (fillSizeRatio < 0.0) {
         fillSizeRatio = 0.0;
+    }
 
     // Create array to hold actual sizes in pixels
     crSize[z] = new int[numCr];
@@ -1985,20 +1872,20 @@ int calculateLayoutSize
 
     int crPrefMin[] = new int[numCr];
 
-    for (counter = 0; counter < numCr; counter++)
+    for (counter = 0; counter < numCr; counter++) {
         if ((crSpec[z][counter] == PREFERRED) ||
             (crSpec[z][counter] == MINIMUM))
         {
             crPrefMin[counter] = crSize[z][counter];
         }
+    }
 
     // Find maximum preferred/minimum size of all scaled components
     int numColumn = crSpec[C].length;
     int numRow = crSpec[R].length;
     int numEntry = entryList.length;
 
-    for (int entryCounter = 0; entryCounter < numEntry; entryCounter++)
-    {
+    for (int entryCounter = 0; entryCounter < numEntry; entryCounter++) {
         // Get next entry
         Entry entry = entryList[entryCounter];
 
@@ -2020,7 +1907,7 @@ int calculateLayoutSize
         // Calculate portion of component that is not absolutely sized
         int scalableSize = (z == C) ? size.width : size.height;
 
-        for (counter = entry.cr1[z]; counter <= entry.cr2[z]; counter++)
+        for (counter = entry.cr1[z]; counter <= entry.cr2[z]; counter++) {
             if (crSpec[z][counter] >= 1.0)
                 scalableSize -= crSpec[z][counter];
             else if ((crSpec[z][counter] == PREFERRED) ||
@@ -2028,15 +1915,14 @@ int calculateLayoutSize
             {
                 scalableSize -= crPrefMin[counter];
             }
-
+        }
         //----------------------------------------------------------------------
 
         // Determine total percentage of scalable space that the component
         // occupies by adding the relative columns and the fill columns
         double relativeSize = 0.0;
 
-        for (counter = entry.cr1[z]; counter <= entry.cr2[z]; counter++)
-        {
+        for (counter = entry.cr1[z]; counter <= entry.cr2[z]; counter++) {
             // Cr is scaled
             if ((crSpec[z][counter] > 0.0) && (crSpec[z][counter] < 1.0))
                 // Add scaled size to relativeWidth
@@ -2056,8 +1942,9 @@ int calculateLayoutSize
         //----------------------------------------------------------------------
 
         // If the container needs to be bigger, make it so
-        if (scaledSize < temp)
+        if (scaledSize < temp) {
             scaledSize = temp;
+        }
     }
 
     // totalSize is the scaledSize plus the sum of all absolute sizes and all
@@ -2114,17 +2001,16 @@ public void addLayoutComponent (String name, Component component)
  */
 
 @Override
-public void addLayoutComponent (Component component, Object constraint)
-{
-    if (constraint == null) {
-        throw new IllegalArgumentException("No constraint for the component");
-    }
+public void addLayoutComponent(Component component, Object constraint) {
+    Check.notNull(component);
+    Check.notNull(constraint);
+
     if (constraint instanceof String) {
         // Create an entry to associate component with its constraints
         constraint = TableLayoutConstraints.of((String) constraint);
 
         // Add component and constraints to the list
-        list.add(new Entry(component, (TableLayoutConstraints) constraint));
+        entries.put(component,new Entry(component, (TableLayoutConstraints) constraint));
 
         // Indicate that the cell sizes are not known
         dirty = true;
@@ -2133,15 +2019,15 @@ public void addLayoutComponent (Component component, Object constraint)
 
     if (constraint instanceof TableLayoutConstraints) {
         // Add component and constraints to the list
-        list.add(new Entry(component, (TableLayoutConstraints) constraint));
+        entries.put(component,new Entry(component, (TableLayoutConstraints) constraint));
 
         // Indicate that the cell sizes are not known
         dirty = true;
         return;
     }
 
-    throw new IllegalArgumentException
-        ("Cannot accept a constraint of class " + constraint.getClass());
+    String message = "Cannot accept a constraint of class " + constraint.getClass();
+    throw new IllegalArgumentException(message);
 }
 
 
@@ -2153,19 +2039,9 @@ public void addLayoutComponent (Component component, Object constraint)
  */
 
     @Override
-public void removeLayoutComponent (Component component)
-{
+public void removeLayoutComponent (Component component) {
     // Remove the component
-    ListIterator iterator = list.listIterator(0);
-
-    while (iterator.hasNext())
-    {
-        Entry entry = (Entry) iterator.next();
-
-        if (entry.component == component)
-            iterator.remove();
-    }
-
+    entries.remove(component);
     // Indicate that the cell sizes are not known since
     dirty = true;
 }
@@ -2184,8 +2060,7 @@ public void removeLayoutComponent (Component component)
  */
 
     @Override
-public Dimension maximumLayoutSize (Container target)
-{
+public Dimension maximumLayoutSize (Container target) {
     return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
 }
 
@@ -2201,8 +2076,7 @@ public Dimension maximumLayoutSize (Container target)
  */
 
     @Override
-public float getLayoutAlignmentX (Container parent)
-{
+public float getLayoutAlignmentX (Container parent) {
     return 0.5f;
 }
 
@@ -2218,8 +2092,7 @@ public float getLayoutAlignmentX (Container parent)
  */
 
     @Override
-public float getLayoutAlignmentY (Container parent)
-{
+public float getLayoutAlignmentY (Container parent) {
     return 0.5f;
 }
 
@@ -2231,8 +2104,7 @@ public float getLayoutAlignmentY (Container parent)
  */
 
     @Override
-public void invalidateLayout (Container target)
-{
+public void invalidateLayout (Container target) {
     dirty = true;
 }
 
@@ -2244,59 +2116,58 @@ public void invalidateLayout (Container target)
 
 
 
-    // The following inner class is used to bind components to their constraints
-    public static final class Entry implements Cloneable
+// The following inner class is used to bind components to their constraints
+public static final class Entry implements Cloneable {
+    /** Component bound by the constraints */
+    final Component component;
+
+    /** Cell in which the upper-left corner of the component lies */
+    final int cr1[];
+
+    /** Cell in which the lower-right corner of the component lies */
+    final int cr2[];
+
+    /** Horizontal and vertical alignment */
+    final Justification[] alignment;
+
+    /**
+     * Constructs an Entry that binds a component to a set of constraints.
+     *
+     * @param component     component being bound
+     * @param constraint    constraints being applied
+     */
+
+    public Entry (Component component, TableLayoutConstraints constraint)
     {
-        /** Component bound by the constraints */
-        final Component component;
-
-        /** Cell in which the upper-left corner of the component lies */
-        final int cr1[];
-
-        /** Cell in which the lower-right corner of the component lies */
-        final int cr2[];
-
-        /** Horizontal and vertical alignment */
-        final Justification[] alignment;
-
-        /**
-         * Constructs an Entry that binds a component to a set of constraints.
-         *
-         * @param component     component being bound
-         * @param constraint    constraints being applied
-         */
-
-        public Entry (Component component, TableLayoutConstraints constraint)
-        {
-            this.cr1 = new int[] {constraint.col1, constraint.row1};
-            this.cr2 = new int[] {constraint.col2, constraint.row2};
-            this.alignment = new Justification[] {constraint.hAlign, constraint.vAlign};
-            this.component = component;
-        }
-
-        /**
-         * Copies this Entry.
-         */
-
-        public Object copy () throws CloneNotSupportedException {
-            return clone();
-        }
-
-        /**
-         * Gets the string representation of this Entry.
-         *
-         * @return a string in the form
-         *         "(col1, row1, col2, row2, vAlign, hAlign) component"
-         */
-
-        @Override
-        public String toString () {
-            TableLayoutConstraints c = TableLayoutConstraints.of
-                (cr1[C], cr1[R], cr2[C], cr2[R], alignment[C], alignment[R]);
-
-            return "(" + c + ") " + component;
-        }
+        this.cr1 = new int[] {constraint.col1, constraint.row1};
+        this.cr2 = new int[] {constraint.col2, constraint.row2};
+        this.alignment = new Justification[] {constraint.hAlign, constraint.vAlign};
+        this.component = component;
     }
+
+    /**
+     * Copies this Entry.
+     */
+
+    public Object copy () throws CloneNotSupportedException {
+        return clone();
+    }
+
+    /**
+     * Gets the string representation of this Entry.
+     *
+     * @return a string in the form
+     *         "(col1, row1, col2, row2, vAlign, hAlign) component"
+     */
+
+    @Override
+    public String toString () {
+        TableLayoutConstraints c = TableLayoutConstraints.of
+            (cr1[C], cr1[R], cr2[C], cr2[R], alignment[C], alignment[R]);
+
+        return "(" + c + ") " + component;
+    }
+}
 
 
 

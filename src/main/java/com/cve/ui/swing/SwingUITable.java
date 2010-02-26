@@ -34,7 +34,7 @@ final class SwingUITable extends JPanel {
      static final Border EMPTY          = BorderFactory.createEmptyBorder();
 
      private SwingUITable(UITable table, UIConstructor constructor) {
-        int maxCols = 0;
+        setLayout(tableLayout(table));
         int r = 0;
         for (UITableRow row : table.rows) {
             r++;
@@ -46,13 +46,19 @@ final class SwingUITable extends JPanel {
                 System.out.println("" + constraint);
                 add(component, constraint);
             }
-            if (c > maxCols) {
-                maxCols = c;
+        }
+        setBorder(BLACK_LINE);
+     }
+
+     static TableLayout tableLayout(UITable table) {
+        int maxCols = 0;
+        for (UITableRow row : table.rows) {
+            int cols = row.details.size();
+            if (cols > maxCols) {
+                maxCols = cols;
             }
         }
-        setLayout(TableLayout.of(maxCols,r));
-        System.out.println("" + TableLayout.of(maxCols,r));
-        setBorder(BLACK_LINE);
+        return TableLayout.of(maxCols,table.rows.size());
      }
 
      static SwingUITable of(UITable table, UIConstructor constructor) {
