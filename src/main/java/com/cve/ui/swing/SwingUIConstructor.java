@@ -10,17 +10,28 @@ import com.cve.ui.UITableCell;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
+import java.awt.Color;
 import java.awt.EventQueue;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 
 /**
  * Constructs a Swing UI from toolkit-independent UIElements.
  * @author curt
  */
 final class SwingUIConstructor implements UIConstructor {
+
+     static final Border BLACK_LINE     = BorderFactory.createLineBorder(Color.black);
+     static final Border RAISED_Etched  = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
+     static final Border LOWERED_ETCHED = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+     static final Border RAISED_BEVEL   = BorderFactory.createRaisedBevelBorder();
+     static final Border LOWERED_BEVEL  = BorderFactory.createLoweredBevelBorder();
+     static final Border EMPTY          = BorderFactory.createEmptyBorder();
 
     private SwingUIConstructor() {}
 
@@ -41,7 +52,9 @@ final class SwingUIConstructor implements UIConstructor {
 
     @Override
     public JLabel label(UILabel label) {
-        return new JLabel(label.value);
+        JLabel jLabel = new JLabel(label.value);
+        jLabel.setBorder(BLACK_LINE);
+        return jLabel;
     }
 
     @Override

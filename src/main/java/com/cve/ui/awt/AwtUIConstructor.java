@@ -5,6 +5,8 @@ import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
 import com.cve.ui.UIPage;
 import com.cve.ui.UITable;
+import com.cve.ui.UITableDetail;
+import com.cve.ui.UITableHeader;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -27,8 +29,11 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Component construct(UIElement e) {
-        if (e instanceof UILabel) { return label((UILabel) e);  }
-        if (e instanceof UIPage)  { return page((UIPage) e);   }
+        if (e instanceof UILabel)       { return label((UILabel) e);  }
+        if (e instanceof UIPage)        { return page((UIPage) e);   }
+        if (e instanceof UITable)       { return table((UITable) e);   }
+        if (e instanceof UITableDetail) { return tableDetail((UITableDetail) e);   }
+        if (e instanceof UITableHeader) { return tableHeader((UITableHeader) e);   }
         String message = "Unsupported element " + e.getClass();
         throw new IllegalArgumentException(message);
     }
@@ -47,9 +52,17 @@ final class AwtUIConstructor implements UIConstructor {
         return panel;
     }
 
+    private Component tableDetail(UITableDetail tableDetail) {
+        return construct(tableDetail.element);
+    }
+
+    private Component tableHeader(UITableHeader tableHeader) {
+        return construct(tableHeader.element);
+    }
+
     @Override
-    public Panel table(UITable table) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public AwtUITable table(UITable table) {
+        return AwtUITable.of(table,this);
     }
 
     public static void main(String[] args) {
