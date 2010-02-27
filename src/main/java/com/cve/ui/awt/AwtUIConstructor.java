@@ -1,13 +1,17 @@
 package com.cve.ui.awt;
 
+import com.cve.ui.PageViewer;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
+import com.cve.ui.UILink;
 import com.cve.ui.UIPage;
 import com.cve.ui.UITable;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
+import com.cve.util.Check;
+import com.cve.web.core.PageRequest;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -15,6 +19,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
 
 /**
  * Constructs an AWT UI from toolkit-independent UIElements.
@@ -22,19 +27,25 @@ import java.awt.event.WindowEvent;
  */
 final class AwtUIConstructor implements UIConstructor {
 
-    private AwtUIConstructor() {}
+    final PageViewer pageViewer;
 
-    static AwtUIConstructor of() {
-        return new AwtUIConstructor();
+    private AwtUIConstructor(PageViewer pageViewer) {
+        this.pageViewer = Check.notNull(pageViewer);
+    }
+
+    static AwtUIConstructor of(PageViewer pageViewer) {
+        return new AwtUIConstructor(pageViewer);
     }
 
     @Override
     public Component construct(UIElement e) {
+        if (e instanceof UILink)        { return link((UILink) e);  }
         if (e instanceof UILabel)       { return label((UILabel) e);  }
         if (e instanceof UIPage)        { return page((UIPage) e);   }
         if (e instanceof UITable)       { return table((UITable) e);   }
         if (e instanceof UITableDetail) { return tableDetail((UITableDetail) e);   }
         if (e instanceof UITableHeader) { return tableHeader((UITableHeader) e);   }
+        if (e instanceof UIComposite)   { return composite((UIComposite) e);   }
         String message = "Unsupported element " + e.getClass();
         throw new IllegalArgumentException(message);
     }
@@ -42,6 +53,10 @@ final class AwtUIConstructor implements UIConstructor {
     @Override
     public Label label(UILabel label) {
         return new Label(label.value);
+    }
+
+    private Component link(UILink link) {
+        return new Label(link.text);
     }
 
     @Override
@@ -95,7 +110,18 @@ final class AwtUIConstructor implements UIConstructor {
                 }
             }
         );
-        AwtUIConstructor constructor = AwtUIConstructor.of();
+        PageViewer pageViewer = new PageViewer() {
+            @Override
+            public void browse(PageRequest request) {
+                System.out.println("Requested " + request);
+            }
+
+            @Override
+            public void browse(URI uri) {
+                System.out.println("Requested " + uri);
+            }
+        };
+        AwtUIConstructor constructor = AwtUIConstructor.of(pageViewer);
         UIElement ui = UIPage.of(
             UILabel.of("Label")
         );

@@ -1,4 +1,4 @@
-package com.cve.ui.swing;
+package com.cve.ui.awt;
 
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
@@ -23,54 +23,64 @@ import com.cve.web.core.renderers.GlobalHtmlRenderers;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
+import java.awt.Button;
 import java.awt.EventQueue;
+import java.awt.Frame;
+import java.awt.Panel;
+import java.awt.ScrollPane;
+import java.awt.TextField;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 /**
  * Swing client for WebApps.
  * @author Curt
  */
-public final class SwingRouterFrame extends JFrame implements PageViewer {
+public final class AwtRouterFrame extends Frame implements PageViewer {
 
-    final JButton        forward = new JButton(">");
-    final JButton        back    = new JButton("<");
-    final JButton        reload  = new JButton("@");
-    final JComboBox      address = new JComboBox();
-    final JPanel            page = new JPanel();
-    final JScrollPane scrollPage = new JScrollPane(page);
+    final Button        forward = new Button(">");
+    final Button        back    = new Button("<");
+    final Button        reload  = new Button("@");
+    final TextField     address = new TextField();
+    final Panel            page = new Panel();
+    final ScrollPane scrollPage = new ScrollPane();
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
-    final SwingUIConstructor constructor = SwingUIConstructor.of(this);
+    final AwtUIConstructor constructor = AwtUIConstructor.of(this);
 
-    private SwingRouterFrame(WebApp webApp) {
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    private AwtRouterFrame(WebApp webApp) {
+        // Allow user to close the window to terminate the program
+        addWindowListener(new WindowAdapter() {
+            @Override
+                public void windowClosing (WindowEvent e) {
+                    System.exit (0);
+                }
+            }
+        );
+        scrollPage.add(page);
         this.handler = Check.notNull(webApp.handler);
         this.renderer = Check.notNull(webApp.renderer);
         layoutComponents();
         addListeners();
     }
 
-    public static SwingRouterFrame of(final WebApp webApp) {
+    public static AwtRouterFrame of(final WebApp webApp) {
         try {
             FutureTask task = new FutureTask(new Callable(){
                 @Override
                 public Object call() throws Exception {
-                    return new SwingRouterFrame(webApp);
+                    return new AwtRouterFrame(webApp);
                 }
             });
             EventQueue.invokeAndWait(task);
-            return (SwingRouterFrame) task.get();
+            return (AwtRouterFrame) task.get();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } catch (ExecutionException e) {

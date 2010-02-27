@@ -1,5 +1,6 @@
 package com.cve.ui.awt;
 
+import com.cve.ui.PageViewer;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
@@ -11,9 +12,11 @@ import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
+import com.cve.web.core.PageRequest;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Panel;
+import java.net.URI;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -73,7 +76,18 @@ final class AwtUITable extends Panel {
         UIElement ui = UIPage.of(
             table.build()
         );
-        panel.add(AwtUIConstructor.of().construct(ui));
+        PageViewer pageViewer = new PageViewer() {
+            @Override
+            public void browse(PageRequest request) {
+                System.out.println("Requested " + request);
+            }
+
+            @Override
+            public void browse(URI uri) {
+                System.out.println("Requested " + uri);
+            }
+        };
+        panel.add(AwtUIConstructor.of(pageViewer).construct(ui));
         frame.setVisible(true);
         frame.setSize(300,300);
      }
