@@ -118,7 +118,10 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
     }
 
     public static void main(String[] args) throws Exception {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        // Without this, VNC doesn't update Swing windows properly.
+        System.setProperty("sun.java2d.noddraw","true");
+        // Without this, we would currently default to Ocean
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         RequestHandler management = ManagementHandler.of();
         RequestHandler handler = ErrorReportHandler.of(
             DebugHandler.of(
