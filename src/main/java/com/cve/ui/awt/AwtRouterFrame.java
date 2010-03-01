@@ -42,11 +42,11 @@ import java.util.concurrent.FutureTask;
  */
 public final class AwtRouterFrame extends Frame implements PageViewer {
 
-    final Button        forward = new Button(">");
-    final Button        back    = new Button("<");
-    final Button        reload  = new Button("@");
-    final TextField     address = new TextField();
-    final Panel            page = new Panel();
+    final Button           forward = new Button(">");
+    final Button              back = new Button("<");
+    final Button            reload = new Button("@");
+    final TextField        address = new TextField();
+    final Panel               page = new Panel();
     final ScrollPane scrollPage = new ScrollPane();
 
     final RequestHandler handler;

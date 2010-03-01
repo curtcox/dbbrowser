@@ -12,6 +12,10 @@ import java.awt.Rectangle;
 import java.awt.ScrollPane;
 
 /**
+ * Currently, it looks like this approach works OK for Swing, but fails
+ * completely for AWT.  Running this class will show you a bit of the problem.
+ * Try using this class in a router frame via constructor to see the full problem.
+ *
  * See "JScrollPane and FlowLayout do not interact properly"
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5082531
  * "Swing - Use scrollbars when panel too small for components in it [Locked]"

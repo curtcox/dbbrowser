@@ -14,6 +14,19 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 /**
+ * Use this class in place of a JPanel with a FlowLayout, when the JPanel will
+ * be put in a JScrollPane.
+ * <p>
+ * This solution doesn't really work.  Use the router frame and drag the lower
+ * right corner in circles to see an awful resize bug.  A better solution is needed.
+ * <p>
+ * The problem this solves is due to a conflict between the
+ * FlowLayout and the ScrollPane.  FlowLayout only wraps components when
+ * it hits the width of the panel, but inside a ScrollPane, the panel can be as
+ * wide as it wants. So, you have to limit that somehow.  Also, FlowLayout goes
+ * right after the width of the panel, not the preferred width, and not via an
+ * accessor; it uses it directly.
+ * <p>
  * See "JScrollPane and FlowLayout do not interact properly"
  * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5082531
  * "Swing - Use scrollbars when panel too small for components in it [Locked]"

@@ -59,7 +59,7 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Panel page(UIPage page) {
-        ScrollableFlowPanel panel = new ScrollableFlowPanel();
+        Panel panel = new Panel();
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
@@ -68,7 +68,7 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Panel composite(UIComposite page) {
-        ScrollableFlowPanel panel = new ScrollableFlowPanel();
+        Panel panel = new Panel();
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
