@@ -11,11 +11,13 @@ import com.cve.ui.UITable;
 import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
+import com.cve.ui.layout.AwtLayoutAdapter;
+import com.cve.ui.layout.FlowLayout;
 import com.cve.util.Check;
 import com.cve.web.core.PageRequest;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.net.URI;
 import javax.swing.BorderFactory;
@@ -36,7 +38,10 @@ final class SwingUIConstructor implements UIConstructor {
 
     final PageViewer pageViewer;
 
-    static final Border BLACK_LINE     = BorderFactory.createLineBorder(Color.black);
+    static final Border GREEN_LINE     = BorderFactory.createLineBorder(Color.GREEN);
+    static final Border WHITE_LINE     = BorderFactory.createLineBorder(Color.WHITE);
+    static final Border RED_LINE       = BorderFactory.createLineBorder(Color.RED);
+    static final Border BLACK_LINE     = BorderFactory.createLineBorder(Color.BLACK);
     static final Border RAISED_Etched  = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
     static final Border LOWERED_ETCHED = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
     static final Border RAISED_BEVEL   = BorderFactory.createRaisedBevelBorder();
@@ -80,12 +85,16 @@ final class SwingUIConstructor implements UIConstructor {
     @Override
     public JLabel label(UILabel label) {
         JLabel jLabel = new JLabel(label.value);
+        jLabel.setBorder(GREEN_LINE);
         return jLabel;
     }
 
     @Override
     public JPanel page(UIPage page) {
         JPanel panel = new JPanel();
+        panel.setPreferredSize(new Dimension(800,800));
+        panel.setLayout(AwtLayoutAdapter.of(FlowLayout.of()));
+        panel.setBorder(RED_LINE);
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
@@ -95,7 +104,8 @@ final class SwingUIConstructor implements UIConstructor {
     @Override
     public JPanel composite(UIComposite composite) {
         JPanel panel = new JPanel();
-        panel.setLayout(new FlowLayout());
+        panel.setLayout(AwtLayoutAdapter.of(FlowLayout.of()));
+        panel.setBorder(WHITE_LINE);
         for (UIElement element : composite.items) {
             panel.add(construct(element));
         }

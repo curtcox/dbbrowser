@@ -1,4 +1,4 @@
-package com.cve.ui.swing;
+package com.cve.ui.layout;
 
 import java.awt.*;
 import java.util.*;

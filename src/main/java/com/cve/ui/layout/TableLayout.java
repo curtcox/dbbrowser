@@ -519,7 +519,7 @@ private static double[] fillArray(int size) {
     a[0] = border;
     a[size+1] = border;
     for (int i=0; i<size; i++) {
-        a[i+1] = TableLayoutConstants.FILL;
+        a[i+1] = TableLayoutConstants.PREFERRED;
     }
     return a;
 }

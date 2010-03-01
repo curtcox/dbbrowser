@@ -23,6 +23,7 @@ import com.cve.web.core.renderers.GlobalHtmlRenderers;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
@@ -149,6 +150,8 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         int y = 100;
         int w = 800;
         int h = 800;
+        Dimension d = new Dimension(800,800);
+        //page.setPreferredSize(d);
         setBounds (x, y, w, h);
 
         // Create a TableLayout for the frame

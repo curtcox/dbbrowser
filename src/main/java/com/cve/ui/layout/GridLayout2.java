@@ -1,4 +1,4 @@
-package com.cve.ui.swing;
+package com.cve.ui.layout;
 
 import java.awt.*;
 
@@ -21,8 +21,6 @@ public class GridLayout2 extends GridLayout {
 
   @Override
   public Dimension preferredLayoutSize(Container parent) {
-	//System.err.println("preferredLayoutSize");
-    synchronized (parent.getTreeLock()) {
         Insets insets = parent.getInsets();
         int ncomponents = parent.getComponentCount();
         int nrows = getRows();
@@ -56,13 +54,10 @@ public class GridLayout2 extends GridLayout {
           }
           return new Dimension(insets.left + insets.right + nw + (ncols-1)*getHgap(),
               insets.top + insets.bottom + nh + (nrows-1)*getVgap());
-    }
   }
 
   @Override
   public Dimension minimumLayoutSize(Container parent) {
-	System.err.println("minimumLayoutSize");
-    synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
       int ncomponents = parent.getComponentCount();
       int nrows = getRows();
@@ -97,13 +92,10 @@ public class GridLayout2 extends GridLayout {
       }
       return new Dimension(insets.left + insets.right + nw + (ncols-1)*getHgap(),
           insets.top + insets.bottom + nh + (nrows-1)*getVgap());
-    }
   }
 
     @Override
   public void layoutContainer(Container parent) {
-    //System.err.println("layoutContainer");
-    synchronized (parent.getTreeLock()) {
       Insets insets = parent.getInsets();
       int ncomponents = parent.getComponentCount();
       int nrows = getRows();
@@ -151,5 +143,5 @@ public class GridLayout2 extends GridLayout {
         x += w[c] + hgap;
       }
     }
-  }
+
 }
