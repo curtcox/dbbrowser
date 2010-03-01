@@ -9,13 +9,14 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
+import java.awt.LayoutManager2;
 import java.util.List;
 
 /**
  * Allows UILayout.ManagerS to be used as LayoutManagers.
  * @author Curt
  */
-public final class AwtLayoutAdapter implements LayoutManager {
+public final class AwtLayoutAdapter implements LayoutManager2 {
 
     final UILayout.Manager manager;
 
@@ -52,6 +53,31 @@ public final class AwtLayoutAdapter implements LayoutManager {
         manager.layoutContainer(container(parent));
     }
 
+    @Override
+    public void addLayoutComponent(Component comp, Object constraints) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public Dimension maximumLayoutSize(Container target) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getLayoutAlignmentX(Container target) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public float getLayoutAlignmentY(Container target) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public void invalidateLayout(Container target) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
 
 static final class AwtContainerAdapter implements UILayout.Container {
 
@@ -65,6 +91,9 @@ static final class AwtContainerAdapter implements UILayout.Container {
     @Override public int       getWidth() { return container.getWidth(); }
     @Override public int      getHeight() { return container.getHeight(); }
     @Override public Insets   getInsets() { return insets(container.getInsets());  }
+    @Override public UILayout.Dimension getSize() {
+        return dimension(container.getSize());
+    }
 
     @Override
     public ImmutableList<UILayout.Component> getComponents() {
@@ -79,6 +108,7 @@ static final class AwtContainerAdapter implements UILayout.Container {
     public Orientation getComponentOrientation() {
         return orientation(container.getComponentOrientation());
     }
+
 
     }
 

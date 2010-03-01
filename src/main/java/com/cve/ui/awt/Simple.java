@@ -1,5 +1,6 @@
 package com.cve.ui.awt;
 
+import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstants;
 import java.awt.*;
@@ -18,7 +19,7 @@ public class Simple {
             {{border, 0.10, 20, TableLayoutConstants.FILL, 20, 0.20, border},  // Columns
              {border, 0.20, 20, TableLayoutConstants.FILL, 20, 0.20, border}}; // Rows
 
-        frame.setLayout (TableLayout.of(size));
+        frame.setLayout (AwtLayoutAdapter.of(TableLayout.of(size)));
 
         // Create some buttons
         String label[] = {"Top", "Bottom", "Left", "Right", "Center", "Overlap"};

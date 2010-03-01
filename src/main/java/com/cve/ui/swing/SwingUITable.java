@@ -10,11 +10,13 @@ import com.cve.ui.UITableCell;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
+import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.web.core.PageRequest;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.LayoutManager;
 import java.net.URI;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -57,7 +59,7 @@ final class SwingUITable extends JPanel {
         setBorder(BLACK_LINE);
      }
 
-     static TableLayout tableLayout(UITable table) {
+     static LayoutManager tableLayout(UITable table) {
         int maxCols = 0;
         for (UITableRow row : table.rows) {
             int cols = row.details.size();
@@ -65,7 +67,7 @@ final class SwingUITable extends JPanel {
                 maxCols = cols;
             }
         }
-        return TableLayout.of(maxCols,table.rows.size());
+        return AwtLayoutAdapter.of(TableLayout.of(maxCols,table.rows.size()));
      }
 
      static SwingUITable of(UITable table, UIConstructor constructor) {

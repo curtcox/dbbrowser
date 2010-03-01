@@ -115,13 +115,13 @@
  */
 package com.cve.ui.layout;
 
+import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Container;
+import com.cve.ui.layout.UILayout.Dimension;
+import com.cve.ui.layout.UILayout.Insets;
+import com.cve.ui.layout.UILayout.Orientation;
 import com.cve.util.Check;
 import com.google.common.collect.Maps;
-import java.awt.Component;
-import java.awt.ComponentOrientation;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Insets;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
@@ -344,8 +344,7 @@ import static com.cve.ui.layout.TableLayoutConstants.*;
  */
 
 public final class TableLayout implements
-    java.awt.LayoutManager2,
-    java.io.Serializable
+    UILayout.Manager
 {
 
 
@@ -1554,8 +1553,8 @@ public void layoutContainer (Container container) {
     }
 
     // Get component orientation and insets
-    ComponentOrientation co = container.getComponentOrientation();
-    boolean isRightToLeft = (co != null) && !co.isLeftToRight();
+    Orientation co = container.getComponentOrientation();
+    boolean isRightToLeft = (co != null) && !co.leftToRight;
     Insets insets = container.getInsets();
 
     // Layout components
@@ -1565,7 +1564,7 @@ public void layoutContainer (Container container) {
 }
 
 void validate(Container container) {
-    int components = container.getComponentCount();
+    int components = container.getComponents().size();
     int known     = this.entries.size();
     if (components != known) {
         String message =
@@ -1802,7 +1801,7 @@ Dimension calculateLayoutSize (Container container, double typeOfSize) {
     width += inset.left + inset.right;
     height += inset.top + inset.bottom;
 
-    return new Dimension(width, height);
+    return Dimension.of(width, height);
 }
 
 
@@ -2060,7 +2059,7 @@ public void removeLayoutComponent (Component component) {
 
     @Override
 public Dimension maximumLayoutSize (Container target) {
-    return new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    return Dimension.of(Integer.MAX_VALUE, Integer.MAX_VALUE);
 }
 
 

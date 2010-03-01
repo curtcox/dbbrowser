@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.ui.layout.TableLayoutConstants;
@@ -31,7 +32,7 @@ final class SwingTableLayoutExample {
         double[] cols = {border, 0.10, 20, TableLayoutConstants.FILL, 20, 0.20, border};
         double[] rows = {border, 0.20, 20, TableLayoutConstants.FILL, 20, 0.20, border};
 
-        frame.setLayout (TableLayout.of(cols,rows));
+        frame.setLayout (AwtLayoutAdapter.of(TableLayout.of(cols,rows)));
 
 /*
 Justification

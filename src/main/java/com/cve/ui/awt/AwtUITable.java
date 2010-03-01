@@ -10,11 +10,13 @@ import com.cve.ui.UITableCell;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
+import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.web.core.PageRequest;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.net.URI;
 import javax.swing.JFrame;
@@ -42,7 +44,7 @@ final class AwtUITable extends Panel {
         }
      }
 
-     static TableLayout tableLayout(UITable table) {
+     static LayoutManager tableLayout(UITable table) {
         int maxCols = 0;
         for (UITableRow row : table.rows) {
             int cols = row.details.size();
@@ -50,7 +52,7 @@ final class AwtUITable extends Panel {
                 maxCols = cols;
             }
         }
-        return TableLayout.of(maxCols,table.rows.size());
+        return AwtLayoutAdapter.of(TableLayout.of(maxCols,table.rows.size()));
      }
 
      static AwtUITable of(UITable table, UIConstructor constructor) {

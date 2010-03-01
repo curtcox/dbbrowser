@@ -2,6 +2,7 @@ package com.cve.ui.awt;
 
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
+import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstants;
 import com.cve.ui.layout.TableLayoutConstraints;
@@ -166,7 +167,7 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
         double[] cols = {border, W, W, FILL, W, border};
         double[] rows = {border, H, FILL, border};
 
-        setLayout(TableLayout.of(cols,rows));
+        setLayout(AwtLayoutAdapter.of(TableLayout.of(cols,rows)));
         int NAV = 1;
         int PAGE = 2;
         add(forward,    TableLayoutConstraints.of(1, NAV));
