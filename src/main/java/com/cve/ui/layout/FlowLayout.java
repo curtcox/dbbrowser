@@ -74,31 +74,6 @@ public final class FlowLayout implements UILayout.Manager {
         return new FlowLayout();
     }
 
-    @Override
-    public void addLayoutComponent(Component comp, Object constraints) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public Dimension maximumLayoutSize(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public float getLayoutAlignmentX(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public float getLayoutAlignmentY(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void invalidateLayout(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
 public enum Align {
     /**
      * This value indicates that each row of components
@@ -502,6 +477,30 @@ public void layoutContainer(Container target) {
     moveComponents(target, insets.left + hgap, y, maxwidth - x, rowh,
                    start, nmembers, ltr, alignOnBaseline, ascent, descent);
 }
+
+    @Override
+    public void addLayoutComponent(Component comp, Object constraints) {
+
+    }
+
+    @Override
+    public Dimension maximumLayoutSize(Container target) {
+        return preferredLayoutSize(target);
+    }
+
+    @Override
+    public float getLayoutAlignmentX(Container target) {
+        return 0;
+    }
+
+    @Override
+    public float getLayoutAlignmentY(Container target) {
+        return 0;
+    }
+
+    @Override
+    public void invalidateLayout(Container target) {}
+
 
     /**
      * Returns a string representation of this <code>FlowLayout</code>

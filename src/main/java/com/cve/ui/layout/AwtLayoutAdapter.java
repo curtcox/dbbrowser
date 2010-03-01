@@ -5,12 +5,13 @@ import com.cve.ui.layout.UILayout.Orientation;
 import com.cve.util.Check;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.LayoutManager2;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Allows UILayout.ManagerS to be used as LayoutManagers.
@@ -55,36 +56,46 @@ public final class AwtLayoutAdapter implements LayoutManager2 {
 
     @Override
     public void addLayoutComponent(Component comp, Object constraints) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        manager.addLayoutComponent(component(comp),constraints);
     }
 
     @Override
     public Dimension maximumLayoutSize(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return dimension(manager.maximumLayoutSize(container(target)));
     }
 
     @Override
     public float getLayoutAlignmentX(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return manager.getLayoutAlignmentX(container(target));
     }
 
     @Override
     public float getLayoutAlignmentY(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return manager.getLayoutAlignmentY(container(target));
     }
 
     @Override
     public void invalidateLayout(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        manager.invalidateLayout(container(target));
     }
 
 
 static final class AwtContainerAdapter implements UILayout.Container {
 
     final Container container;
+    static final Map<Component,AwtContainerAdapter> adapters = Maps.newHashMap();
 
     AwtContainerAdapter(Container container) {
         this.container = Check.notNull(container);
+    }
+
+    static UILayout.Container of(Container container) {
+        if (adapters.containsKey(container)) {
+            return adapters.get(container);
+        }
+        AwtContainerAdapter adapter = new AwtContainerAdapter(container);
+        adapters.put(container, adapter);
+        return adapter;
     }
 
     @Override public Object getTreeLock() { return container.getTreeLock();  }
@@ -113,10 +124,22 @@ static final class AwtContainerAdapter implements UILayout.Container {
     }
 
 static final class AwtComponentAdapter implements UILayout.Component {
+
     final Component component;
 
-    AwtComponentAdapter(Component component) {
+    static final Map<Component,AwtComponentAdapter> adapters = Maps.newHashMap();
+
+    private AwtComponentAdapter(Component component) {
         this.component = Check.notNull(component);
+    }
+
+    static UILayout.Component of(Component component) {
+        if (adapters.containsKey(component)) {
+            return adapters.get(component);
+        }
+        AwtComponentAdapter adapter = new AwtComponentAdapter(component);
+        adapters.put(component, adapter);
+        return adapter;
     }
 
     @Override public boolean isVisible() { return component.isVisible();  }
@@ -161,11 +184,11 @@ static final class AwtComponentAdapter implements UILayout.Component {
 }
 
     static final UILayout.Component component(Component comp) {
-        return new AwtComponentAdapter(comp);
+        return AwtComponentAdapter.of(comp);
     }
 
     static final UILayout.Container container(Container container) {
-        return new AwtContainerAdapter(container);
+        return AwtContainerAdapter.of(container);
     }
 
     static final Dimension dimension(UILayout.Dimension dim) {
