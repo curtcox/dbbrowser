@@ -91,9 +91,7 @@ final class SwingUIConstructor implements UIConstructor {
 
     @Override
     public JPanel page(UIPage page) {
-        JPanel panel = new JPanel();
-        panel.setPreferredSize(new Dimension(800,800));
-        panel.setLayout(AwtLayoutAdapter.of(FlowLayout.of()));
+        JScrollableFlowPanel panel = new JScrollableFlowPanel();
         panel.setBorder(RED_LINE);
         for (UIElement element : page.items) {
             panel.add(construct(element));
@@ -103,8 +101,7 @@ final class SwingUIConstructor implements UIConstructor {
 
     @Override
     public JPanel composite(UIComposite composite) {
-        JPanel panel = new JPanel();
-        panel.setLayout(AwtLayoutAdapter.of(FlowLayout.of()));
+        JScrollableFlowPanel panel = new JScrollableFlowPanel();
         panel.setBorder(WHITE_LINE);
         for (UIElement element : composite.items) {
             panel.add(construct(element));

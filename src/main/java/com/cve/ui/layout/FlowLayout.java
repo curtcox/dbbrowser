@@ -67,6 +67,9 @@ import static java.lang.Math.max;
  * @author      Sami Shaio
  * @since       JDK1.0
  * @see ComponentOrientation
+ *
+ * See also "JScrollPane and FlowLayout do not interact properly"
+ * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5082531
  */
 public final class FlowLayout implements UILayout.Manager {
 
@@ -165,7 +168,7 @@ public enum Align {
      * @see #getHgap()
      * @see #setHgap(int)
      */
-    final int vgap;
+    public final int vgap;
 
     /**
      * If true, components will be aligned on their baseline.
@@ -182,7 +185,7 @@ public enum Align {
      * default 5-unit horizontal and vertical gap.
      */
     private FlowLayout() {
-        this(Align.CENTER, 5, 5);
+        this(Align.LEFT, 5, 5);
     }
 
     /**
@@ -337,27 +340,32 @@ public Dimension minimumLayoutSize(Container target) {
     return Dimension.of(width, height);
 }
 
-    /**
-     * Centers the elements in the specified row, if there is any slack.
-     * @param target the component which needs to be moved
-     * @param x the x coordinate
-     * @param y the y coordinate
-     * @param width the width dimensions
-     * @param height the height dimensions
-     * @param rowStart the beginning of the row
-     * @param rowEnd the the ending of the row
-     * @param useBaseline Whether or not to align on baseline.
-     * @param ascent Ascent for the components. This is only valid if
-     *               useBaseline is true.
-     * @param descent Ascent for the components. This is only valid if
-     *               useBaseline is true.
-     * @return actual row height
-     */
-    int moveComponents(final Container target, int x, int y, int width, int height,
-                                int rowStart, int rowEnd, boolean ltr,
-                                boolean useBaseline, int[] ascent,
-                                int[] descent) {
-        switch (newAlign) {
+/**
+ * Centers the elements in the specified row, if there is any slack.
+ * @param target the component which needs to be moved
+ * @param x the x coordinate
+ * @param y the y coordinate
+ * @param width the width dimensions
+ * @param height the height dimensions
+ * @param rowStart the beginning of the row
+ * @param rowEnd the the ending of the row
+ * @param useBaseline Whether or not to align on baseline.
+ * @param ascent Ascent for the components. This is only valid if
+ *               useBaseline is true.
+ * @param descent Ascent for the components. This is only valid if
+ *               useBaseline is true.
+ * @return actual row height
+ */
+int moveComponents(
+    final Container target,
+    final int ix, final int y, final int width, final int iheight,
+    final int rowStart, final int rowEnd, final boolean ltr,
+    final boolean useBaseline, final int[] ascent,
+    final int[] descent)
+{
+    int x = ix;
+    int height = iheight;
+    switch (newAlign) {
         case LEFT:
             x += ltr ? 0 : width;
             break;
@@ -372,46 +380,47 @@ public Dimension minimumLayoutSize(Container target) {
         case TRAILING:
             x += width;
             break;
-        }
-        int maxAscent = 0;
-        int nonbaselineHeight = 0;
-        int baselineOffset = 0;
-        if (useBaseline) {
-            int maxDescent = 0;
-            for (int i = rowStart ; i < rowEnd ; i++) {
-                Component m = target.getComponents().get(i);
-                if (m.isVisible()) {
-                    if (ascent[i] >= 0) {
-                        maxAscent = max(maxAscent, ascent[i]);
-                        maxDescent = max(maxDescent, descent[i]);
-                    } else {
-                        nonbaselineHeight = max(m.getHeight(),
-                                                     nonbaselineHeight);
-                    }
-                }
-            }
-            height = max(maxAscent + maxDescent, nonbaselineHeight);
-            baselineOffset = (height - maxAscent - maxDescent) / 2;
-        }
-	for (int i = rowStart ; i < rowEnd ; i++) {
+    }
+    int maxAscent = 0;
+    int nonbaselineHeight = 0;
+    int baselineOffset = 0;
+    if (useBaseline) {
+        int maxDescent = 0;
+        for (int i = rowStart ; i < rowEnd ; i++) {
             Component m = target.getComponents().get(i);
             if (m.isVisible()) {
-                int cy;
-                if (useBaseline && ascent[i] >= 0) {
-                    cy = y + baselineOffset + maxAscent - ascent[i];
+                if (ascent[i] >= 0) {
+                    maxAscent = max(maxAscent, ascent[i]);
+                    maxDescent = max(maxDescent, descent[i]);
                 } else {
-                    cy = y + (height - m.getHeight()) / 2;
+                    nonbaselineHeight = max(m.getHeight(),
+                                                 nonbaselineHeight);
                 }
-                if (ltr) {
-        	    m.setLocation(x, cy);
-                } else {
-	            m.setLocation(target.getWidth() - x - m.getWidth(), cy);
-                }
-                x += m.getWidth() + hgap;
-	    }
-	}
-        return height;
+            }
+        }
+        height = max(maxAscent + maxDescent, nonbaselineHeight);
+        baselineOffset = (height - maxAscent - maxDescent) / 2;
     }
+    // for every visible component
+    for (int i = rowStart ; i < rowEnd ; i++) {
+        Component m = target.getComponents().get(i);
+        if (m.isVisible()) {
+            int cy;
+            if (useBaseline && ascent[i] >= 0) {
+                cy = y + baselineOffset + maxAscent - ascent[i];
+            } else {
+                cy = y + (height - m.getHeight()) / 2;
+            }
+            if (ltr) {
+            m.setLocation(x, cy);
+            } else {
+            m.setLocation(target.getWidth() - x - m.getWidth(), cy);
+            }
+            x += m.getWidth() + hgap;
+        }
+    }
+    return height;
+}
 
 /**
  * Lays out the container. This method lets each
@@ -425,12 +434,14 @@ public Dimension minimumLayoutSize(Container target) {
  * @see       java.awt.Container#doLayout
  */
 @Override
-public void layoutContainer(Container target) {
+public void layoutContainer(final Container target) {
     Insets insets = target.getInsets();
     int maxwidth = target.getWidth() - (insets.left + insets.right + hgap*2);
     int nmembers = target.getComponents().size();
-    int x = 0, y = insets.top + vgap;
-    int rowh = 0, start = 0;
+    int x = 0;
+    int y = insets.top + vgap;
+    int rowh = 0;
+    int start = 0;
 
     boolean ltr = target.getComponentOrientation().leftToRight;
 
@@ -442,6 +453,7 @@ public void layoutContainer(Container target) {
         descent = new int[nmembers];
     }
 
+    // for every visible component
     for (int i = 0 ; i < nmembers ; i++) {
         Component m = target.getComponents().get(i);
         if (m.isVisible()) {
@@ -457,16 +469,19 @@ public void layoutContainer(Container target) {
                     ascent[i] = -1;
                 }
             }
+            // if there is more space on this row
             if ((x == 0) || ((x + d.width) <= maxwidth)) {
                 if (x > 0) {
                     x += hgap;
                 }
                 x += d.width;
                 rowh = Math.max(rowh, d.height);
-            } else {
-                rowh = moveComponents(target, insets.left + hgap, y,
-                               maxwidth - x, rowh, start, i, ltr,
-                               alignOnBaseline, ascent, descent);
+            } else { // else finish the row
+                rowh = moveComponents(target,
+                    // x, y, w, h
+                    insets.left + hgap, y,  maxwidth - x, rowh,
+                    start, i,
+                    ltr, alignOnBaseline, ascent, descent);
                 x = d.width;
                 y += vgap + rowh;
                 rowh = d.height;

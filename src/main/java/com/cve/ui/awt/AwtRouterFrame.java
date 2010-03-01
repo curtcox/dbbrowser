@@ -30,14 +30,11 @@ import java.awt.Frame;
 import java.awt.Panel;
 import java.awt.ScrollPane;
 import java.awt.TextField;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
-import javax.swing.UIManager;
 
 /**
  * Swing client for WebApps.
@@ -58,13 +55,7 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
 
     private AwtRouterFrame(WebApp webApp) {
         // Allow user to close the window to terminate the program
-        addWindowListener(new WindowAdapter() {
-            @Override
-                public void windowClosing (WindowEvent e) {
-                    System.exit (0);
-                }
-            }
-        );
+        AwtCloser.exitOnClose(this);
         scrollPage.add(page);
         this.handler = Check.notNull(webApp.handler);
         this.renderer = Check.notNull(webApp.renderer);
@@ -129,7 +120,6 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
     }
 
     public static void main(String[] args) throws Exception {
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
         RequestHandler management = ManagementHandler.of();
         RequestHandler handler = ErrorReportHandler.of(
             DebugHandler.of(

@@ -34,7 +34,6 @@ import java.util.concurrent.FutureTask;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
@@ -44,12 +43,12 @@ import javax.swing.UIManager;
  */
 public final class SwingRouterFrame extends JFrame implements PageViewer {
 
-    final JButton        forward = new JButton(">");
-    final JButton        back    = new JButton("<");
-    final JButton        reload  = new JButton("@");
-    final JComboBox      address = new JComboBox();
-    final JPanel            page = new JPanel();
-    final JScrollPane scrollPage = new JScrollPane(page);
+    final JButton          forward = new JButton(">");
+    final JButton             back = new JButton("<");
+    final JButton           reload = new JButton("@");
+    final JComboBox        address = new JComboBox();
+    final JScrollableFlowPanel page = new JScrollableFlowPanel();
+    final JScrollPane   scrollPage = new JScrollPane(page);
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
@@ -175,4 +174,5 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
 
     private void addListeners() {
     }
+
 }

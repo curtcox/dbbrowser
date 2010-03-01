@@ -17,8 +17,6 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.Label;
 import java.awt.Panel;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URI;
 
 /**
@@ -61,7 +59,7 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Panel page(UIPage page) {
-        Panel panel = new Panel();
+        ScrollableFlowPanel panel = new ScrollableFlowPanel();
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
@@ -70,7 +68,7 @@ final class AwtUIConstructor implements UIConstructor {
 
     @Override
     public Panel composite(UIComposite page) {
-        Panel panel = new Panel();
+        ScrollableFlowPanel panel = new ScrollableFlowPanel();
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
@@ -103,13 +101,7 @@ final class AwtUIConstructor implements UIConstructor {
         Panel panel = new Panel();
         frame.add(panel);
         // Allow user to close the window to terminate the program
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-                public void windowClosing (WindowEvent e) {
-                    System.exit (0);
-                }
-            }
-        );
+        AwtCloser.exitOnClose(frame);
         PageViewer pageViewer = new PageViewer() {
             @Override
             public void browse(PageRequest request) {

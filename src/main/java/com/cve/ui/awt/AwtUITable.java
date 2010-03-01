@@ -16,6 +16,7 @@ import com.cve.ui.layout.TableLayoutConstraints;
 import com.cve.web.core.PageRequest;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.net.URI;
@@ -68,10 +69,10 @@ final class AwtUITable extends Panel {
      }
 
      static void showExampleTable() {
-        JFrame frame = new JFrame();
-        JPanel panel = new JPanel();
+        Frame frame = new Frame();
+        Panel panel = new Panel();
         frame.add(panel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        AwtCloser.exitOnClose(frame);
         UITableBuilder table = UITableBuilder.of();
         table.addRow(UITableHeader.of("h1"),UITableHeader.of("h2"));
         table.addRow(UITableDetail.of("d1"),UITableDetail.of("d2"));

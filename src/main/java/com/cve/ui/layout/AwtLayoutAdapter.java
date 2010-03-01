@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public final class AwtLayoutAdapter implements LayoutManager2 {
 
-    final UILayout.Manager manager;
+    public final UILayout.Manager manager;
 
     private AwtLayoutAdapter(UILayout.Manager manager) {
         this.manager = Check.notNull(manager);
