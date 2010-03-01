@@ -34,6 +34,7 @@ public interface UILayout {
         Dimension getMinimumSize();
 
         void setLocation(int x, int cy);
+        void setBounds(int x, int y, int width, int height);
 
         int getHeight();
 
@@ -45,6 +46,7 @@ public interface UILayout {
         Object getTreeLock();
 
         int getWidth();
+        int getHeight();
 
         Insets getInsets();
 

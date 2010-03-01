@@ -63,6 +63,7 @@ static final class AwtContainerAdapter implements UILayout.Container {
 
     @Override public Object getTreeLock() { return container.getTreeLock();  }
     @Override public int       getWidth() { return container.getWidth(); }
+    @Override public int      getHeight() { return container.getHeight(); }
     @Override public Insets   getInsets() { return insets(container.getInsets());  }
 
     @Override
@@ -78,7 +79,8 @@ static final class AwtContainerAdapter implements UILayout.Container {
     public Orientation getComponentOrientation() {
         return orientation(container.getComponentOrientation());
     }
-}
+
+    }
 
 static final class AwtComponentAdapter implements UILayout.Component {
     final Component component;
@@ -110,6 +112,11 @@ static final class AwtComponentAdapter implements UILayout.Component {
     @Override
     public void setLocation(int x, int cy) {
         component.setLocation(x, cy);
+    }
+
+    @Override
+    public void setBounds(int x, int y, int w, int h) {
+        component.setBounds(x, y,w,h);
     }
 
     @Override

@@ -7,7 +7,7 @@ import javax.swing.border.*;
 
 public class Test extends JFrame {
 
-    public Test(GridLayout layout, JComponent[] components) {
+    public Test(LayoutManager layout, JComponent[] components) {
         super(layout.getClass().getName());
         JPanel panel = new JPanel(layout);
         //--- code needed to add the components
@@ -82,7 +82,7 @@ public class Test extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 // int rows, int cols, int hgap, int vgap
-                new Test(new GridLayout2(40, 10, 4, 2), generateRandomComponents(400));
+                new Test(AwtLayoutAdapter.of(GridLayout2.of(40, 10, 4, 2)), generateRandomComponents(400));
                 //new Test(new GridLayout(4, 4, 4, 2), generateRandomComponents(14));
                 //new Test(4, new Insets(1, 2, 1, 2), generateRandomComponents(14));
 
