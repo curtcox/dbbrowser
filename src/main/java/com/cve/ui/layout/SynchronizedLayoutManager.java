@@ -1,6 +1,7 @@
 package com.cve.ui.layout;
 
 import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.util.Check;
@@ -49,7 +50,7 @@ public final class SynchronizedLayoutManager implements UILayout.Manager {
     }
 
     @Override
-    public void addLayoutComponent(Component comp, Object constraints) {
+    public void addLayoutComponent(Component comp, Constraint constraints) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

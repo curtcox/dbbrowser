@@ -51,7 +51,6 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
-    final AwtUIConstructor constructor = AwtUIConstructor.of(this);
 
     private AwtRouterFrame(WebApp webApp) {
         // Allow user to close the window to terminate the program
@@ -107,6 +106,7 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
 
     void setPage(UIElement e) {
         page.removeAll();
+        AwtUIConstructor constructor = AwtUIConstructor.of(this);
         page.add(constructor.construct(e));
     }
     

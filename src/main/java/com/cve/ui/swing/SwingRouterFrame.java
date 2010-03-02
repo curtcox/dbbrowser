@@ -52,7 +52,6 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
-    final SwingUIConstructor constructor = SwingUIConstructor.of(this);
 
     private SwingRouterFrame(WebApp webApp) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -106,6 +105,7 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
 
     void setPage(UIElement e) {
         page.removeAll();
+        SwingUIConstructor constructor = SwingUIConstructor.of(this);
         page.add(constructor.construct(e));
     }
     

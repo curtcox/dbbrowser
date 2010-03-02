@@ -117,6 +117,7 @@
 
 package com.cve.ui.layout;
 
+import com.cve.ui.layout.UILayout.Constraint;
 import java.util.*;
 import static com.cve.ui.layout.TableLayout.Justification.*;
 
@@ -128,7 +129,7 @@ import static com.cve.ui.layout.TableLayout.Justification.*;
  * @author  Daniel E. Barbalace
  */
 
-public final class TableLayoutConstraints {
+public final class TableLayoutConstraints implements Constraint {
 
 
 /** Cell in which the upper left corner of the component lays */
@@ -248,7 +249,7 @@ public static TableLayoutConstraints of(int col1, int row1, TableLayout.Justific
     return new TableLayoutConstraints(col1,row1,col1,row1,hAlign,vAlign);
 }
 
-public static Object of(String string) {
+public static TableLayoutConstraints of(String string) {
     return new TableLayoutConstraints(string);
 }
 

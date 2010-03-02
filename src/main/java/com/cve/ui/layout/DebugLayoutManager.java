@@ -1,6 +1,7 @@
 package com.cve.ui.layout;
 
 import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.util.Check;
@@ -51,27 +52,27 @@ public final class DebugLayoutManager implements UILayout.Manager {
     }
 
     @Override
-    public void addLayoutComponent(Component comp, Object constraints) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void addLayoutComponent(Component comp, Constraint constraints) {
+        inner.addLayoutComponent(comp, constraints);
     }
 
     @Override
     public Dimension maximumLayoutSize(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return inner.maximumLayoutSize(target);
     }
 
     @Override
     public float getLayoutAlignmentX(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return inner.getLayoutAlignmentX(target);
     }
 
     @Override
     public float getLayoutAlignmentY(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return inner.getLayoutAlignmentY(target);
     }
 
     @Override
     public void invalidateLayout(Container target) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        inner.invalidateLayout(target);
     }
 }

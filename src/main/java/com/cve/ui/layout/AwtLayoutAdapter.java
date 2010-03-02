@@ -56,7 +56,7 @@ public final class AwtLayoutAdapter implements LayoutManager2 {
 
     @Override
     public void addLayoutComponent(Component comp, Object constraints) {
-        manager.addLayoutComponent(component(comp),constraints);
+        manager.addLayoutComponent(component(comp),constraints(constraints));
     }
 
     @Override
@@ -99,8 +99,6 @@ static final class AwtContainerAdapter implements UILayout.Container {
     }
 
     @Override public Object getTreeLock() { return container.getTreeLock();  }
-    @Override public int       getWidth() { return container.getWidth(); }
-    @Override public int      getHeight() { return container.getHeight(); }
     @Override public Insets   getInsets() { return insets(container.getInsets());  }
     @Override public UILayout.Dimension getSize() {
         return dimension(container.getSize());
@@ -173,15 +171,15 @@ static final class AwtComponentAdapter implements UILayout.Component {
     }
 
     @Override
-    public int getHeight() {
-        return component.getHeight();
+    public UILayout.Dimension getSize() {
+        return dimension(component.getSize());
     }
 
-    @Override
-    public int getWidth() {
-        return component.getWidth();
-    }
 }
+
+    static final UILayout.Constraint constraints(Object o) {
+        return (UILayout.Constraint) o;
+    }
 
     static final UILayout.Component component(Component comp) {
         return AwtComponentAdapter.of(comp);

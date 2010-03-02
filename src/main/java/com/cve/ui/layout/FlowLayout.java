@@ -7,6 +7,7 @@
 package com.cve.ui.layout;
 
 import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.ui.layout.UILayout.Insets;
@@ -143,7 +144,7 @@ public enum Align {
      * @see #getAlignment
      * @see #setAlignment
      */
-    final Align newAlign;       // This is the one we actually use
+    final Align align;       // This is the one we actually use
 
     /**
      * The flow layout manager allows a seperation of
@@ -220,7 +221,7 @@ public enum Align {
     private FlowLayout(Align align, int hgap, int vgap) {
         this.hgap = hgap;
         this.vgap = vgap;
-        this.newAlign = align;
+        this.align = align;
         alignOnBaseline = false;
     }
 
@@ -365,7 +366,7 @@ int moveComponents(
 {
     int x = ix;
     int height = iheight;
-    switch (newAlign) {
+    switch (align) {
         case LEFT:
             x += ltr ? 0 : width;
             break;
@@ -393,7 +394,7 @@ int moveComponents(
                     maxAscent = max(maxAscent, ascent[i]);
                     maxDescent = max(maxDescent, descent[i]);
                 } else {
-                    nonbaselineHeight = max(m.getHeight(),
+                    nonbaselineHeight = max(m.getSize().height,
                                                  nonbaselineHeight);
                 }
             }
@@ -409,14 +410,14 @@ int moveComponents(
             if (useBaseline && ascent[i] >= 0) {
                 cy = y + baselineOffset + maxAscent - ascent[i];
             } else {
-                cy = y + (height - m.getHeight()) / 2;
+                cy = y + (height - m.getSize().height) / 2;
             }
             if (ltr) {
             m.setLocation(x, cy);
             } else {
-            m.setLocation(target.getWidth() - x - m.getWidth(), cy);
+            m.setLocation(target.getSize().width - x - m.getSize().width, cy);
             }
-            x += m.getWidth() + hgap;
+            x += m.getSize().width + hgap;
         }
     }
     return height;
@@ -436,7 +437,7 @@ int moveComponents(
 @Override
 public void layoutContainer(final Container target) {
     Insets insets = target.getInsets();
-    int maxwidth = target.getWidth() - (insets.left + insets.right + hgap*2);
+    int maxwidth = target.getSize().width - (insets.left + insets.right + hgap*2);
     int nmembers = target.getComponents().size();
     int x = 0;
     int y = insets.top + vgap;
@@ -494,7 +495,7 @@ public void layoutContainer(final Container target) {
 }
 
     @Override
-    public void addLayoutComponent(Component comp, Object constraints) {
+    public void addLayoutComponent(Component comp, Constraint constraints) {
 
     }
 
@@ -525,7 +526,7 @@ public void layoutContainer(final Container target) {
     @Override
     public String toString() {
         String str = "";
-        switch (newAlign) {
+        switch (align) {
           case LEFT:        str = ",align=left"; break;
           case CENTER:      str = ",align=center"; break;
           case RIGHT:       str = ",align=right"; break;

@@ -1,6 +1,7 @@
 package com.cve.ui.layout;
 
 import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.ui.layout.UILayout.Insets;
@@ -125,8 +126,8 @@ public class GridLayout2 implements UILayout.Manager {
       }
 	  // scaling factors
       Dimension pd = preferredLayoutSize(parent);
-      double sw = (1.0 * parent.getWidth()) / pd.width;
-      double sh = (1.0 * parent.getHeight()) / pd.height;
+      double sw = (1.0 * parent.getSize().width) / pd.width;
+      double sh = (1.0 * parent.getSize().height) / pd.height;
       // scale
       int[] w = new int[ncols];
       int[] h = new int[nrows];
@@ -166,7 +167,7 @@ public class GridLayout2 implements UILayout.Manager {
     }
 
     @Override
-    public void addLayoutComponent(Component comp, Object constraints) {
+    public void addLayoutComponent(Component comp, Constraint constraints) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

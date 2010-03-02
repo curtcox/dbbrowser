@@ -85,6 +85,20 @@ final class JScrollableFlowPanel extends JPanel implements Scrollable {
         return rv;
     }
 
+    private int getPreferredWidth() {
+        int rv = 0;
+        for (int k = 0, count = getComponentCount(); k < count; k++) {
+            Component comp = getComponent(k);
+            Rectangle r = comp.getBounds();
+            int width = r.x + r.width;
+            if (width > rv) {
+                rv = width;
+            }
+        }
+        rv += ((FlowLayout) getLayout()).getHgap();
+        return rv;
+    }
+
     public static void main( String[] args ) {
 		SwingUtilities.invokeLater(new Runnable() {
             @Override public void run() {

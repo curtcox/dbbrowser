@@ -116,6 +116,7 @@
 package com.cve.ui.layout;
 
 import com.cve.ui.layout.UILayout.Component;
+import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.ui.layout.UILayout.Insets;
@@ -1978,9 +1979,17 @@ int calculateLayoutSize
  */
 
 @Override
-public void addLayoutComponent (String name, Component component)
+public void addLayoutComponent (String string, Component component)
 {
-    addLayoutComponent(component, name);
+    // Create an entry to associate component with its constraints
+    Constraint constraint = TableLayoutConstraints.of((String) string);
+
+    // Add component and constraints to the list
+    entries.put(component,new Entry(component, (TableLayoutConstraints) constraint));
+
+    // Indicate that the cell sizes are not known
+    dirty = true;
+    return;
 }
 
 
@@ -1999,21 +2008,9 @@ public void addLayoutComponent (String name, Component component)
  */
 
 @Override
-public void addLayoutComponent(Component component, Object constraint) {
+public void addLayoutComponent(Component component, Constraint constraint) {
     Check.notNull(component);
     Check.notNull(constraint);
-
-    if (constraint instanceof String) {
-        // Create an entry to associate component with its constraints
-        constraint = TableLayoutConstraints.of((String) constraint);
-
-        // Add component and constraints to the list
-        entries.put(component,new Entry(component, (TableLayoutConstraints) constraint));
-
-        // Indicate that the cell sizes are not known
-        dirty = true;
-        return;
-    }
 
     if (constraint instanceof TableLayoutConstraints) {
         // Add component and constraints to the list
