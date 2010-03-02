@@ -83,8 +83,12 @@ interface Manager {
     void invalidateLayout(Container target);
 }
 
+/**
+ * This is the functional counterpart to Manager.
+ * A large set of Managers can be expressed using only this single method interface.
+ */
 interface Function {
-    ImmutableMap<Component,Bounds> layout(Container container,ImmutableMap<Component,Constraint> constraints);
+    ImmutableMap<Component,Bounds> layout(Container container, Dimension dim, ImmutableMap<Component,Constraint> constraints);
 }
 
 /**
