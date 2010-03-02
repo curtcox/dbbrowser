@@ -1,6 +1,7 @@
 package com.cve.ui.layout;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -18,7 +19,7 @@ import javax.annotation.concurrent.Immutable;
 public interface UILayout {
 
 /**
- * This interface corresponsds to java.awt.LayoutManager2.
+ * This interface corresponds to java.awt.LayoutManager2.
  */
 interface Manager {
 
@@ -82,8 +83,12 @@ interface Manager {
     void invalidateLayout(Container target);
 }
 
+interface Function {
+    ImmutableMap<Component,Bounds> layout(Container container,ImmutableMap<Component,Constraint> constraints);
+}
+
 /**
- * A constraint on how a component is to be layed out.
+ * A constraint on how a component is to be laid out.
  */
 interface Constraint {}
 
@@ -141,11 +146,11 @@ interface Component {
 }
 
 /**
- * This interface represents the methods Managers actually use on the conatiners
+ * This interface represents the methods Managers actually use on the containers
  * they are laying out.  While java.awt.Container extends java.awt.Component,
  * this intentionally does not extends Component.  This is done because apart
  * from getSize(), the methods for layout are entirely different between a
- * conatiner being layed out and its components.  Of course a container could
+ * container being laid out and its components.  Of course a container could
  * well be a component in another container.
  */
 interface Container {
@@ -164,7 +169,7 @@ interface Container {
     Insets getInsets();
 
     /**
-     * Return a list of the components that need to be layed out.
+     * Return a list of the components that need to be laid out.
      */
     ImmutableList<Component> getComponents();
 
@@ -224,6 +229,21 @@ final class Dimension {
 
     static Dimension of(int width, int height) {
         return new Dimension(width,height);
+    }
+}
+
+@Immutable
+final class Bounds {
+    final int x;
+    final int y;
+    final int width;
+    final int height;
+
+    private Bounds(int x, int y,int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 }
 
