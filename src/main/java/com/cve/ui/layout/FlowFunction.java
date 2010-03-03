@@ -184,11 +184,11 @@ Map<Component, Bounds> boundsFor(
  */
 @Override
 public ImmutableMap<Component, Bounds> layout(
-    ImmutableList<Component> components, ImmutableMap<Component, Constraint> constraints, Insets insets, Dimension dim) {
+    ImmutableList<Component> components, ImmutableMap<Component, Constraint> constraints,Dimension dim) {
     Map<Component,Bounds> bounds = Maps.newHashMap();
-    final int maxwidth = dim.width - (insets.left + insets.right + hgap*2);
+    final int maxwidth = dim.width - (hgap*2);
     int x = 0;
-    int y = insets.top + vgap;
+    int y = vgap;
     int rowh = 0;
 
     List<Component> row = Lists.newArrayList();
@@ -199,7 +199,7 @@ public ImmutableMap<Component, Bounds> layout(
         x += d.width + hgap;
         // if there is no more space on this row
         if (x >= maxwidth) {
-            Bounds within = Bounds.of(insets.left + hgap, y,  maxwidth - x, rowh);
+            Bounds within = Bounds.of(hgap, y,  maxwidth - x, rowh);
             bounds.putAll(boundsFor(row.subList(0, row.size()-1),within));
             row.clear();
             row.add(m);
@@ -210,7 +210,7 @@ public ImmutableMap<Component, Bounds> layout(
             rowh = Math.max(rowh, d.height);
         }
     }
-    Bounds within = Bounds.of(insets.left + hgap, y,  maxwidth - x, rowh);
+    Bounds within = Bounds.of(hgap, y,  maxwidth - x, rowh);
     bounds.putAll(boundsFor(row,within));
     return ImmutableMap.copyOf(bounds);
 }

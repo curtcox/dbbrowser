@@ -84,9 +84,10 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
     @Override
     public void layoutContainer(Container parent) {
         ImmutableMap<Component,Bounds> layout = layout(parent);
+        Insets insets = parent.getInsets();
         for (Component component : layout.keySet()) {
             Bounds bounds = layout.get(component); 
-            component.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+            component.setBounds(bounds.x + insets.left, bounds.y + insets.top, bounds.width, bounds.height);
         }
     }
 
@@ -96,8 +97,9 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
         ImmutableList<Component>            componentsNow = ImmutableList.copyOf(components);
         ImmutableMap<Component,Constraint> constraintsNow = ImmutableMap.copyOf(constraints);
         Insets                              insets = parent.getInsets();
+        Dimension sizeMinusInsets = Dimension.of(size.width - insets.left - insets.right, size.height - insets.top - insets.bottom);
         ImmutableMap<Component,Bounds> layout =
-            function.layout(componentsNow, constraintsNow, insets, size);
+            function.layout(componentsNow, constraintsNow, sizeMinusInsets);
         Set<Component> missing = Sets.newHashSet();
 
         missing.addAll(components);
