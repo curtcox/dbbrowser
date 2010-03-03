@@ -118,8 +118,12 @@ static final class AwtContainerAdapter implements UILayout.Container {
         return orientation(container.getComponentOrientation());
     }
 
-
+    @Override
+    public String toString() {
+        return "adapter(" + container +")";
     }
+
+}
 
 static final class AwtComponentAdapter implements UILayout.Component {
 
@@ -175,6 +179,10 @@ static final class AwtComponentAdapter implements UILayout.Component {
         return dimension(component.getSize());
     }
 
+    @Override
+    public String toString() {
+        return "adapter(" + component +")";
+    }
 }
 
     static final UILayout.Constraint constraints(Object o) {

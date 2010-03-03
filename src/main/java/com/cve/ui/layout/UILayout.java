@@ -88,13 +88,20 @@ interface Manager {
  * A large set of Managers can be expressed using only this single method interface.
  */
 interface Function {
-    ImmutableMap<Component,Bounds> layout(Container container, Dimension dim, ImmutableMap<Component,Constraint> constraints);
+    ImmutableMap<Component,Bounds> layout(ImmutableMap<Component,Constraint> constraints, Insets insets, Dimension dim);
 }
 
 /**
  * A constraint on how a component is to be laid out.
  */
-interface Constraint {}
+interface Constraint {
+    static final Constraint NULL = new Constraint() {
+        @Override
+        public String toString() {
+            return "NULL Constraint";
+        }
+    };
+}
 
 /**
  * This interface represents the methods Managers actually use from the
@@ -238,6 +245,7 @@ final class Dimension {
 
 @Immutable
 final class Bounds {
+
     final int x;
     final int y;
     final int width;
@@ -248,6 +256,14 @@ final class Bounds {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public static Bounds of(int x, int y,int width, int height) {
+        return new Bounds(x,y,width,height);
+    }
+
+    public static Bounds of(int x, int y, Dimension size) {
+        return new Bounds(x,y,size.width,size.height);
     }
 }
 
