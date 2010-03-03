@@ -14,9 +14,11 @@ import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.ui.layout.UILayout.Insets;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.util.Collection;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -156,15 +158,15 @@ Map<Component, Bounds> boundsFor(
     final Collection<Component> components, Bounds within)
 {
           int      x = within.x;
-    final int      y = within.y;
+          int      y = within.y;
     final int height = within.height;
     Map<Component, Bounds> bounds = Maps.newHashMap();
     // for every visible component
     for (Component m : components) {
         Dimension size = m.getPreferredSize();
-        int cy = y + (height - size.height) / 2;
+        bounds.put(m, Bounds.of(x,y,size));
+        y = y + (height - size.height) / 2;
         x += size.width + hgap;
-        bounds.put(m, Bounds.of(x,cy,size));
     }
     return bounds;
 }
@@ -181,36 +183,35 @@ Map<Component, Bounds> boundsFor(
  * @see       java.awt.Container#doLayout
  */
 @Override
-public ImmutableMap<Component, Bounds> layout(ImmutableMap<Component, Constraint> constraints, Insets insets, Dimension dim) {
+public ImmutableMap<Component, Bounds> layout(
+    ImmutableList<Component> components, ImmutableMap<Component, Constraint> constraints, Insets insets, Dimension dim) {
     Map<Component,Bounds> bounds = Maps.newHashMap();
-    int maxwidth = dim.width - (insets.left + insets.right + hgap*2);
+    final int maxwidth = dim.width - (insets.left + insets.right + hgap*2);
     int x = 0;
     int y = insets.top + vgap;
     int rowh = 0;
 
-    Collection<Component> components = Lists.newArrayList();
+    List<Component> row = Lists.newArrayList();
     // for every visible component
-    for (Component m : constraints.keySet() ) {
+    for (Component m : components) {
         Dimension d = m.getPreferredSize();
-        components.add(m);
-        // if there is more space on this row
-        if ((x == 0) || ((x + d.width) <= maxwidth)) {
-            if (x > 0) {
-                x += hgap;
-            }
-            x += d.width;
-            rowh = Math.max(rowh, d.height);
-        } else { // else finish the row
+        row.add(m);
+        x += d.width + hgap;
+        // if there is no more space on this row
+        if (x >= maxwidth) {
             Bounds within = Bounds.of(insets.left + hgap, y,  maxwidth - x, rowh);
-            components.clear();
-            bounds.putAll(boundsFor(components,within));
-            x = d.width;
+            bounds.putAll(boundsFor(row.subList(0, row.size()-1),within));
+            row.clear();
+            row.add(m);
+            x = d.width + hgap;
             y += vgap + rowh;
             rowh = d.height;
+        } else {
+            rowh = Math.max(rowh, d.height);
         }
     }
     Bounds within = Bounds.of(insets.left + hgap, y,  maxwidth - x, rowh);
-    bounds.putAll(boundsFor(components,within));
+    bounds.putAll(boundsFor(row,within));
     return ImmutableMap.copyOf(bounds);
 }
 

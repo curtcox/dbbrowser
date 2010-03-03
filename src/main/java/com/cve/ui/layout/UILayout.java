@@ -88,7 +88,7 @@ interface Manager {
  * A large set of Managers can be expressed using only this single method interface.
  */
 interface Function {
-    ImmutableMap<Component,Bounds> layout(ImmutableMap<Component,Constraint> constraints, Insets insets, Dimension dim);
+    ImmutableMap<Component,Bounds> layout(ImmutableList<Component> components, ImmutableMap<Component,Constraint> constraints, Insets insets, Dimension dim);
 }
 
 /**

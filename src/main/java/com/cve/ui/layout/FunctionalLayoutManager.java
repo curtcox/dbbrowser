@@ -8,6 +8,7 @@ import com.cve.ui.layout.UILayout.Dimension;
 import com.cve.ui.layout.UILayout.Insets;
 import com.cve.ui.layout.UILayout.Manager;
 import com.cve.util.Check;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -92,12 +93,14 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
     ImmutableMap<Component,Bounds> layout(Container parent) {
         validate(parent);
         Dimension size = parent.getSize();
-        ImmutableMap<Component,Constraint> current = ImmutableMap.copyOf(constraints);
+        ImmutableList<Component>            componentsNow = ImmutableList.copyOf(components);
+        ImmutableMap<Component,Constraint> constraintsNow = ImmutableMap.copyOf(constraints);
         Insets                              insets = parent.getInsets();
-        ImmutableMap<Component,Bounds> layout = function.layout(current, insets, size);
+        ImmutableMap<Component,Bounds> layout =
+            function.layout(componentsNow, constraintsNow, insets, size);
         Set<Component> missing = Sets.newHashSet();
 
-        missing.addAll(current.keySet());
+        missing.addAll(components);
         missing.removeAll(layout.keySet());
         if (!missing.isEmpty()) {
             String message = "Missing " + missing;
@@ -106,7 +109,7 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
 
         Set<Component> extra = Sets.newHashSet();
         extra.addAll(layout.keySet());
-        extra.removeAll(current.keySet());
+        extra.removeAll(components);
         if (!extra.isEmpty()) {
             String message = "Extra " + extra;
             throw new IllegalStateException(message);
