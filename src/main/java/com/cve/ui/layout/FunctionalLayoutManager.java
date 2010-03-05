@@ -24,10 +24,19 @@ import java.util.Set;
  */
 public final class FunctionalLayoutManager implements UILayout.Manager {
 
+    /**
+     * The function that will be used
+     */
     final UILayout.Function function;
 
+    /**
+     * The components of the container being laid out
+     */
     final List<Component> components = Lists.newArrayList();
 
+    /**
+     * The constraints to give the function
+     */
     final Map<Component,Constraint> constraints = Maps.newHashMap();
 
     private FunctionalLayoutManager(UILayout.Function function) {
@@ -86,37 +95,56 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
         ImmutableMap<Component,Bounds> layout = layout(parent);
         Insets insets = parent.getInsets();
         for (Component component : layout.keySet()) {
-            Bounds bounds = layout.get(component); 
-            component.setBounds(bounds.x + insets.left, bounds.y + insets.top, bounds.width, bounds.height);
+            Bounds bounds = layout.get(component);
+            Component writable = ((ReadOnlyComponent) component).inner;
+            writable.setBounds(bounds.x + insets.left, bounds.y + insets.top, bounds.width, bounds.height);
         }
     }
 
     ImmutableMap<Component,Bounds> layout(Container parent) {
         validate(parent);
         Dimension size = parent.getSize();
-        ImmutableList<Component>            componentsNow = ImmutableList.copyOf(components);
-        ImmutableMap<Component,Constraint> constraintsNow = ImmutableMap.copyOf(constraints);
+        ImmutableList<Component>            componentsNow = readOnly(components);
+        ImmutableMap<Component,Constraint> constraintsNow = readOnly(constraints);
         Insets                              insets = parent.getInsets();
         Dimension sizeMinusInsets = Dimension.of(size.width - insets.left - insets.right, size.height - insets.top - insets.bottom);
         ImmutableMap<Component,Bounds> layout =
             function.layout(componentsNow, constraintsNow, sizeMinusInsets);
         Set<Component> missing = Sets.newHashSet();
 
-        missing.addAll(components);
+        missing.addAll(componentsNow);
         missing.removeAll(layout.keySet());
         if (!missing.isEmpty()) {
-            String message = "Missing " + missing;
+            String message = "Missing components " + missing;
             throw new IllegalStateException(message);
         }
 
         Set<Component> extra = Sets.newHashSet();
         extra.addAll(layout.keySet());
-        extra.removeAll(components);
+        extra.removeAll(componentsNow);
         if (!extra.isEmpty()) {
-            String message = "Extra " + extra;
+            String message = "Extra components " + extra;
             throw new IllegalStateException(message);
         }
         return layout;
+    }
+
+    ImmutableList<Component> readOnly(List<Component> components) {
+        List<Component> copy = Lists.newArrayList();
+        for (Component component : components) {
+            copy.add(readOnly(component));
+        }
+        return ImmutableList.copyOf(copy);
+    }
+
+    ImmutableMap<Component,Constraint> readOnly(Map<Component,Constraint> components) {
+        Map<Component,Constraint> copy = Maps.newHashMap();
+        for (Component component : components.keySet()) {
+            Component key = readOnly(component);
+            Constraint value = components.get(component);
+            copy.put(key, value);
+        }
+        return ImmutableMap.copyOf(copy);
     }
 
     void validate(Container container) {
@@ -143,5 +171,45 @@ public final class FunctionalLayoutManager implements UILayout.Manager {
     public void invalidateLayout(Container target) {
         // the function should be stateless
     }
+
+    final Map<Component,ReadOnlyComponent> readOnly = Maps.newHashMap();
+    ReadOnlyComponent readOnly(Component component) {
+        ReadOnlyComponent wrapper = readOnly.get(component);
+        if (wrapper!=null) {
+            return wrapper;
+        }
+        wrapper = ReadOnlyComponent.of(component);
+        readOnly.put(component, wrapper);
+        return wrapper;
+    }
+
+/**
+ * We give functions wrapped components, to make sure they don't update them.
+ */
+private static final class ReadOnlyComponent implements Component {
+
+    final Component inner;
+
+    ReadOnlyComponent(Component component) {
+        inner = Check.notNull(component);
+    }
+
+    static ReadOnlyComponent of(Component component) {
+        return new ReadOnlyComponent(component);
+    }
+
+    // Getters are OK
+    @Override public Dimension getSize()          { return inner.getSize(); }
+    @Override public boolean isVisible()          { return inner.isVisible();  }
+    @Override public Dimension getPreferredSize() { return inner.getPreferredSize(); }
+    @Override public Dimension getMinimumSize()   { return inner.getMinimumSize(); }
+    @Override public int getBaseline(int width, int height) { return inner.getBaseline(width, height);  }
+    // Setters are forbidden
+    @Override public void setSize(int width, int height)                 { throw new UnsupportedOperationException(); }
+    @Override public void setLocation(int x, int cy)                     { throw new UnsupportedOperationException(); }
+    @Override public void setBounds(int x, int y, int width, int height) { throw new UnsupportedOperationException(); }
+    @Override public String toString() {  return "readOnly(" + inner +")";  }
+
+}
 
 }

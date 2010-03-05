@@ -13,7 +13,6 @@ import com.cve.ui.layout.UILayout.Component;
 import com.cve.ui.layout.UILayout.Constraint;
 import com.cve.ui.layout.UILayout.Container;
 import com.cve.ui.layout.UILayout.Dimension;
-import com.cve.ui.layout.UILayout.Insets;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

@@ -185,31 +185,31 @@ static final class AwtComponentAdapter implements UILayout.Component {
     }
 }
 
-    static final UILayout.Constraint constraints(Object o) {
+    static UILayout.Constraint constraints(Object o) {
         return (UILayout.Constraint) o;
     }
 
-    static final UILayout.Component component(Component comp) {
+    static UILayout.Component component(Component comp) {
         return AwtComponentAdapter.of(comp);
     }
 
-    static final UILayout.Container container(Container container) {
+    static UILayout.Container container(Container container) {
         return AwtContainerAdapter.of(container);
     }
 
-    static final Dimension dimension(UILayout.Dimension dim) {
+    static Dimension dimension(UILayout.Dimension dim) {
         return new Dimension(dim.width,dim.height);
     }
 
-    static final UILayout.Dimension dimension(Dimension dim) {
+    static UILayout.Dimension dimension(Dimension dim) {
         return UILayout.Dimension.of(dim.width,dim.height);
     }
 
-    static final UILayout.Insets insets(java.awt.Insets insets) {
+    static UILayout.Insets insets(java.awt.Insets insets) {
         return UILayout.Insets.of(insets.top,insets.bottom,insets.left,insets.right);
     }
 
-    static final UILayout.Orientation orientation(java.awt.ComponentOrientation orientation) {
+    static UILayout.Orientation orientation(java.awt.ComponentOrientation orientation) {
         return UILayout.Orientation.of(orientation.isLeftToRight());
     }
 

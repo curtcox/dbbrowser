@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import org.jdesktop.swingx.JXHyperlink;
@@ -88,7 +89,7 @@ final class SwingUIConstructor implements UIConstructor {
 
     @Override
     public JPanel page(UIPage page) {
-        JScrollableFlowPanel panel = new JScrollableFlowPanel();
+        JPanel panel = new JPanel();
         panel.setBorder(RED_LINE);
         for (UIElement element : page.items) {
             panel.add(construct(element));
@@ -98,7 +99,7 @@ final class SwingUIConstructor implements UIConstructor {
 
     @Override
     public JPanel composite(UIComposite composite) {
-        JScrollableFlowPanel panel = new JScrollableFlowPanel();
+        JPanel panel = new JPanel();
         panel.setBorder(WHITE_LINE);
         for (UIElement element : composite.items) {
             panel.add(construct(element));

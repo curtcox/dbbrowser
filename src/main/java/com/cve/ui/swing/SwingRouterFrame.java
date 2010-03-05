@@ -2,6 +2,7 @@ package com.cve.ui.swing;
 
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
+import com.cve.ui.UIPage;
 import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstants;
@@ -34,6 +35,7 @@ import java.util.concurrent.FutureTask;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
@@ -47,7 +49,7 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
     final JButton             back = new JButton("<");
     final JButton           reload = new JButton("@");
     final JComboBox        address = new JComboBox();
-    final JScrollableFlowPanel page = new JScrollableFlowPanel();
+    final JPanel              page = new JPanel();
     final JScrollPane   scrollPage = new JScrollPane(page);
 
     final RequestHandler handler;
@@ -98,15 +100,19 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         }
         Model model = response.model;
         ClientInfo info = ClientInfo.of();
-        setPage(renderer.render(model, info));
+        UIElement element = renderer.render(model, info);
+        UIPage pageUI = (element instanceof UIPage)
+            ? (UIPage) element
+            : UIPage.of(element);
+        setPage(pageUI);
         setAddress(request.fullURI);
         setVisible(true);
     }
 
-    void setPage(UIElement e) {
+    void setPage(UIPage p) {
         page.removeAll();
         SwingUIConstructor constructor = SwingUIConstructor.of(this);
-        page.add(constructor.construct(e));
+        page.add(constructor.construct(p));
     }
     
     void setAddress(URI uri) {

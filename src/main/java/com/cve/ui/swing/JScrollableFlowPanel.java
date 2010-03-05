@@ -42,7 +42,7 @@ final class JScrollableFlowPanel extends JPanel implements Scrollable {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(getWidth(), getPreferredHeight());
+        return new Dimension(getPreferredWidth(), getPreferredHeight());
     }
 
     @Override
