@@ -33,7 +33,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,16 +40,17 @@ import javax.swing.UIManager;
 
 /**
  * Swing client for WebApps.
+ * This is the top-level client that is equivalent to a web browser.
  * @author Curt
  */
 public final class SwingRouterFrame extends JFrame implements PageViewer {
 
-    final JButton          forward = new JButton(">");
-    final JButton             back = new JButton("<");
-    final JButton           reload = new JButton("@");
-    final JComboBox        address = new JComboBox();
-    final JPanel              page = new JPanel();
-    final JScrollPane   scrollPage = new JScrollPane(page);
+    final JButton            forward = new JButton(">");
+    final JButton               back = new JButton("<");
+    final JButton             reload = new JButton("@");
+    final JFilteringComboBox address = new JFilteringComboBox();
+    final JPanel                page = new JPanel();
+    final JScrollPane     scrollPage = new JScrollPane(page);
 
     final RequestHandler handler;
     final ModelHtmlRenderer renderer;
@@ -60,6 +60,7 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         this.handler = Check.notNull(webApp.handler);
         this.renderer = Check.notNull(webApp.renderer);
         layoutComponents();
+        configureComponents();
         addListeners();
     }
 
@@ -116,7 +117,10 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
     }
     
     void setAddress(URI uri) {
-
+        if (!address.items.contains(uri)) {
+            address.addItem(uri);
+        }
+        address.model.setSelectedItem(uri);
     }
 
     @Override
@@ -171,14 +175,19 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         setLayout(AwtLayoutAdapter.of(TableLayout.of(cols,rows)));
         int NAV = 1;
         int PAGE = 2;
-        add(forward,    TableLayoutConstraints.of(1, NAV));
-        add(back,       TableLayoutConstraints.of(2, NAV));
+        add(back,       TableLayoutConstraints.of(1, NAV));
+        add(forward,    TableLayoutConstraints.of(2, NAV));
         add(address,    TableLayoutConstraints.of(3, NAV));
         add(reload,     TableLayoutConstraints.of(4, NAV));
         add(scrollPage, TableLayoutConstraints.of(1, PAGE, 4, PAGE));
     }
 
+    private void configureComponents() {
+        address.setEditable(true);
+    }
+
     private void addListeners() {
+
     }
 
 }

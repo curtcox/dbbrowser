@@ -79,6 +79,12 @@
         </dependency>
 
         <dependency>
+            <groupId>net.java.dev.glazedlists </groupId>
+            <artifactId>glazedlists_java15 </artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>swt</artifactId>
             <version>3.3.0-v3346</version>
