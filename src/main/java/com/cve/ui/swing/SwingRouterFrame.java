@@ -40,6 +40,7 @@ import javax.swing.UIManager;
 
 /**
  * Swing client for WebApps.
+ * <p>
  * This is the top-level client that is equivalent to a web browser.
  * @author Curt
  */
