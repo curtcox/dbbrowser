@@ -1,6 +1,7 @@
 package com.cve.ui.swing;
 
 import com.cve.ui.PageViewer;
+import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
 import com.cve.ui.layout.AwtLayoutAdapter;
@@ -27,12 +28,15 @@ import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -42,18 +46,62 @@ import javax.swing.UIManager;
  * Swing client for WebApps.
  * <p>
  * This is the top-level client that is equivalent to a web browser.
+ * This is a single-tabbed browser that displays a single URL at a time.
+ * Despite that fact, there are several visual components.
+ * <ol>
+ * <li> Navigation -- address, forward, back, reload
+ * <li> Page -- the page itself
+ * <li> Call tree -- How the page was produced on the "server".
+ * Of course the "server" is in this JVM.
+ * If the page contains a link to the call tree, that link will be used
+ * to obtain call tree information.
+ * <li> UI Tree -- the user interface elements being used to display the page.
+ * <ol>
  * @author Curt
  */
-public final class SwingRouterFrame extends JFrame implements PageViewer {
+public final class SwingRouterFrame
+    extends JFrame
+    implements PageViewer
+{
+    // Most of our mutable state is logically confined to the browse method,
+    // but we keep instance variables around here, for the debugging buttons.
+    PageRequest request;
+    PageResponse response;
+    Model model;
+    ClientInfo info;
+    UIPage pageUI;
 
-    final JButton            forward = new JButton(">");
-    final JButton               back = new JButton("<");
-    final JButton             reload = new JButton("@");
-    final JFilteringComboBox address = new JFilteringComboBox();
-    final JPanel                page = new JPanel();
-    final JScrollPane     scrollPage = new JScrollPane(page);
+    /**
+     * The component corresponding to the page that we are currently displaying.
+     */
+    JComponent pageComponent;
 
+    /**
+     * For creating page components.
+     */
+    final UIConstructor constructor = SwingUIConstructor.of(this);
+
+    // the swing UI components
+    final JButton             forward = new JButton(">");
+    final JButton                back = new JButton("<");
+    final JButton              reload = new JButton("@");
+    final JButton       requestButton = new JButton("1");
+    final JButton      responseButton = new JButton("2");
+    final JButton         modelButton = new JButton("3");
+    final JButton        pageUIButton = new JButton("4");
+    final JButton pageComponentButton = new JButton("5");
+    final JFilteringComboBox  address = new JFilteringComboBox();
+    final JPanel                 page = new JPanel();
+    final JScrollPane      scrollPage = new JScrollPane(page);
+
+    /**
+     * Turns any page requests we get into pages.
+     */
     final RequestHandler handler;
+
+    /**
+     * Turns pages into UI.
+     */
     final ModelHtmlRenderer renderer;
 
     private SwingRouterFrame(WebApp webApp) {
@@ -87,23 +135,23 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
     @Override
     public void browse(final PageRequest request) {
         EventQueue.invokeLater(new Runnable(){
-            @Override
-            public void run() {
+            @Override public void run() {
                 doBrowse(request);
             }
         });
     }
 
     void doBrowse(PageRequest request) {
-        PageResponse response = handler.produce(request);
+        this.request = Check.notNull(request);
+        response = handler.produce(request);
         if (response.redirect!=null) {
             browse(response.redirect);
             return;
         }
-        Model model = response.model;
-        ClientInfo info = ClientInfo.of();
+        model = response.model;
+        info = ClientInfo.of();
         UIElement element = renderer.render(model, info);
-        UIPage pageUI = (element instanceof UIPage)
+        pageUI = (element instanceof UIPage)
             ? (UIPage) element
             : UIPage.of(element);
         setPage(pageUI);
@@ -111,10 +159,10 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         setVisible(true);
     }
 
-    void setPage(UIPage p) {
+    void setPage(UIPage uiPage) {
         page.removeAll();
-        SwingUIConstructor constructor = SwingUIConstructor.of(this);
-        page.add(constructor.construct(p));
+        pageComponent = (JComponent) constructor.construct(uiPage);
+        page.add(pageComponent);
     }
     
     void setAddress(URI uri) {
@@ -129,13 +177,10 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         browse(PageRequest.of(uri));
     }
 
-    public static void main(String[] args) throws Exception {
-        // Without this, VNC doesn't update Swing windows properly.
-        System.setProperty("sun.java2d.noddraw","true");
-        // Without this, we would currently default to Ocean
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+
+    static RequestHandler newRequestHandler() {
         RequestHandler management = ManagementHandler.of();
-        RequestHandler handler = ErrorReportHandler.of(
+        return ErrorReportHandler.of(
             DebugHandler.of(
                 CompositeRequestHandler.of(
                     CoreServerHandler.of(),
@@ -144,19 +189,29 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
                 )
             )
         );
-        ModelHtmlRenderer renderer = CompositeModelHtmlRenderer.of(
+    }
+
+    static ModelHtmlRenderer newModelHtmlRenderer() {
+        return CompositeModelHtmlRenderer.of(
             ManagementModelHtmlRenderers.of(),
             GlobalHtmlRenderers.of()
         );
+    }
+
+    public static void main(String[] args) throws Exception {
+        // Without this, VNC doesn't update Swing windows properly.
+        System.setProperty("sun.java2d.noddraw","true");
+        // Without this, we would currently default to Ocean
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         try {
-            of(WebApp.of(handler,renderer)).browse(URIs.of("/"));
+            of(WebApp.of(newRequestHandler(),newModelHtmlRenderer())).browse(URIs.of("/"));
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
         }
     }
 
-    private void layoutComponents() {
+    void layoutComponents() {
         int x = 100;
         int y = 100;
         int w = 800;
@@ -170,25 +225,60 @@ public final class SwingRouterFrame extends JFrame implements PageViewer {
         double FILL = TableLayoutConstants.FILL;
         int W = 50;
         int H = 50;
-        double[] cols = {border, W, W, FILL, W, border};
+        //                       <  >        @  1  2  3  4  5
+        double[] cols = {border, W, W, FILL, W, W, W, W, W, W, border};
         double[] rows = {border, H, FILL, border};
 
         setLayout(AwtLayoutAdapter.of(TableLayout.of(cols,rows)));
         int NAV = 1;
         int PAGE = 2;
-        add(back,       TableLayoutConstraints.of(1, NAV));
-        add(forward,    TableLayoutConstraints.of(2, NAV));
-        add(address,    TableLayoutConstraints.of(3, NAV));
-        add(reload,     TableLayoutConstraints.of(4, NAV));
-        add(scrollPage, TableLayoutConstraints.of(1, PAGE, 4, PAGE));
+        add(back,                TableLayoutConstraints.of(1, NAV));
+        add(forward,             TableLayoutConstraints.of(2, NAV));
+        add(address,             TableLayoutConstraints.of(3, NAV));
+        add(reload,              TableLayoutConstraints.of(4, NAV));
+        add(requestButton,       TableLayoutConstraints.of(5, NAV));
+        add(responseButton,      TableLayoutConstraints.of(6, NAV));
+        add(modelButton,         TableLayoutConstraints.of(7, NAV));
+        add(pageUIButton,        TableLayoutConstraints.of(8, NAV));
+        add(pageComponentButton, TableLayoutConstraints.of(9, NAV));
+        add(scrollPage, TableLayoutConstraints.of(1, PAGE, 9, PAGE));
     }
 
-    private void configureComponents() {
+    void configureComponents() {
         address.setEditable(true);
     }
 
-    private void addListeners() {
+    void addListeners() {
+        // delegate each button to a method
+                    forward.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { forward();  }});
+                       back.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { back();     }});
+                     reload.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { reload();   }});
+              requestButton.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { showRequest();  }});
+             responseButton.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { showResponse(); }});
+                modelButton.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { showModel();         }});
+               pageUIButton.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { showPageUI();        }});
+        pageComponentButton.addActionListener(new ActionListener() { @Override public void actionPerformed(ActionEvent e) { showPageComponent(); }});
+    }
+
+    void forward() {
 
     }
 
+    void back() {
+
+    }
+
+    void reload() {
+
+    }
+
+    void       showRequest() { showNewFor(request);       }
+    void      showResponse() { showNewFor(response);      }
+    void         showModel() { showNewFor(model);         }
+    void        showPageUI() { showNewFor(pageUI);        }
+    void showPageComponent() { showNewFor(pageComponent); }
+
+    void showNewFor(Object o) {
+        
+    }
 }

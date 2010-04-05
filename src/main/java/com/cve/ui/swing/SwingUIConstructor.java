@@ -1,6 +1,7 @@
 package com.cve.ui.swing;
 
 import com.cve.ui.PageViewer;
+import com.cve.ui.PrintPageViewer;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
@@ -12,17 +13,14 @@ import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.util.Check;
-import com.cve.web.core.PageRequest;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
-import java.net.URI;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import org.jdesktop.swingx.JXHyperlink;
@@ -34,6 +32,10 @@ import org.jdesktop.swingx.hyperlink.AbstractHyperlinkAction;
  */
 final class SwingUIConstructor implements UIConstructor {
 
+    /**
+     * This is used to display a new page, when the user follows a link or
+     * submits a form.
+     */
     final PageViewer pageViewer;
 
     static final Border GREEN_LINE     = BorderFactory.createLineBorder(Color.GREEN);
@@ -55,7 +57,11 @@ final class SwingUIConstructor implements UIConstructor {
     }
 
     @Override
-    public JComponent construct(UIElement e) {
+    public JPanel construct(UIPage page) {
+        return page(page);
+    }
+
+    JComponent construct(UIElement e) {
         if (e instanceof UILink)        { return link((UILink) e);  }
         if (e instanceof UILabel)       { return label((UILabel) e);  }
         if (e instanceof UIPage)        { return page((UIPage) e);   }
@@ -67,7 +73,7 @@ final class SwingUIConstructor implements UIConstructor {
         throw new IllegalArgumentException(message);
     }
 
-    public JXHyperlink link(final UILink link) {
+    JXHyperlink link(final UILink link) {
         AbstractHyperlinkAction linkAction = new AbstractHyperlinkAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,15 +86,13 @@ final class SwingUIConstructor implements UIConstructor {
         return hyperlink;
     }
 
-    @Override
-    public JLabel label(UILabel label) {
+    JLabel label(UILabel label) {
         JLabel jLabel = new JLabel(label.value);
         jLabel.setBorder(GREEN_LINE);
         return jLabel;
     }
 
-    @Override
-    public JPanel page(UIPage page) {
+    JPanel page(UIPage page) {
         JPanel panel = new JPanel();
         panel.setBorder(RED_LINE);
         for (UIElement element : page.items) {
@@ -97,8 +101,7 @@ final class SwingUIConstructor implements UIConstructor {
         return panel;
     }
 
-    @Override
-    public JPanel composite(UIComposite composite) {
+    JPanel composite(UIComposite composite) {
         JPanel panel = new JPanel();
         panel.setBorder(WHITE_LINE);
         for (UIElement element : composite.items) {
@@ -115,8 +118,7 @@ final class SwingUIConstructor implements UIConstructor {
         return construct(tableHeader.element);
     }
 
-    @Override
-    public SwingUITable table(UITable table) {
+    SwingUITable table(UITable table) {
         return SwingUITable.of(table,this);
     }
 
@@ -128,6 +130,9 @@ final class SwingUIConstructor implements UIConstructor {
         });
     }
 
+    /**
+     * Show a widget gallery of all we produce.
+     */
     static void showAllElements() {
         JFrame frame = new JFrame();
         JPanel panel = new JPanel();
@@ -140,21 +145,10 @@ final class SwingUIConstructor implements UIConstructor {
             UILabel.of("Label"),
             table.build()
         );
-        PageViewer pageViewer = new PageViewer() {
-            @Override
-            public void browse(PageRequest request) {
-                System.out.println("Requested " + request);
-            }
-
-            @Override
-            public void browse(URI uri) {
-                System.out.println("Requested " + uri);
-            }
-        };
+        PageViewer pageViewer = PrintPageViewer.of();
         panel.add(SwingUIConstructor.of(pageViewer).construct(ui));
         frame.setVisible(true);
         frame.setSize(800,800);
     }
-
 
 }

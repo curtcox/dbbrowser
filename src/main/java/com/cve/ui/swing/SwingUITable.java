@@ -40,7 +40,7 @@ final class SwingUITable extends JPanel {
      static final int MATTE_WIDTH = 2;
      static final Border MATTE          = BorderFactory.createMatteBorder(MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, (Color) null);
 
-     private SwingUITable(UITable table, UIConstructor constructor) {
+     private SwingUITable(UITable table, SwingUIConstructor constructor) {
         setLayout(tableLayout(table));
         int r = 0;
         for (UITableRow row : table.rows) {
@@ -70,7 +70,7 @@ final class SwingUITable extends JPanel {
         return AwtLayoutAdapter.of(TableLayout.of(maxCols,table.rows.size()));
      }
 
-     static SwingUITable of(UITable table, UIConstructor constructor) {
+     static SwingUITable of(UITable table, SwingUIConstructor constructor) {
          return new SwingUITable(table,constructor);
      }
 

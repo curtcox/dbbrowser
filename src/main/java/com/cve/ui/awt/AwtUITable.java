@@ -1,7 +1,6 @@
 package com.cve.ui.awt;
 
 import com.cve.ui.PageViewer;
-import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
 import com.cve.ui.UITable;
@@ -20,8 +19,6 @@ import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.Panel;
 import java.net.URI;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 /**
  *
@@ -29,7 +26,7 @@ import javax.swing.JPanel;
  */
 final class AwtUITable extends Panel {
 
-     private AwtUITable(UITable table, UIConstructor constructor) {
+     private AwtUITable(UITable table, AwtUIConstructor constructor) {
         setLayout(tableLayout(table));
         int r = 0;
         for (UITableRow row : table.rows) {
@@ -56,7 +53,7 @@ final class AwtUITable extends Panel {
         return AwtLayoutAdapter.of(TableLayout.of(maxCols,table.rows.size()));
      }
 
-     static AwtUITable of(UITable table, UIConstructor constructor) {
+     static AwtUITable of(UITable table, AwtUIConstructor constructor) {
          return new AwtUITable(table,constructor);
      }
 
