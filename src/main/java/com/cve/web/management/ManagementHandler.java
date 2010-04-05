@@ -11,8 +11,14 @@ import com.cve.web.core.handlers.PrefixMapRequestHandler;
  */
 public final class ManagementHandler implements RequestHandler {
 
-    private final RequestHandler handler;
+    /**
+     * Maps to our parts based on prefix.
+     */
+    final RequestHandler handler;
 
+    /**
+     * Use the factory.
+     */
     private ManagementHandler() {
         handler = PrefixMapRequestHandler.of(
         // for URLs of the form

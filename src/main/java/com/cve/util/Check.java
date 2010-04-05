@@ -1,5 +1,7 @@
 package com.cve.util;
 
+import java.awt.EventQueue;
+
 /**
  * For checking method praramters.
  */
@@ -25,6 +27,13 @@ public final class Check {
             throw new IllegalArgumentException(message);
         }
         return i;
+    }
+
+    public static void isEDT() {
+        if (!EventQueue.isDispatchThread()) {
+            String message = "This should only be done from the EDT.";
+            throw new IllegalThreadStateException(message);
+        }
     }
 
 }

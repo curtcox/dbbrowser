@@ -13,6 +13,9 @@ import com.cve.web.core.PageRequest;
  */
 public final class SingleObjectBrowserHandler extends AbstractRequestHandler {
 
+    /**
+     * The object we can browse.
+     */
     final Object target;
 
     private SingleObjectBrowserHandler(Object target) {

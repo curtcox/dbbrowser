@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.ui.util.URIHistory;
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIConstructor;
 import com.cve.ui.UIElement;
@@ -23,6 +24,7 @@ import com.cve.web.core.handlers.DebugHandler;
 import com.cve.web.core.handlers.ErrorReportHandler;
 import com.cve.web.core.renderers.CompositeModelHtmlRenderer;
 import com.cve.web.core.renderers.GlobalHtmlRenderers;
+import com.cve.web.management.LogCodec;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
@@ -81,6 +83,11 @@ public final class SwingRouterFrame
      */
     final UIConstructor constructor = SwingUIConstructor.of(this);
 
+    /**
+     * For forward and back buttons.
+     */
+    final URIHistory history = URIHistory.of();
+
     // the swing UI components
     final JButton             forward = new JButton(">");
     final JButton                back = new JButton("<");
@@ -113,6 +120,14 @@ public final class SwingRouterFrame
         addListeners();
     }
 
+    /**
+     * Return a new frame like this one.
+     */
+    SwingRouterFrame from() {
+        WebApp webApp = WebApp.of(handler, renderer);
+        return new SwingRouterFrame(webApp);
+    }
+
     public static SwingRouterFrame of(final WebApp webApp) {
         try {
             FutureTask task = new FutureTask(new Callable(){
@@ -136,13 +151,19 @@ public final class SwingRouterFrame
     public void browse(final PageRequest request) {
         EventQueue.invokeLater(new Runnable(){
             @Override public void run() {
-                doBrowse(request);
+                setPageRequest(request);
+                history.follow(request.fullURI);
             }
         });
     }
 
-    void doBrowse(PageRequest request) {
+    /**
+     * All of the browse, forward, back, and reload
+     * methods are eventually processed here.
+     */
+    void setPageRequest(PageRequest request) {
         this.request = Check.notNull(request);
+        Check.isEDT();
         response = handler.produce(request);
         if (response.redirect!=null) {
             browse(response.redirect);
@@ -204,7 +225,8 @@ public final class SwingRouterFrame
         // Without this, we would currently default to Ocean
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         try {
-            of(WebApp.of(newRequestHandler(),newModelHtmlRenderer())).browse(URIs.of("/"));
+            WebApp webApp = WebApp.of(newRequestHandler(),newModelHtmlRenderer());
+            of(webApp).browse(URIs.of("/"));
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
@@ -261,15 +283,17 @@ public final class SwingRouterFrame
     }
 
     void forward() {
-
+        URI uri = history.forward();
+        setPageRequest(PageRequest.of(uri));
     }
 
     void back() {
-
+        URI uri = history.back();
+        setPageRequest(PageRequest.of(uri));
     }
 
     void reload() {
-
+        setPageRequest(PageRequest.of(request.fullURI));
     }
 
     void       showRequest() { showNewFor(request);       }
@@ -279,6 +303,9 @@ public final class SwingRouterFrame
     void showPageComponent() { showNewFor(pageComponent); }
 
     void showNewFor(Object o) {
-        
+        Check.isEDT();
+        URI uri = LogCodec.of().encode(o);
+        SwingRouterFrame frame = from();
+        frame.browse(uri);
     }
 }

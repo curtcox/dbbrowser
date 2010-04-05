@@ -12,6 +12,11 @@ import java.net.URI;
  */
 public final class LogCodec {
 
+    /**
+     * The URL we use for null.
+     */
+    static final String NULL_OBJECT = "/object/null";
+
     private LogCodec() {}
 
     public static LogCodec of() {
@@ -26,6 +31,9 @@ public final class LogCodec {
      * Return a labeled link to the given object.
      */
     public URI encode(Object object) {
+        if (object==null) {
+            return URIs.of(NULL_OBJECT);
+        }
         if (object instanceof Class) {
             Class c = (Class) object;
             return URIs.of("/object/" + urlFragment(c));
@@ -35,7 +43,11 @@ public final class LogCodec {
     }
 
     public Object decode(URI uri) {
-        String tail = uri.toString().substring("/object/".length());
+        String uriString = uri.toString();
+        if (uriString.equals(NULL_OBJECT)) {
+            return null;
+        }
+        String tail = uriString.substring("/object/".length());
         // is it an object?
         try {
             String hex  = Strings.afterLast(tail,"/");
@@ -57,6 +69,7 @@ public final class LogCodec {
      */
     static String urlFragment(Class c) {
         return c.getName().replace(".", "/")
+                          .replace("[B", "")
                           .replace("[L", "");
     }
 
