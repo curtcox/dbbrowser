@@ -114,12 +114,18 @@ final class SwingUIConstructor implements UIConstructor {
         return panel;
     }
 
-    JPanel taskPane(UITaskPane composite) {
+    JPanel taskPane(UITaskPane pane) {
         JXTaskPaneContainer tasks = new JXTaskPaneContainer();
         tasks.setBorder(WHITE_LINE);
-        for (UIElement element : composite.items) {
+        for (int i=0; i<pane.items.size(); i++) {
             JXTaskPane task = new JXTaskPane();
-            task.add(construct(element));
+            task.setAnimated(false);
+            UIElement title = pane.heading.get(i);
+            String titleString = null;
+            if (title instanceof UILabel) { titleString = ((UILabel) title).value; }
+            if (title instanceof UILink)  { titleString = ((UILink)  title).text;  }
+            task.setTitle(titleString);
+            task.add(construct(pane.items.get(i)));
             tasks.add(task);
         }
         return tasks;

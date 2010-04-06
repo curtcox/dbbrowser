@@ -5,16 +5,32 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 /**
- * A composite UI element.
+ * A generic accordian control.
+ * The Swing implementation is JXTaskPane.
  * @author Curt
  */
 public final class UITaskPane implements UIElement {
 
     private final String html;
 
+    public final ImmutableList<UIElement> heading;
     public final ImmutableList<UIElement> items;
 
-    private UITaskPane(List<UIElement> items) {
+    private UITaskPane(List<UIElement> all) {
+        if ((all.size() % 2) != 0) {
+            throw new IllegalArgumentException();
+        }
+        List<UIElement> heading = Lists.newArrayList();
+        List<UIElement> items   = Lists.newArrayList();
+        for (int i=0; i<all.size(); i++) {
+            UIElement e = all.get(i);
+            if (i % 2 == 0) {
+                heading.add(e);
+            } else {
+                items.add(e);
+            }
+        }
+        this.heading = ImmutableList.copyOf(heading);
         this.items = ImmutableList.copyOf(items);
         html = toHTML(items);
     }
