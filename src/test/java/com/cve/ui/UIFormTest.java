@@ -1,6 +1,5 @@
 package com.cve.ui;
 
-import com.cve.log.Log;
 import com.cve.util.URIs;
 import static org.junit.Assert.*;
 import org.junit.Test;

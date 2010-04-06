@@ -293,7 +293,8 @@ public final class SwingRouterFrame
     }
 
     void reload() {
-        setPageRequest(PageRequest.of(request.fullURI));
+        URI uri = history.current();
+        setPageRequest(PageRequest.of(uri));
     }
 
     void       showRequest() { showNewFor(request);       }
