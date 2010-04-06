@@ -7,8 +7,7 @@ import com.google.common.collect.Multimap;
 import javax.annotation.concurrent.Immutable;
 
 /**
- *
- * @author curt
+ * Model that represents the Object Registry.
  */
 @Immutable
 final class ObjectRegistryModel implements Model {

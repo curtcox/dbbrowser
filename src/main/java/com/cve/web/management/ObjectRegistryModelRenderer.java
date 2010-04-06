@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *
+ * For rendering ObjectRegistryModelS.
  * @author curt
  */
 final class ObjectRegistryModelRenderer implements ModelHtmlRenderer {

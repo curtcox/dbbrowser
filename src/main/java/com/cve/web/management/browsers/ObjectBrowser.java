@@ -7,18 +7,16 @@ import com.cve.lang.Executables;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
-import com.cve.lang.Strings;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
-import com.cve.ui.UILink;
 import com.cve.ui.UITable;
 import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableCell;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
 import com.cve.ui.UITableRow;
-import com.cve.web.management.ObjectLink;
+import com.cve.ui.UITaskPane;
 import com.cve.web.management.ObjectLinks;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
@@ -84,7 +82,7 @@ public UIElement toHTML() {
         ? UILabel.of("null")
         : UILabel.of(target.toString());
 
-    return UIComposite.of(
+    return UITaskPane.of(
         checkSpecialHandling(target),
         h1(link.to(target)),
         h1("toString")     , toString,
@@ -238,7 +236,7 @@ UIElement showExecutables(Collection<ExecutableElement> executables) {
         out.add(h1(link.to(clazz.getName(),clazz)));
         out.add(showExecutablesFromOneClass(grouped.get(clazz)));
     }
-    return UIComposite.of(out);
+    return UITaskPane.of(out);
 }
 
 

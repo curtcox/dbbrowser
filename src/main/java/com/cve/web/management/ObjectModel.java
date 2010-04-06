@@ -3,7 +3,7 @@ package com.cve.web.management;
 import com.cve.web.core.Model;
 
 /**
- *
+ * Wrapper to make an arbitrary object a Model.
  * @author curt
  */
 final class ObjectModel implements Model {

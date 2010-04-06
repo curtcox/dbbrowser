@@ -12,6 +12,7 @@ import com.cve.ui.UITable;
 import com.cve.ui.UITableBuilder;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableHeader;
+import com.cve.ui.UITaskPane;
 import com.cve.util.Check;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -24,6 +25,8 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import org.jdesktop.swingx.JXHyperlink;
+import org.jdesktop.swingx.JXTaskPane;
+import org.jdesktop.swingx.JXTaskPaneContainer;
 import org.jdesktop.swingx.hyperlink.AbstractHyperlinkAction;
 
 /**
@@ -68,6 +71,7 @@ final class SwingUIConstructor implements UIConstructor {
         if (e instanceof UITable)       { return table((UITable) e);   }
         if (e instanceof UITableDetail) { return tableDetail((UITableDetail) e);   }
         if (e instanceof UITableHeader) { return tableHeader((UITableHeader) e);   }
+        if (e instanceof UITaskPane)    { return taskPane((UITaskPane) e);   }
         if (e instanceof UIComposite)   { return composite((UIComposite) e);   }
         String message = "Unsupported element " + e.getClass();
         throw new IllegalArgumentException(message);
@@ -108,6 +112,17 @@ final class SwingUIConstructor implements UIConstructor {
             panel.add(construct(element));
         }
         return panel;
+    }
+
+    JPanel taskPane(UITaskPane composite) {
+        JXTaskPaneContainer tasks = new JXTaskPaneContainer();
+        tasks.setBorder(WHITE_LINE);
+        for (UIElement element : composite.items) {
+            JXTaskPane task = new JXTaskPane();
+            task.add(construct(element));
+            tasks.add(task);
+        }
+        return tasks;
     }
 
     private JComponent tableDetail(UITableDetail tableDetail) {
