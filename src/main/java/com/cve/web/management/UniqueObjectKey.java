@@ -1,11 +1,17 @@
 package com.cve.web.management;
 
 import com.cve.lang.Longs;
+import java.math.BigInteger;
 import javax.annotation.concurrent.Immutable;
 
 /**
+ * Two unique object keys should only match if they were produced from
+ * equivalent objects.
+ * <p>
+ * For now, it is just based on the hash code of the object and its class.
+ * This is quick, easy, and should be good enough.
  * We might want to replace this in the future, with something like
- * the MD5 of the serialized bytes.
+ * the MD5 of the serialized bytes of both.
  */
 @Immutable
 public class UniqueObjectKey {
@@ -30,6 +36,9 @@ public class UniqueObjectKey {
      */
     static final UniqueObjectKey NULL = new UniqueObjectKey();
 
+    /**
+     * Just for NULL.
+     */
     private UniqueObjectKey() {
         clazz = 0;
         hash = 0;
@@ -37,6 +46,9 @@ public class UniqueObjectKey {
 
     }
 
+    /**
+     * Use a factory.
+     */
     private UniqueObjectKey(Object o) {
         clazz = o.getClass().hashCode();
         hash  = o.hashCode();
@@ -61,11 +73,18 @@ public class UniqueObjectKey {
     }
 
     static UniqueObjectKey parse(String string) {
-        long hash64 = Long.parseLong(string, 16);
+        long hash64 = parseLong(string);
         int[] a = Longs.toInts(hash64);
         int clazz = a[0];
         int hash  = a[1];
         return new UniqueObjectKey(clazz,hash,hash64);
+    }
+
+    static long parseLong(String string) {
+        // long hash64 = Long.parseLong(string, 16);
+        // The code above will throw an exception for large enough unsigned longs
+        // like Long.toHexString() will produce.
+        return new BigInteger(string,16).longValue();
     }
 
     @Override

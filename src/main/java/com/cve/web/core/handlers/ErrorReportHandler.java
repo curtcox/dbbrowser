@@ -36,6 +36,7 @@ public final class ErrorReportHandler implements RequestHandler {
         try {
             return handler.produce(request);
         } catch (Throwable t) {
+            t.printStackTrace();
             return PageResponse.of(request,AnnotatedStackTraceModel.throwable(t));
         }
     }

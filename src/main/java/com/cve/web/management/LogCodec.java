@@ -53,13 +53,17 @@ public final class LogCodec {
             String hex  = Strings.afterLast(tail,"/");
             UniqueObjectKey key = UniqueObjectKey.parse(hex);
             return ObjectRegistry.get(key);
-        } catch (NumberFormatException e) {}
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         // Is it a class?
         try {
             String className = tail.replace("/",".");
             Class c = Class.forName(className);
             return AnnotatedClass.of(c);
-        } catch (ClassNotFoundException e) {}
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         String message = "" + uri;
         throw new IllegalArgumentException(message);
     }

@@ -1,7 +1,7 @@
 package com.cve.ui.swing;
 
 import com.cve.ui.PageViewer;
-import com.cve.ui.UIConstructor;
+import com.cve.ui.PrintPageViewer;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
 import com.cve.ui.UITable;
@@ -13,32 +13,18 @@ import com.cve.ui.UITableRow;
 import com.cve.ui.layout.AwtLayoutAdapter;
 import com.cve.ui.layout.TableLayout;
 import com.cve.ui.layout.TableLayoutConstraints;
-import com.cve.web.core.PageRequest;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.LayoutManager;
-import java.net.URI;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
 
 /**
- *
+ * This isn't a JTable, or a wrapper of one.
+ * It is more a Swing approximation of an HTML table.
  * @author curt
  */
 final class SwingUITable extends JPanel {
-
-     static final Border BLACK_LINE     = BorderFactory.createLineBorder(Color.black);
-     static final Border RAISED_Etched  = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-     static final Border LOWERED_ETCHED = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-     static final Border RAISED_BEVEL   = BorderFactory.createRaisedBevelBorder();
-     static final Border LOWERED_BEVEL  = BorderFactory.createLoweredBevelBorder();
-     static final Border EMPTY          = BorderFactory.createEmptyBorder();
-     static final int MATTE_WIDTH = 2;
-     static final Border MATTE          = BorderFactory.createMatteBorder(MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, MATTE_WIDTH, (Color) null);
 
      private SwingUITable(UITable table, SwingUIConstructor constructor) {
         setLayout(tableLayout(table));
@@ -50,13 +36,16 @@ final class SwingUITable extends JPanel {
                 c++;
                 JComponent component = (JComponent) constructor.construct(cell);
                 JPanel panel = new JPanel();
-                panel.setBorder(MATTE);
+                if (cell instanceof UITableHeader) {
+                    panel.setBorder(Borders.RAISED_BEVEL);
+                } else {
+                    panel.setBorder(Borders.WHITE_LINE);
+                }
                 panel.add(component);
                 TableLayoutConstraints constraint = TableLayoutConstraints.of(c, r);
                 add(panel, constraint);
             }
         }
-        setBorder(BLACK_LINE);
      }
 
      static LayoutManager tableLayout(UITable table) {
@@ -93,17 +82,7 @@ final class SwingUITable extends JPanel {
         UIElement ui = UIPage.of(
             table.build()
         );
-        PageViewer pageViewer = new PageViewer() {
-            @Override
-            public void browse(PageRequest request) {
-                System.out.println("Requested " + request);
-            }
-
-            @Override
-            public void browse(URI uri) {
-                System.out.println("Requested " + uri);
-            }
-        };
+        PageViewer pageViewer = PrintPageViewer.of();
 
         panel.add(SwingUIConstructor.of(pageViewer).construct(ui));
         frame.setVisible(true);

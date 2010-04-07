@@ -41,15 +41,6 @@ final class SwingUIConstructor implements UIConstructor {
      */
     final PageViewer pageViewer;
 
-    static final Border GREEN_LINE     = BorderFactory.createLineBorder(Color.GREEN);
-    static final Border WHITE_LINE     = BorderFactory.createLineBorder(Color.WHITE);
-    static final Border RED_LINE       = BorderFactory.createLineBorder(Color.RED);
-    static final Border BLACK_LINE     = BorderFactory.createLineBorder(Color.BLACK);
-    static final Border RAISED_Etched  = BorderFactory.createEtchedBorder(EtchedBorder.RAISED);
-    static final Border LOWERED_ETCHED = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-    static final Border RAISED_BEVEL   = BorderFactory.createRaisedBevelBorder();
-    static final Border LOWERED_BEVEL  = BorderFactory.createLoweredBevelBorder();
-    static final Border EMPTY          = BorderFactory.createEmptyBorder();
 
     private SwingUIConstructor(PageViewer pageViewer) {
         this.pageViewer = Check.notNull(pageViewer);
@@ -92,13 +83,11 @@ final class SwingUIConstructor implements UIConstructor {
 
     JLabel label(UILabel label) {
         JLabel jLabel = new JLabel(label.value);
-        jLabel.setBorder(GREEN_LINE);
         return jLabel;
     }
 
     JPanel page(UIPage page) {
         JPanel panel = new JPanel();
-        panel.setBorder(RED_LINE);
         for (UIElement element : page.items) {
             panel.add(construct(element));
         }
@@ -107,7 +96,6 @@ final class SwingUIConstructor implements UIConstructor {
 
     JPanel composite(UIComposite composite) {
         JPanel panel = new JPanel();
-        panel.setBorder(WHITE_LINE);
         for (UIElement element : composite.items) {
             panel.add(construct(element));
         }
@@ -116,7 +104,6 @@ final class SwingUIConstructor implements UIConstructor {
 
     JPanel taskPane(UITaskPane pane) {
         JXTaskPaneContainer tasks = new JXTaskPaneContainer();
-        tasks.setBorder(WHITE_LINE);
         for (int i=0; i<pane.items.size(); i++) {
             JXTaskPane task = new JXTaskPane();
             task.setAnimated(false);

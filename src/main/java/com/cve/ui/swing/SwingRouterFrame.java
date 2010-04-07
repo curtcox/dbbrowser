@@ -112,12 +112,15 @@ public final class SwingRouterFrame
     final ModelHtmlRenderer renderer;
 
     private SwingRouterFrame(WebApp webApp) {
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.handler = Check.notNull(webApp.handler);
-        this.renderer = Check.notNull(webApp.renderer);
+        Check.isEDT();
+        handler = Check.notNull(webApp.handler);
+        renderer = Check.notNull(webApp.renderer);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         layoutComponents();
         configureComponents();
         addListeners();
+        pack();
+        setSize(1250,1250);
     }
 
     /**
@@ -226,7 +229,8 @@ public final class SwingRouterFrame
         UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         try {
             WebApp webApp = WebApp.of(newRequestHandler(),newModelHtmlRenderer());
-            of(webApp).browse(URIs.of("/"));
+            SwingRouterFrame viewer = of(webApp);
+            viewer.browse(URIs.of("/"));
         } catch (Throwable t) {
             t.printStackTrace();
             System.exit(-1);
@@ -236,24 +240,23 @@ public final class SwingRouterFrame
     void layoutComponents() {
         int x = 100;
         int y = 100;
-        int w = 800;
-        int h = 800;
-        Dimension d = new Dimension(800,800);
-        //page.setPreferredSize(d);
+        int w = 1000;
+        int h = 1000;
+        Dimension d = new Dimension(w,h);
         setBounds (x, y, w, h);
 
         // Create a TableLayout for the frame
-        double border = 10;
+        double border = 05;
         double FILL = TableLayoutConstants.FILL;
-        int W = 50;
-        int H = 50;
+        int W = 45;
+        int H = 40;
         //                       <  >        @  1  2  3  4  5
         double[] cols = {border, W, W, FILL, W, W, W, W, W, W, border};
         double[] rows = {border, H, FILL, border};
 
         setLayout(AwtLayoutAdapter.of(TableLayout.of(cols,rows)));
-        int NAV = 1;
-        int PAGE = 2;
+        int  NAV = 1; // Navigation row
+        int PAGE = 2; // Page row
         add(back,                TableLayoutConstraints.of(1, NAV));
         add(forward,             TableLayoutConstraints.of(2, NAV));
         add(address,             TableLayoutConstraints.of(3, NAV));
@@ -263,11 +266,19 @@ public final class SwingRouterFrame
         add(modelButton,         TableLayoutConstraints.of(7, NAV));
         add(pageUIButton,        TableLayoutConstraints.of(8, NAV));
         add(pageComponentButton, TableLayoutConstraints.of(9, NAV));
-        add(scrollPage, TableLayoutConstraints.of(1, PAGE, 9, PAGE));
+        add(scrollPage,          TableLayoutConstraints.of(1, PAGE, 9, PAGE));
     }
 
     void configureComponents() {
-        address.setEditable(true);
+                     address.setEditable(true);
+                     forward.setToolTipText("Forward");
+                        back.setToolTipText("Back");
+                      reload.setToolTipText("Reload");
+               requestButton.setToolTipText("Page Request Info");
+              responseButton.setToolTipText("Page Response Info");
+                 modelButton.setToolTipText("Model Info");
+                pageUIButton.setToolTipText("Page UI Info");
+         pageComponentButton.setToolTipText("Page Component Info");
     }
 
     void addListeners() {
