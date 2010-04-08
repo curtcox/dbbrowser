@@ -24,4 +24,11 @@
                 <goal>install</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-war</actionName>
+            <displayName>war</displayName>
+            <goals>
+                <goal>war:war</goal>
+            </goals>
+        </action>
     </actions>
