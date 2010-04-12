@@ -12,7 +12,7 @@ import org.junit.Test;
  */
 public class LogTest {
 
-    final Log log  = null;
+    final Log log  = Logs.of();
 
     @Test
     public void annotatedStackTraceRetainsMethodArgSomewhere() {

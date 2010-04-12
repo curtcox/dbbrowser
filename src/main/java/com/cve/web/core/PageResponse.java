@@ -1,5 +1,6 @@
 package com.cve.web.core;
 
+import com.cve.lang.AnnotatedCallTree;
 import com.cve.web.core.models.ByteArrayModel;
 import com.cve.log.Log;
 import com.cve.log.Logs;
@@ -33,6 +34,11 @@ public final class PageResponse {
      * Possibly null Model to render.
      */
     public final Model model;
+
+    /**
+     * How this page was produced.
+     */
+    public final AnnotatedCallTree production = Logs.of().annotatedCallTree();
 
     /**
      * Where we log to.
@@ -72,10 +78,16 @@ public final class PageResponse {
         
     }
 
+    /**
+     * For error pages.
+     */
     public static PageResponse of(PageRequest request,Throwable throwable) {
         return of(request,AnnotatedStackTraceModel.throwable(throwable));
     }
 
+    /**
+     * For a page that is just an array of bytes.
+     */
     public static PageResponse of(PageRequest request,byte[] bytes,ContentType type) {
         return of(request,ByteArrayModel.bytesType(bytes,type));
     }
