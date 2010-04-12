@@ -1,5 +1,6 @@
 package com.cve.log;
 
+import com.cve.lang.AnnotatedCallTree;
 import com.cve.lang.AnnotatedStackTrace;
 import static com.cve.util.Check.notNull;
 
@@ -19,6 +20,13 @@ final class LogWrapper implements Log {
 
     public static Log of(Log log) {
         return new LogWrapper(log);
+    }
+
+    @Override
+    public AnnotatedCallTree annotatedCallTree() {
+        synchronized (lock) {
+            return log.annotatedCallTree();
+        }
     }
 
     @Override

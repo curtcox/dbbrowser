@@ -1,6 +1,5 @@
 package com.cve.web.management;
 
-import com.cve.html.Label;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UILink;

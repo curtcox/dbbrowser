@@ -60,7 +60,7 @@ public final class Link {
     }
 
     private static String a(Label text, URI target, URI image, String alt) {
-        return "<a href=" + q(target.toString()) + ">" + HTMLTags.of().img(alt,image) +"</a>" + debug();
+        return "<a href=" + q(target.toString()) + ">" + HTMLTags.img(alt,image) +"</a>" + debug();
     }
 
     private static String a(Label text, URI target) {
@@ -72,7 +72,7 @@ public final class Link {
     }
 
     private static String a(Label text, URI target, Tooltip tip, URI image) {
-        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTMLTags.of().img(text.toString(),image) +"</a>" + debug();
+        return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTMLTags.img(text.toString(),image) +"</a>" + debug();
     }
 
     /**

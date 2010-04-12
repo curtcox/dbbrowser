@@ -22,6 +22,9 @@ import static com.cve.util.Check.notNull;
  */
 public final class DebugHandler implements RequestHandler {
 
+    /**
+     * Where we log to.
+     */
     private final Log log = Logs.of();
 
     /**
@@ -77,8 +80,7 @@ public final class DebugHandler implements RequestHandler {
     }
 
     /**
-     * Is debugging on for this request.
-     * @return
+     * Is debugging on for this request?
      */
     public static boolean isOn() {
         Boolean on = debug.get();
@@ -90,7 +92,9 @@ public final class DebugHandler implements RequestHandler {
 
     /**
      * Return a debugging link, if debugging is on.
-     * @return
+     * These links are embedded in UI elements to provide debug info on how
+     * they were produced.
+     * See Link and HTML tags for more info.
      */
     public static UILink debugLink() {
         if (!DebugHandler.isOn()) {

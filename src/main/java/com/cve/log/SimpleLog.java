@@ -1,5 +1,6 @@
 package com.cve.log;
 
+import com.cve.lang.AnnotatedCallTree;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.AnnotatedStackTraceElement;
 import com.cve.util.Check;
@@ -55,6 +56,14 @@ final class SimpleLog implements Log {
      */
     private void note(StackTraceElement element, Object[] args) {
         stackArgs.get().put(element, args);
+    }
+
+    /**
+     * Return an annotated call tree for here.
+     */
+    @Override
+    public AnnotatedCallTree annotatedCallTree() {
+        throw new UnsupportedOperationException();
     }
 
     /**

@@ -13,8 +13,9 @@ import javax.annotation.concurrent.Immutable;
 /**
  * The basic idea is that one of these corresponds to each HTTP request.
  * <p>
- * The thing that processes a page request.
- * This is sort of like a thread id.request.
+ * In other words, the thing that processes a page request.
+ * This is sort of like a thread id.  It is different, however, because web
+ * servers will tend to reuse the same thread to process multiple sequential requests.
  * A single PageRequestProcessor can have many PageRequests, because one
  * PageRequest can wrap another.
  * 
@@ -22,14 +23,25 @@ import javax.annotation.concurrent.Immutable;
 @Immutable
 public final class PageRequestProcessor implements Comparable<PageRequestProcessor> {
 
+    /**
+     * When this processor was created.
+     */
     public final Timestamp timestamp;
 
+    /**
+     * Where we log stuff.
+     */
     static final Log log = Logs.of();
 
+    /**
+     * For creating links to this object.
+     */
     final LogCodec codec = LogCodec.of();
 
+    /**
+     * Processors for all of the current threads.
+     */
     private static final ThreadLocal<PageRequestProcessor> local = new ThreadLocal() {
-
         @Override
         protected PageRequestProcessor initialValue() {
             return new PageRequestProcessor();

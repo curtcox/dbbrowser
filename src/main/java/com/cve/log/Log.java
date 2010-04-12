@@ -1,5 +1,6 @@
 package com.cve.log;
 
+import com.cve.lang.AnnotatedCallTree;
 import com.cve.lang.AnnotatedStackTrace;
 
 /**
@@ -7,6 +8,10 @@ import com.cve.lang.AnnotatedStackTrace;
  */
 public interface Log {
 
+    /**
+     * Return an annotated call tree for here.
+     */
+    AnnotatedCallTree annotatedCallTree();
 
     /**
      * Return an annotated stack trace for here.
