@@ -1,5 +1,6 @@
 package com.cve.web.management;
 
+import com.cve.lang.RegEx;
 import com.cve.log.Log;
 import com.cve.log.LogEntry;
 import com.cve.log.Logs;
@@ -30,7 +31,7 @@ final class PageRequestBrowserHandler extends AbstractRequestHandler {
     private final Log log = Logs.of();
     
     private PageRequestBrowserHandler() {
-        super("^/request/");
+        super(RegEx.of("^/request/"));
     }
 
     static PageRequestBrowserHandler of() {

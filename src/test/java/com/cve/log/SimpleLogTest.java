@@ -1,7 +1,7 @@
 package com.cve.log;
 
 import com.cve.lang.AnnotatedCallTree;
-import junit.framework.Assert;
+import com.cve.test.Assert;
 import org.junit.Test;
 
 /**
@@ -10,10 +10,24 @@ import org.junit.Test;
  */
 public class SimpleLogTest {
 
+    final Log log = SimpleLog.of();
+
     @Test
-    public void annotatedCallTreeIsNotNull() {
-        Log log = SimpleLog.of();
+    public void treeIsNotNull() {
         AnnotatedCallTree tree = log.annotatedCallTree();
-        Assert.assertNotNull(tree);
+        Assert.notNull(tree);
     }
+
+    @Test
+    public void treeContainsMethodWithNoArgs() {
+        methodWithNoArgs();
+        AnnotatedCallTree tree = log.annotatedCallTree();
+        Assert.notNull(tree);
+    }
+
+    void methodWithNoArgs() {
+        log.args();
+    }
+
+
 }

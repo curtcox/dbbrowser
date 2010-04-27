@@ -1,9 +1,8 @@
 package com.cve.web.core.pages;
 
-import com.cve.ui.HTMLTags;
+import com.cve.lang.RegEx;
 import com.cve.ui.UIElement;
 import com.cve.web.core.ClientInfo;
-import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.core.Page;
@@ -57,7 +56,7 @@ public abstract class AbstractPage implements Page {
     /**
      * Use this if you intend to override produce and get.
      */
-    protected AbstractPage(final String regexp, final ModelHtmlRenderer renderer) {
+    protected AbstractPage(final RegEx regexp, final ModelHtmlRenderer renderer) {
         this.handler  = new AbstractRequestHandler(regexp){
             @Override
             public AbstractPage get(PageRequest request) {
@@ -70,7 +69,7 @@ public abstract class AbstractPage implements Page {
     /**
      * Use this if you intend to override produce and get.
      */
-    protected AbstractPage(final String regexp) {
+    protected AbstractPage(final RegEx regexp) {
         this.handler  = new AbstractRequestHandler(regexp){
             @Override
             public AbstractPage get(PageRequest request) {

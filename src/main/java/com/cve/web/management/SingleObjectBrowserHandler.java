@@ -1,5 +1,6 @@
 package com.cve.web.management;
 
+import com.cve.lang.RegEx;
 import com.cve.util.Check;
 import com.cve.web.core.handlers.AbstractRequestHandler;
 import com.cve.web.core.Model;
@@ -19,7 +20,7 @@ public final class SingleObjectBrowserHandler extends AbstractRequestHandler {
     final Object target;
 
     private SingleObjectBrowserHandler(Object target) {
-        super("");
+        super(RegEx.of(""));
         this.target = Check.notNull(target);
     }
 

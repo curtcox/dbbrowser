@@ -1,8 +1,7 @@
 package com.cve.lang;
 
+import com.cve.test.Assert;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  *
@@ -11,8 +10,9 @@ import static org.junit.Assert.*;
 public class AnnotatedClassTest {
 
     @Test
-    public void twoClassesFromTheSameClassAreEqual() {
-        Class c = AnnotatedClassTest.class;
-        assertEquals(AnnotatedClass.of(c),AnnotatedClass.of(c));
+    public void twoClassesInTheSamePackageHaveEqualPackages() {
+        AnnotatedPackage p1 = AnnotatedPackage.of(AnnotatedClassTest.class);
+        AnnotatedPackage p2 = AnnotatedPackage.of(AnnotatedPackageTest.class);
+        Assert.equals(p1,p2);
     }
 }

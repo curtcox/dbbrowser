@@ -1,5 +1,6 @@
 package com.cve.ui.swing;
 
+import com.cve.lang.AnnotatedPackage;
 import com.cve.ui.util.URIHistory;
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIConstructor;
@@ -28,6 +29,7 @@ import com.cve.web.management.LogCodec;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
+import com.cve.web.test.PackageTestPage;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -209,7 +211,8 @@ public final class SwingRouterFrame
                 CompositeRequestHandler.of(
                     CoreServerHandler.of(),
                     management,
-                    SingleObjectBrowserHandler.of(management)
+                    SingleObjectBrowserHandler.of(management),
+                    PackageTestPage.of()
                 )
             )
         );

@@ -1,5 +1,6 @@
 package com.cve.web.core.handlers;
 
+import com.cve.lang.RegEx;
 import com.cve.web.core.RequestHandler;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
@@ -29,7 +30,7 @@ public class CompositeRequestHandlerTest {
     static class TestHandler extends AbstractRequestHandler {
         final String regexp;
         TestHandler(String regexp) {
-            super(regexp);
+            super(RegEx.of(regexp));
             this.regexp = regexp;
         }
         @Override

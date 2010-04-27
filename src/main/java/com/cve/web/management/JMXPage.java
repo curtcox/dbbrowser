@@ -1,5 +1,6 @@
 package com.cve.web.management;
 
+import com.cve.lang.RegEx;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.pages.AbstractPage;
 import com.google.common.collect.ImmutableList;
@@ -17,7 +18,7 @@ import javax.management.MBeanServer;
 import static java.lang.management.ManagementFactory.*;
 
 /**
- *
+ * A page for viewing JMX info.
  * @author curt
  */
 @Immutable
@@ -74,7 +75,7 @@ public final class JMXPage extends AbstractPage {
     public final ThreadMXBean thread;
 
     private JMXPage() {
-        super("^/jmx/");
+        super(RegEx.of("^/jmx/"));
         classLoading = getClassLoadingMXBean();
         compilation  = getCompilationMXBean();
         garbageCollector = ImmutableList.copyOf(getGarbageCollectorMXBeans());

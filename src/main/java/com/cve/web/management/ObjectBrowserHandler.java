@@ -1,5 +1,6 @@
 package com.cve.web.management;
 
+import com.cve.lang.RegEx;
 import com.cve.util.URIs;
 import com.cve.web.core.handlers.AbstractRequestHandler;
 import com.cve.web.core.Model;
@@ -16,7 +17,7 @@ final class ObjectBrowserHandler extends AbstractRequestHandler {
     private static final String PREFIX = "/object/";
 
     private ObjectBrowserHandler() {
-        super("^" + PREFIX);
+        super(RegEx.of("^" + PREFIX));
     }
 
     static ObjectBrowserHandler of() {

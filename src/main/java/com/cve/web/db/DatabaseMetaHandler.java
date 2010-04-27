@@ -12,6 +12,7 @@ import com.cve.io.db.DBConnectionFactory;
 import com.cve.io.db.DBMetaData;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.RegEx;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.stores.ManagedFunction;
@@ -63,7 +64,7 @@ public final class DatabaseMetaHandler extends AbstractRequestHandler {
     private DatabaseMetaHandler(
         DBMetaData.Factory db, DBServersStore serversStore, ManagedFunction.Factory managedFunction)
     {
-        super("^" + PREFIX);
+        super(RegEx.of("^" + PREFIX));
         this.db = notNull(db);
         this.managedFunction = notNull(managedFunction);
         this.serversStore = notNull(serversStore);

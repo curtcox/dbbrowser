@@ -1,8 +1,10 @@
 package com.cve.web.core.handlers;
 
+import com.cve.lang.RegEx;
 import java.util.regex.Pattern;
 import com.cve.log.Log;
 import com.cve.log.Logs;
+import com.cve.util.Check;
 import com.cve.web.core.Model;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
@@ -20,7 +22,7 @@ public abstract class AbstractRequestHandler
     /**
      * The stuff we handle.
      */
-    private final Pattern pattern;
+    private final RegEx regex;
 
     /**
      * Where we log to.
@@ -32,9 +34,8 @@ public abstract class AbstractRequestHandler
      * the supplied regular expression string.
      * @param regexp
      */
-    public AbstractRequestHandler(String regexp) {
-        
-        pattern = Pattern.compile(regexp);
+    public AbstractRequestHandler(RegEx regex) {
+        this.regex = Check.notNull(regex);
     }
 
     /**
@@ -42,8 +43,7 @@ public abstract class AbstractRequestHandler
      * If you use this, you should override handles, too.
      */
     public AbstractRequestHandler() {
-        
-        pattern = Pattern.compile("");
+       regex = RegEx.of("");
     }
 
     /**
@@ -70,7 +70,7 @@ public abstract class AbstractRequestHandler
      */
     public boolean handles(String uri) {
         log.args(uri);
-        return pattern.matcher(uri).find();
+        return regex.matches(uri);
     }
 
     /**

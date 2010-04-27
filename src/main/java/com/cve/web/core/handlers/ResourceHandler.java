@@ -1,5 +1,6 @@
 package com.cve.web.core.handlers;
 
+import com.cve.lang.RegEx;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.core.ContentType;
@@ -30,8 +31,7 @@ public final class ResourceHandler extends AbstractRequestHandler {
     public static final String PREFIX = "/resource/";
 
     private ResourceHandler() {
-        super("^" + PREFIX);
-        
+        super(RegEx.of("^" + PREFIX));
     }
 
     static ResourceHandler of() {
