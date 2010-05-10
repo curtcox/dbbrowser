@@ -25,19 +25,14 @@ public final class AnnotatedStackTraceElement {
     /**
      * The source code line involved.
      */
-    public final String source;
+    public final SourceCode source;
 
     /**
      * The constructor or method involved.
      */
     public final ExecutableElement executable;
 
-    /**
-     * This string is used for any unavailable source code lines.
-     */
-    public static final String UNAVAILABLE = "Unavailable";
-
-    private AnnotatedStackTraceElement(AnnotatedClass clazz, int line, ExecutableElement method, String source) {
+    private AnnotatedStackTraceElement(AnnotatedClass clazz, int line, ExecutableElement method, SourceCode source) {
         this.clazz  = notNull(clazz);
         this.line   = line;
         this.executable = notNull(method);
@@ -48,7 +43,7 @@ public final class AnnotatedStackTraceElement {
         AnnotatedClass     clazz = AnnotatedClass.of(e);
         int                 line = e.getLineNumber();
         ExecutableElement method = executableOf(e);
-        String            source = sourceOf(e);
+        SourceCode        source = sourceOf(e);
         return new AnnotatedStackTraceElement(clazz,line,method,source);
     }
 
@@ -74,13 +69,13 @@ public final class AnnotatedStackTraceElement {
     /**
      * Return the source line for the given, unannotated element.
      */
-    private static String sourceOf(StackTraceElement e) {
+    private static SourceCode sourceOf(StackTraceElement e) {
         AnnotatedClass c = AnnotatedClass.of(e);
         int line = e.getLineNumber();
         if (c.source.size() > line && line > 0) {
             return c.source.get(line - 1);
         }
-        return UNAVAILABLE;
+        return SourceCode.UNAVAILABLE;
     }
 
     @Override

@@ -2,12 +2,7 @@ package com.cve.lang;
 
 import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -28,25 +23,27 @@ public final class AnnotatedClass {
     public final Class clazz;
 
     /**
-     * The file where we found the source code.
+     * Where we found the source code.
      */
-    public final File file;
+    public final ResourceLocation file;
 
     /**
      * The source code.
      */
-    public final ImmutableList<String> source;
+    public final ImmutableList<SourceCode> source;
 
     /**
      * Use the factory.
      */
-    private AnnotatedClass(Class clazz, File file, List<String> source) {
+    private AnnotatedClass(Class clazz, ResourceLocation file, List<SourceCode> source) {
         this.clazz  = notNull(clazz);
         this.file   = notNull(file);
         this.source = ImmutableList.copyOf(source);
     }
 
-    private static final List<String> NO_SOURCE_AVAILABLE = ImmutableList.of();
+    static AnnotatedClass of(ResourceLocation source) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 
     private static SimpleCache<Class,AnnotatedClass> CLASS_CACHE = SimpleCache.of();
     public static AnnotatedClass of(Class c) {
@@ -59,15 +56,9 @@ public final class AnnotatedClass {
     }
 
     private static AnnotatedClass of0(Class c) {
-        String    className = c.getName();
-        File           file = new File("");
-        String     resource = sourceFileResource(className);
-           InputStream   in = AnnotatedClass.class.getResourceAsStream(resource);
-        List<String> source = (in==null)
-            ? NO_SOURCE_AVAILABLE
-            : readLines(in)
-        ;
-
+        String      className = c.getName();
+        ResourceLocation file = ResourceLocation.of(className);
+        ImmutableList<SourceCode> source = SourceCode.readFrom(file);
         return new AnnotatedClass(c,file,source);
     }
 
@@ -88,14 +79,8 @@ public final class AnnotatedClass {
         try {
             String    className = element.getClassName();
             Class         clazz = Class.forName(className);
-            File           file = new File(element.getFileName());
-            String     resource = sourceFileResource(className);
-               InputStream   in = AnnotatedClass.class.getResourceAsStream(resource);
-            List<String> source = (in==null)
-                ? NO_SOURCE_AVAILABLE
-                : readLines(in)
-            ;
-
+            ResourceLocation file = ResourceLocation.of(new File(element.getFileName()));
+            ImmutableList<SourceCode> source = SourceCode.readFrom(file);
             return new AnnotatedClass(clazz,file,source);
         } catch (ClassNotFoundException e) {
             throw new IllegalArgumentException(e);
@@ -110,27 +95,6 @@ public final class AnnotatedClass {
         return "/" + className.replace(".", "/") + ".java";
     }
 
-    /**
-     * Read the resource as lines.
-     */
-    static ImmutableList<String> readLines(InputStream in) {
-          try {
-              try {
-                  List<String> lines = Lists.newArrayList();
-                  BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                  for (String line = reader.readLine(); line!=null; line = reader.readLine()) {
-                      lines.add(line);
-                  }
-                  return ImmutableList.copyOf(lines);
-              } finally {
-                  in.close();
-              }
-          } catch (IOException e) {
-              throw new RuntimeException(e);
-          }
-
-    }
-    
     /**
      * Return the method of this class being invoked in the given element.
      */

@@ -32,7 +32,7 @@ public class AnnotatedPackageTest {
     @Test
     public void thisPackageIsInInItsParentPackage() {
         AnnotatedPackage     p1 = packageOf(AnnotatedClass.class);
-        AnnotatedPackage parent = p1.parent;
+        AnnotatedPackage parent = p1.getParent();
         Assert.that(parent.packages.contains(p1));
     }
 
@@ -45,7 +45,14 @@ public class AnnotatedPackageTest {
         Assert.that(children.contains(packageOf(com.cve.util.Check.class)));
     }
 
+    @Test
+    public void rootPackageContainsComPackage() {
+        AnnotatedPackage root = AnnotatedPackage.ROOT;
+        Assert.that(root.packages.contains(AnnotatedPackage.of("com")));
+    }
+
     static AnnotatedPackage packageOf(Class clazz) {
         return AnnotatedPackage.of(clazz);
     }
+
 }

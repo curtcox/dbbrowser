@@ -102,7 +102,7 @@ public final class AnnotatedStackTraceRenderer
             td(e.executable.getName()),
             td(argsCell(args)),
             td("" + line),
-            td(e.source)
+            td(e.source.toString())
         );
     }
 
