@@ -7,12 +7,15 @@ import com.cve.web.core.pages.AbstractPage;
 import javax.annotation.concurrent.Immutable;
 
 /**
- *
+ * Test results for a package tree.
  * @author curt
  */
 @Immutable
 public final class PackageTestPage extends AbstractPage {
 
+    /**
+     * The package this page is for.
+     */
     final AnnotatedPackage annotatedPackage;
 
     /**
@@ -31,5 +34,13 @@ public final class PackageTestPage extends AbstractPage {
 
     public static PackageTestPage of(RegEx root, AnnotatedPackage annotatedPackage) {
         return new PackageTestPage(root,annotatedPackage);
+    }
+
+    /**
+     * Produce a test page for the root package, write it to a file, and open
+     * the file in a browser.
+     */
+    public static void main(String[] args) {
+
     }
 }

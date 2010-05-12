@@ -1,7 +1,7 @@
 package com.cve.log;
 
 import com.cve.lang.AnnotatedCallTree;
-import com.cve.test.Assert;
+import com.cve.model.test.Assert;
 import org.junit.Test;
 
 /**

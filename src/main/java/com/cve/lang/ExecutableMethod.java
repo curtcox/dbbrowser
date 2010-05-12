@@ -1,13 +1,18 @@
 package com.cve.lang;
 
+import javax.annotation.concurrent.Immutable;
 import java.lang.reflect.Method;
 import static com.cve.util.Check.notNull;
 
 /**
  * A wrapper to make a method executable.
  */
+@Immutable
 public final class ExecutableMethod extends ExecutableElement {
 
+    /**
+     * The method that we hold.
+     */
     public final Method inner;
 
     private ExecutableMethod(Method method) {

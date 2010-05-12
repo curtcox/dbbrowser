@@ -13,19 +13,37 @@ import static com.cve.util.Check.notNull;
 @Immutable
 public abstract class ExecutableElement implements Member {
 
+    /**
+     * The kind of thing returned by this executable.
+     */
     public final Class returnType;
 
+    /**
+     * The types of parameters it needs.
+     */
     public final ImmutableList<Class> parameterTypes;
 
+    /**
+     * The kinds of exceptions it can throw.
+     */
     public final ImmutableList<Class> exceptionTypes;
 
     public final Class declaringClass;
 
+    /*
+     * The name of the executable.
+     */
     public final String name;
 
     public final int modifiers;
 
     public final boolean synthetic;
+
+    // Simple getters to implement the Member imterface.
+    @Override final public Class<?> getDeclaringClass() { return declaringClass; }
+    @Override final public String             getName() { return name;           }
+    @Override final public int           getModifiers() { return modifiers;      }
+    @Override final public boolean        isSynthetic() { return synthetic;      }
 
     ExecutableElement(Method method) {
         this.returnType = notNull(method.getReturnType());
@@ -50,26 +68,6 @@ public abstract class ExecutableElement implements Member {
 
     static ImmutableList<Class> listOf(Class[] classes) {
         return ImmutableList.of(classes);
-    }
-
-    @Override
-    final public Class<?> getDeclaringClass() {
-        return declaringClass;
-    }
-
-    @Override
-    final public String getName() {
-        return name;
-    }
-
-    @Override
-    final public int getModifiers() {
-        return modifiers;
-    }
-
-    @Override
-    final public boolean isSynthetic() {
-        return synthetic;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.cve.test;
+package com.cve.model.test;
 
 
 /**

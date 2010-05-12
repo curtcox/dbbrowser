@@ -1,6 +1,6 @@
 package com.cve.lang;
 
-import com.cve.test.Assert;
+import com.cve.model.test.Assert;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
