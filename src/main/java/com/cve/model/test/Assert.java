@@ -8,15 +8,18 @@ package com.cve.model.test;
  */
 public final class Assert {
 
-    public static void notNull(Object o) {
+    public static Assertion notNull(Object o) {
         org.junit.Assert.assertNotNull(o);
+        return Assertion.ofNotNull(o);
     }
 
-    public static void equals(Object a, Object b) {
+    public static Assertion equals(Object a, Object b) {
         org.junit.Assert.assertEquals(a,b);
+        return Assertion.ofEquality(a,b);
     }
 
-    public static void that(boolean condition) {
+    public static Assertion that(boolean condition) {
         org.junit.Assert.assertTrue(condition);
+        return Assertion.ofTruth(condition);
     }
 }

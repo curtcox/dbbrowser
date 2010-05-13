@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
  */
 public class PageDecoratorTest {
 
-    ;
+    
     final PageDecorator decorator = PageDecorator.of(StringModelRenderer.of());
     final ClientInfo client = ClientInfo.of();
 
