@@ -47,7 +47,7 @@ public class AnnotatedPackageTest {
 
     @Test
     public void rootPackageContainsComPackage() {
-        AnnotatedPackage root = AnnotatedPackage.ROOT;
+        AnnotatedPackage root = AnnotatedPackage.getRoot();
         Assert.that(root.packages.contains(AnnotatedPackage.of("com")));
     }
 

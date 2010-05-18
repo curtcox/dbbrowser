@@ -38,11 +38,6 @@ public final class AnnotatedPackage {
     final ClassPath sources;
 
     /**
-     * Return the root package that all other packages are under.
-     */
-    public static final AnnotatedPackage ROOT = root();
-
-    /**
      * 
      */
     private static Map<Name,AnnotatedPackage> packageNames = Maps.newHashMap();
@@ -134,16 +129,21 @@ public final class AnnotatedPackage {
         return aPackage;
     }
 
-    static AnnotatedPackage root() {
+    /**
+     * Return the root package that all other packages are under.
+     * Changes to the underlying code on disk will cause this method to produce
+     * different results over time.
+     */
+    public static AnnotatedPackage getRoot() {
         return new AnnotatedPackage();
     }
 
     AnnotatedPackage getParent() {
-        return ROOT;
+        return getRoot();
     }
 
     static AnnotatedPackage parentOf(Name name) {
-        return ROOT;
+        return getRoot();
     }
 
     @Override

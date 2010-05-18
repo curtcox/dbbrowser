@@ -49,7 +49,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
             </plugin>
+            <!-- groovy -->
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+                <version>1.2</version>
+            </plugin>
         </plugins>
+        
 
         <!-- Include resources and our source code. -->
         <resources>
@@ -202,7 +209,12 @@
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
-            <version>1.6.5</version>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mbte.groovypp</groupId>
+            <artifactId>groovypp-all</artifactId>
+            <version>0.2.4</version>
         </dependency>
 
         <!-- Export formats -->
@@ -291,6 +303,12 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </pluginRepository>
+        <pluginRepository>
+            <id>grovvypp</id>
+            <name>groovypp</name>
+            <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
+            <layout>default</layout>
+        </pluginRepository>
     </pluginRepositories>
 
     <repositories>
@@ -311,12 +329,16 @@
             <name>Java.net Repository for Glassfish</name>
             <url>http://download.java.net/maven/glassfish</url>
         </repository>
-	 <repository>
+	    <repository>
             <id>bouncycastle</id>
             <name>bouncycastle</name>
             <url>http://repo2.maven.org/maven2/org/bouncycastle</url>
-           </repository>
+        </repository>
+	    <repository>
+            <id>grovvypp</id>
+            <name>groovypp</name>
+            <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
+        </repository>
     </repositories>
-
 
 </project>

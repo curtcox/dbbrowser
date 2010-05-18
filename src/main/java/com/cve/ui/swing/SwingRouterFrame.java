@@ -29,7 +29,7 @@ import com.cve.web.management.LogCodec;
 import com.cve.web.management.ManagementHandler;
 import com.cve.web.management.ManagementModelHtmlRenderers;
 import com.cve.web.management.SingleObjectBrowserHandler;
-import com.cve.web.test.PackageTestPage;
+import com.cve.web.test.AnnotatedTestPage;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -212,7 +212,7 @@ public final class SwingRouterFrame
                     CoreServerHandler.of(),
                     management,
                     SingleObjectBrowserHandler.of(management),
-                    PackageTestPage.of()
+                    AnnotatedTestPage.of()
                 )
             )
         );
