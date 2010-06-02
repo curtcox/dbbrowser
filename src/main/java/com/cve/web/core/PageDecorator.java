@@ -1,6 +1,5 @@
 package com.cve.web.core;
 
-import com.cve.html.CSS;
 import com.cve.ui.UIElement;
 import com.cve.util.Check;
 import com.cve.util.Replace;

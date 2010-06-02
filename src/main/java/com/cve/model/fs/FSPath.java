@@ -10,7 +10,7 @@ import java.net.URI;
 import static com.cve.util.Check.notNull;
 
 /**
- *
+ * A full file-system path.
  * @author curt
  */
 public class FSPath {

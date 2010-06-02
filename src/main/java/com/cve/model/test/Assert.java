@@ -22,4 +22,10 @@ public final class Assert {
         org.junit.Assert.assertTrue(condition);
         return Assertion.ofTruth(condition);
     }
+
+     public static Assertion failure() {
+        org.junit.Assert.fail();
+        return Assertion.ofFailure();
+    }
+
 }

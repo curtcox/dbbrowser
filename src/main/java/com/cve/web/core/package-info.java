@@ -1,6 +1,6 @@
 /**
  * Our web application "framework".
- * It runs on top of the servlet API.
+ * It can run on top of the servlet API.
  * <p>
  * The key interface is RequestHandler, which turns PageRequestS into PageResponseS.
  * http://yuml.me/diagram/class/[PageRequest]->[RequestHandler],[RequestHandler]->[PageResponse]

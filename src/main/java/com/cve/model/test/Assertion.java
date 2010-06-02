@@ -49,6 +49,10 @@ public final class Assertion {
         return new Assertion(true,condition,Relationship.TRUE);
     }
 
+    static Assertion ofFailure() {
+        return new Assertion(NULL,NULL,Relationship.NONE);
+    }
+
     static enum Result {
         PASS,
         FAIL,
@@ -63,6 +67,7 @@ public final class Assertion {
         NOT_NULL,
         TRUE,
         FALSE,
+        NONE
         ;
     }
 }

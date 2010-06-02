@@ -15,6 +15,15 @@ import static com.cve.util.Check.notNull;
 
 /**
  * A skeletal page implementation.
+ * This is the easiest way to implement all of the functionality associated
+ * with a page.  For more control, see the Page interface and the interfaces
+ * that it extends.
+ * <p>
+ * Note:
+ * <ul>
+ *     <li> Page extends RequestHandler, SelfRenderingModel
+ *     <li> SelfRenderingModel extends Model, ModelHtmlRenderer
+ * </ul>
  * @author curt
  */
 public abstract class AbstractPage implements Page {
