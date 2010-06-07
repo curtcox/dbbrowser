@@ -1,7 +1,8 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.PageRequest;
-import java.net.URI;
+
 
 /**
  *
@@ -10,6 +11,6 @@ import java.net.URI;
 public interface PageViewer {
 
     void browse(PageRequest request);
-    void browse(URI uri);
+    void browse(URIObject uri);
 
 }

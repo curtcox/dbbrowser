@@ -1,5 +1,6 @@
 package com.cve.web.core.handlers;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.URIs;
@@ -8,7 +9,7 @@ import com.cve.web.core.PageResponse;
 import com.cve.web.core.RequestHandler;
 import com.cve.web.core.Search;
 import com.cve.web.db.DBURICodec;
-import java.net.URI;
+
 
 import static com.cve.util.Check.*;
 
@@ -51,12 +52,12 @@ public final class SearchRedirectsHandler implements RequestHandler {
             return null;
         }
         String target = request.parameters.get(Search.FIND);
-        URI dest = redirectSearchesTo(path,target);
+        URIObject dest = redirectSearchesTo(path,target);
         return PageResponse.newRedirect(request,dest);
     }
 
     /**
-     * Construct a URI that will search for the given target on the given path.
+     * Construct a URIObject that will search for the given target on the given path.
      * For example, a request to find dogs on dog DB will be redirected as follows
      *      /+/dogdb/search?find=dogs
      *      /dogs/dogdb
@@ -64,14 +65,14 @@ public final class SearchRedirectsHandler implements RequestHandler {
      * @param path Where to search.  Note that this path should end with "/search"
      * @param target what to search for
      */
-    URI redirectSearchesTo(String path, String target) {
+    URIObject redirectSearchesTo(String path, String target) {
         log.args(path,target);
         int slashes = URIs.slashCount(path);
         if (slashes==1) {
             return URIs.of("/" + target + "/");
         }
         if (slashes>1) {
-            URI tail = URIs.startingAtSlash(path, 2);
+            URIObject tail = URIs.startingAtSlash(path, 2);
             int lastSlash = tail.toString().lastIndexOf("/");
             notNegative(lastSlash);
             // the path up to the last slash

@@ -1,7 +1,8 @@
 package com.cve.web.alt;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.Icons;
-import java.net.URI;
+
 
 /**
  * An alternate view of a SQL result set.
@@ -21,9 +22,9 @@ public enum AlternateView {
     COMPRESSED(Icons.COMPRESSED)
     ;
 
-    public final URI icon;
+    public final URIObject icon;
 
-    AlternateView(URI icon) {
+    AlternateView(URIObject icon) {
         this.icon = icon;
     }
 }

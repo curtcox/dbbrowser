@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.model.db.SelectResults;
@@ -15,7 +16,7 @@ import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.db.NavigationButtons;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -38,7 +39,7 @@ public final class SelectResultsRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/SelectResults.html");
+    private static URIObject HELP = URIs.of("/resource/help/SelectResults.html");
 
     private SelectResultsRenderer(DBServersStore serversStore, ManagedFunction.Factory managedFunction) {
            this.serversStore = notNull(serversStore);

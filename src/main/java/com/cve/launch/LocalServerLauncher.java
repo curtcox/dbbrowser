@@ -117,7 +117,7 @@ public final class LocalServerLauncher {
      */
     void openBrowser() throws IOException {
         Desktop desktop = Desktop.getDesktop();
-        desktop.browse(URIs.of("http://localhost:" + PORT + "/"));
+        desktop.browse(URIs.of("http://localhost:" + PORT + "/").toURI());
     }
 }
 

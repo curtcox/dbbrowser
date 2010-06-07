@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.DBRowFilter;
 import com.cve.model.db.Join;
@@ -11,14 +12,14 @@ import com.cve.model.db.Order;
 import com.cve.io.db.DBMetaData;
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import java.util.Arrays;
 import static com.cve.util.Check.notNull;
 /**
  * Actions that are used to build a select statement.
  * From a web application viewpoint, these can be considered actions.
  * From a REST viewpoint, they are operators that operate on one value in
- * URI space to produce another.
+ * URIObject space to produce another.
  * <p>
  * The heart of the application is the page that iteratively builds a select.
  * Each link, essentially represnts an action on a URL that turns it into
@@ -148,9 +149,9 @@ public enum SelectBuilderAction {
     }
 
     /**
-     * Use the given args to create a URI for this action.
+     * Use the given args to create a URIObject for this action.
      */
-    public URI withArgs(String args) {
+    public URIObject withArgs(String args) {
         notNull(args);
         return URIs.of(action + "?" + args);
     }

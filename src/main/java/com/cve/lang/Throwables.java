@@ -9,7 +9,7 @@ import com.cve.util.URIs;
 import com.cve.web.core.handlers.ResourceHandler;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
-import java.net.URI;
+
 
 /**
  * For printing throwables.
@@ -86,7 +86,7 @@ public final class Throwables {
     Link linkToSource(String className, String fileName) {
         Label text = Label.of(fileName);
         String classFileName = className.replace(".", "/") + ".java";
-        URI target = URIs.of(ResourceHandler.PREFIX + classFileName);
+        URIObject target = URIs.of(ResourceHandler.PREFIX + classFileName);
         return Link.textTarget(text, target);
     }
 }

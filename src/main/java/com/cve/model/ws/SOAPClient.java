@@ -14,7 +14,7 @@ import javax.xml.ws.Service;
  * <pre>
     URL            wsdl = new URL("http://localhost:8080/calc/calc?wsdl");
     String  serviceName = "CalculatorWSService";
-    String nameSpaceURI = "http://calculator.me.org/";
+    String nameSpaceURIObject = "http://calculator.me.org/";
     String     portName = "CalculatorWSPort";
     Calculator     calc = SOAPClient.newInstance(wsdl, nameSpaceURI, serviceName, portName, Calculator.class);
  * </pre>

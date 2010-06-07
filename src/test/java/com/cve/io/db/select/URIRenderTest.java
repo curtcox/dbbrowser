@@ -1,5 +1,6 @@
 package com.cve.io.db.select;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
@@ -15,7 +16,7 @@ import com.cve.model.db.DBValue;
 import com.cve.util.URIs;
 import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
-import java.net.URI;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -35,8 +36,8 @@ public class URIRenderTest {
         DBTable       person = database.tableName("person");
         DBColumn        name = person.columnNameType("name",String.class);
         Select      select = Select.from(database,person,name);
-        URI expected = URIs.of("/*/server/customer/customer.person/name/");
-        URI actual = DBURIRenderer.render(select,Search.EMPTY);
+        URIObject expected = URIs.of("/*/server/customer/customer.person/name/");
+        URIObject actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -48,8 +49,8 @@ public class URIRenderTest {
         DBColumn        name = person.columnNameType("name",String.class);
         DBColumn         age = person.columnNameType("age",Integer.class);
         Select      select = Select.from(database,person,name,age);
-        URI expected = URIs.of("/*/server/customer/customer.person/name+age/");
-        URI actual = DBURIRenderer.render(select,Search.EMPTY);
+        URIObject expected = URIs.of("/*/server/customer/customer.person/name+age/");
+        URIObject actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 
@@ -71,7 +72,7 @@ public class URIRenderTest {
         AggregateFunction self = AggregateFunction.IDENTITY;
         Select        select = Select.from(
                 list(database),list(person,account),list(name,number),list(self,self),list(join),list(filter),list(order),list(),DBLimit.DEFAULT);
-        URI expected = URIs.of(
+        URIObject expected = URIs.of(
             "/*/server/customer/" + // server databases
             "customer.person+customer.account/" + // tables
             "name+0number/" + // columns
@@ -79,7 +80,7 @@ public class URIRenderTest {
             "sex=F/" + // filter
             "name=ASC/" // order
             );
-        URI actual = DBURIRenderer.render(select,Search.EMPTY);
+        URIObject actual = DBURIRenderer.render(select,Search.EMPTY);
         assertEquals(expected,actual);
     }
 

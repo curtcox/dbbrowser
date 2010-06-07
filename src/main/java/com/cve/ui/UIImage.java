@@ -1,8 +1,9 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import static com.cve.util.Check.notNull;
-import java.net.URI;
+
 
 /**
  * Like a HTML image.
@@ -13,15 +14,15 @@ public final class UIImage implements UIElement {
 
     private final HTMLTags tags;
     private final String text;
-    private final URI uri;
+    private final URIObject uri;
 
-    private UIImage(String text, URI uri) {
+    private UIImage(String text, URIObject uri) {
         this.text = notNull(text);
         this.uri = notNull(uri);
         tags = HTMLTags.of();
     }
     
-    public static UIImage textURI(String text, URI uri) {
+    public static UIImage textURI(String text, URIObject uri) {
         return new UIImage(text,uri);
     }
 

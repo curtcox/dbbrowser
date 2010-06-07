@@ -8,6 +8,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UIElement;
@@ -17,7 +18,7 @@ import com.cve.util.Replace;
 
 import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
-import java.net.URI;
+
 /**
  * Renders a DatabasePage to a HTML string.
  */
@@ -26,7 +27,7 @@ final class DatabasesPageRenderer implements ModelHtmlRenderer {
     final Log log = Logs.of();
     private final NavigationButtons buttons;
 
-    private static URI HELP = URIs.of("/resource/help/Databases.html");
+    private static URIObject HELP = URIs.of("/resource/help/Databases.html");
 
     private DatabasesPageRenderer() {
         buttons = NavigationButtons.of();

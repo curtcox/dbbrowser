@@ -1,5 +1,6 @@
 package com.cve.web.db.databases;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ClientInfo;
@@ -19,7 +20,7 @@ import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
 import com.google.common.collect.Sets;
-import java.net.URI;
+
 import java.util.Collection;
 import java.util.Set;
 import static com.cve.util.Check.notNull;
@@ -31,7 +32,7 @@ final class DatabasesSearchPageRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/Servers.html");
+    private static URIObject HELP = URIs.of("/resource/help/Servers.html");
 
     private DatabasesSearchPageRenderer() {
         

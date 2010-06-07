@@ -1,6 +1,7 @@
 
 package com.cve.web.fs;
 
+import com.cve.lang.URIObject;
 import com.cve.model.fs.FSField;
 import com.cve.util.*;
 import com.cve.model.fs.FSPath;
@@ -11,7 +12,7 @@ import com.cve.log.Logs;
 import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.net.URLDecoder;
 import java.util.List;
 import static com.cve.util.Check.notNull;
@@ -31,7 +32,7 @@ import static com.cve.util.Check.notNull;
 public final class FSURICodec {
 
     /**
-     * The position within the URI where the given information is specified.
+     * The position within the URIObject where the given information is specified.
      * Most of these map very directly to clauses in SQL select statements.
      */
     enum Position {
@@ -197,15 +198,15 @@ public final class FSURICodec {
         throw new IllegalArgumentException(full);
     }
 
-    public static URI encode(FSServer aThis) {
+    public static URIObject encode(FSServer aThis) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static URI encode(FSPath aThis) {
+    public static URIObject encode(FSPath aThis) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public static URI encode(FSField aThis) {
+    public static URIObject encode(FSField aThis) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

@@ -1,9 +1,10 @@
 package com.cve.ui;
 
 import com.cve.html.CSS;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import java.net.URI;
+
 import java.util.List;
 
 /**
@@ -66,7 +67,7 @@ public final class UIBuilder {
         return UISubmit.value(value);
     }
 
-    public static UISubmit submit(String value, URI icon) {
+    public static UISubmit submit(String value, URIObject icon) {
         return UISubmit.valueIcon(value,icon);
     }
 

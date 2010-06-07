@@ -1,8 +1,9 @@
 package com.cve.web.management;
 
+import com.cve.lang.URIObject;
 import com.cve.lang.AnnotatedClass;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -20,7 +21,7 @@ public class LogCodecTest {
 
     void object(Object a) {
         LogCodec codec = LogCodec.of();
-        URI encoded = codec.encode(a);
+        URIObject encoded = codec.encode(a);
         Object b = codec.decode(encoded);
         assertEquals(a,b);
     }

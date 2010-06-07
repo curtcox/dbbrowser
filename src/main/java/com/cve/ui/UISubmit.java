@@ -1,8 +1,9 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import com.cve.util.Check;
 import com.cve.util.Replace;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -21,9 +22,9 @@ public final class UISubmit implements UIElement {
     /**
      * Possibly null icon to use on the button
      */
-    private final URI icon;
+    private final URIObject icon;
 
-    private UISubmit(String value, URI icon) {
+    private UISubmit(String value, URIObject icon) {
         this.value = Check.notNull(value);
         this.icon = icon;
     }
@@ -32,7 +33,7 @@ public final class UISubmit implements UIElement {
         return new UISubmit(value,null);
     }
 
-    public static UISubmit valueIcon(String value, URI icon) {
+    public static UISubmit valueIcon(String value, URIObject icon) {
         return new UISubmit(value,icon);
     }
 

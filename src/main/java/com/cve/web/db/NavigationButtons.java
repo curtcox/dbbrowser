@@ -2,13 +2,14 @@ package com.cve.web.db;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UISearchBox;
 import com.cve.util.URIs;
 import com.cve.web.core.Icons;
 import com.cve.web.core.Search;
-import java.net.URI;
+
 
 /**
  * Navigation buttons that are used on lots of different pages.
@@ -47,16 +48,16 @@ public final class NavigationButtons {
     public String addServer() {
         String tip = "Add a database server";
         Label text = Label.of("+");
-        URI target = URIs.of("add");
-        URI  image = Icons.PLUS;
+        URIObject target = URIs.of("add");
+        URIObject  image = Icons.PLUS;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
     public String removeServer() {
         String tip = "Remove a database server";
         Label text = Label.of("-");
-        URI target = URIs.of("remove");
-        URI  image = Icons.MINUS;
+        URIObject target = URIs.of("remove");
+        URIObject  image = Icons.MINUS;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
@@ -70,8 +71,8 @@ public final class NavigationButtons {
     public String shutdown() {
         String tip = "Shutdown DBBrowser";
         Label text = Label.of("X");
-        URI target = URIs.of("exit");
-        URI  image = Icons.OFF;
+        URIObject target = URIs.of("exit");
+        URIObject  image = Icons.OFF;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 

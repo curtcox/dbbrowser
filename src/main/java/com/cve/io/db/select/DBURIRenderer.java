@@ -1,5 +1,6 @@
 package com.cve.io.db.select;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.DBColumn;
 import com.cve.model.db.Database;
 import com.cve.model.db.DBRowFilter;
@@ -15,7 +16,7 @@ import com.cve.web.core.Search;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 import static com.cve.util.Check.notNull;
 /**
@@ -35,7 +36,7 @@ import static com.cve.util.Check.notNull;
  * them too big to be cut-and-paste friendly, some form of compression is in
  * order.
  * <p>
- * The bulk of these big URI tends to be a long list of columns.  The following
+ * The bulk of these big URIObject tends to be a long list of columns.  The following
  * compression scheme will keep the URIs "human readable", while compressing
  * them by about two thirds.
  * <p>
@@ -55,7 +56,7 @@ public final class DBURIRenderer {
     /**
      * Render the given select statement as a URI.
      */
-    public static URI render(Select select, Search search) {
+    public static URIObject render(Select select, Search search) {
         notNull(select);
         validate(select);
         StringBuilder out = new StringBuilder();

@@ -4,13 +4,14 @@ import com.cve.model.db.DBColumn;
 import com.cve.model.db.Order.Direction;
 import com.cve.html.SimpleTooltip;
 import com.cve.html.Tooltip;
+import com.cve.lang.URIObject;
 import com.cve.ui.UICascadingMenu;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILink;
 import com.cve.web.core.Icons;
 import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 
 /**
@@ -37,32 +38,32 @@ final class ColumnActionTooltip {
 
     static UIElement hide(DBColumn column) {
         String text   = "hide " + column.fullName();
-        URI    target = SelectBuilderAction.HIDE.withArgs(column.fullName());
-        URI     image = Icons.HIDE;
+        URIObject    target = SelectBuilderAction.HIDE.withArgs(column.fullName());
+        URIObject     image = Icons.HIDE;
         UILink   link = UILink.textTargetImageAlt(text, target,image,text);
         return link;
     }
 
     static UIElement asc(DBColumn column) {
         String text   = "sort " + column.fullName();
-        URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=ASC");
-        URI     image = Icons.SORT_ASC;
+        URIObject    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=ASC");
+        URIObject     image = Icons.SORT_ASC;
         UILink   link = UILink.textTargetImageAlt(text, target,image,text);
         return link;
     }
 
     static UIElement desc(DBColumn column) {
         String text   = "sort " + column.fullName();
-        URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=DESC");
-        URI     image = Icons.SORT_DESC;
+        URIObject    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=DESC");
+        URIObject     image = Icons.SORT_DESC;
         UILink   link = UILink.textTargetImageAlt(text, target,image,text);
         return link;
     }
 
     static UIElement none(DBColumn column) {
         String text   = "sort " + column.fullName();
-        URI    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=NONE");
-        URI     image = Icons.SORT_NONE;
+        URIObject    target = SelectBuilderAction.ORDER.withArgs(column.fullName() + "=NONE");
+        URIObject     image = Icons.SORT_NONE;
         UILink   link = UILink.textTargetImageAlt(text, target,image,text);
         return link;
     }

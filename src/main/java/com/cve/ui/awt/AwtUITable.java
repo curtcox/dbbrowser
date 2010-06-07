@@ -1,5 +1,6 @@
 package com.cve.ui.awt;
 
+import com.cve.lang.URIObject;
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
 import com.cve.ui.UIPage;
@@ -18,7 +19,7 @@ import java.awt.EventQueue;
 import java.awt.Frame;
 import java.awt.LayoutManager;
 import java.awt.Panel;
-import java.net.URI;
+
 
 /**
  *
@@ -83,7 +84,7 @@ final class AwtUITable extends Panel {
             }
 
             @Override
-            public void browse(URI uri) {
+            public void browse(URIObject uri) {
                 System.out.println("Requested " + uri);
             }
         };

@@ -1,5 +1,6 @@
 package com.cve.model.db;
 
+import com.cve.lang.URIObject;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
@@ -7,7 +8,7 @@ import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.util.URIs;
 import com.cve.web.db.DBURICodec;
-import java.net.URI;
+
 
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -21,10 +22,10 @@ public final class DBServer {
 
     /**
      * How the server is represented in URLs.
-     * This isn't the URI that the server is at, but rather the URI fragment
+     * This isn't the URIObject that the server is at, but rather the URIObject fragment
      * that represents the server in our URIs.
      */
-    public final URI uri;
+    public final URIObject uri;
 
     private static final Canonicalizer<DBServer> CANONICALIZER = Canonicalizer.of();
 
@@ -35,12 +36,12 @@ public final class DBServer {
         return CANONICALIZER.canonical(server);
     }
 
-    private DBServer(URI uri) {
+    private DBServer(URIObject uri) {
         this.uri = notNull(uri);
         
     }
 
-    public static DBServer uri(URI uri) {
+    public static DBServer uri(URIObject uri) {
         return canonical(new DBServer(uri));
     }
 
@@ -66,7 +67,7 @@ public final class DBServer {
 
     public Link linkTo() {
         Label text = Label.of(toString());
-        URI target = DBURICodec.encode(this);
+        URIObject target = DBURICodec.encode(this);
         return Link.textTarget(text, target);
     }
 }

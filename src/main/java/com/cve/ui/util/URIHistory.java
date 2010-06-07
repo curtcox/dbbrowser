@@ -1,13 +1,14 @@
 package com.cve.ui.util;
 
+import com.cve.lang.URIObject;
 import com.cve.util.Check;
 import com.cve.util.URIs;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 
 /**
- * For managing a URI history with forward and back operations like in a web
+ * For managing a URIObject history with forward and back operations like in a web
  * browser.
  * @author curt
  */
@@ -21,9 +22,9 @@ public final class URIHistory {
     /**
      * The list of pages in history.
      */
-    final List<URI> pages = Lists.newArrayList();
+    final List<URIObject> pages = Lists.newArrayList();
 
-    private URIHistory(URI root) {
+    private URIHistory(URIObject root) {
         pages.add(Check.notNull(root));
     }
 
@@ -34,7 +35,7 @@ public final class URIHistory {
     /**
      * Follow the given link.
      */
-    public void follow(URI uri) {
+    public void follow(URIObject uri) {
         if (index>=pages.size()) {
             pages.add(uri);
         } else {
@@ -46,7 +47,7 @@ public final class URIHistory {
     /**
      * Move forward a page in history.
      */
-    public URI forward() {
+    public URIObject forward() {
         if (index>=pages.size()) {
             throw new IllegalStateException();
         }
@@ -57,7 +58,7 @@ public final class URIHistory {
     /**
      * Move backward a page in history.
      */
-    public URI back() {
+    public URIObject back() {
         if (index<2) {
             throw new IllegalStateException();
         }
@@ -68,7 +69,7 @@ public final class URIHistory {
     /**
      * Return the current page.
      */
-    public URI current() {
+    public URIObject current() {
         return pages.get(index-1);
     }
 

@@ -1,5 +1,6 @@
 package com.cve.web.core;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.models.ByteArrayModel;
 import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
@@ -9,7 +10,7 @@ import com.cve.ui.UIElement;
 import java.sql.SQLException;
 import javax.servlet.http.*;
 import java.io.*;
-import java.net.URI;
+
 
 /**
  * This single servlet provides the servlet version of our framework.
@@ -105,7 +106,7 @@ public final class RequestRouterServlet extends HttpServlet {
      */
     void write(PageResponse page, HttpServletResponse response) throws IOException {
         log.args(page,response);
-        URI redirect = page.redirect;
+        URIObject redirect = page.redirect;
         // Redirect, if that is the response
         if (redirect!=null) {
             response.sendRedirect(redirect.toString());

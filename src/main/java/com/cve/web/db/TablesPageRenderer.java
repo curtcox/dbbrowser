@@ -10,6 +10,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.model.db.DBTable;
 import com.cve.html.CSS;
+import com.cve.lang.URIObject;
 import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.Logs;
@@ -17,7 +18,7 @@ import com.cve.ui.UIElement;
 import com.cve.util.Replace;
 
 import com.cve.util.URIs;
-import java.net.URI;
+
 
 /**
  * For picking a table.
@@ -28,7 +29,7 @@ public final class TablesPageRenderer implements ModelHtmlRenderer {
 
     private final HTMLTags tags = HTMLTags.of();
 
-    private static URI HELP = URIs.of("/resource/help/Tables.html");
+    private static URIObject HELP = URIs.of("/resource/help/Tables.html");
 
     private TablesPageRenderer() {}
 

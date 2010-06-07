@@ -4,13 +4,14 @@ import com.cve.html.Tooltip;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.html.HTML;
-import com.cve.log.Log;
-import java.net.URI;
+import com.cve.lang.URIObject;
+
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.cve.util.Replace;
+import com.cve.util.URIs;
 
 /**
  *
@@ -28,7 +29,7 @@ public class LinkTest {
 
     private String linkHTML() {
         Label text = Label.of("foo");
-        URI target = uri("bar");
+        URIObject target = uri("bar");
         Tooltip tip = DUMMY_TOOLTIP;
         String html = Link.textTargetTip(text,target,tip).toString();
         return html;
@@ -83,11 +84,7 @@ public class LinkTest {
         assertTrue(html,html.contains("onmouseout="));
     }
 
-    private static URI uri(String text) {
-        try {
-            return new URI(text);
-        } catch (URISyntaxException e) {
-            throw new IllegalArgumentException(e);
-        }
+    private static URIObject uri(String text) {
+        return URIs.of(text);
     }
 }

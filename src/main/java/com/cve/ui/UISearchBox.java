@@ -1,10 +1,11 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.util.URIs;
 import com.cve.web.core.Icons;
 import com.cve.web.core.Search;
-import java.net.URI;
+
 import static com.cve.ui.UIBuilder.*;
 
 /**
@@ -17,7 +18,7 @@ public final class UISearchBox {
         return uriSearch(URIs.of("search"),search);
     }
 
-    public static UIForm uriSearch(URI uri, Search search) {
+    public static UIForm uriSearch(URIObject uri, Search search) {
         UIForm form = UIForm.getAction(uri)
             .with(text(Search.FIND,search.target))
             .with(submit("find",Icons.SEARCH));

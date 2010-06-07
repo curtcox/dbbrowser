@@ -1,7 +1,8 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.PageRequest;
-import java.net.URI;
+
 
 /**
  * Not really a page viewer at all, but handy for testing.
@@ -19,7 +20,7 @@ public final class PrintPageViewer implements PageViewer {
     }
 
     @Override
-    public void browse(URI uri) {
+    public void browse(URIObject uri) {
         print("Requested " + uri);
     }
 

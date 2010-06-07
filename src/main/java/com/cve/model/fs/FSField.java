@@ -1,5 +1,6 @@
 package com.cve.model.fs;
 
+import com.cve.lang.URIObject;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
@@ -7,7 +8,7 @@ import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.fs.FSURICodec;
 import com.google.common.collect.ImmutableList;
-import java.net.URI;
+
 import static com.cve.util.Check.notNull;
 /**
  *
@@ -98,7 +99,7 @@ public final class FSField {
     }
 
     public Link linkTo() {
-        URI target = FSURICodec.encode(this);
+        URIObject target = FSURICodec.encode(this);
         String markedName = name;
         Label text = Label.of(markedName);
         return Link.textTarget(text, target);

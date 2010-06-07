@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.model.db.Cell;
 import com.cve.html.Label;
@@ -29,7 +30,7 @@ import com.cve.web.core.Icons;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import java.net.URI;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -225,7 +226,7 @@ public final class DBResultSetRenderer {
     String nameCell(Database database) {
         log.args(database);
         Label  text = Label.of(database.name);
-        URI  target = database.linkTo().getTarget();
+        URIObject  target = database.linkTo().getTarget();
         return "Database : " + Link.textTarget(text,target).toString();
     }
 
@@ -235,7 +236,7 @@ public final class DBResultSetRenderer {
     String nameCell(DBTable table) {
         log.args(table);
         Label  text = Label.of(table.name);
-        URI  target = table.linkTo().getTarget();
+        URIObject  target = table.linkTo().getTarget();
         return "Table : " + Link.textTarget(text,target).toString();
     }
 
@@ -254,7 +255,7 @@ public final class DBResultSetRenderer {
             columnName = columnName.substring(0,width);
         }
         Label                    text = Label.of(columnName);
-        URI                    target = column.linkTo().getTarget();
+        URIObject                    target = column.linkTo().getTarget();
         ImmutableList<DBColumn> joins = destinationColumns(column,hints.getJoinsFor(column));
         ImmutableList<DBRowFilter> filters = hints.getFiltersFor(column);
         Tooltip tooltip = ColumnNameTooltip.columnJoinsFilters(column,joins,filters);
@@ -315,9 +316,9 @@ public final class DBResultSetRenderer {
 
     String actionCell(DBColumn column, Order.Direction direction) {
         Label  text = Label.of("Hide or sort");
-        URI  target = SelectBuilderAction.HIDE.withArgs(column.fullName());
+        URIObject  target = SelectBuilderAction.HIDE.withArgs(column.fullName());
         Tooltip tip = ColumnActionTooltip.columnDirection(column,direction);
-        URI   image = Icons.CONFIGURE;
+        URIObject   image = Icons.CONFIGURE;
         return Link.textTargetTipImage(text, target, tip,image).toString();
     }
 
@@ -327,7 +328,7 @@ public final class DBResultSetRenderer {
         Label          text = Label.of(valueString);
         DBColumn     column = cell.column;
         DBRowFilter       filter = DBRowFilter.of(column, value);
-        URI          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
+        URIObject          target = SelectBuilderAction.FILTER.withArgs(filter.toUrlFragment());
         return Link.textTarget(text, target).toString();
     }
 

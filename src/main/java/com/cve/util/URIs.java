@@ -1,7 +1,8 @@
 
 package com.cve.util;
 
-import java.net.URI;
+
+import com.cve.lang.URIObject;
 import java.net.URISyntaxException;
 
 import static com.cve.util.Check.notNull;
@@ -22,9 +23,9 @@ import static com.cve.util.Check.notNull;
  */
 public final class URIs {
 
-    public static URI of(String target) {
+    public static URIObject of(String target) {
         try {
-            return new URI(target);
+            return new URIObject(target);
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
@@ -45,7 +46,7 @@ public final class URIs {
         // /view/CSV/foo
         //          ^ start here
      */
-    public static URI startingAtSlash(String uri, int slash) {
+    public static URIObject startingAtSlash(String uri, int slash) {
         int j=0;
         for (int i=0; i<uri.length(); i++) {
             if (uri.charAt(i)=='/') {

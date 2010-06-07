@@ -1,6 +1,7 @@
 
 package com.cve.web.core;
 
+import com.cve.lang.URIObject;
 import com.cve.util.Check;
 import com.cve.util.URIs;
 import javax.annotation.concurrent.Immutable;
@@ -8,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import java.net.URI;
+
 import java.util.Map;
 import javax.servlet.http.Cookie;
 
@@ -43,9 +44,9 @@ public final class PageRequest {
     public final String queryString;
 
     /**
-     * The requestURI plus the queryString, if there is one. 
+     * The requestURIObject plus the queryString, if there is one. 
      */
-    public final URI fullURI;
+    public final URIObject fullURI;
 
     /**
      * Parameters either parsed from the query string or from form post
@@ -84,7 +85,7 @@ public final class PageRequest {
         parameters  = ImmutableMap.of();
         cookies     = ImmutableList.of();
         id = PageRequestProcessor.of();
-        fullURI = URIs.of("");
+        fullURI     = URIs.of("");
     }
 
     /**
@@ -145,8 +146,8 @@ public final class PageRequest {
         return new PageRequest(method,requestURI,queryString,parameters,cookies);
     }
 
-    public static PageRequest of(URI uri) {
-        String requestURI = uri.toString();
+    public static PageRequest of(URIObject uri) {
+        String requestURI  = uri.toString();
         Method method      = Method.GET;
         String queryString = "";
         ImmutableMap<String,String> parameters = ImmutableMap.of();

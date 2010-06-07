@@ -1,5 +1,6 @@
 package com.cve.model.db;
 
+import com.cve.lang.URIObject;
 import com.cve.ui.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -8,7 +9,7 @@ import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
 import com.google.common.collect.ImmutableList;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -169,7 +170,7 @@ public final class DBColumn {
     }
 
     public Link linkTo() {
-        URI target = codec.encode(this);
+        URIObject target = codec.encode(this);
         String markedName = name;
         HTMLTags tags = HTMLTags.of();
         if (keyness==Keyness.PRIMARY) {

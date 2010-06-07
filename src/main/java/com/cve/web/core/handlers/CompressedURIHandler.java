@@ -1,8 +1,9 @@
 package com.cve.web.core.handlers;
 
+import com.cve.lang.URIObject;
 import com.cve.util.Check;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
@@ -17,7 +18,7 @@ import com.cve.web.core.RequestHandler;
 import static com.cve.util.Check.notNull;
 
 /**
- * Wraps another request handler to provide a compressed URI scheme.
+ * Wraps another request handler to provide a compressed URIObject scheme.
  * This is useful, because we tend to create big URLs with lots of info
  * in them.
  * @author curt
@@ -186,9 +187,9 @@ public final class CompressedURIHandler implements RequestHandler {
     }
 
     /**
-     * Given a short URI starting with /z/, return the equivalent long one.
+     * Given a short URIObject starting with /z/, return the equivalent long one.
      */
-    public static URI longURI(URI uri) {
+    public static URIObject longURI(URIObject uri) {
         Check.notNull(uri);
         String string = uri.toString();
         if ((!string.startsWith(PREFIX)))  {
@@ -205,7 +206,7 @@ public final class CompressedURIHandler implements RequestHandler {
     /**
      * Given a long URI, return the equivalent short one starting with /z/.
      */
-    public static URI shortURI(URI uri) {
+    public static URIObject shortURI(URIObject uri) {
         Check.notNull(uri);
         String string = uri.toString();
         if (string.startsWith(PREFIX) || (!string.startsWith("/")) || string.startsWith("//"))  {

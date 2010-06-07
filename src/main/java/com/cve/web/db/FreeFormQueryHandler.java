@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.Cell;
 import com.cve.model.db.DBColumn;
@@ -28,7 +29,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.net.URI;
+
 import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.List;
@@ -192,16 +193,16 @@ public final class FreeFormQueryHandler extends AbstractRequestHandler {
     }
 
     /**
-     * Return a URI that links to a free-form query page loaded with the
+     * Return a URIObject that links to a free-form query page loaded with the
      * given select statement.
      */
-    public URI linkTo(Select select, Search search) {
+    public URIObject linkTo(Select select, Search search) {
         log.args(select,search);
         DBServer server = select.server;
         DBConnection connection = connections.getConnection(server);
         DBDriver driver = connection.getInfo().driver;
         SQL sql = driver.render(select,search);
-        URI  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
+        URIObject  target = URIs.of("/+/" + server.uri + "/select?q=" + URLEncoder.encode(sql.toString()));
         return target;
     }
 }

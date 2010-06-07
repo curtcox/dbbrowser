@@ -1,8 +1,9 @@
 package com.cve.web.core;
 
+import com.cve.lang.URIObject;
 import javax.annotation.concurrent.Immutable;
 import com.cve.ui.UIElement;
-import java.net.URI;
+
 
 /**
  * An immutable structured representation of an HtmlPage.
@@ -25,15 +26,15 @@ public final class HtmlPage {
         throw new UnsupportedOperationException();
     }
 
-    public static UIElement gutsHelp(String guts, URI help) {
+    public static UIElement gutsHelp(String guts, URIObject help) {
         throw new UnsupportedOperationException();
     }
 
-    public static UIElement gutsTitleNavHelp(String guts, String title, String[] nav, URI help) {
+    public static UIElement gutsTitleNavHelp(String guts, String title, String[] nav, URIObject help) {
         throw new UnsupportedOperationException();
     }
 
-    public static UIElement gutsTitleNavHelpBase(String guts, String title, String[] nav, URI help, URI base) {
+    public static UIElement gutsTitleNavHelpBase(String guts, String title, String[] nav, URIObject help, URIObject base) {
         throw new UnsupportedOperationException();
     }
 

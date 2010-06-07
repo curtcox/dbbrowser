@@ -14,6 +14,7 @@ import com.cve.log.Logs;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.ui.UIForm;
 import com.cve.lang.AnnotatedStackTrace;
+import com.cve.lang.URIObject;
 import com.cve.ui.UIElement;
 import com.cve.util.URIs;
 import com.cve.web.core.ClientInfo;
@@ -24,7 +25,7 @@ import com.cve.web.core.Search;
 import com.cve.web.management.ObjectLink;
 import com.cve.web.management.ObjectLinks;
 import com.google.common.collect.ImmutableList;
-import java.net.URI;
+
 import static com.cve.web.db.FreeFormQueryModel.*;
 import static com.cve.ui.UIBuilder.*;
 import java.sql.SQLException;
@@ -44,7 +45,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/Select.html");
+    private static URIObject HELP = URIs.of("/resource/help/Select.html");
 
     private FreeFormQueryRenderer(DBMetaData.Factory db, DBHintsStore hintsStore) {
         this.db = db;
@@ -66,11 +67,11 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         }
     }
 
-    private URI base(FreeFormQueryModel page) {
+    private URIObject base(FreeFormQueryModel page) {
         SQL sql = page.sql;
         Select select = SelectParser.parse(sql,page.meta);
         Search search = Search.EMPTY;
-        URI uri = DBURIRenderer.render(select,search);
+        URIObject uri = DBURIRenderer.render(select,search);
         return uri;
     }
 
@@ -97,7 +98,7 @@ final class FreeFormQueryRenderer implements ModelHtmlRenderer {
         ImmutableList<Order> orders = ImmutableList.of();
         DBResultSetRenderer renderer = DBResultSetRenderer.resultsOrdersHintsClient(results, orders, hints, client);
         String guts = page.message + form.toString() + renderer.landscapeTable();
-        URI base = base(page);
+        URIObject base = base(page);
         return HtmlPage.gutsTitleNavHelpBase(guts,title,nav,HELP,base);
     }
 }

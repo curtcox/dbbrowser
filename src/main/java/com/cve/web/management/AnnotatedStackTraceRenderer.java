@@ -13,6 +13,7 @@ import com.cve.log.Logs;
 import com.cve.lang.AnnotatedClass;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.lang.AnnotatedStackTraceElement;
+import com.cve.lang.URIObject;
 import com.cve.ui.UIComposite;
 import com.cve.ui.UIElement;
 import com.cve.ui.UILabel;
@@ -25,7 +26,7 @@ import com.cve.ui.UITableRow;
 import com.cve.util.URIs;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 
 /**
@@ -119,7 +120,7 @@ public final class AnnotatedStackTraceRenderer
     Link linkToSource(String className, String fileName) {
         Label text = Label.of(fileName);
         String classFileName = className.replace(".", "/") + ".java";
-        URI target = URIs.of(ResourceHandler.PREFIX + classFileName);
+        URIObject target = URIs.of(ResourceHandler.PREFIX + classFileName);
         return Link.textTarget(text, target);
     }
 }

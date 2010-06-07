@@ -1,6 +1,7 @@
 package com.cve.web.management;
 
 import com.cve.html.CSS;
+import com.cve.lang.URIObject;
 import com.cve.ui.HTMLTags;
 import com.cve.log.Log;
 import com.cve.log.LogEntry;
@@ -13,7 +14,7 @@ import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.core.PageRequestProcessor;
 import com.cve.web.db.NavigationButtons;
-import java.net.URI;
+
 
 /**
  *
@@ -27,7 +28,7 @@ final class PageRequestModelRenderer implements ModelHtmlRenderer {
 
     private final HTMLTags tags = HTMLTags.of();
 
-    private static URI HELP = URIs.of("/resource/help/request.html");
+    private static URIObject HELP = URIs.of("/resource/help/request.html");
 
     private PageRequestModelRenderer() {}
 

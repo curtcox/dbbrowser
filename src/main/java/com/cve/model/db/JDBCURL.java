@@ -1,7 +1,8 @@
 package com.cve.model.db;
 
-import java.net.URI;
 
+
+import com.cve.lang.URIObject;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 /**
@@ -14,13 +15,13 @@ public final class JDBCURL {
     /**
      * Get how the server is represented in URLs.
      */
-    public final URI uri;
+    public final URIObject uri;
 
-    private JDBCURL(URI uri) {
+    private JDBCURL(URIObject uri) {
         this.uri = notNull(uri);
     }
 
-    public static JDBCURL uri(URI uri) {
+    public static JDBCURL uri(URIObject uri) {
         return new JDBCURL(uri);
     }
 

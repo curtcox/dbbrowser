@@ -1,5 +1,6 @@
 package com.cve.web.db.databases;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.model.db.Database;
@@ -13,7 +14,7 @@ import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
 import com.cve.web.core.Search;
 import com.cve.web.db.NavigationButtons;
-import java.net.URI;
+
 
 /**
  * Renders the results of searching the entire database.
@@ -23,7 +24,7 @@ final class DatabaseContentsSearchPageRenderer implements ModelHtmlRenderer {
 
     final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/Servers.html");
+    private static URIObject HELP = URIs.of("/resource/help/Servers.html");
 
     private DatabaseContentsSearchPageRenderer() {
         

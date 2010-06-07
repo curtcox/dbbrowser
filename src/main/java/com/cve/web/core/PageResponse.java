@@ -1,11 +1,12 @@
 package com.cve.web.core;
 
+import com.cve.lang.URIObject;
 import com.cve.lang.AnnotatedCallTree;
 import com.cve.web.core.models.ByteArrayModel;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.management.AnnotatedStackTraceModel;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -26,9 +27,9 @@ public final class PageResponse {
     public final PageRequest request;
 
     /**
-     * Possibly null URI to redirect to.
+     * Possibly null URIObject to redirect to.
      */
-    public final URI redirect;
+    public final URIObject redirect;
 
     /**
      * Possibly null Model to render.
@@ -71,7 +72,7 @@ public final class PageResponse {
     /**
      * Redirect constructor -- use a factory.
      */
-    private PageResponse(PageRequest request,URI redirect) {
+    private PageResponse(PageRequest request,URIObject redirect) {
         this.request = notNull(request);
         this.model    = null;
         this.redirect = notNull(redirect);
@@ -96,7 +97,7 @@ public final class PageResponse {
         return new PageResponse(request,model);
     }
 
-    public static PageResponse newRedirect(PageRequest request,URI dest) {
+    public static PageResponse newRedirect(PageRequest request,URIObject dest) {
         return new PageResponse(request,dest);
     }
 

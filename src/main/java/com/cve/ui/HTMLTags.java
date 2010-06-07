@@ -1,12 +1,13 @@
 package com.cve.ui;
 
 import com.cve.html.CSS;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Replace;
 import com.cve.web.core.handlers.DebugHandler;
 import com.cve.web.core.PageRequest;
-import java.net.URI;
+
 /**
  * Some string-based static methods to make constructing HMTL easier.
  * Also, use of this class enables some debugging functionality.
@@ -26,7 +27,7 @@ public final class HTMLTags {
     public String  html(String s) { return "<html>" + s + "</html>"; }
     public String  head(String s) { return "<head>" + s + "</head>"; }
     public String title(String s) { return "<title>" + s + "</title>"; }
-    public String  base(URI href) { return "<base href=" + q(href) + "/>"; }
+    public String  base(URIObject href) { return "<base href=" + q(href) + "/>"; }
     public String  body(String s) { return "<body>" + s + "</body>"; }
     public String    li(String s) { return debug("<li>",s,"</li>"); }
     public String    ol(String s) { return debug("<ol>",s ,"</ol>"); }
@@ -72,7 +73,7 @@ public final class HTMLTags {
      * "Alt text is an alternative, not a tooltip"
      * See http://www.456bereastreet.com/archive/200604/alt_text_is_an_alternative_not_a_tooltip/
      */
-    public static String img(String title, URI uri) {
+    public static String img(String title, URIObject uri) {
         return Replace.bracketQuote("<img alt=[" + title + "] title=[" + title + "] src=[" + uri + "]>");
     }
 

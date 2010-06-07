@@ -1,6 +1,7 @@
 package com.cve.ui.swing;
 
 import com.cve.lang.AnnotatedPackage;
+import com.cve.lang.URIObject;
 import com.cve.ui.util.URIHistory;
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIConstructor;
@@ -35,7 +36,7 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -191,7 +192,7 @@ public final class SwingRouterFrame
         page.add(pageComponent);
     }
     
-    void setAddress(URI uri) {
+    void setAddress(URIObject uri) {
         if (!address.items.contains(uri)) {
             address.addItem(uri);
         }
@@ -199,7 +200,7 @@ public final class SwingRouterFrame
     }
 
     @Override
-    public void browse(URI uri) {
+    public void browse(URIObject uri) {
         browse(PageRequest.of(uri));
     }
 
@@ -297,17 +298,17 @@ public final class SwingRouterFrame
     }
 
     void forward() {
-        URI uri = history.forward();
+        URIObject uri = history.forward();
         setPageRequest(PageRequest.of(uri));
     }
 
     void back() {
-        URI uri = history.back();
+        URIObject uri = history.back();
         setPageRequest(PageRequest.of(uri));
     }
 
     void reload() {
-        URI uri = history.current();
+        URIObject uri = history.current();
         setPageRequest(PageRequest.of(uri));
     }
 
@@ -319,7 +320,7 @@ public final class SwingRouterFrame
 
     void showNewFor(Object o) {
         Check.isEDT();
-        URI uri = LogCodec.of().encode(o);
+        URIObject uri = LogCodec.of().encode(o);
         SwingRouterFrame frame = from();
         frame.browse(uri);
     }

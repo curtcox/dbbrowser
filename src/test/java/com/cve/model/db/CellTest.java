@@ -1,7 +1,7 @@
 package com.cve.model.db;
 
-import com.cve.log.Log;
-import java.net.URI;
+import com.cve.util.URIs;
+
 import java.net.URISyntaxException;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -20,14 +20,14 @@ public class CellTest {
     @Test
     public void equalityWithSameValues() throws URISyntaxException {
         DBRow       row = DBRow.FIRST;
-        DBTable table = DBTable.databaseName(DBServer.uri(new URI("")).databaseName("db"),"foo");
+        DBTable table = DBTable.databaseName(DBServer.uri(URIs.of("")).databaseName("db"),"foo");
         DBColumn column = DBColumn.tableNameType(table,"bar", String.class);
         assertEquals(Cell.at(row, column), Cell.at(row, column));
     }
 
     @Test
     public void equalityWithEquivalentValues() throws URISyntaxException {
-        DBTable table = DBTable.databaseName(DBServer.uri(new URI("")).databaseName("db"),"foo");
+        DBTable table = DBTable.databaseName(DBServer.uri(URIs.of("")).databaseName("db"),"foo");
         DBRow       r1a = DBRow.FIRST.next();
         DBRow       r1b = DBRow.FIRST.next();
         DBColumn    c1a = DBColumn.tableNameType(table,"bar", String.class);

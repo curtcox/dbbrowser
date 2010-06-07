@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.Select;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -15,7 +16,7 @@ import com.cve.web.core.Search;
 import com.cve.web.alt.AlternateView;
 import com.cve.web.db.FreeFormQueryHandler;
 import static com.cve.web.alt.AlternateView.*;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -71,9 +72,9 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewLink(AlternateView view) {
         Label  text = Label.of(view.toString());
-        URI  target = URIs.of( "/view/" + view + DBURIRenderer.render(select,search));
+        URIObject  target = URIs.of( "/view/" + view + DBURIRenderer.render(select,search));
         String tip = view.name();
-        URI   image = view.icon;
+        URIObject   image = view.icon;
         return Link.textTargetImageAlt(text, target, image,tip).toString();
     }
 
@@ -82,9 +83,9 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewSQLLink() {
         Label  text = Label.of("SQL");
-        URI target = FreeFormQueryHandler.of(serversStore,managedFunction).linkTo(select,search);
+        URIObject target = FreeFormQueryHandler.of(serversStore,managedFunction).linkTo(select,search);
         String tip = SQL.name();
-        URI   image = SQL.icon;
+        URIObject   image = SQL.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();
     }
 
@@ -93,9 +94,9 @@ public final class AlternateDisplayLinksRenderer {
      */
     String viewZLink() {
         Label  text = Label.of("/z/");
-        URI  target = CompressedURIHandler.shortURI(DBURIRenderer.render(select,search));
+        URIObject  target = CompressedURIHandler.shortURI(DBURIRenderer.render(select,search));
         String tip = "Compressed URL";
-        URI   image = COMPRESSED.icon;
+        URIObject   image = COMPRESSED.icon;
         return Link.textTargetImageAlt(text, target, image, tip).toString();
     }
 

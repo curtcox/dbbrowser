@@ -1,5 +1,6 @@
 package com.cve.web.alt;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.Hints;
 import com.cve.model.db.Select;
 import com.cve.model.db.SelectContext;
@@ -21,7 +22,7 @@ import com.cve.util.URIs;
 import com.cve.web.core.handlers.CompositeRequestHandler;
 import com.cve.web.core.RequestHandler;
 import com.cve.web.core.Search;
-import java.net.URI;
+
 import static com.cve.util.Check.notNull;
 
 /**
@@ -70,7 +71,7 @@ public final class AlternateViewHandler implements RequestHandler {
         log.args(uri);
         // /view/CSV/foo
         //          ^ start here
-        URI tail = URIs.startingAtSlash(uri,3);
+        URIObject tail = URIs.startingAtSlash(uri,3);
 
         // The server out of the URL
         DBServer         server = codec.getServer(tail.toString());

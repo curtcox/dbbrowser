@@ -1,6 +1,7 @@
 
 package com.cve.web.db;
 
+import com.cve.lang.URIObject;
 import com.cve.util.*;
 import com.cve.model.db.AggregateFunction;
 import com.cve.model.db.DBColumn;
@@ -18,7 +19,7 @@ import com.cve.log.Logs;
 import com.cve.web.core.Search;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.net.URLDecoder;
 import java.util.List;
 /**
@@ -36,7 +37,7 @@ import java.util.List;
 public final class DBURICodec {
 
     /**
-     * The position within the URI where the given information is specified.
+     * The position within the URIObject where the given information is specified.
      * Most of these map very directly to clauses in SQL select statements.
      */
     enum Position {
@@ -365,49 +366,49 @@ public final class DBURICodec {
     }
 
 
-    public static URI encode(Search search) {
+    public static URIObject encode(Search search) {
         return URIs.of("/" + search.toUrlFragment() + "/");
     }
 
     /**
-     * Return a URI for browsing the given server.
+     * Return a URIObject for browsing the given server.
      */
-    public static URI encode(DBServer server) {
+    public static URIObject encode(DBServer server) {
         Search search = Search.EMPTY;
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
     /**
-     * Return a URI for browsing the given server.
+     * Return a URIObject for browsing the given server.
      */
-    public static URI encode(Search search, DBServer server) {
+    public static URIObject encode(Search search, DBServer server) {
         return URIs.of(encode(search) + server.uri.toString() + "/");
     }
 
-    public URI encode(Database database) {
+    public URIObject encode(Database database) {
         log.args(database);
         return encode(Search.EMPTY,database);
     }
 
-    public URI encode(Search search, Database database) {
+    public URIObject encode(Search search, Database database) {
         log.args(search,database);
         DBServer server = database.server;
         return URIs.of(encode(search,server) + database.name + "/");
     }
 
-    public URI encode(Search search, DBTable table) {
+    public URIObject encode(Search search, DBTable table) {
         return URIs.of(encode(search,table.database) + table.fullName() + "/");
     }
 
-    public URI encode(DBTable table) {
+    public URIObject encode(DBTable table) {
         return encode(Search.EMPTY,table);
     }
 
-    public URI encode(Search search, DBColumn column) {
+    public URIObject encode(Search search, DBColumn column) {
         return URIs.of(encode(search,column.table) + column.fullName() + "/");
     }
 
-    public URI encode(DBColumn column) {
+    public URIObject encode(DBColumn column) {
         return encode(Search.EMPTY,column);
     }
 

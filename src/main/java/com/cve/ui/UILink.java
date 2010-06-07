@@ -2,10 +2,11 @@ package com.cve.ui;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.URIObject;
 import static com.cve.util.Check.notNull;
 import com.cve.web.management.LogCodec;
 import com.cve.web.management.ObjectRegistry;
-import java.net.URI;
+
 
 /**
  * Like a HTML hyperlink.
@@ -14,11 +15,11 @@ import java.net.URI;
  */
 public final class UILink implements UIElement {
 
-    public final URI target;
+    public final URIObject target;
 
     public final String text;
 
-    public final URI image;
+    public final URIObject image;
 
     public final String alt;
 
@@ -28,7 +29,7 @@ public final class UILink implements UIElement {
      * Use a factory.
      * @param value
      */
-    private UILink(URI target, String text, URI image, String alt) {
+    private UILink(URIObject target, String text, URIObject image, String alt) {
         this.target = notNull(target);
         this.text   = notNull(text);
         this.image  = image;
@@ -62,15 +63,15 @@ public final class UILink implements UIElement {
      */
     public static UILink to(String text, Object object) {
         LogCodec codec = LogCodec.of();
-        URI target = codec.encode(object);
+        URIObject target = codec.encode(object);
         return new UILink(target,text,null,null);
     }
 
-    public static UILink textTarget(String text, URI target) {
+    public static UILink textTarget(String text, URIObject target) {
         return new UILink(target,text,null,null);
     }
 
-    public static UILink textTargetImageAlt(String text, URI target, URI image, String alt) {
+    public static UILink textTargetImageAlt(String text, URIObject target, URIObject image, String alt) {
         return new UILink(target,text,image,alt);
     }
 

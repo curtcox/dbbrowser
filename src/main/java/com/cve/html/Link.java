@@ -1,10 +1,11 @@
 package com.cve.html;
 
+import com.cve.lang.URIObject;
 import com.cve.ui.HTMLTags;
 import com.cve.ui.UILink;
 import com.cve.util.Replace;
 import com.cve.web.core.handlers.DebugHandler;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 /**
@@ -19,7 +20,7 @@ public final class Link {
     /**
      * Where this link goes.
      */
-    private final URI  target;
+    private final URIObject  target;
 
     /**
      * Text that appears in the tool tip.
@@ -31,47 +32,47 @@ public final class Link {
      */
     private final String html;
 
-    private Link(Label text, URI target, Tooltip tip) {
+    private Link(Label text, URIObject target, Tooltip tip) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
         this.html   = a(text,target,tip);
     }
 
-    private Link(Label text, URI target, Tooltip tip, URI image) {
+    private Link(Label text, URIObject target, Tooltip tip, URIObject image) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = notNull(tip);
         this.html   = a(text,target,tip,image);
     }
 
-    private Link(Label text, URI target) {
+    private Link(Label text, URIObject target) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
         this.html   = a(text,target);
     }
 
-    private Link(Label text, URI target, URI image, String alt) {
+    private Link(Label text, URIObject target, URIObject image, String alt) {
         notNull(text);
         this.target = notNull(target);
         this.tip    = null;
         this.html   = a(text,target,image,alt);
     }
 
-    private static String a(Label text, URI target, URI image, String alt) {
+    private static String a(Label text, URIObject target, URIObject image, String alt) {
         return "<a href=" + q(target.toString()) + ">" + HTMLTags.img(alt,image) +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target) {
+    private static String a(Label text, URIObject target) {
         return "<a href=" + q(target.toString()) + ">" + text +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target, Tooltip tip) {
+    private static String a(Label text, URIObject target, Tooltip tip) {
         return "<a href=" + q(target.toString()) + " " +  tip(tip) + ">" + text +"</a>" + debug();
     }
 
-    private static String a(Label text, URI target, Tooltip tip, URI image) {
+    private static String a(Label text, URIObject target, Tooltip tip, URIObject image) {
         return "<a href=" + q(target.toString()) + " " + tip(tip) + ">" + HTMLTags.img(text.toString(),image) +"</a>" + debug();
     }
 
@@ -83,26 +84,26 @@ public final class Link {
         return DebugHandler.debugLink();
     }
 
-    public static Link textTarget(Label text, URI target) {
+    public static Link textTarget(Label text, URIObject target) {
         return new Link(text,target);
     }
 
-    public static Link textTargetImageAlt(Label text, URI target, URI image, String alt) {
+    public static Link textTargetImageAlt(Label text, URIObject target, URIObject image, String alt) {
         return new Link(text,target,image,alt);
     }
 
-    public static Link textTargetTipImage(Label text, URI target, Tooltip tip, URI image) {
+    public static Link textTargetTipImage(Label text, URIObject target, Tooltip tip, URIObject image) {
         return new Link(text,target,tip,image);
     }
 
-    public static Link textTargetTip(Label text, URI target, Tooltip tip) {
+    public static Link textTargetTip(Label text, URIObject target, Tooltip tip) {
         if (tip==null) {
             return new Link(text,target);
         }
         return new Link(text,target,tip);
     }
 
-    public URI getTarget() { return target; }
+    public URIObject getTarget() { return target; }
 
     /**
      * Create the Javascript that shows the tooltip

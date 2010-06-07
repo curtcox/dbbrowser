@@ -1,12 +1,13 @@
 package com.cve.model.db;
 
+import com.cve.lang.URIObject;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Canonicalizer;
 import com.cve.web.db.DBURICodec;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -73,7 +74,7 @@ public final class Database {
 
     public Link linkTo() {
         Label text = Label.of(name);
-        URI target = codec.encode(this);
+        URIObject target = codec.encode(this);
         return Link.textTarget(text, target);
     }
 }

@@ -1,12 +1,13 @@
 package com.cve.log;
 
+import com.cve.lang.URIObject;
 import com.cve.html.Label;
 import com.cve.html.Link;
 import com.cve.lang.AnnotatedStackTrace;
 import com.cve.util.Timestamp;
 import com.cve.web.core.PageRequestProcessor;
 import com.cve.web.management.LogCodec;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 /**
@@ -85,7 +86,7 @@ public final class LogEntry implements Comparable<LogEntry> {
 
     public Link linkTo() {
         Label text = Label.of(logger.getSimpleName() + ":" + level);
-        URI target = codec.encode(this);
+        URIObject target = codec.encode(this);
         return Link.textTarget(text, target);
     }
 }

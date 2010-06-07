@@ -1,9 +1,10 @@
 package com.cve.web.core;
 
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -30,13 +31,13 @@ public abstract class RequestHandlerGuard implements RequestHandler {
     /**
      * Return a new guard that always makes the same decisions.
      */
-    public static RequestHandler of(RequestHandler handler, final boolean pass, final URI denied) {
+    public static RequestHandler of(RequestHandler handler, final boolean pass, final URIObject denied) {
         return new RequestHandlerGuard(handler) {
             @Override public boolean passes(PageRequest request) {
                 return pass;
             }
 
-            @Override public URI getDeniedURI(PageRequest request) {
+            @Override public URIObject getDeniedURI(PageRequest request) {
                 return denied;
             }
 
@@ -48,7 +49,7 @@ public abstract class RequestHandlerGuard implements RequestHandler {
         if (passes(request)) {
             return handler.produce(request);
         }
-        URI dest = getDeniedURI(request);
+        URIObject dest = getDeniedURI(request);
         return PageResponse.newRedirect(request,dest);
     }
 
@@ -59,7 +60,7 @@ public abstract class RequestHandlerGuard implements RequestHandler {
     public abstract boolean passes(PageRequest request);
 
     /**
-     * Return the URI to redirect to when access is denied.
+     * Return the URIObject to redirect to when access is denied.
      */
-    public abstract URI getDeniedURI(PageRequest request);
+    public abstract URIObject getDeniedURI(PageRequest request);
 }

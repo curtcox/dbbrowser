@@ -1,6 +1,7 @@
 package com.cve.web.management;
 
-import java.net.URI;
+
+import com.cve.lang.URIObject;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -17,15 +18,15 @@ public final class ObjectLink {
 
     public final Object target;
 
-    public final URI uri;
+    public final URIObject uri;
 
-    private ObjectLink(Object target, String text, URI uri) {
+    private ObjectLink(Object target, String text, URIObject uri) {
         this.target = notNull(target);
         this.text = notNull(text);
         this.uri = notNull(uri);
     }
 
-    static ObjectLink of(Object target, String text, URI uri) {
+    static ObjectLink of(Object target, String text, URIObject uri) {
         return new ObjectLink(target,text,uri);
     }
 }

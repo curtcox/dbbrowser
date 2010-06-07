@@ -1,8 +1,9 @@
 package com.cve.io.fs.pipeline;
 
+import com.cve.lang.URIObject;
 import com.cve.model.fs.FSPipeline;
 import com.cve.web.core.Search;
-import java.net.URI;
+
 
 /**
  *
@@ -10,7 +11,7 @@ import java.net.URI;
  */
 public final class FSURIRenderer {
 
-    public static URI render(FSPipeline newPipeline, Search search) {
+    public static URIObject render(FSPipeline newPipeline, Search search) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

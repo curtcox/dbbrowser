@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.html.SimpleTooltip;
 import com.cve.html.Label;
 import com.cve.html.Tooltip;
@@ -17,7 +18,7 @@ import com.cve.web.db.SelectBuilderAction;
 import com.google.common.collect.ImmutableList;
 
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.Collections;
 import java.util.List;
 import static com.cve.util.Check.notNull;
@@ -61,7 +62,7 @@ public final class ColumnNameTooltip
         // Images display properly, however, so the key images will be enough
         // for now.
         String text   = "join with " + destName;
-        URI    target = SelectBuilderAction.JOIN.withArgs(
+        URIObject    target = SelectBuilderAction.JOIN.withArgs(
              source.fullName() + "=" + destName
         );
         UILink link = UILink.textTarget(text, target);
@@ -76,7 +77,7 @@ public final class ColumnNameTooltip
         DBColumn column = filter.column;
         String value  = filter.value.toString();
         String text   = "show only " + value;
-        URI    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
+        URIObject    target = SelectBuilderAction.FILTER.withArgs(column.fullName() + "=" + value);
         UILink   link = UILink.textTarget(text, target);
         return link;
     }

@@ -2,7 +2,7 @@ package com.cve.model.db;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.concurrent.Immutable;

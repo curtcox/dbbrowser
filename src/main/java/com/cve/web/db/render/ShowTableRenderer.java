@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
 import com.cve.html.Link;
@@ -16,7 +17,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -132,7 +133,7 @@ public final class ShowTableRenderer {
 
     String showCell(DBColumn column) {
         Label  text = Label.of(column.name);
-        URI  target = SelectBuilderAction.SHOW.withArgs(column.fullName());
+        URIObject  target = SelectBuilderAction.SHOW.withArgs(column.fullName());
         return Link.textTarget(text, target).toString();
     }
 

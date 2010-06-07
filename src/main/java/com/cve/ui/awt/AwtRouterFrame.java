@@ -1,5 +1,6 @@
 package com.cve.ui.awt;
 
+import com.cve.lang.URIObject;
 import com.cve.ui.PageViewer;
 import com.cve.ui.UIElement;
 import com.cve.ui.layout.AwtLayoutAdapter;
@@ -31,7 +32,7 @@ import java.awt.Panel;
 import java.awt.ScrollPane;
 import java.awt.TextField;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URI;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -110,12 +111,12 @@ public final class AwtRouterFrame extends Frame implements PageViewer {
         page.add(constructor.construct(e));
     }
     
-    void setAddress(URI uri) {
+    void setAddress(URIObject uri) {
 
     }
 
     @Override
-    public void browse(URI uri) {
+    public void browse(URIObject uri) {
         browse(PageRequest.of(uri));
     }
 

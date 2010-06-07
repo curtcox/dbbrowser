@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.lang.URIObject;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
 import com.cve.log.Logs;
@@ -12,7 +13,7 @@ import com.cve.web.core.handlers.AbstractFormHandler;
 import com.cve.web.core.PageRequest;
 import com.cve.web.core.PageResponse;
 import com.google.common.collect.ImmutableMap;
-import java.net.URI;
+
 
 import static com.cve.web.db.servers.AddServerPage.*;
 import static com.cve.util.Check.notNull;
@@ -53,7 +54,7 @@ final class AddServerHandler extends AbstractFormHandler {
         String     password = params.get(PASSWORD);
         String          url = params.get(URL);
         String   serverName = params.get(SERVER);
-        URI             uri = URIs.of(url);
+        URIObject             uri = URIs.of(url);
         JDBCURL     jdbcurl = JDBCURL.uri(uri);
         DBServer       server = DBServer.uri(URIs.of(serverName));
         DBDriver       driver = null;

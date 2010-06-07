@@ -1,5 +1,6 @@
 package com.cve.web.db.servers;
 
+import com.cve.lang.URIObject;
 import com.cve.io.db.driver.DBDrivers;
 import com.cve.io.db.driver.DBDriver;
 import com.cve.log.Log;
@@ -21,7 +22,7 @@ import com.cve.web.core.ClientInfo;
 import com.cve.web.core.HtmlPage;
 import com.cve.web.core.Model;
 import com.cve.web.core.ModelHtmlRenderer;
-import java.net.URI;
+
 import static com.cve.web.db.servers.AddServerPage.*;
 import static com.cve.util.Check.notNull;
 /**
@@ -38,7 +39,7 @@ final class AddServerPageRenderer implements ModelHtmlRenderer {
 
     final DBServersStore serversStore;
 
-    private static URI HELP = URIs.of("/resource/help/AddServer.html");
+    private static URIObject HELP = URIs.of("/resource/help/AddServer.html");
 
     private AddServerPageRenderer(ManagedFunction.Factory managedFunction, DBServersStore serversStore) {
         this.managedFunction = notNull(managedFunction);

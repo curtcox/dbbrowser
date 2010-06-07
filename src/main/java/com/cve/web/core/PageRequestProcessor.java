@@ -2,12 +2,13 @@ package com.cve.web.core;
 
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
 import com.cve.util.Timestamp;
 import com.cve.web.management.LogCodec;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 
 /**
@@ -87,7 +88,7 @@ public final class PageRequestProcessor implements Comparable<PageRequestProcess
 
     public Link linkTo() {
         Label text = Label.of("" + timestamp.value);
-        URI target = codec.encode(this);
+        URIObject target = codec.encode(this);
         return Link.textTarget(text, target);
     }
 

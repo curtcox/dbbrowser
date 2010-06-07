@@ -1,12 +1,13 @@
 package com.cve.ui;
 
+import com.cve.lang.URIObject;
 import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.web.core.PageRequest;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.net.URI;
+
 import java.util.List;
 import javax.annotation.concurrent.Immutable;
 
@@ -20,9 +21,9 @@ import javax.annotation.concurrent.Immutable;
 public final class UIForm {
 
     /**
-     * The URI to invoke when the form is submitted.
+     * The URIObject to invoke when the form is submitted.
      */
-    private final URI action;
+    private final URIObject action;
 
     /**
      * GET or POST?
@@ -41,7 +42,7 @@ public final class UIForm {
     /**
      * Create a new form that POSTs against the given URI.
      */
-    public static UIForm postAction(URI action) {
+    public static UIForm postAction(URIObject action) {
         ImmutableList<UIElement> elements = ImmutableList.of();
         return new UIForm(action,PageRequest.Method.POST,elements);
     }
@@ -49,7 +50,7 @@ public final class UIForm {
     /**
      * Create a new form that GETs against the given URI.
      */
-    public static UIForm getAction(URI action) {
+    public static UIForm getAction(URIObject action) {
         ImmutableList<UIElement> elements = ImmutableList.of();
         return new UIForm(action,PageRequest.Method.GET,elements);
     }
@@ -57,7 +58,7 @@ public final class UIForm {
     /**
      * Use a factory instead.
      */
-    private UIForm(URI action, PageRequest.Method method, List<UIElement> elements) {
+    private UIForm(URIObject action, PageRequest.Method method, List<UIElement> elements) {
         this.action   = notNull(action);
         this.method   = notNull(method);
         this.elements = ImmutableList.copyOf(notNull(elements));

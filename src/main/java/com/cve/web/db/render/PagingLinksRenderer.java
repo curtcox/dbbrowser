@@ -1,5 +1,6 @@
 package com.cve.web.db.render;
 
+import com.cve.lang.URIObject;
 import com.cve.model.db.DBLimit;
 import com.cve.web.db.SelectBuilderAction;
 import com.cve.html.Label;
@@ -8,7 +9,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.model.db.SelectResults;
 import com.cve.web.core.Icons;
-import java.net.URI;
+
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
 
@@ -51,30 +52,30 @@ public final class PagingLinksRenderer {
         DBLimit limit = results.select.limit;
         if (limit.offset>0) {
             Label  text = Label.of(BACK);
-            URI  target = SelectBuilderAction.BACK.withArgs("1");
+            URIObject  target = SelectBuilderAction.BACK.withArgs("1");
             String  tip = "Previous rows";
-            URI   image = Icons.BACK;
+            URIObject   image = Icons.BACK;
             out.append(Link.textTargetImageAlt(text, target,image,tip) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(NEXT);
-            URI  target = SelectBuilderAction.NEXT.withArgs("1");
+            URIObject  target = SelectBuilderAction.NEXT.withArgs("1");
             String  tip = "Next rows";
-            URI   image = Icons.NEXT;
+            URIObject   image = Icons.NEXT;
             out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (limit.limit > 20) {
             Label  text = Label.of(SMALLER);
-            URI  target = SelectBuilderAction.SMALLER.withArgs("10");
+            URIObject  target = SelectBuilderAction.SMALLER.withArgs("10");
             String  tip = "Fewer rows";
-            URI   image = Icons.MINUS;
+            URIObject   image = Icons.MINUS;
             out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         if (results.hasMore) {
             Label  text = Label.of(BIGGER);
-            URI  target = SelectBuilderAction.BIGGER.withArgs("10");
+            URIObject  target = SelectBuilderAction.BIGGER.withArgs("10");
             String  tip = "More rows";
-            URI   image = Icons.PLUS;
+            URIObject   image = Icons.PLUS;
             out.append(Link.textTargetImageAlt(text, target, image, tip) + " ");
         }
         return out.toString();

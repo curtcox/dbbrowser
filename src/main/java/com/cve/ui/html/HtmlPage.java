@@ -6,10 +6,11 @@ import javax.annotation.concurrent.Immutable;
 import com.cve.ui.HTMLTags;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.URIs;
-import java.net.URI;
+
 
 /**
  * An immutable structured representation of an HtmlPage.
@@ -25,14 +26,14 @@ import java.net.URI;
 final class HtmlPage {
 
     /**
-     * Base URI for this page.
+     * Base URIObject for this page.
      */
-    public final URI base;
+    public final URIObject base;
     
     /**
      * Help page for this page
      */
-    public final URI help;
+    public final URIObject help;
 
     /**
      * What this page is all about.
@@ -62,7 +63,7 @@ final class HtmlPage {
     /**
      * We used this for unspecified URIs.
      */
-    private static final URI EMPTY = URIs.of("");
+    private static final URIObject EMPTY = URIs.of("");
 
     public final Log log = Logs.of();
 
@@ -76,20 +77,20 @@ final class HtmlPage {
     static String home() {
         String tip = "Home";
         Label text = Label.of("Home");
-        URI target = URIs.of("/");
-        URI  image = Icons.HOME;
+        URIObject target = URIs.of("/");
+        URIObject  image = Icons.HOME;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    static String help(URI uri) {
+    static String help(URIObject uri) {
         String tip = "Help";
         Label text = Label.of("Help");
-        URI target = uri;
-        URI  image = Icons.HELP;
+        URIObject target = uri;
+        URIObject  image = Icons.HELP;
         return Link.textTargetImageAlt(text,target,image,tip).toString();
     }
 
-    private HtmlPage(String title, String guts, String[] navigation, URI base, URI help, String head, String body) {
+    private HtmlPage(String title, String guts, String[] navigation, URIObject base, URIObject help, String head, String body) {
         this.title = notNull(title);
         this.guts = notNull(guts);
         this.navigation = notNull(navigation);
@@ -104,37 +105,37 @@ final class HtmlPage {
     public static HtmlPage guts(String guts) {
         String title = "";
         String[] navigation = new String[] {};
-        URI base = EMPTY;
-        URI help = EMPTY;
+        URIObject base = EMPTY;
+        URIObject help = EMPTY;
         String head = "";
         String body = body(title,guts,navigation,help);
         return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
-    public static HtmlPage gutsHelp(String guts, URI help) {
+    public static HtmlPage gutsHelp(String guts, URIObject help) {
         String title = "";
         String[] navigation = new String[] {};
-        URI base = EMPTY;
+        URIObject base = EMPTY;
         String head = "";
         String body = body(title,guts,navigation,help);
         return new HtmlPage(title, guts, navigation, base, help, head, body);
     }
 
-    public static HtmlPage gutsTitleNavHelp(String guts, String title, String[] nav, URI help) {
-        URI base = EMPTY;
+    public static HtmlPage gutsTitleNavHelp(String guts, String title, String[] nav, URIObject help) {
+        URIObject base = EMPTY;
         String head = "";
         String body = body(title,guts,nav,help);
         return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
-    public static HtmlPage gutsTitleNavHelpBase(String guts, String title, String[] nav, URI help, URI base) {
+    public static HtmlPage gutsTitleNavHelpBase(String guts, String title, String[] nav, URIObject help, URIObject base) {
         HTMLTags tags = HTMLTags.of();
         String head = tags.base(base);
         String body = body(title,guts,nav,help);
         return new HtmlPage(title, guts, nav, base, help, head, body);
     }
 
-    static String body(String title, String guts, String nav[], URI help) {
+    static String body(String title, String guts, String nav[], URIObject help) {
         StringBuilder out = new StringBuilder();
         HTMLTags tags = HTMLTags.of();
         out.append(tags.td(HOME));

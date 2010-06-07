@@ -1,9 +1,10 @@
 package com.cve.launch;
 
+import com.cve.lang.URIObject;
 import com.cve.ui.swing.SwingRouterFrame;
 import com.cve.util.Check;
 import com.cve.web.core.WebApp;
-import java.net.URI;
+
 
 /**
  * For dealing with the Swing UI.
@@ -21,7 +22,7 @@ final class Swing {
         return new Swing(SwingRouterFrame.of(webApp));
     }
 
-    void browse(URI uri) {
+    void browse(URIObject uri) {
         frame.browse(uri);
     }
 

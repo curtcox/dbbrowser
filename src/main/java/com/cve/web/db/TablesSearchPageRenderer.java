@@ -12,6 +12,7 @@ import com.cve.model.db.Database;
 import com.cve.model.db.DBServer;
 import com.cve.html.Label;
 import com.cve.html.Link;
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UIElement;
@@ -22,7 +23,7 @@ import com.cve.ui.UITableRow;
 import com.cve.ui.UITableBuilder;
 import com.cve.util.Replace;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import java.util.Collection;
 
 /**
@@ -34,7 +35,7 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
 
     private final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/TablesSearch.html");
+    private static URIObject HELP = URIs.of("/resource/help/TablesSearch.html");
 
     private TablesSearchPageRenderer() {
         
@@ -70,8 +71,8 @@ public final class TablesSearchPageRenderer implements ModelHtmlRenderer {
         Database database = page.database;
         String    alt = "Search the table rows";
         Label    text = Label.of(alt);
-        URI    target = codec.encode(search.ofContents(),database);
-        URI     image = Icons.PLUS;
+        URIObject target = codec.encode(search.ofContents(),database);
+        URIObject  image = Icons.PLUS;
         return Link.textTargetImageAlt(text, target, image, alt).toString();
     }
 /**

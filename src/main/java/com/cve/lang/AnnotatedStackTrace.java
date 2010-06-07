@@ -6,7 +6,7 @@ import com.cve.web.management.LogCodec;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import java.net.URI;
+
 import java.util.Map;
 import javax.annotation.concurrent.Immutable;
 import static com.cve.util.Check.notNull;
@@ -91,7 +91,7 @@ public final class AnnotatedStackTrace {
 
     public Link linkTo() {
         Label text = Label.of("trace");
-        URI target = codec.encode(this);
+        URIObject target = codec.encode(this);
         return Link.textTarget(text, target);
     }
 

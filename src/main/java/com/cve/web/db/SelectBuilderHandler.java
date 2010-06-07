@@ -1,5 +1,6 @@
 package com.cve.web.db;
 
+import com.cve.lang.URIObject;
 import com.cve.web.core.PageResponse;
 import com.cve.web.core.Search;
 import com.cve.web.core.PageRequest;
@@ -23,7 +24,7 @@ import com.cve.stores.ManagedFunction;
 import com.cve.stores.db.DBServersStore;
 import com.cve.stores.db.DBHintsStore;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import static com.cve.util.Check.notNull;
 
 /**
@@ -114,7 +115,7 @@ public final class SelectBuilderHandler implements RequestHandler {
             }
         }
         Search search = codec.getSearch(uri);
-        URI dest = DBURIRenderer.render(select,search);
+        URIObject dest = DBURIRenderer.render(select,search);
         return PageResponse.newRedirect(request,dest);
     }
 

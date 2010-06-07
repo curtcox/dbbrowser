@@ -11,6 +11,7 @@ import com.cve.log.Log;
 import com.cve.log.Logs;
 
 import com.cve.lang.AnnotatedStackTrace;
+import com.cve.lang.URIObject;
 import com.cve.ui.UIElement;
 import com.cve.ui.UITableDetail;
 import com.cve.ui.UITableRow;
@@ -21,7 +22,7 @@ import com.cve.util.URIs;
 import com.cve.web.db.NavigationButtons;
 import com.cve.web.management.ObjectLink;
 import com.cve.web.management.ObjectLinks;
-import java.net.URI;
+
 
 
 /**
@@ -32,7 +33,7 @@ final class ServersPageRenderer implements ModelHtmlRenderer {
     
     private final Log log = Logs.of();
 
-    private static URI HELP = URIs.of("/resource/help/Servers.html");
+    private static URIObject HELP = URIs.of("/resource/help/Servers.html");
 
     UITableRow    row(UITableCell... details) { return UITableRow.of(details); }
     UITableDetail detail(String s) { return UITableDetail.of(s); }

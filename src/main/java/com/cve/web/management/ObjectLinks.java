@@ -1,9 +1,10 @@
 package com.cve.web.management;
 
+import com.cve.lang.URIObject;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UILink;
-import java.net.URI;
+
 
 /**
  * For providing hyperlinks to expose objects in the JVM.
@@ -41,7 +42,7 @@ public final class ObjectLinks {
     public UILink to(Object object) {
         String hash = ObjectRegistry.put(object).toHexString();
         String text = getLabel(object) + "/" + hash;
-        URI target = codec.encode(object);
+        URIObject target = codec.encode(object);
         return UILink.textTarget(text, target);
     }
 
@@ -50,7 +51,7 @@ public final class ObjectLinks {
      * Return a labeled link to the given object.
      */
     public UILink to(String text, Object object) {
-        URI target = codec.encode(object);
+        URIObject target = codec.encode(object);
         return UILink.textTarget(text, target);
     }
 

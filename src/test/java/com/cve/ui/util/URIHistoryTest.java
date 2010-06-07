@@ -1,7 +1,8 @@
 package com.cve.ui.util;
 
+import com.cve.lang.URIObject;
 import com.cve.util.URIs;
-import java.net.URI;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -11,9 +12,9 @@ import org.junit.Test;
  */
 public class URIHistoryTest {
 
-    final URI root = URIs.of("/");
-    final URI a = URIs.of("/a");
-    final URI b = URIs.of("/b");
+    final URIObject root = URIs.of("/");
+    final URIObject a = URIs.of("/a");
+    final URIObject b = URIs.of("/b");
 
     @Test public void follow() {
         URIHistory history = URIHistory.of();
@@ -31,7 +32,7 @@ public class URIHistoryTest {
     @Test public void followBackGivesRoot() {
         URIHistory history = URIHistory.of();
         history.follow(a);
-        URI uri = history.back();
+        URIObject uri = history.back();
         equals(root,uri);
     }
 
@@ -39,7 +40,7 @@ public class URIHistoryTest {
         URIHistory history = URIHistory.of();
         history.follow(a);
         history.follow(b);
-        URI uri = history.back();
+        URIObject uri = history.back();
         equals(a,uri);
     }
 
@@ -47,7 +48,7 @@ public class URIHistoryTest {
         URIHistory history = URIHistory.of();
         history.follow(a);
         history.back();
-        URI uri = history.forward();
+        URIObject uri = history.forward();
         equals(a,uri);
     }
 
@@ -56,7 +57,7 @@ public class URIHistoryTest {
         history.follow(a);
         history.follow(b);
         history.back();
-        URI uri = history.forward();
+        URIObject uri = history.forward();
         equals(b,uri);
     }
 
@@ -70,7 +71,7 @@ public class URIHistoryTest {
         URIHistory.of().forward();
     }
 
-    void equals(URI a, URI b) {
+    void equals(URIObject a, URIObject b) {
         assertEquals(a,b);
     }
 }
