@@ -7,7 +7,7 @@
  * <p>
  * The PageResponse will either contain a Model or a redirect.
  * ModelS are appropriately rendered by ModelRenderers.
- * http://yuml.me/diagram/class/[PageResponse]->[Model%20Renderer],[Model%20Renderer]->[HTML],[Model%20Renderer]->[JavaFX]
+ * http://yuml.me/diagram/class/[PageResponse]->[Model%20Renderer],[Model%20Renderer]->[HTML],[Model%20Renderer]->[UIElement]
  * <p>
  * Adding a page to the application requires adding three classes.
  * <ol>

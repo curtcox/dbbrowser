@@ -1,5 +1,6 @@
 package com.cve.model.wiki;
 
+import com.cve.lang.URIObject;
 import com.cve.model.test.Assert;
 
 /**
@@ -12,9 +13,11 @@ public class WikiPageTest {
         return WikiPage.of();
     }
 
-    public void translatesPathsToRresources() {
+    public void translatesPathsToResources() {
         WikiPage page = page();
-        Assert.failure();
+        URIObject.Path path = URIObject.Path.of("/foo");
+        WikiResource resource = page.translate(path);
+        Assert.notNull(resource);
     }
 
     public void displaysResources() {

@@ -8,7 +8,9 @@ package com.cve.web.core;
  * produces multiple different model types (such as index and detail models)
  * depending on the request.
  * <p>
- * Use of the combined interface tends to prodcue one larger implementation class
+ * If a SelfRenderingModel
+ * <p>
+ * Use of the combined interface tends to produce one larger implementation class
  * and less wiring code.
  * @see AbstractPage
  * @author curt

@@ -19,6 +19,8 @@ import static com.cve.util.Check.notNull;
  * with a page.  For more control, see the Page interface and the interfaces
  * that it extends.
  * <p>
+ * It is possible, and often desirable, to decouple the production of
+ * <p>
  * Note:
  * <ul>
  *     <li> Page extends RequestHandler, SelfRenderingModel
@@ -29,12 +31,12 @@ import static com.cve.util.Check.notNull;
 public abstract class AbstractPage implements Page {
 
     /**
-     * Handles the page request, unless produce is overridden.
+     * Handles the page request, producing a PageResponse, unless produce is overridden.
      */
     final RequestHandler handler;
 
     /**
-     * Renders the model, unless render is overridden.
+     * Renders the model, producing a UIElement, unless render is overridden.
      */
     final ModelHtmlRenderer renderer;
 
@@ -127,6 +129,11 @@ public abstract class AbstractPage implements Page {
         return browser.toHTML();
     }
 
+    /**
+     * Ensure that the given model is an instance of this this class.
+     * Just being an AbstractPage isn't enough.  It must be the same type of
+     * AbstractPage that we are.
+     */
     void check(Model model) {
         Class c = getClass();
         if (!c.isInstance(model)) {

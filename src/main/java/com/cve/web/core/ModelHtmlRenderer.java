@@ -4,10 +4,13 @@ import com.cve.ui.UIElement;
 
 
 /**
- * To render models to a HTML string.  This interface is designed to allow
+ * To render models to a UIElement.  This interface is designed to allow
  * chains of renderers.  Consider PageDecorator.
- * A parallel interface could be used to render a model into a JavaFX scene
- * graph, for instance.
+ * The UIElement that is produced could be used to produce HTML, a Swing UI,
+ * or a JavaFX scene graph, for instance.
+ * <p>
+ * ModelRenderers are usually used by more generic ModelRenderers for delegation.
+ * The exception is SelfRenderingModelS.
  * <p>
  * Should this interface have a type parameter?
  * <p>

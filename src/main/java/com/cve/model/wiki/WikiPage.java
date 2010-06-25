@@ -1,5 +1,6 @@
 package com.cve.model.wiki;
 
+import com.cve.lang.URIObject.Path;
 import com.cve.web.core.pages.AbstractPage;
 
 /**
@@ -25,6 +26,10 @@ import com.cve.web.core.pages.AbstractPage;
 public final class WikiPage extends AbstractPage {
 
     static WikiPage of() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
+
+    WikiResource translate(Path path) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

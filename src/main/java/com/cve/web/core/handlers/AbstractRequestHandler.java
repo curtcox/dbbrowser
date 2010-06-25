@@ -1,7 +1,6 @@
 package com.cve.web.core.handlers;
 
 import com.cve.lang.RegEx;
-import java.util.regex.Pattern;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.util.Check;
@@ -12,7 +11,7 @@ import com.cve.web.core.RequestHandler;
 
 /**
  * Something that handles {@link PageRequest}S and produces
- * {@link URIResponse}S.
+ * {@link PageResponse}S.
  * @author Curt
  */
 public abstract class AbstractRequestHandler
@@ -48,7 +47,7 @@ public abstract class AbstractRequestHandler
 
     /**
      * Return a response for this request, or null if this isn't the sort
-     * of request we prodcuce responses for.
+     * of request we produce responses for.
      * <p>
      * While it is sometimes necessary to override this method, generally
      * overriding get is the right thing to do instead.
