@@ -598,6 +598,12 @@ public abstract class NoResultSet implements ResultSet {
     @Override
     public boolean isWrapperFor(Class<?> arg0) throws SQLException {        throw no();    }
 
+    @Override
+    public <T> T getObject(int columnIndex, Class<T> type) throws SQLException { throw no(); }
+
+    @Override
+    public <T> T getObject(String columnLabel, Class<T> type) throws SQLException { throw no(); }
+
     static UnsupportedOperationException no() {
         return new UnsupportedOperationException();
     }

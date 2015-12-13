@@ -1,10 +1,10 @@
 package com.cve.lang;
 
 import com.google.common.collect.ImmutableList;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
+
 import javax.annotation.concurrent.Immutable;
+import java.lang.reflect.Member;
+
 import static com.cve.util.Check.notNull;
 /**
  * An executable element of a stack trace.
@@ -39,32 +39,21 @@ public abstract class ExecutableElement implements Member {
 
     public final boolean synthetic;
 
-    // Simple getters to implement the Member imterface.
+    // Simple getters to implement the Member interface.
     @Override final public Class<?> getDeclaringClass() { return declaringClass; }
     @Override final public String             getName() { return name;           }
     @Override final public int           getModifiers() { return modifiers;      }
     @Override final public boolean        isSynthetic() { return synthetic;      }
 
-    ExecutableElement(Method method) {
-        this.returnType = notNull(method.getReturnType());
-        this.parameterTypes = listOf(method.getParameterTypes());
-        this.exceptionTypes = listOf(method.getExceptionTypes());
-        this.declaringClass = method.getDeclaringClass();
-        this.name = method.getName();
-        this.modifiers = method.getModifiers();
-        this.synthetic = method.isSynthetic();
+    ExecutableElement(Member member, ImmutableList<Class> parameterTypes,ImmutableList<Class> exceptionTypes) {
+        this.returnType = notNull(member.getDeclaringClass());
+        this.parameterTypes = parameterTypes;
+        this.exceptionTypes = exceptionTypes;
+        this.declaringClass = member.getDeclaringClass();
+        this.name = member.getName();
+        this.modifiers = member.getModifiers();
+        this.synthetic = member.isSynthetic();
     }
-
-    ExecutableElement(Constructor method) {
-        this.returnType = notNull(method.getDeclaringClass());
-        this.parameterTypes = listOf(method.getParameterTypes());
-        this.exceptionTypes = listOf(method.getExceptionTypes());
-        this.declaringClass = method.getDeclaringClass();
-        this.name = method.getName();
-        this.modifiers = method.getModifiers();
-        this.synthetic = method.isSynthetic();
-    }
-
 
     static ImmutableList<Class> listOf(Class[] classes) {
         return ImmutableList.of(classes);

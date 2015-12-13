@@ -206,16 +206,16 @@
         </dependency>
         
         <!-- Groovy -->
-        <dependency>
+        <!--dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>1.7.2</version>
-        </dependency>
-        <dependency>
+        </dependency-->
+        <!--dependency>
             <groupId>org.mbte.groovypp</groupId>
             <artifactId>groovypp-all</artifactId>
             <version>0.2.4</version>
-        </dependency>
+        </dependency-->
 
         <!-- Export formats -->
         <dependency>
@@ -303,12 +303,12 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </pluginRepository>
-        <pluginRepository>
-            <id>grovvypp</id>
+        <!--pluginRepository>
+            <id>groovypp</id>
             <name>groovypp</name>
             <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
             <layout>default</layout>
-        </pluginRepository>
+        </pluginRepository-->
     </pluginRepositories>
 
     <repositories>
@@ -334,11 +334,11 @@
             <name>bouncycastle</name>
             <url>http://repo2.maven.org/maven2/org/bouncycastle</url>
         </repository>
-	    <repository>
+	    <!--repository>
             <id>grovvypp</id>
             <name>groovypp</name>
             <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
-        </repository>
+        </repository-->
     </repositories>
 
 </project>

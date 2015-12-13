@@ -2,11 +2,8 @@ package com.cve.lang;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.util.List;
 
 /**
@@ -15,12 +12,18 @@ import java.util.List;
  */
 public final class ResourceLocation {
 
+    final File file;
+
     static ResourceLocation of(String className) {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
     static ResourceLocation of(File file) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return new ResourceLocation(file);
+    }
+
+    private ResourceLocation(File file) {
+        this.file = file;
     }
 
     boolean isContainer() {
@@ -52,9 +55,17 @@ public final class ResourceLocation {
     }
 
     private InputStream getInput() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        try {
+            return new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            return noSourceAvailable();
+        }
     }
 
+    private InputStream noSourceAvailable() {
+        byte[] bytes = SourceCode.UNAVAILABLE.source.getBytes();
+        return new ByteArrayInputStream(bytes);
+    }
     /*
         String     resource = sourceFileResource(className);
            InputStream   in = AnnotatedClass.class.getResourceAsStream(resource);

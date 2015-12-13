@@ -1,15 +1,20 @@
 package com.cve.web.core;
 
 import com.cve.lang.URIObject;
-import com.cve.web.core.models.ByteArrayModel;
-import static com.cve.util.Check.notNull;
 import com.cve.log.Log;
 import com.cve.log.Logs;
 import com.cve.ui.UIElement;
+import com.cve.web.core.models.ByteArrayModel;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.sql.SQLException;
-import javax.servlet.http.*;
-import java.io.*;
+
+import static com.cve.util.Check.notNull;
 
 
 /**
@@ -105,6 +110,20 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     void write(PageResponse page, HttpServletResponse response) throws IOException {
+        System.out.println("RequestRouterServlet.write start");
+        try {
+            writeResponse(page, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        }
+        System.out.println("RequestRouterServlet.write end");
+    }
+
+    void writeResponse(PageResponse page, HttpServletResponse response) throws IOException {
         log.args(page,response);
         URIObject redirect = page.redirect;
         // Redirect, if that is the response

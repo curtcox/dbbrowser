@@ -1,7 +1,8 @@
 package com.cve.lang;
 
-import java.lang.reflect.Constructor;
 import javax.annotation.concurrent.Immutable;
+import java.lang.reflect.Constructor;
+
 import static com.cve.util.Check.notNull;
 /**
  * A wrapper to make a constructor executable.
@@ -11,8 +12,8 @@ public final class ExecutableConstructor extends ExecutableElement {
 
     public final Constructor inner;
 
-    ExecutableConstructor(Constructor constructor) {
-        super(constructor);
+    private ExecutableConstructor(Constructor constructor) {
+        super(constructor,listOf(constructor.getParameterTypes()),listOf(constructor.getExceptionTypes()));
         inner = notNull(constructor);
     }
 

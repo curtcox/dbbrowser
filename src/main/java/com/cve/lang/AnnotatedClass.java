@@ -2,11 +2,13 @@ package com.cve.lang;
 
 import com.cve.util.SimpleCache;
 import com.google.common.collect.ImmutableList;
+
+import javax.annotation.concurrent.Immutable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
-import javax.annotation.concurrent.Immutable;
+
 import static com.cve.util.Check.notNull;
 
 /**
@@ -114,8 +116,7 @@ public final class AnnotatedClass {
                 return Executables.of(constructor);
             }
         }
-        String message = e.toString();
-        throw new IllegalArgumentException(message);
+        return Executables.of(e);
     }
 
     @Override

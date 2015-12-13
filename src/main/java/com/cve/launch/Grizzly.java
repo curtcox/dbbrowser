@@ -2,10 +2,10 @@ package com.cve.launch;
 
 import com.cve.web.core.RequestRouterServlet;
 import com.cve.web.core.WebApp;
-import java.io.IOException;
-
 import com.sun.grizzly.http.embed.GrizzlyWebServer;
 import com.sun.grizzly.http.servlet.ServletAdapter;
+
+import java.io.IOException;
 
 /**
  * For dealing with the Grizzly web server.
@@ -20,6 +20,7 @@ final class Grizzly {
         GrizzlyWebServer    server = new GrizzlyWebServer(port,"/");
         server.addGrizzlyAdapter(adapter,new String[] {"/"});
         server.start();
+        System.out.println("Grizzly started");
     }
 
 }

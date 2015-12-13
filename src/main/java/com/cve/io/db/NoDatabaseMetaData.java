@@ -873,6 +873,16 @@ class NoDatabaseMetaData implements DatabaseMetaData {
     }
 
     @Override
+    public ResultSet getPseudoColumns(String catalog, String schemaPattern, String tableNamePattern, String columnNamePattern) throws SQLException {
+        throw no();
+    }
+
+    @Override
+    public boolean generatedKeyAlwaysReturned() throws SQLException {
+        throw no();
+    }
+
+    @Override
     public <T> T unwrap(Class<T> arg0) throws SQLException {
         throw no();
     }

@@ -1,18 +1,20 @@
 package com.cve.io.db;
 
+import com.cve.lang.Strings;
 import com.cve.log.Log;
 import com.cve.log.Logs;
-import com.cve.lang.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import java.sql.ResultSetMetaData;
+
+import javax.annotation.concurrent.Immutable;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.concurrent.Immutable;
+
 import static com.cve.util.Check.notNull;
 
 /**
@@ -79,7 +81,6 @@ public final class DBResultSetIO {
         @Override public ResultSetMetaData getMetaData() {
             return new NullResultSetMetaData();
         }
-
     }
 
     private static class NullResultSetMetaData extends NoResultSetMetaData {

@@ -17,4 +17,7 @@ public final class Executables {
         return ExecutableConstructor.of(constructor);
     }
 
+    public static ExecutableElement of(StackTraceElement element) {
+        return ExecutableStackTraceElement.of(element);
+    }
 }

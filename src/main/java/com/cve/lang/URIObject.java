@@ -3,11 +3,9 @@ package com.cve.lang;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-/**
- *
- * @author curt
- */
-public class URIObject {
+public final class URIObject {
+
+    final String target;
 
     public final static class Path {
 
@@ -19,11 +17,18 @@ public class URIObject {
     }
 
     public URIObject(String target) throws URISyntaxException {
-        throw new UnsupportedOperationException("Not yet implemented");
+        this.target = target;
     }
 
     public URI toURI() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        try {
+            return new URI(target);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    public String toString() {
+        return target;
+    }
 }

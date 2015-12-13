@@ -16,7 +16,7 @@ public final class ExecutableMethod extends ExecutableElement {
     public final Method inner;
 
     private ExecutableMethod(Method method) {
-        super(method);
+        super(method,listOf(method.getParameterTypes()),listOf(method.getExceptionTypes()));
         inner = notNull(method);
     }
 
