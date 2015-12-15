@@ -17,8 +17,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -205,18 +205,6 @@
             <version>1.8.0.7</version>
         </dependency>
         
-        <!-- Groovy -->
-        <!--dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>1.7.2</version>
-        </dependency-->
-        <!--dependency>
-            <groupId>org.mbte.groovypp</groupId>
-            <artifactId>groovypp-all</artifactId>
-            <version>0.2.4</version>
-        </dependency-->
-
         <!-- Export formats -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -303,12 +291,6 @@
             <url>http://download.java.net/maven/2/</url>
             <layout>default</layout>
         </pluginRepository>
-        <!--pluginRepository>
-            <id>groovypp</id>
-            <name>groovypp</name>
-            <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
-            <layout>default</layout>
-        </pluginRepository-->
     </pluginRepositories>
 
     <repositories>
@@ -334,11 +316,6 @@
             <name>bouncycastle</name>
             <url>http://repo2.maven.org/maven2/org/bouncycastle</url>
         </repository>
-	    <!--repository>
-            <id>grovvypp</id>
-            <name>groovypp</name>
-            <url>http://groovypp.artifactoryonline.com/groovypp/libs-releases-local/</url>
-        </repository-->
     </repositories>
 
 </project>
