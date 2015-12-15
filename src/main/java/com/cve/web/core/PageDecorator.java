@@ -40,7 +40,6 @@ public final class PageDecorator implements ModelHtmlRenderer {
      * Return the page with CSS and Javascript added.
      */
     UIElement render(UIElement page, ClientInfo client) {
-        //throw new UnsupportedOperationException();
         return HtmlPage.javascriptCssGuts(SCRIPTS,CSS.SHEET,page);
     }
 }

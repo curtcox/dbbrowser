@@ -110,7 +110,7 @@ public final class RequestRouterServlet extends HttpServlet {
      * Either redirect, or render the model and send it to the client.
      */
     void write(PageResponse page, HttpServletResponse response) throws IOException {
-        System.out.println("RequestRouterServlet.write start");
+        System.out.println("RequestRouterServlet.write start " + page);
         try {
             writeResponse(page, response);
         } catch (IOException e) {
@@ -120,7 +120,7 @@ public final class RequestRouterServlet extends HttpServlet {
             e.printStackTrace();
             throw e;
         }
-        System.out.println("RequestRouterServlet.write end");
+        System.out.println("RequestRouterServlet.write end " + page);
     }
 
     void writeResponse(PageResponse page, HttpServletResponse response) throws IOException {
